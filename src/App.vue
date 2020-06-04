@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" @click="$store.commit('cleanPopup')">
     <component :is="layout">
       <router-view/>
     </component>

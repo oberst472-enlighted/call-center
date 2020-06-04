@@ -33,7 +33,7 @@
   }
 </script>
 
-<style scoped lang='scss'>
+<style lang='scss'>
 #user_stat{
   width: 593px;
   height: 175px;

@@ -26,9 +26,9 @@
   }
 </script>
 
-<style scoped lang='scss'>
+<style lang='scss'>
 #call_window{
-  width: 281px;
+  width: 100%;
   height: 175px;
   box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);
   border-radius: 8px;

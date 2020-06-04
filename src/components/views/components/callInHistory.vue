@@ -3,14 +3,21 @@
     <hr>
     <div class="call" @click="$router.push('/single-call/1')">
       <div class="call-left">
-        <div class="call-left-date">20.05.2020  10:32:12 - 10:33:31</div>
+        <div class="call-left-date">20.05.2020  <span>10:32:12 - 10:33:31</span></div>
         <div class="call-left-name">Казанский Вокзал</div>
         <div class="call-left-terminal">терминал #3462</div>
         <div class="call-left-text">зал ожидания</div>
       </div>
       <div class="call-right">
         <div class="call-right-status">Решено</div>
-        <img src="../../../assets/icons/Write.svg" alt="">
+        <img v-if="chatStatus === 'show'" src="../../../assets/icons/Write.svg" alt="">
+      </div>
+    </div>
+    <div class="operator">
+      <img src="../../../assets/images/user2.png" alt="" class="operator-img">
+      <div class="operator-block">
+        <div class="operator-text">Елена Авантюрова</div>
+        <div class="operator-text">оператор # 0011</div>
       </div>
     </div>
   </div>
@@ -18,11 +25,21 @@
 
 <script>
   export default {
-    name: "callInHistory"
+    name: "callInHistory",
+    props: {
+      operator: {
+        type: String,
+        default: 'false'
+      },
+      chatStatus: {
+        type: String,
+        default: 'show'
+      }
+    }
   }
 </script>
 
-<style scoped lang='scss'>
+<style lang='scss'>
 .call_in_history{
   .call{
     cursor: pointer;
@@ -39,6 +56,10 @@
         color: #65528b;
         font-size: 11px;
         font-weight: 500;
+        margin-bottom: 5px;
+        span{
+          font-weight: 700;
+        }
       }
       &-name{
         color: #4a4355;
@@ -55,19 +76,46 @@
     &-right{
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
       &-status{
         text-align: center;
-        width: 58px;
         height: 14px;
         border-radius: 7px;
         background-color: #f2fcf4;
         color: #4fd161;
         font-size: 8px;
         font-weight: 700;
+        width: 70px;
       }
     }
   }
+  .operator{
+    margin-top: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    margin-bottom: 14px;
+    &-status{
+      width: 83px;
+      height: 14px;
+      border-radius: 7px;
+      background-color: #f2fcf4;
+      color: #4fd161;
+      font-size: 8px;
+      text-align: center;
+    }
+    &-text{
+      color: #685c7b;
+      font-size: 10px;
+      font-weight: 400;
+      line-height: 12px;    }
+    &-img{
+      height: 40px;
+      width: 40px;
+      margin-right: 14px;
+    }
+  }
+
 }
 </style>

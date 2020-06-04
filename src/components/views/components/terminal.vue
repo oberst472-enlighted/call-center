@@ -16,11 +16,10 @@
   }
 </script>
 
-<style scoped lang='scss'>
+<style lang='scss'>
   .terminal-wraper{
     padding: 0 10px;
     width: 33%;
-    height: 86px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -31,8 +30,8 @@
 
     .terminal{
       cursor: pointer;
+      margin: 12px 0;
       &-status{
-        margin-top: 15px;
         width: 83px;
         height: 14px;
         border-radius: 7px;
@@ -45,7 +44,7 @@
 
       }
       &-number{
-
+        height: 13px;
       }
       &-text{
         font-weight: 400;

@@ -10,7 +10,7 @@
   }
 </script>
 
-<style scoped lang='scss'>
+<style lang='scss'>
   .header-icon-wrapper{
     height: 25px;
     width: 25px;

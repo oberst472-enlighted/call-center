@@ -10,7 +10,7 @@
   }
 </script>
 
-<style scoped lang='scss'>
+<style lang='scss'>
 #emptyLayout {
   height: 100vh;
   background-image: linear-gradient(180deg, #fafafc 0%, #e5e7f4 100%);

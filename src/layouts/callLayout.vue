@@ -10,7 +10,7 @@
   }
 </script>
 
-<style scoped lang='scss'>
+<style lang='scss'>
   #callLayout {
     min-height: 100vh;
   }

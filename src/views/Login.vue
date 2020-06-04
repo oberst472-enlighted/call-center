@@ -7,6 +7,7 @@
         <div class="header-text__bottom">Введите свои данные</div>
       </div>
     </div>
+    <div v-if="errorText.length > 0" class="error-text">{{errorText}}</div>
     <div class="inputs">
       <div class="input">
         <div class="input-icon">
@@ -22,10 +23,16 @@
       </div>
     </div>
     <div class="checkbox">
-      <input type="checkbox" name="option4" value="a4" v-model="rememberMe">Запомнить меня
-      <span class="checkmark" @click="rememberMe = !rememberMe" :class="{active: rememberMe}"></span>
+      <div class="checkmark" :class="{active: rememberMe}" @click="rememberMe = !rememberMe"></div>
+      <div @click="rememberMe = !rememberMe">Запомнить меня</div>
     </div>
-    <button class="button" @click="submitRegistration" :disabled="!login || !password">Войти</button>
+    <button
+            class="button"
+            :disabled="!login || !password"
+            @click="submitRegistration"
+    >
+      Войти
+    </button>
     <div class="bottom">
       <div class="bottom__top" @click="askForAccount">
         Нет аккаунта? Запросить
@@ -43,9 +50,10 @@
     data(){
       return {
         passType: 'password',
-        login: "login",
+        login: "admin",
         password: "password",
-        rememberMe: false
+        rememberMe: false,
+        errorText: ''
       }
     },
     methods: {
@@ -57,7 +65,13 @@
         }
       },
       submitRegistration() {
-        console.log(`${this.login}----${this.password}`)
+        this.$store.commit('logIn', this.login.trim())
+        if (this.$store.state.isUserLoggedIn) {
+          this.$router.push('/dashboard')
+        } else {
+          this.errorText = "Вы дожны ввести в логин 'admin' или 'operator' !"
+        }
+
       },
       forgotPassword(){
         alert("FORGOT PASSWORD ??????")
@@ -128,17 +142,14 @@
       color: #4e545b;
       font-size: 12px;
       font-weight: 400;
-      input{
-        position: relative;
-        opacity: 0;
-        margin-right: 10px;
-      }
+      cursor: pointer;
       .checkmark {
-        position: absolute;
         width: 18px;
         height: 18px;
+        margin-right: 10px;
         border-radius: 50%;
         background-color: #f4f3f7;
+        cursor: pointer;
       }
       .checkmark:hover {
         background-color: #ccc;
@@ -161,6 +172,7 @@
       outline: none;
       border: none;
       margin-bottom: 40px;
+      cursor: pointer;
       &:disabled{
         background-color: #2e2e2e;
       }
@@ -182,6 +194,12 @@
         font-weight: 400;
         cursor: pointer;
       }
+    }
+    .error-text{
+      margin-top: 15px;
+      color: red;
+      text-align: center;
+      font-size: 13px;
     }
   }
 </style>

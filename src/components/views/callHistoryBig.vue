@@ -5,18 +5,17 @@
         <div class="head-headers-main">История звонков</div>
         <div class="head-headers-secondary">Последние</div>
       </div>
-      <img class="head-dots" src="../../assets/icons/ThreeDots.svg" alt=""/>
+      <img style="cursor: pointer" class="head-dots" src="../../assets/icons/ThreeDots.svg" alt=""/>
     </div>
     <div class="calls-list">
-      <callInHistory />
-      <callInHistory />
-      <callInHistory />
-      <callInHistory />
-      <callInHistory />
-      <callInHistory />
-      <callInHistory />
-      <callInHistory />
-      <callInHistory />
+      <callInHistory chatStatus="hide"/>
+      <callInHistory chatStatus="hide"/>
+      <callInHistory chatStatus="hide"/>
+      <callInHistory chatStatus="hide"/>
+      <callInHistory chatStatus="hide"/>
+      <callInHistory chatStatus="hide"/>
+      <callInHistory chatStatus="hide"/>
+      <callInHistory chatStatus="hide"/>
     </div>
   </div>
 </template>
@@ -29,7 +28,7 @@
   }
 </script>
 
-<style scoped lang='scss'>
+<style lang='scss'>
   #call_history{
     width: 100%;
     box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);
@@ -58,9 +57,11 @@
       justify-content: space-between;
       align-items: center;
       .call_in_history{
-        width: 230px;
-        height: 90px;
+        padding: 0 10px;
+        width: 50%;
+        min-height: 90px;
       }
     }
+
   }
 </style>

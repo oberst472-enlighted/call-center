@@ -1,7 +1,8 @@
 <template>
   <div id="Header">
     <div class="nav">
-      <div class="nav-left">
+      <div v-if="$store.state.userStatus === 'operator'" class="nav-left">
+        <forward v-if="$route.meta.gotForward"/>
         <div class="btn-toggler">
           <button
                   class="btn-toggler-btn nav-btn"
@@ -17,13 +18,23 @@
           </button>
         </div>
         <div class="time">{{formatTime}}</div>
-        <button class="close-session nav-btn">Завершить смену</button>
+        <button class="close-session nav-btn" @click="closeSession">Завершить смену</button>
       </div>
+      <div  v-else-if="$store.state.userStatus === 'admin'">
+        <forward v-if="$route.meta.gotForward"/>
+        <div v-else class="dash-nav-buttons">
+          <div style="cursor: pointer" class="button" @click="$router.push('/create-operator')">Добавить сотрудника</div>
+          <div class="button"  style="cursor: pointer">Добавить очередь</div>
+          <div  style="cursor: pointer" class="button" @click="$router.push('/add-language')">Добавить язык</div>
+        </div>
+      </div>
+
       <div class="nav-right">
         <div class="user">
           <div class="user-info">
             <div class="user-name">Елена Авантюрова</div>
-            <div class="user-operator">оператор #<span>23423</span></div>
+            <div class="user-operator" v-if="$store.state.userStatus === 'admin'">администратор</div>
+            <div class="user-operator" v-else>оператор # <span>0012</span></div>
           </div>
           <div class="user-avatar">
             <img src="../../assets/icons/User.svg" alt="">
@@ -35,6 +46,7 @@
 </template>
 
 <script>
+  import forward from "../UI/forward";
   export default {
     name: "Header",
     data() {
@@ -42,6 +54,7 @@
         activeMod: 'online'
       }
     },
+    components: {forward},
     computed: {
       formatTime() {
         let pad = function(num, size) { return ('000' + num).slice(size * -1); }
@@ -64,18 +77,21 @@
     methods: {
       toggleMode(type) {
         this.$store.commit('toggleWorkingStatus', type)
+      },
+      closeSession(){
+        this.$store.commit('closeSession')
+        alert(`Вы закончили работу. Проработано ${this.$store.state.totalTime} секунд. Или ${this.formatTime}`)
       }
     }
   }
 </script>
 
-<style scoped lang='scss'>
+<style lang='scss'>
 #Header{
   min-height: 83px;
   width: 100%;
   padding: 25px 0;
   .nav{
-    margin-left: 55px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -89,6 +105,7 @@
       font-size: 12px;
       font-weight: 400;
       background-color: inherit;
+      cursor: pointer;
     }
     &-left{
       display: flex;
@@ -102,14 +119,16 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      justify-content: space-evenly;
+      justify-content: center;
     }
     &-name{
       line-height: 12px;
+      font-size: 12px;
       font-weight: 700;
     }
     &-operator{
       line-height: 12px;
+      font-size: 12px;
       font-weight: 400;
     }
     &-avatar{
@@ -152,6 +171,27 @@
   }
   .close-session{
     background-color: #f04265;
+  }
+  .dash-nav-buttons{
+    display: flex;
+    align-items: center;
+    .button{
+      height: 33px;
+      border-radius: 8px;
+      background-color: #66538a;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 400;
+      margin-right: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
+      cursor: pointer;
+      &:hover{
+        transform: scale(1.03);
+      }
+    }
   }
 }
 </style>

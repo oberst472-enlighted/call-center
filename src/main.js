@@ -3,6 +3,10 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+import 'normalize.css'
+import './assets/montserrat.css'
+import './assets/global.scss'
+
 Vue.config.productionTip = false
 
 new Vue({

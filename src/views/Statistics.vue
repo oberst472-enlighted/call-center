@@ -6,8 +6,8 @@
     <div class="body">
       <div class="col">
         <div class="label">Дата:</div>
-        <div class="input">
-          <input class="input-field" v-model="date" placeholder="12.05.2020 - 26.05.2020"/>
+        <div class="input" @click="dateClick">
+          <input class="input-field" id="selectDate" type="date" v-model="date" :placeholder="date"/>
         </div>
       </div>
       <div class="col">
@@ -86,7 +86,7 @@
     name: "Statistics",
     data(){
       return {
-        date: '',
+        date: '12.05.2020 - 26.05.2020',
         collCenter: 'Московский',
         operator: 'Все',
         callStatus: 'Решено',
@@ -125,6 +125,9 @@
       },
       setCallStatus(title){
         this.callStatus = title
+      },
+      dateClick(){
+        document.getElementById('selectDate').click();
       }
     },
     computed: {
@@ -265,6 +268,31 @@
     &:hover {
       transform: scale(1.03);
     }
+  }
+  input[type=date]::-webkit-datetime-edit-text {
+    -webkit-appearance: none;
+    display: none;
+  }
+  input[type=date]::-webkit-datetime-edit-month-field{
+    -webkit-appearance: none;
+    display: none;
+  }
+  input[type=date]::-webkit-datetime-edit-day-field {
+    -webkit-appearance: none;
+    display: none;
+  }
+  input[type=date]::-webkit-datetime-edit-year-field {
+    -webkit-appearance: none;
+    display: none;
+  }
+  input[type="date"]:before {
+    content: attr(placeholder) !important;
+    color: #aaa;
+    margin-right: 0.5em;
+  }
+  input[type="date"]:focus:before,
+  input[type="date"]:valid:before {
+    content: "";
   }
 }
 </style>

@@ -30,7 +30,7 @@
       </div>
       <div class="col">
         <div class="col-name">среднее время <br> звонк</div>
-        <div class="col-num" style="font-size: 21px">2 <span style="font-size: 13px">мин</span> 40 <span style="font-size: 13px">сек</span></div>
+        <div class="col-num" style="font-size: 20px">2 <span style="font-size: 12px">мин</span> 40 <span style="font-size: 13px">сек</span></div>
 
         <hr style="background-color: #f04265">
 
@@ -69,7 +69,7 @@
     align-items: center;
   }
   .col{
-    width: 19%!important;
+    width: 21% !important;
     text-align: center;
     color: #786d89;
     margin: 0 5px;

@@ -41,10 +41,11 @@
         text-align: center;
       }
       &-name{
-
+        font-weight: 400;
       }
       &-number{
         height: 13px;
+        font-weight: 400;
       }
       &-text{
         font-weight: 400;

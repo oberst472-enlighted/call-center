@@ -6,7 +6,7 @@
       <div class="operator-block">
         <div class="operator-text">оператор # 0011</div>
         <div class="operator-name">Евгений</div>
-        <div class="operator-number">Петров</div>
+        <div class="operator-name">Петров</div>
       </div>
       <div class="operator-actions">
         <div class="operator-status">Онлайн</div>
@@ -54,6 +54,9 @@
         flex: 1 1 auto;
       }
       &-text{
+        font-weight: 400;
+      }
+      &-name{
         font-weight: 400;
       }
       &-img{

@@ -117,7 +117,7 @@
         }
       }
       .call_in_history{
-        margin-right: 18px;
+        margin-right: 13px;
       }
     }
   }

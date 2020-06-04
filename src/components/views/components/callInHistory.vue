@@ -58,15 +58,18 @@
         font-weight: 500;
         margin-bottom: 5px;
         span{
-          font-weight: 700;
+          font-weight: 500;
+          font-size: 11px;
         }
       }
       &-name{
         color: #4a4355;
         font-size: 12px;
+        font-weight: 400;
       }
       &-terminal{
         font-size: 12px;
+        font-weight: 400;
 
       }
       &-text{

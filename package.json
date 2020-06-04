@@ -4,11 +4,14 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "publish": "vue-cli-service build && surge ./dist/ tviser-prototype.surge.sh"
   },
   "dependencies": {
+    "chart.js": "^2.9.3",
     "core-js": "^3.6.4",
     "normalize.css": "^8.0.1",
+    "surge": "^0.21.3",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
     "vuex": "^3.1.3"

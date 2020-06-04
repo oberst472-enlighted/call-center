@@ -5,7 +5,7 @@
       <div class="call-left">
         <div class="call-left-date">оператор # 0011</div>
         <div class="call-left-name">Евгений</div>
-        <div class="call-left-terminal">Петров</div>
+        <div class="call-left-name">Петров</div>
       </div>
       <div class="call-right">
         <div class="call-right-status">Свободен</div>
@@ -47,6 +47,7 @@
         &-name{
           color: #4a4355;
           font-size: 12px;
+          font-weight: 400;
         }
         &-terminal{
           font-size: 12px;

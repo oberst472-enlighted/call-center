@@ -1,6 +1,9 @@
 <template>
   <div id="CallPage">
+    <div style="position: fixed; top: 50%; left: 0; width: 100px; height: 100px; background-color: orange; z-index: 99999" @click="answerCall"></div>
     <div class="viewport" :class="{'call-active': isCallActive}">
+      <video id="remoteVideo" ref="remoteVideo" autoplay></video>
+
       <div class="viewport-call" v-if="!isCallActive">
         <div class="viewport-call-status">ЗВОНОК ЗАВЕРШЕН</div>
         <div class="viewport-call-status">ПАССАЖИРОМ</div>
@@ -8,7 +11,7 @@
         <div class="viewport-call-time">00:00:10</div>
       </div>
       <div class="viewport-call" v-else>
-        <img src="../../assets/images/admin1.png" class="viewport-call-admin" alt=""/>
+        <video class="viewport-call-admin" ref="localVideo" autoplay muted></video>
       </div>
     </div>
     <div class="sidebar" :class="{'call-active': isCallActive}">
@@ -79,15 +82,127 @@
 </template>
 
 <script>
+  import $script from 'scriptjs';
+  import RecordRTC from 'recordrtc';
+  import axios from 'axios';
+  import io from '../../assets/js/socket.io'
   export default {
     name: "CallPage",
-    data() {
-      return {
-        isCallActive: true,
-        status: null,
-        comment: 'Пассажиру нужна медицинская помощь, вызвала бригадуна вокзал. Бригада приехала'
-      }
+    mounted() {
+      // let auth = localStorage.getItem('authData');
+      let userId = '1';
+      //
+      // if (auth) {
+      //   auth = JSON.parse(auth);
+      //   this.callCenterId = auth.callCenterId;
+      //   userId = auth.username;
+      // }
+
+
+      this.socket = io.connect('https://call.enlighted.ru');
+      // брать из бд или локал_сторадж
+      this.uuid = 'operator_' + Math.ceil(Math.random() * 1000);
+
+      // настройка звука звонилки
+      this.calling.loop = true;
+
+
+      this.socket.emit("entered", userId, "operator", this.callCenterId);
+
+      this.socket.on('has_client', (roomId) => {
+        console.log(`has new call ${roomId}`);
+        this.socket.emit('join', roomId, 'operator');
+      });
+
+      this.socket.on('boarding_completed', () => {
+        this.isChannelReady = true;
+      });
+
+      this.socket.on('calling', (room) => {
+        console.log('calling: ' + room);
+
+        // document.getElementById('answer-button-holder').style.display = 'block';
+        // document.getElementById('waiting').style.display = 'none';
+
+        this.state = 'RINGING';
+        const playPromise = this.calling.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => {
+            // Automatic playback started!
+          }).catch((error) => {
+            console.log(error);
+            // Automatic playback failed.
+            // Show a UI element to let the user manually start playback.
+          });
+        }
+
+        if (!("Notification" in window)) {
+          //
+        } else if (Notification.permission === "granted") {
+          // Если разрешено, то создаем уведомление
+          const notification = new Notification("Новый звонок");
+        } else if (Notification.permission !== 'denied') { // В противном случае, запрашиваем разрешение
+          Notification.requestPermission((permission) => {});
+        }
+      });
+
+
+      this.socket.on('message', (message) => {
+        console.log('Client received message:', message);
+        if (message.type === 'offer') {
+          this.pc.setRemoteDescription(new RTCSessionDescription(message)).then(() => {
+            console.log('remote desc set');
+          }, (err) => {
+            console.log(err);
+          });
+          this.doAnswer();
+        } else if (message.type === 'candidate' && this.isStarted) {
+          const candidate = new RTCIceCandidate({
+            sdpMLineIndex: message.label,
+            candidate: message.candidate,
+          });
+          // console.log('add ice candidate');
+          this.pc.addIceCandidate(candidate).then(() => {
+            // console.log('ice candidate added')
+          }, (err) => {
+            // console.log('ice candidate err');
+            console.log(err);
+          });
+        }
+      });
+
+      this.socket.on('stat', (stat) => {
+        // console.log(JSON.parse(stat));
+
+        const queue = JSON.parse(stat);
+        this.queue = queue[this.callCenterId] ? queue[this.callCenterId] : 0;
+      });
+
+      // клиент повесил трубку
+      this.socket.on('bye', (callId) => {
+        console.log('bye received in operator');
+        this.socket.emit('leave', callId, 'operator');
+
+        if (this.isStarted) {
+          this.stop();
+        } else {
+          this.state = 'IDLE';
+          this.calling.pause();
+        }
+      });
+
+      navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+      })
+          .then(this.gotStream)
+          .catch((e) => {
+            console.log(e);
+            // alert('getUserMedia() error: ' + e.name);
+          });
+
     },
+
     methods: {
       toggleStatus(type) {
         if (type === this.status) return
@@ -96,6 +211,205 @@
         } else {
           this.status = 'solved'
         }
+      },
+      gotStream(stream) {
+        this.$refs.localVideo.srcObject = stream; // TODO
+        this.localStream = stream;
+        this.sendMessage('got user media');
+      },
+      sendMessage(message) {
+        this.socket.emit('message', message);
+      },
+      maybeStart() {
+        if (!this.isStarted && typeof this.localStream !== 'undefined' && this.isChannelReady) {
+          console.log('>>>>>> creating peer connection');
+          this.createPeerConnection();
+          this.pc.addStream(this.localStream);
+          this.isStarted = true;
+        } else {
+          console.log(!this.isStarted)
+          console.log(typeof this.localStream !== 'undefined')
+          console.log(this.isChannelReady)
+          console.log('>>>>>> maybe start failed');
+        }
+      },
+      answerCall() {
+        // document.getElementById('answer-button-holder').style.display = 'none';
+        // document.getElementById('close').style.display = 'block';
+
+        console.log(3321)
+        this.state = 'PROGRESS';
+        this.calling.pause();
+        this.socket.emit('message', 'receiverReadyToCall');
+        this.maybeStart();
+      },
+
+      createPeerConnection() {
+        try {
+          this.pc = new RTCPeerConnection(this.pcConfig);
+          this.pc.onicecandidate = this.handleIceCandidate;
+          this.pc.onaddstream = this.handleRemoteStreamAdded;
+          this.pc.onremovestream = this.handleRemoteStreamRemoved;
+          console.log('Created RTCPeerConnnection');
+        } catch (e) {
+          console.log('Failed to create PeerConnection, exception: ' + e.message);
+          alert('Cannot create RTCPeerConnection object.');
+        }
+      },
+      handleIceCandidate(event) {
+        console.log('icecandidate event: ', event);
+        if (event.candidate) {
+          this.sendMessage({
+            type: 'candidate',
+            label: event.candidate.sdpMLineIndex,
+            id: event.candidate.sdpMid,
+            candidate: event.candidate.candidate,
+          });
+        } else {
+          console.log('End of candidates.');
+        }
+      },
+      doAnswer() {
+        // console.log('Sending answer to peer.');
+        this.pc.createAnswer().then(
+            this.setLocalAndSendMessage,
+            this.onCreateSessionDescriptionError,
+        );
+      },
+      setLocalAndSendMessage(sessionDescription) {
+        this.pc.setLocalDescription(sessionDescription);
+        console.log('setLocalAndSendMessage sending message', sessionDescription);
+        this.sendMessage(sessionDescription);
+      },
+      onCreateSessionDescriptionError(error) {
+        console.log('Failed to create session description: ' + error.toString());
+      },
+      handleRemoteStreamAdded(event) {
+        console.log(event)
+        this.remoteStream = event.stream;
+        this.$refs.remoteVideo.srcObject = event.stream;
+        // document.querySelector('#remoteVideo').srcObject = event.stream;
+        // console.log('handleRemoteStreamAdded');
+
+        this.startRecord();
+      },
+      hangup() {
+        this.stop();
+        this.sayBye();
+      },
+      sayBye() {
+        this.socket.emit('bye');
+      },
+      stop() {
+        this.stopRecord();
+
+
+        this.isStarted = false;
+        if (this.pc !== null) {
+          this.pc.close();
+          this.pc = null;
+        }
+
+
+        this.remoteStream = null;
+        this.$refs.remoteVideo.srcObject = null;
+
+        this.state = 'IDLE';
+
+
+        // document.getElementById('waiting').style.display = 'block';
+        // document.getElementById('close').style.display = 'none';
+      },
+      startRecord() {
+        const self = this;
+        this.recorder = RecordRTC([this.localStream, this.remoteStream], {
+          type: 'video',
+          checkForInactiveTracks: true,
+          timeSlice: 1000,
+          ondataavailable(blob) {
+            console.log('has data');
+          },
+          onStateChange(state) {
+            console.log(state);
+          },
+        });
+        this.recorder.startRecording();
+      },
+      stopRecord() {
+        const self = this;
+        this.recorder.stopRecording(() => {
+          // self.$refs.resultVideo.src = self.$refs.resultVideo.srcObject = null;
+          const blob = self.recorder.getBlob();
+          // self.$refs.resultVideo.src = URL.createObjectURL(blob);
+          // RecordRTC.invokeSaveAsDialog(blob, 'video.webm');
+
+          const data = new FormData();
+
+          data.append('call', 'test');
+          data.append('video', blob, 'long.webm');
+
+
+          axios.post("/api/videos/", data, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }).then((result) => {
+            console.log(result);
+          })
+              .catch((e) => {
+                console.log(e);
+              });
+
+          self.recorder.destroy();
+          self.recorder = null;
+        });
+      },
+    },
+    watch: {
+      status(val) {
+        console.log('status changed');
+        this.socket.emit('change_status', val);
+      },
+    },
+    data() {
+      return {
+        isCallActive: true,
+        status: null,
+        comment: 'Пассажиру нужна медицинская помощь, вызвала бригадуна вокзал. Бригада приехала',
+
+        recorder: null,
+        socket: null,
+        uuid: "",
+        isChannelReady: true,
+        isStarted: false,
+        localStream: null,
+        pc: null,
+        remoteStream: null,
+        callCenterId: '',
+        pcConfig: {
+          'iceServers': [
+            { 'url':'stun:stun1.l.google.com:19302' },
+            { 'url':'stun:stun2.l.google.com:19302' },
+            { 'url':'stun:stun3.l.google.com:19302' },
+            {
+              'url': 'turn:coturn.sverstal.ru:3478',
+              'username': 'tab1',
+              'credential': '123456',
+            },
+          ],
+        },
+        calling: new Audio("/static/files/02433.mp3"),
+        state: 'IDLE',
+        status: 'UNAVAILABLE',
+        statuses: [
+          {
+            value: 'WAITING', text: 'Готов к работе',
+          },
+          {
+            value: 'UNAVAILABLE', text: 'Недоступен',
+          },
+        ],
+        queue: 0,
       }
     }
   }
@@ -167,8 +481,8 @@
       }
     }
     .viewport.call-active{
-      background: url("../../assets/images/call1.png") no-repeat;
-      background-size: cover;
+      /*background: url("../../assets/images/call1.png") no-repeat;*/
+      /*background-size: cover;*/
     }
     .sidebar{
       width: 281px;
@@ -352,6 +666,11 @@
           font-weight: 500;
         }
       }
+    }
+    #remoteVideo {
+      width: 100%;
+      height: 100vh;
+      z-index: 999;
     }
   }
 </style>

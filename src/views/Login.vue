@@ -50,7 +50,7 @@
     data(){
       return {
         passType: 'password',
-        login: "admin",
+        login: "operator",
         password: "password",
         rememberMe: false,
         errorText: ''

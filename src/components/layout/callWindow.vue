@@ -1,6 +1,11 @@
 <template>
-  <div id="call_window" @click="callIsActive = !callIsActive">
-    <div class="empty-call" v-if="callIsActive">ОЖИДАНИЕ ЗВОНКА</div>
+  <div id="call_window">
+    <div
+            class="empty-call"
+            v-if="!$store.state.callLogic.isIncomingCall"
+    >
+      ОЖИДАНИЕ ЗВОНКА
+    </div>
     <div class="active-call" v-else>
       <div class="active-call-new">НОВЫЙ ЗВОНОК <span>РУССКИЙ</span></div>
       <div class="active-call-name">Казанский Вокзал</div>
@@ -9,7 +14,12 @@
       <div class="active-call-button">
         <div class="circle-first"></div>
         <div class="circle-second"></div>
-        <img class="circle-third" src="../../assets/icons/call.svg" alt="" @click.stop="$router.push('/call-page')"/>
+        <img
+                class="circle-third"
+                src="../../assets/icons/call.svg"
+                alt=""
+                @click="$store.commit('callLogic/openCallPage')"
+        />
       </div>
     </div>
   </div>
@@ -18,17 +28,15 @@
 <script>
   export default {
     name: "callWindow",
-    data(){
-      return {
-        callIsActive: false
-      }
+    props: {
+      callback: Function,
     }
   }
 </script>
 
 <style lang='scss'>
 #call_window{
-  width: 100%;
+  width: 300px;
   height: 175px;
   box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);
   border-radius: 8px;
@@ -40,6 +48,10 @@
   cursor: pointer;
   padding: 15px 0;
   overflow: hidden;
+  position: sticky;
+  right: 0;
+  top: 0;
+  z-index: 5;
   .empty-call{
     text-align: center;
     width: 100px;

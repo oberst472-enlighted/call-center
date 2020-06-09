@@ -32,7 +32,7 @@
 <script>
   import statusOperatorDashboard from "../components/views/statusOperatorDashboard";
   import callHistorySmall from "../components/views/callHistorySmall";
-  import callWindow from "../components/views/callWindow";
+  import callWindow from "../components/layout/callWindow";
   import avaliableTerminals from "../components/views/avaliableTerminals";
   import statusAdminDashboard from "../components/views/statusAdminDashboard";
   import graphBox from "../components/views/graphBox";

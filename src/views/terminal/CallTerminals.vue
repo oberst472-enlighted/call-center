@@ -66,7 +66,7 @@
 <script>
   import avaliableTerminals from "../../components/views/avaliableTerminals";
   import userStat from "../../components/views/userStat";
-  import callWindow from "../../components/views/callWindow";
+  import callWindow from "../../components/layout/callWindow";
   import callHistorySmall from "../../components/views/callHistorySmall";
   import terminal from "../../components/views/components/terminal";
   export default {

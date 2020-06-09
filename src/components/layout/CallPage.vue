@@ -2,7 +2,7 @@
   <div id="CallPage">
 <!--    <div style="position: fixed; top: 50%; left: 0; width: 100px; height: 100px; background-color: orange; z-index: 99999" @click="answerCall"></div>-->
     <div class="viewport" :class="{'call-active': isCallActive}">
-      <video  id="remoteVideo" ref="remoteVideo" autoplay></video>
+      <video  id="remoteVideo" ref="remoteVideo" autoplay v-show="$store.state.callLogic.isCallInProgress"></video>
 
       <div class="viewport-call" v-if="!isCallActive">
         <div class="viewport-call-status">ЗВОНОК ЗАВЕРШЕН</div>

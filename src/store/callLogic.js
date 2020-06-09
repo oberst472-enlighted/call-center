@@ -2,6 +2,7 @@ export default {
   namespaced: true,
   state: {
     showCallPage: false,
+    isCallInProgress: false,
     isIncomingCall: true,
   },
   getters: {},

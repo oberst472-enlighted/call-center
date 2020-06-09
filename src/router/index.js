@@ -39,12 +39,6 @@ VueRouter.prototype.push = function push(location) {
       component: () => import('../views/terminal/CallTerminals.vue')
     },
     {
-      path: '/call-page',
-      name: 'call-page',
-      meta: { layout: "call-layout", requireAuth: true, gotForward: true  },
-      component: () => import('../views/call/CallPage.vue')
-    },
-    {
       path: '/single-terminal/:id',
       name: 'single-terminal',
       meta: { layout: "main-layout", requireAuth: true, gotForward: true  },

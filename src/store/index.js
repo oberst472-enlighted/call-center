@@ -10,11 +10,15 @@ export default new Vuex.Store({
     workStatus: 'break',
     isUserLoggedIn: false,
     userStatus: null,
-    popupActive: null
+    popupActive: null,
+    isActiveWorkShift: false
   },
   mutations: {
     incrementTime(state) {
       state.totalTime += 1
+    },
+    cleanTime(state) {
+      state.totalTime =0
     },
     toggleWorkingStatus(state, type) {
       if (type === state.workStatus) return
@@ -43,6 +47,9 @@ export default new Vuex.Store({
     },
     cleanPopup(state){
       state.popupActive = null
+    },
+    setWorkShiftStatus(state, status){
+      state.isActiveWorkShift = status
     }
   },
   actions: {
@@ -52,6 +59,21 @@ export default new Vuex.Store({
       } else {
         commit('setPopup', type)
       }
+    },
+    startWorkShift({commit}){
+      commit('setWorkShiftStatus', true)
+      commit('toggleWorkingStatus', 'online')
+    },
+    endWorkShift({commit}){
+      commit('setWorkShiftStatus', false)
+      commit('toggleWorkingStatus', 'break')
+      commit('cleanTime')
+    },
+    logIn(){
+
+    },
+    logOut(){
+
     }
   },
   modules: {

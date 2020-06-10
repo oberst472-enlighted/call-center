@@ -27,7 +27,13 @@ export default {
     }
   },
   actions: {
+    startSpeech({commit}) {
+      commit('openCallPage')
+      commit('answerCall')
+      commit('cancelIncomingCall')
+    },
     closeCallPageModal({commit}){
+      commit('endCall');
     }
   }
 }

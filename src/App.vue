@@ -12,14 +12,7 @@ import mainLayout from "./layouts/mainLayout";
 import callLayout from "./layouts/callLayout";
 export default {
   name: "App",
-  computed: {
-    layout() {
-      return this.$route.meta.layout;
-    },
-    workStatus() {
-      return this.$store.state.workStatus
-    }
-  },
+
   data(){
     return {
       interval: null
@@ -29,6 +22,14 @@ export default {
     emptyLayout,
     mainLayout,
     callLayout
+  },
+  computed: {
+    layout() {
+      return this.$route.meta.layout;
+    },
+    workStatus() {
+      return this.$store.state.workStatus
+    }
   },
   watch: {
     workStatus(val){

@@ -189,6 +189,7 @@
           background-color: white;
           top: 28px;
           right: 28px;
+          z-index: 1000;
           border-radius: 10px;
         }
       }

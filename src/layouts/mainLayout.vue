@@ -42,7 +42,6 @@
         remoteStream: null,
         callCenterId: 'dev',
         calling: new Audio(require("../assets/02433.mp3")),//
-        state: 'IDLE',//
         queue: 0,// ОЧЕРЕДЬ ЗВОНКОВ
       }
     },
@@ -56,7 +55,8 @@
 
       // ЗАПУСК ПОДЙОМА ТЕЛЕФОНА
       maybeStart() {
-        if (!this.isStarted && typeof this.localStream !== 'undefined' && this.isChannelReady) {
+
+        if (!this.$store.state.isCallInProgress && typeof this.localStream !== 'undefined' && this.isChannelReady) {
           console.log('>>>>>> creating peer connection');
 
           try {
@@ -96,17 +96,15 @@
         this.calling.pause();
         this.socket.emit('message', 'receiverReadyToCall');
         this.maybeStart();
-        this.$store.commit('callLogic/openCallPage')
-        this.$store.commit('callLogic/answerCall')
-        this.$store.commit('callLogic/cancelIncomingCall')
+        this.$store.dispatch('callLogic/startSpeech')
       },
 
       // ЗАКРЫТИЕ СЕССИ РАЗГОВОРА
       stop() {
-
         this.stopRecord();
 
         this.$store.commit('callLogic/endCall')
+        this.$store.dispatch('callLogic/closeCallPageModal')
 
         if (this.pc !== null) {
           this.pc.close();
@@ -115,8 +113,6 @@
 
         this.remoteStream = null;
         document.getElementById('remoteVideo').srcObject = null;
-
-        this.state = 'IDLE';
       },
 
       // СБРОСИТЬ ТРУБКУ
@@ -257,7 +253,7 @@
           console.log('bye received in operator');
           this.socket.emit('leave', callId, 'operator');
 
-          if (this.isStarted) {
+          if (this.$store.state.isCallInProgress) {
             this.stop();
           } else {
             this.$store.commit('callLogic/cancelIncomingCall')

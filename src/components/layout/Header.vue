@@ -3,7 +3,10 @@
     <div class="nav">
       <div v-if="$store.state.userStatus === 'operator'" class="nav-left">
         <forward v-if="$route.meta.gotForward"/>
-        <div class="btn-toggler">
+        <div
+                class="btn-toggler"
+                v-if="$store.state.isActiveWorkShift"
+        >
           <button
                   class="btn-toggler-btn nav-btn"
                   :class="{active : workStatus==='online'}"
@@ -17,8 +20,27 @@
             Перерыв
           </button>
         </div>
-        <div class="time">{{formatTime}}</div>
-        <button class="close-session nav-btn" @click="closeSession">Завершить смену</button>
+        <div
+                class="time"
+                v-if="$store.state.isActiveWorkShift"
+        >
+          {{formatTime}}
+        </div>
+        <button
+                class="close-session nav-btn"
+                v-if="!$store.state.isActiveWorkShift"
+                @click="$store.dispatch('startWorkShift')"
+                style="background-color: #4fd161"
+        >
+          Начать смену
+        </button>
+        <button
+                class="close-session nav-btn"
+                v-else
+                @click="closeSession"
+        >
+          Завершить смену
+        </button>
       </div>
       <div  v-else-if="$store.state.userStatus === 'admin'">
         <forward v-if="$route.meta.gotForward"/>
@@ -79,8 +101,8 @@
         this.$store.commit('toggleWorkingStatus', type)
       },
       closeSession(){
-        this.$store.commit('closeSession')
-        alert(`Вы закончили работу. Проработано ${this.$store.state.totalTime} секунд. Или ${this.formatTime}`)
+        console.log(`Вы закончили работу. Проработано ${this.$store.state.totalTime} секунд. Или ${this.formatTime}`)
+        this.$store.dispatch('endWorkShift')
       }
     }
   }

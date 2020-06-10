@@ -18,7 +18,7 @@
                 class="circle-third"
                 src="../../assets/icons/call.svg"
                 alt=""
-                @click="$store.commit('callLogic/openCallPage')"
+                @click="answer"
         />
       </div>
     </div>
@@ -29,7 +29,7 @@
   export default {
     name: "callWindow",
     props: {
-      callback: Function,
+      answer: Function,
     }
   }
 </script>

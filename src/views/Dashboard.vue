@@ -21,7 +21,10 @@
       </div>
       <div class="col-right">
         <languagesBox v-if="$store.state.userStatus === 'admin'" />
-        <callWindow v-else-if="$store.state.userStatus === 'operator'" />
+        <callWindow
+                v-else-if="$store.state.userStatus === 'operator'"
+                :answer="answer"
+        />
         <usersSmall v-if="$store.state.userStatus === 'admin'"/>
         <callHistorySmall v-else-if="$store.state.userStatus === 'operator'" />
       </div>
@@ -53,6 +56,9 @@
       usersSmall,
       callWindow,
       callHistorySmall
+    },
+    props: {
+      answer: Function,
     }
   }
 </script>

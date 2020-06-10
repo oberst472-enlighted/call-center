@@ -1,10 +1,15 @@
 <template>
   <div id="CallPage">
 <!--    <div style="position: fixed; top: 50%; left: 0; width: 100px; height: 100px; background-color: orange; z-index: 99999" @click="answerCall"></div>-->
-    <div class="viewport" :class="{'call-active': isCallActive}">
-      <video  id="remoteVideo" ref="remoteVideo" autoplay v-show="$store.state.callLogic.isCallInProgress"></video>
+    <div class="viewport" :class="{'call-active': $store.state.callLogic.isCallInProgress}">
+      <video
+              id="remoteVideo"
+              ref="remoteVideo"
+              autoplay
+              v-if="$store.state.callLogic.isCallInProgress"
+      />
 
-      <div class="viewport-call" v-if="!isCallActive">
+      <div class="viewport-call" v-show="!$store.state.callLogic.isCallInProgress">
         <div class="viewport-call-status">ЗВОНОК ЗАВЕРШЕН</div>
         <div class="viewport-call-status">ПАССАЖИРОМ</div>
         <div
@@ -13,11 +18,16 @@
         >ПРОДОЛЖИТЬ РАБОТУ</div>
         <div class="viewport-call-time">00:00:10</div>
       </div>
-      <div class="viewport-call" v-else>
-        <video class="viewport-call-admin" ref="localVideo" id="localVideo" autoplay muted></video>
+      <div class="viewport-call" v-show="$store.state.callLogic.isCallInProgress">
+        <video
+                class="viewport-call-admin"
+                id="localVideo"
+                autoplay muted
+                v-show="$store.state.callLogic.isCallInProgress"
+        />
       </div>
     </div>
-    <div class="sidebar" :class="{'call-active': isCallActive}">
+    <div class="sidebar" :class="{'call-active': $store.state.callLogic.isCallInProgress}">
       <div class="call-window">
         <div class="call-window-head">
           <div class="call-window-head-new">НОВЫЙ ЗВОНОК <span>РУССКИЙ</span></div>
@@ -25,8 +35,8 @@
           <div class="call-window-head-terminal">терминал #3462</div>
           <div class="call-window-head-terminal">кассы</div>
         </div>
-        <div class="call-window-bottom" v-if="isCallActive">
-          <div class="call-window-bottom-endcall" @click="isCallActive = false">
+        <div class="call-window-bottom" v-if="$store.state.callLogic.isCallInProgress">
+          <div class="call-window-bottom-endcall" @click="hangup">
             <img src="../../assets/icons/Phone.svg" alt=''/>
           </div>
           <div class="call-window-bottom-microphone">
@@ -44,7 +54,7 @@
         <div class="call-timer">
           <div class="call-timer-header">ПРОДОЛЖИТЕЛЬНОСТЬ ЗВОНКА</div>
 
-          <div class="call-timer-wrapper" v-if="isCallActive">
+          <div class="call-timer-wrapper" v-if="$store.state.callLogic.isCallInProgress">
             <div class="call-timer-time">00:01:13</div>
           </div>
 
@@ -91,7 +101,7 @@
   export default {
     name: "CallPage",
     props: {
-      callback: Function,
+      hangup: Function,
     },
 
     methods: {
@@ -107,7 +117,6 @@
 
     data() {
       return {
-        isCallActive: true,
         status: null,
         comment: 'Пассажиру нужна медицинская помощь, вызвала бригадуна вокзал. Бригада приехала',
       }

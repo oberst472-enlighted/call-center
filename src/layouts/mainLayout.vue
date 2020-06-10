@@ -1,12 +1,18 @@
 <template>
   <div id="mainLayout">
-    <CallPage v-show="$store.state.callLogic.showCallPage" />
+    <CallPage
+            v-show="$store.state.callLogic.showCallPage"
+            :hangup="hangup"
+    />
     <Sidebar />
     <div class="wrapper-scroll">
       <div class="wrapper">
         <Header />
-        <callWindow v-if="$store.state.callLogic.isIncomingCall && $route.name !== 'dashboard'" />
-        <router-view />
+        <callWindow
+                v-if="$store.state.callLogic.isIncomingCall && $route.name !== 'dashboard'"
+                :answer="answerCall"
+        />
+        <router-view :answer="answerCall" />
       </div>
     </div>
   </div>
@@ -34,37 +40,47 @@
         localStream: null,
         pc: null,
         remoteStream: null,
-        callCenterId: '',
-        pcConfig: {
-          'iceServers': [
-            { 'url':'stun:stun1.l.google.com:19302' },
-            { 'url':'stun:stun2.l.google.com:19302' },
-            { 'url':'stun:stun3.l.google.com:19302' },
-            {
-              'url': 'turn:coturn.sverstal.ru:3478',
-              'username': 'tab1',
-              'credential': '123456',
-            },
-          ],
-        },
-        calling: new Audio(require("../assets/02433.mp3")),
-        state: 'IDLE',
-        queue: 0,
+        callCenterId: 'dev',
+        calling: new Audio(require("../assets/02433.mp3")),//
+        state: 'IDLE',//
+        queue: 0,// ОЧЕРЕДЬ ЗВОНКОВ
       }
     },
     methods: {
+
       gotStream(stream) {
         document.getElementById('localVideo').srcObject = stream;
         this.localStream = stream;
         this.sendMessage('got user media');
       },
-      sendMessage(message) {
-        this.socket.emit('message', message);
-      },
+
+      // ЗАПУСК ПОДЙОМА ТЕЛЕФОНА
       maybeStart() {
         if (!this.isStarted && typeof this.localStream !== 'undefined' && this.isChannelReady) {
           console.log('>>>>>> creating peer connection');
-          this.createPeerConnection();
+
+          try {
+            this.pc = new RTCPeerConnection({
+              'iceServers': [
+                { 'url':'stun:stun1.l.google.com:19302' },
+                { 'url':'stun:stun2.l.google.com:19302' },
+                { 'url':'stun:stun3.l.google.com:19302' },
+                {
+                  'url': 'turn:coturn.sverstal.ru:3478',
+                  'username': 'tab1',
+                  'credential': '123456',
+                },
+              ],
+            });
+            this.pc.onicecandidate = this.handleIceCandidate;
+            this.pc.onaddstream = this.handleRemoteStreamAdded;
+            this.pc.onremovestream = this.handleRemoteStreamRemoved;
+            console.log('Created RTCPeerConnnection');
+          } catch (e) {
+            console.log('Failed to create PeerConnection, exception: ' + e.message);
+            alert('Cannot create RTCPeerConnection object.');
+          }
+
           this.pc.addStream(this.localStream);
           this.isStarted = true;
         } else {
@@ -74,24 +90,89 @@
           console.log('>>>>>> maybe start failed');
         }
       },
+
+      // ПОДНЯТЬ ТЕЛЕФОН
       answerCall() {
-        this.state = 'PROGRESS';
         this.calling.pause();
         this.socket.emit('message', 'receiverReadyToCall');
         this.maybeStart();
+        this.$store.commit('callLogic/openCallPage')
+        this.$store.commit('callLogic/answerCall')
+        this.$store.commit('callLogic/cancelIncomingCall')
       },
 
-      createPeerConnection() {
-        try {
-          this.pc = new RTCPeerConnection(this.pcConfig);
-          this.pc.onicecandidate = this.handleIceCandidate;
-          this.pc.onaddstream = this.handleRemoteStreamAdded;
-          this.pc.onremovestream = this.handleRemoteStreamRemoved;
-          console.log('Created RTCPeerConnnection');
-        } catch (e) {
-          console.log('Failed to create PeerConnection, exception: ' + e.message);
-          alert('Cannot create RTCPeerConnection object.');
+      // ЗАКРЫТИЕ СЕССИ РАЗГОВОРА
+      stop() {
+
+        this.stopRecord();
+
+        this.$store.commit('callLogic/endCall')
+
+        if (this.pc !== null) {
+          this.pc.close();
+          this.pc = null;
         }
+
+        this.remoteStream = null;
+        document.getElementById('remoteVideo').srcObject = null;
+
+        this.state = 'IDLE';
+      },
+
+      // СБРОСИТЬ ТРУБКУ
+      hangup() {
+        this.stop();
+        this.socket.emit('bye');
+      },
+
+
+      // НАЧАТЬ ЗАПИСЬ ЗВОНКА
+      startRecord() {
+        const self = this;
+        this.recorder = RecordRTC([this.localStream, this.remoteStream], {
+          type: 'video',
+          checkForInactiveTracks: true,
+          timeSlice: 1000,
+          ondataavailable(blob) {
+            console.log('has data');
+          },
+          onStateChange(state) {
+            console.log(state);
+          },
+        });
+        this.recorder.startRecording();
+      },
+
+      // ЗАКОНЧИТЬ ЗАПИСЫВАТЬ ЗАПИСЬ И ОТПРАВИТЬ НА СЕРВЕР
+      stopRecord() {
+        const self = this;
+        this.recorder.stopRecording(() => {
+          const blob = self.recorder.getBlob();
+          const data = new FormData();
+
+          data.append('call', 'test');
+          data.append('video', blob, 'long.webm');
+
+
+          axios.post("/api/videos/", data, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }).then((result) => {
+            console.log(result);
+          })
+              .catch((e) => {
+                console.log(e);
+              });
+
+          self.recorder.destroy();
+          self.recorder = null;
+        });
+      },
+
+      // ВТОРИЧНАЯ ЛОГИКА
+      sendMessage(message) {
+        this.socket.emit('message', message);
       },
       handleIceCandidate(event) {
         console.log('icecandidate event: ', event);
@@ -124,80 +205,14 @@
       handleRemoteStreamAdded(event) {
         this.remoteStream = event.stream;
         document.getElementById('remoteVideo').srcObject = event.stream;
-
         this.startRecord();
       },
-      hangup() {
-        this.stop();
-        this.sayBye();
-      },
-      sayBye() {
-        this.socket.emit('bye');
-      },
-      stop() {
-        this.stopRecord();
 
-
-        this.isStarted = false;
-        if (this.pc !== null) {
-          this.pc.close();
-          this.pc = null;
-        }
-
-
-        this.remoteStream = null;
-        document.getElementById('remoteVideo').srcObject = null;
-
-        this.state = 'IDLE';
-      },
-      startRecord() {
-        const self = this;
-        this.recorder = RecordRTC([this.localStream, this.remoteStream], {
-          type: 'video',
-          checkForInactiveTracks: true,
-          timeSlice: 1000,
-          ondataavailable(blob) {
-            console.log('has data');
-          },
-          onStateChange(state) {
-            console.log(state);
-          },
-        });
-        this.recorder.startRecording();
-      },
-      stopRecord() {
-        const self = this;
-        this.recorder.stopRecording(() => {
-          // self.$refs.resultVideo.src = self.$refs.resultVideo.srcObject = null;
-          const blob = self.recorder.getBlob();
-          // self.$refs.resultVideo.src = URL.createObjectURL(blob);
-          // RecordRTC.invokeSaveAsDialog(blob, 'video.webm');
-
-          const data = new FormData();
-
-          data.append('call', 'test');
-          data.append('video', blob, 'long.webm');
-
-
-          axios.post("/api/videos/", data, {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            },
-          }).then((result) => {
-            console.log(result);
-          })
-              .catch((e) => {
-                console.log(e);
-              });
-
-          self.recorder.destroy();
-          self.recorder = null;
-        });
-      },
     },
     mounted() {
+      // ЕСЛИ ПОЛЬЗОВАТЕЛЬ ОПЕРАТОР ВКЛЮЧАЕТСЯ ЛОГИКА ЗВОНКА
       if (this.$store.state.userStatus === 'operator') {
-        let userId = '1';
+        let userId = 'dev';
 
         this.socket = io.connect('https://call.enlighted.ru');
         this.uuid = 'operator_' + Math.ceil(Math.random() * 1000);
@@ -206,19 +221,25 @@
 
         this.socket.emit("entered", userId, "operator", this.callCenterId);
 
+
+        this.socket.emit('change_status', 'WAITING');
         this.socket.on('has_client', (roomId) => {
           console.log(`has new call ${roomId}`);
           this.socket.emit('join', roomId, 'operator');
         });
 
         this.socket.on('boarding_completed', () => {
+          console.log('boarding_completed')
           this.isChannelReady = true;
         });
 
+        // ВХОДЯШИЙ ЗВОНОК
         this.socket.on('calling', (room) => {
+          console.log('incoming call')
           console.log('calling: ' + room);
 
-          this.state = 'RINGING';
+          this.$store.commit('callLogic/comeIncomingCall')
+
           const playPromise = this.calling.play();
           if (playPromise !== undefined) {
             playPromise.then(() => {
@@ -229,18 +250,22 @@
               // Show a UI element to let the user manually start playback.
             });
           }
+        });
 
-          if (!("Notification" in window)) {
-            //
-          } else if (Notification.permission === "granted") {
-            // Если разрешено, то создаем уведомление
-            const notification = new Notification("Новый звонок");
-          } else if (Notification.permission !== 'denied') { // В противном случае, запрашиваем разрешение
-            Notification.requestPermission((permission) => {});
+        // КЛИЕНТ ПОВЕСИЛ ТРУБКУ
+        this.socket.on('bye', (callId) => {
+          console.log('bye received in operator');
+          this.socket.emit('leave', callId, 'operator');
+
+          if (this.isStarted) {
+            this.stop();
+          } else {
+            this.$store.commit('callLogic/cancelIncomingCall')
+            this.calling.pause();
           }
         });
 
-
+        // ОТПРАВКА СООБЩЕНИЯ
         this.socket.on('message', (message) => {
           console.log('Client received message:', message);
           if (message.type === 'offer') {
@@ -265,26 +290,12 @@
           }
         });
 
+        // КАЛЬКУЛЯЦИЯ ОЧЕРЕДИ ЗВОНКОВ
         this.socket.on('stat', (stat) => {
-          // console.log(JSON.parse(stat));
-
+          // Выводит очередь
           const queue = JSON.parse(stat);
           this.queue = queue[this.callCenterId] ? queue[this.callCenterId] : 0;
         });
-
-        // клиент повесил трубку
-        this.socket.on('bye', (callId) => {
-          console.log('bye received in operator');
-          this.socket.emit('leave', callId, 'operator');
-
-          if (this.isStarted) {
-            this.stop();
-          } else {
-            this.state = 'IDLE';
-            this.calling.pause();
-          }
-        });
-
 
         navigator.mediaDevices.getUserMedia({
           audio: true,

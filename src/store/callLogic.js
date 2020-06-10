@@ -1,24 +1,33 @@
 export default {
   namespaced: true,
   state: {
-    showCallPage: false,
-    isCallInProgress: false,
-    isIncomingCall: true,
+    showCallPage: false,//------------ СТАТУС ОТКРЫТОГО ЗВОНКА
+    isIncomingCall: false,//---------- СТАТУС ВХОДЯЩЕГО ЗВОНКА
+    isCallInProgress: false, //------- СТАТУС ЗВОНКА В ПРОГРЕССЕ
   },
   getters: {},
   mutations: {
-    closeCallPage(state) {
-      state.showCallPage = false
-    },
-    openCallPage(state) {
+    openCallPage(state) {//----------- ОКТРЫТЬ ОКНО ЗВОНКА
       state.showCallPage = true
     },
-    comeIncomingCall(state){
+    closeCallPage(state) {//---------- ЗАКРЫТЬ ОКНО ЗВОНКА
+      state.showCallPage = false
+    },
+    comeIncomingCall(state){//-------- ПРИДОХ ВХОДЯЩЕГО ЗВОНКА
       state.isIncomingCall = true
     },
-    cancelIncomingCall(state){
+    cancelIncomingCall(state){//------ ПРЕКРАЩЕНИЕ ВХОДЯЩЕГО ЗВОНКА
       state.isIncomingCall = false
+    },
+    answerCall(state){//-------------- ОТВЕТИТЬ НА ЗВОНОК
+      state.isCallInProgress = true
+    },
+    endCall(state){//----------------- ЗАКОНЧИТЬ АКТИВНЫЙ РАЗГОВОР
+      state.isCallInProgress = false
     }
   },
-  actions: {}
+  actions: {
+    closeCallPageModal({commit}){
+    }
+  }
 }

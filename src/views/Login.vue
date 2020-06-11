@@ -50,8 +50,8 @@
     data(){
       return {
         passType: 'password',
-        login: "operator",
-        password: "password",
+        login: "dev",
+        password: "dev",
         rememberMe: false,
         errorText: ''
       }
@@ -65,7 +65,12 @@
         }
       },
       submitRegistration() {
-        this.$store.commit('logIn', this.login.trim())
+        this.$store.dispatch('logIn', {
+          login: this.login.trim(),
+          password: this.password.trim(),
+          rememberMe: this.rememberMe
+        })
+
         if (this.$store.state.isUserLoggedIn) {
           this.$router.push('/dashboard')
         } else {

@@ -1,7 +1,7 @@
 <template>
   <div class="terminal-wraper">
     <hr>
-    <div class="operator" @click="$router.push('/operator-page/1')">
+    <div class="operator" @click="$router.push('/operator-list/1')">
       <img src="../../../assets/images/user2.png" alt="" class="operator-img">
       <div class="operator-block">
         <div class="operator-text">оператор # 0011</div>

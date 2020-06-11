@@ -1,7 +1,7 @@
 <template>
   <div class="terminal-wraper">
     <hr>
-    <div class="terminal" @click="$router.push('/single-terminal/1')">
+    <div class="terminal" @click="$router.push('/call-terminals/1')">
       <div class="terminal-status">Онлайн</div>
       <div class="terminal-name">Горький</div>
       <div class="terminal-number">терминал #3612</div>

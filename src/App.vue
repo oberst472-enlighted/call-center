@@ -31,6 +31,24 @@ export default {
       return this.$store.state.workStatus
     }
   },
+  created() {
+    // console.dir(localStorage.key)
+    // console.dir(sessionStorage.key)
+    // console.log(document.cookie)
+    if (sessionStorage.getItem('isUserLoggedIn')) {
+      console.log('isUserLoggedIn session')
+      sessionStorage.getItem('isUserLoggedIn')
+      let userType = sessionStorage.getItem('userType')
+      this.$store.commit('logIn', userType)
+
+
+    } else if (localStorage.getItem('isUserLoggedIn')){
+      console.log('isUserLoggedIn local')
+      localStorage.getItem('isUserLoggedIn')
+      let userType = localStorage.getItem('userType')
+      this.$store.commit('logIn', userType)
+    }
+  },
   watch: {
     workStatus(val){
       if (val === 'online') {

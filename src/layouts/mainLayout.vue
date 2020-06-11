@@ -220,11 +220,13 @@
     },
     watch: {
       workStatus(val){
-        if (val === 'online'){
-          this.socket.emit('change_status', 'WAITING');
-        } else if (val === 'break') {
-          this.socket.emit('change_status', 'UNAVALIABLE');
-        }
+        try {
+          if (val === 'online'){
+            this.socket.emit('change_status', 'WAITING');
+          } else if (val === 'break') {
+            this.socket.emit('change_status', 'UNAVALIABLE');
+          }
+        } catch (e) {}
       }
       ,
       isActiveWorkShift(val){

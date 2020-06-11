@@ -1,7 +1,7 @@
 <template>
   <div class="userInHistory">
     <hr>
-    <div class="call" @click="$router.push('/operator-page/1')">
+    <div class="call" @click="$router.push('/operator-list/1')">
       <div class="call-left">
         <div class="call-left-date">оператор # 0011</div>
         <div class="call-left-name">Евгений</div>

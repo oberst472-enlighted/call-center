@@ -51,7 +51,7 @@
         </div>
       </div>
 
-      <div class="nav-right">
+      <div class="nav-right" @click.stop="$store.dispatch('setPopup', 'user')">
         <div class="user">
           <div class="user-info">
             <div class="user-name">Елена Авантюрова</div>
@@ -61,6 +61,13 @@
           <div class="user-avatar">
             <img src="../../assets/icons/User.svg" alt="">
           </div>
+        </div>
+        <div
+                class="popup"
+                :class="{active : $store.state.popupActive === `user`}"
+        >
+          <div class="popup-item">Изменить</div>
+          <div class="popup-item" @click="logOut">Выйти</div>
         </div>
       </div>
     </div>
@@ -103,6 +110,10 @@
       closeSession(){
         console.log(`Вы закончили работу. Проработано ${this.$store.state.totalTime} секунд. Или ${this.formatTime}`)
         this.$store.dispatch('endWorkShift')
+      },
+      logOut(){
+        this.$store.dispatch('logOut')
+        this.$router.push('/login')
       }
     }
   }
@@ -113,10 +124,48 @@
   min-height: 83px;
   width: 100%;
   padding: 25px 0;
+  .popup{
+    display: block;
+    position: absolute;
+    left: 50px;
+    top: 80%;
+    box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);
+    border-radius: 8px;
+    background-color: #ffffff;
+    z-index: 15;
+    overflow: hidden;
+    width: 0;
+    height: 0;
+    transition: height ease 0.5s;
+    &-item{
+      width: 100%;
+      height: 33px;
+      color: #4c3b60;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    &-item:hover{
+      background-color: #f4f3f7;
+    }
+  }
+  .popup.active{
+    width: 100px;
+    height: 66px;
+    transition: height ease 0.5s;
+  }
   .nav{
     display: flex;
     justify-content: space-between;
     align-items: center;
+    &-right{
+      position: relative;
+      cursor: pointer;
+    }
     &-btn{
       height: 33px;
       border-radius: 8px;

@@ -5,7 +5,7 @@
       <div class="box-body-mark">{{mark.toFixed(1)}}</div>
       <div class="box-body-stars">
         <img v-for="i in markFixed" src="../../assets/icons/starBlue.png" :key='i' alt="">
-        <img v-for="i in (5 - markFixed)" src="../../assets/icons/starGrey.png" :key='`i + 55`' alt="">
+        <img v-for="i in (5 - markFixed)" src="../../assets/icons/starGrey.png" :key='`${i} + 55`' alt="">
       </div>
     </div>
   </div>

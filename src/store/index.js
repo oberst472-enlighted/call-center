@@ -72,11 +72,11 @@ export default new Vuex.Store({
       // console.log(document.cookie)
       //
       // console.log(document.cookie)
-      // let userToken = await axios.post(
-      //     'https://calls-dev.enlighted.ru/api/auth/',
-      //     `{"username":"${data.login}", "password":"${data.password}"}`
-      // )
-      // console.log(userToken)
+      let userToken = await axios.post(
+          '/api/auth/',
+          `{"username":"${data.login}", "password":"${data.password}"}`
+      )
+      console.log(userToken)
       let type = 'operator'
       let token = 'dsadsadsa'
 

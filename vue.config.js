@@ -7,7 +7,7 @@ module.exports = {
         target: devServer,
         changeOrigin: true,
         secure: false
-      }
+      },
     }
   },
 };

@@ -71,11 +71,11 @@
           rememberMe: this.rememberMe
         })
 
-        if (this.$store.state.isUserLoggedIn) {
-          this.$router.push('/dashboard')
-        } else {
-          this.errorText = "Вы дожны ввести в логин 'admin' или 'operator' !"
-        }
+        // if (this.$store.state.isUserLoggedIn) {
+        //   this.$router.push('/dashboard')
+        // } else {
+        //   this.errorText = "Вы дожны ввести в логин 'admin' или 'operator' !"
+        // }
 
       },
       forgotPassword(){

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import callLogic from './callLogic'
-import axios from 'axios'
+import apiRequest from "../utils/apiRequest";
 
 Vue.use(Vuex)
 
@@ -72,32 +72,41 @@ export default new Vuex.Store({
       // console.log(document.cookie)
       //
       // console.log(document.cookie)
-      let userToken = await axios.post(
-          '/api/auth/',
+      // Vue.$cookies.set('theme','default')
+      // Vue.$cookies.set('theme','default')
+      // console.log(Vue.$cookies.get('theme'))
+      // Vue.$cookies.remove('theme')
+      // console.log(Vue.$cookies.get('theme'))
+
+      console.log('start')
+      let userToken = await apiRequest.post(
+          'api/auth',
           `{"username":"${data.login}", "password":"${data.password}"}`
       )
       console.log(userToken)
-      let type = 'operator'
-      let token = 'dsadsadsa'
+      console.log('finish')
 
-      if (type === 'admin' || type === 'operator') {
-        commit('logIn', type)
-      }
+      // let type = 'operator'
+      // let token = 'dsadsadsa'
+      //
+      // if (type === 'admin' || type === 'operator') {
+      //   commit('logIn', type)
+      // }
+      //
+      // document.cookie = `token=${token}`
+      // console.log(document.cookie)
 
-      document.cookie = `token=${token}`
-      console.log(document.cookie)
-
-      if (data.rememberMe) {
-        console.log('local')
-        localStorage.setItem('isUserLoggedIn', true)
-        localStorage.setItem('userType', type)
-      } else {
-        console.log('session')
-        sessionStorage.setItem('isUserLoggedIn', true)
-        sessionStorage.setItem('userType', type)
-      }
-      console.log(localStorage.getItem('isUserLoggedIn'))
-      console.log(sessionStorage.getItem('isUserLoggedIn'))
+      // if (data.rememberMe) {
+      //   console.log('local')
+      //   localStorage.setItem('isUserLoggedIn', true)
+      //   localStorage.setItem('userType', type)
+      // } else {
+      //   console.log('session')
+      //   sessionStorage.setItem('isUserLoggedIn', true)
+      //   sessionStorage.setItem('userType', type)
+      // }
+      // console.log(localStorage.getItem('isUserLoggedIn'))
+      // console.log(sessionStorage.getItem('isUserLoggedIn'))
 
     },
     logOut({commit}){
@@ -107,12 +116,12 @@ export default new Vuex.Store({
       // clearing all storages
       localStorage.clear()
       sessionStorage.clear()
-      var cookies = document.cookie.split(";");
+      let cookies = document.cookie.split(";");
 
-      for (var i = 0; i < cookies.length; i++) {
-        var cookie = cookies[i];
-        var eqPos = cookie.indexOf("=");
-        var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+      for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i];
+        let eqPos = cookie.indexOf("=");
+        let name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
         document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
       }
       console.log(document.cookie)

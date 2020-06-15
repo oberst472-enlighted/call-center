@@ -78,10 +78,10 @@ export default new Vuex.Store({
       // Vue.$cookies.remove('theme')
       // console.log(Vue.$cookies.get('theme'))
 
-      console.log('start')
+      console.log(data);
       let userToken = await apiRequest.post(
-          'api/auth',
-          `{"username":"${data.login}", "password":"${data.password}"}`
+          '/api/auth/',
+       {username: data.login, password: data.password}
       )
       console.log(userToken)
       console.log('finish')

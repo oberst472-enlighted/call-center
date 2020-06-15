@@ -20,7 +20,7 @@ export default class apiRequest {
   }
 
   static post(path, data) {
-    return axios.post(`${path}`, data);
+    return request(axios.post(`${path}`, data));
   }
 
   static patch(path, data) {

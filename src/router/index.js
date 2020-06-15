@@ -111,17 +111,6 @@ router.beforeEach((to, from, next)=>{
     ...context,
     next: middlewarePipeline(context, middleware, 1)
   })
-  // const requireAuth = to.matched.some(record => record.meta.requireAuth)
-  // const isUserLoggedIn = store.state.isUserLoggedIn
-  // if (requireAuth && isUserLoggedIn) {
-  //   next();
-  // } else {
-  //   if (to.path !== '/login') {
-  //     next('/login');
-  //   } else {
-  //     next();
-  //   }
-  // }
 })
 
 export default router

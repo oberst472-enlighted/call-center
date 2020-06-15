@@ -7,48 +7,49 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    totalTime: 0,
-    workStatus: 'break',
-    isUserLoggedIn: false,
+    totalTime: 0,               //
+    workStatus: null,
     userStatus: null,
+    isActiveWorkShift: false,
+    // Logic for popup
     popupActive: null,
-    isActiveWorkShift: false
+
   },
   mutations: {
     incrementTime(state) {
       state.totalTime += 1
+      localStorage.setItem('totalTime', +localStorage.getItem('totalTime') + +1)
     },
     cleanTime(state) {
-      state.totalTime =0
+      state.totalTime = 0
+      localStorage.setItem('totalTime', 0)
+    },
+    setTime(state, time) {
+      state.totalTime = time
     },
     toggleWorkingStatus(state, type) {
-      if (type === state.workStatus) return
-      if (state.workStatus === 'online') {
-        state.workStatus = 'break'
-      } else {
-        state.workStatus = 'online'
-      }
-    },
-    logIn(state, type){
-      state.isUserLoggedIn = true
-      state.userStatus = type
-    },
-    cleanUser(state) {
-      state.isUserLoggedIn = false
-      state.userStatus = null
+      localStorage.setItem('workStatus', type)
+      state.workStatus = type
     },
     closeSession(state) {
       state.workStatus = 'break'
+      localStorage.setItem('workStatus', 'break')
     },
+    setUserStatus(state, type){
+      state.userStatus = type
+    },
+    setWorkShiftStatus(state, status){
+      state.isActiveWorkShift = status
+      localStorage.setItem('isActiveWorkShift', status)
+    },
+
+    // Logic for popup
     setPopup(state, type){
       state.popupActive = type
     },
     cleanPopup(state){
       state.popupActive = null
     },
-    setWorkShiftStatus(state, status){
-      state.isActiveWorkShift = status
-    }
   },
   actions: {
     setPopup({state, commit}, type){
@@ -68,63 +69,41 @@ export default new Vuex.Store({
       commit('cleanTime')
     },
     async logIn({commit}, data){
+      let auth = await apiRequest.post('/api/auth/', {username: data.login, password: data.password})
 
-      // console.log(document.cookie)
-      //
-      // console.log(document.cookie)
-      // Vue.$cookies.set('theme','default')
-      // Vue.$cookies.set('theme','default')
-      // console.log(Vue.$cookies.get('theme'))
-      // Vue.$cookies.remove('theme')
-      // console.log(Vue.$cookies.get('theme'))
+      let userInfo = await apiRequest.get(`/api/users/${auth.data.userId}/`)
 
-      console.log(data);
-      let userToken = await apiRequest.post(
-          '/api/auth/',
-       {username: data.login, password: data.password}
-      )
-      console.log(userToken)
-      console.log('finish')
+      console.log(userInfo.data.user)
 
-      // let type = 'operator'
-      // let token = 'dsadsadsa'
-      //
-      // if (type === 'admin' || type === 'operator') {
-      //   commit('logIn', type)
-      // }
-      //
-      // document.cookie = `token=${token}`
-      // console.log(document.cookie)
+      if (auth.status === 200 && auth.data.auth) {
+        Vue.$cookies.set('token',auth.data.token)
+        if (data.rememberMe) {
+          localStorage.setItem('isUserLoggedIn', true)
+          localStorage.setItem('token', auth.data.token)
+          localStorage.setItem('userType', userInfo.data.user.userType.toLowerCase())
 
-      // if (data.rememberMe) {
-      //   console.log('local')
-      //   localStorage.setItem('isUserLoggedIn', true)
-      //   localStorage.setItem('userType', type)
-      // } else {
-      //   console.log('session')
-      //   sessionStorage.setItem('isUserLoggedIn', true)
-      //   sessionStorage.setItem('userType', type)
-      // }
-      // console.log(localStorage.getItem('isUserLoggedIn'))
-      // console.log(sessionStorage.getItem('isUserLoggedIn'))
+          commit('setUserStatus', userInfo.data.user.userType.toLowerCase())
+        } else {
+          sessionStorage.setItem('isUserLoggedIn', true)
+          sessionStorage.setItem('token', auth.data.token)
+          sessionStorage.setItem('userType', userInfo.data.user.userType.toLowerCase())
+
+          commit('setUserStatus', userInfo.data.user.userType.toLowerCase())
+        }
+        if (userInfo.data.user.userType.toLowerCase() === 'operator') {
+          localStorage.setItem('userType', userInfo.data.user.userType.toLowerCase())
+        }
+        commit('toggleWorkingStatus', 'break')
+        commit('setWorkShiftStatus', false)
+      }
+
 
     },
     logOut({commit}){
-      console.log('logout')
-      commit('cleanUser')
-
       // clearing all storages
       localStorage.clear()
       sessionStorage.clear()
-      let cookies = document.cookie.split(";");
-
-      for (let i = 0; i < cookies.length; i++) {
-        let cookie = cookies[i];
-        let eqPos = cookie.indexOf("=");
-        let name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      }
-      console.log(document.cookie)
+      Vue.$cookies.remove('token')
     }
   },
   modules: {

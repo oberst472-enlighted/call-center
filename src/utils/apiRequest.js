@@ -12,22 +12,22 @@ const request = (callback) => {
 
 export default class apiRequest {
   static get(path) {
-    return request(axios.get(`${API_URL}/${path}`));
+    return request(axios.get(`${path}`));
   }
 
   static getPublic(path) {
-    return request(request(axios.get(`${API_URL}/${path}`)));
+    return request(request(axios.get(`${path}`)));
   }
 
   static post(path, data) {
-    return axios.post(`${API_URL}/${path}`, data);
+    return axios.post(`${path}`, data);
   }
 
   static patch(path, data) {
-    return request(axios.patch(`${API_URL}/${path}`, data));
+    return request(axios.patch(`${path}`, data));
   }
 
   static delete(path) {
-    return request(axios.delete(`${API_URL}/${path}`));
+    return request(axios.delete(`${path}`));
   }
 }

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import callLogic from './callLogic'
+import popup from './popup'
 import apiRequest from "../utils/apiRequest";
 
 Vue.use(Vuex)
@@ -12,7 +13,6 @@ export default new Vuex.Store({
     userStatus: null,
     isActiveWorkShift: false,
     // Logic for popup
-    popupActive: null,
 
   },
   mutations: {
@@ -42,23 +42,8 @@ export default new Vuex.Store({
       state.isActiveWorkShift = status
       localStorage.setItem('isActiveWorkShift', status)
     },
-
-    // Logic for popup
-    setPopup(state, type){
-      state.popupActive = type
-    },
-    cleanPopup(state){
-      state.popupActive = null
-    },
   },
   actions: {
-    setPopup({state, commit}, type){
-      if (state.popupActive === type) {
-        commit('cleanPopup')
-      } else {
-        commit('setPopup', type)
-      }
-    },
     startWorkShift({commit}){
       commit('setWorkShiftStatus', true)
       commit('toggleWorkingStatus', 'online')
@@ -72,8 +57,6 @@ export default new Vuex.Store({
 
       localStorage.clear()
       sessionStorage.clear()
-      Vue.$cookies.remove('token')
-
       let auth = await apiRequest.post('/api/auth/', {username: data.login, password: data.password})
 
       let userInfo = await apiRequest.get(`/api/users/${auth.data.userId}/`)
@@ -81,7 +64,6 @@ export default new Vuex.Store({
       console.log(userInfo.data.user)
 
       if (auth.status === 200 && auth.data.auth) {
-        Vue.$cookies.set('token',auth.data.token)
         if (data.rememberMe) {
           localStorage.setItem('isUserLoggedIn', true)
           localStorage.setItem('token', auth.data.token)
@@ -106,7 +88,7 @@ export default new Vuex.Store({
 
 
     },
-    async logOut({commit, state}){
+    async logOut({state}){
       // clearing all storages
       console.log(state.isActiveWorkShift)
       if (state.isActiveWorkShift) {
@@ -115,10 +97,10 @@ export default new Vuex.Store({
       }
       localStorage.clear()
       sessionStorage.clear()
-      Vue.$cookies.remove('token')
     }
   },
   modules: {
-    callLogic
+    callLogic,
+    popup
   }
 })

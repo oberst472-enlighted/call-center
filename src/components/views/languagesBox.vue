@@ -21,11 +21,11 @@
                     style="cursor: pointer"
                     alt=""
                     @click.stop="setPopup(`popup-language-${index}`)"
-                    :class="{active : $store.state.popupActive === `popup-language-${index}`}"
+                    :class="{active : $store.state.popup.popupActive === `popup-language-${index}`}"
             >
             <div
                     class="lang-right-popup"
-                    :class="{active : $store.state.popupActive === `popup-language-${index}`}"
+                    :class="{active : $store.state.popup.popupActive === `popup-language-${index}`}"
             >
               <div class="lang-right-popup-item">Изменить</div>
               <div class="lang-right-popup-item">Удалить</div>
@@ -58,7 +58,7 @@
     },
     methods:{
       setPopup(type){
-        this.$store.dispatch('setPopup', type)
+        this.$store.dispatch('popup/setPopup', type)
       }
     }
   }

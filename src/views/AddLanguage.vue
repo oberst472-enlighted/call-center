@@ -15,7 +15,7 @@
         </div>
         <div
                 class="select-container"
-                :class="{active : $store.state.popupActive === 'selectPopout' }"
+                :class="{active : $store.state.popup.popupActive === 'selectPopout' }"
                 :style="{height: `${calcHeight}`, bottom: `-${calcHeight}`}"
         >
           <div
@@ -67,7 +67,7 @@
         console.log(this.newLanguage)
       },
       selectLanguage(type){
-        this.$store.dispatch('setPopup', type)
+        this.$store.dispatch('popup/setPopup', type)
       },
       setLang(lang){
         this.newLanguage = lang
@@ -75,7 +75,7 @@
     },
     computed: {
       calcHeight(){
-        if (this.$store.state.popupActive === 'selectPopout') {
+        if (this.$store.state.popup.popupActive === 'selectPopout') {
           return `${this.languages.length * 39}px`
         } else {
           return '0'

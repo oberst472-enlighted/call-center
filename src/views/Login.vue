@@ -64,17 +64,18 @@
           this.passType = 'password'
         }
       },
-      submitRegistration() {
-        this.$store.dispatch('logIn', {
+      async submitRegistration() {
+        await this.$store.dispatch('logIn', {
           login: this.login.trim(),
           password: this.password.trim(),
           rememberMe: this.rememberMe
         })
 
-        if (this.$store.state.isUserLoggedIn) {
+
+        if (sessionStorage.getItem('isUserLoggedIn')) {
           this.$router.push('/dashboard')
-        } else {
-          this.errorText = "Вы дожны ввести в логин 'admin' или 'operator' !"
+        } else if (localStorage.getItem('isUserLoggedIn')){
+          this.$router.push('/dashboard')
         }
 
       },

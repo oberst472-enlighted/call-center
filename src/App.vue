@@ -31,22 +31,30 @@ export default {
       return this.$store.state.workStatus
     }
   },
-  created() {
+  mounted() {
     // console.dir(localStorage.key)
     // console.dir(sessionStorage.key)
     // console.log(document.cookie)
-    if (sessionStorage.getItem('isUserLoggedIn')) {
-      console.log('isUserLoggedIn session')
-      sessionStorage.getItem('isUserLoggedIn')
-      let userType = sessionStorage.getItem('userType')
-      this.$store.commit('logIn', userType)
 
+    if (sessionStorage.getItem('isUserLoggedIn')) {
+      this.$store.commit('setUserStatus', sessionStorage.getItem('userType'))
+      this.$store.commit('setTime', +localStorage.getItem('totalTime'))
+      this.$store.commit('setWorkShiftStatus', JSON.parse(localStorage.getItem('isActiveWorkShift')))
+      console.log(this.$store.state.workStatus)
+      localStorage.getItem('workStatus')
+      this.$store.commit('toggleWorkingStatus', localStorage.getItem('workStatus'))
+
+      console.log(this.$store.state.workStatus)
 
     } else if (localStorage.getItem('isUserLoggedIn')){
-      console.log('isUserLoggedIn local')
-      localStorage.getItem('isUserLoggedIn')
-      let userType = localStorage.getItem('userType')
-      this.$store.commit('logIn', userType)
+      this.$store.commit('setUserStatus', localStorage.getItem('userType'))
+      this.$store.commit('setTime', +localStorage.getItem('totalTime'))
+      this.$store.commit('setWorkShiftStatus', JSON.parse(localStorage.getItem('isActiveWorkShift')))
+      console.log(this.$store.state.workStatus)
+      this.$store.commit('toggleWorkingStatus', localStorage.getItem('workStatus'))
+
+      this.$store.commit('toggleWorkingStatus', localStorage.getItem('workStatus'))
+      console.log(this.$store.state.workStatus)
     }
   },
   watch: {

@@ -111,8 +111,8 @@
         console.log(`Вы закончили работу. Проработано ${this.$store.state.totalTime} секунд. Или ${this.formatTime}`)
         this.$store.dispatch('endWorkShift')
       },
-      logOut(){
-        this.$store.dispatch('logOut')
+      async logOut(){
+        await this.$store.dispatch('logOut')
         this.$router.push('/login')
       }
     }

@@ -1,54 +1,55 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import callLogic from './callLogic'
-import axios from 'axios'
+import apiRequest from "../utils/apiRequest";
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    totalTime: 0,
-    workStatus: 'break',
-    isUserLoggedIn: false,
+    totalTime: 0,               //
+    workStatus: null,
     userStatus: null,
+    isActiveWorkShift: false,
+    // Logic for popup
     popupActive: null,
-    isActiveWorkShift: false
+
   },
   mutations: {
     incrementTime(state) {
       state.totalTime += 1
+      localStorage.setItem('totalTime', +localStorage.getItem('totalTime') + +1)
     },
     cleanTime(state) {
-      state.totalTime =0
+      state.totalTime = 0
+      localStorage.setItem('totalTime', 0)
+    },
+    setTime(state, time) {
+      state.totalTime = time
     },
     toggleWorkingStatus(state, type) {
-      if (type === state.workStatus) return
-      if (state.workStatus === 'online') {
-        state.workStatus = 'break'
-      } else {
-        state.workStatus = 'online'
-      }
-    },
-    logIn(state, type){
-      state.isUserLoggedIn = true
-      state.userStatus = type
-    },
-    cleanUser(state) {
-      state.isUserLoggedIn = false
-      state.userStatus = null
+      localStorage.setItem('workStatus', type)
+      state.workStatus = type
     },
     closeSession(state) {
       state.workStatus = 'break'
+      localStorage.setItem('workStatus', 'break')
     },
+    setUserStatus(state, type){
+      state.userStatus = type
+    },
+    setWorkShiftStatus(state, status){
+      state.isActiveWorkShift = status
+      localStorage.setItem('isActiveWorkShift', status)
+    },
+
+    // Logic for popup
     setPopup(state, type){
       state.popupActive = type
     },
     cleanPopup(state){
       state.popupActive = null
     },
-    setWorkShiftStatus(state, status){
-      state.isActiveWorkShift = status
-    }
   },
   actions: {
     setPopup({state, commit}, type){
@@ -69,53 +70,52 @@ export default new Vuex.Store({
     },
     async logIn({commit}, data){
 
-      // console.log(document.cookie)
-      //
-      // console.log(document.cookie)
-      // let userToken = await axios.post(
-      //     'https://calls-dev.enlighted.ru/api/auth/',
-      //     `{"username":"${data.login}", "password":"${data.password}"}`
-      // )
-      // console.log(userToken)
-      let type = 'operator'
-      let token = 'dsadsadsa'
-
-      if (type === 'admin' || type === 'operator') {
-        commit('logIn', type)
-      }
-
-      document.cookie = `token=${token}`
-      console.log(document.cookie)
-
-      if (data.rememberMe) {
-        console.log('local')
-        localStorage.setItem('isUserLoggedIn', true)
-        localStorage.setItem('userType', type)
-      } else {
-        console.log('session')
-        sessionStorage.setItem('isUserLoggedIn', true)
-        sessionStorage.setItem('userType', type)
-      }
-      console.log(localStorage.getItem('isUserLoggedIn'))
-      console.log(sessionStorage.getItem('isUserLoggedIn'))
-
-    },
-    logOut({commit}){
-      console.log('logout')
-      commit('cleanUser')
-
-      // clearing all storages
       localStorage.clear()
       sessionStorage.clear()
-      var cookies = document.cookie.split(";");
+      Vue.$cookies.remove('token')
 
-      for (var i = 0; i < cookies.length; i++) {
-        var cookie = cookies[i];
-        var eqPos = cookie.indexOf("=");
-        var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      let auth = await apiRequest.post('/api/auth/', {username: data.login, password: data.password})
+
+      let userInfo = await apiRequest.get(`/api/users/${auth.data.userId}/`)
+
+      console.log(userInfo.data.user)
+
+      if (auth.status === 200 && auth.data.auth) {
+        Vue.$cookies.set('token',auth.data.token)
+        if (data.rememberMe) {
+          localStorage.setItem('isUserLoggedIn', true)
+          localStorage.setItem('token', auth.data.token)
+          localStorage.setItem('userType', userInfo.data.user.userType.toLowerCase())
+          localStorage.setItem('userId', auth.data.userId)
+
+          commit('setUserStatus', userInfo.data.user.userType.toLowerCase())
+        } else {
+          sessionStorage.setItem('isUserLoggedIn', true)
+          sessionStorage.setItem('token', auth.data.token)
+          sessionStorage.setItem('userType', userInfo.data.user.userType.toLowerCase())
+          localStorage.setItem('userId', auth.data.userId)
+
+          commit('setUserStatus', userInfo.data.user.userType.toLowerCase())
+        }
+        if (userInfo.data.user.userType.toLowerCase() === 'operator') {
+          localStorage.setItem('userType', userInfo.data.user.userType.toLowerCase())
+        }
+        commit('toggleWorkingStatus', 'break')
+        commit('setWorkShiftStatus', false)
       }
-      console.log(document.cookie)
+
+
+    },
+    async logOut({commit, state}){
+      // clearing all storages
+      console.log(state.isActiveWorkShift)
+      if (state.isActiveWorkShift) {
+        let userInfo = await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/stop-session/`)
+        console.log(userInfo)
+      }
+      localStorage.clear()
+      sessionStorage.clear()
+      Vue.$cookies.remove('token')
     }
   },
   modules: {

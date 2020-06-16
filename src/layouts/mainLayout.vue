@@ -27,6 +27,9 @@
   import Header from "../components/layout/Header";
   import CallPage from "../components/layout/CallPage";
   import callWindow from "../components/layout/callWindow";
+  import apiRequest from "../utils/apiRequest";
+
+
   export default {
     name: "mainLayout",
     components: { Sidebar, Header, CallPage, callWindow },
@@ -219,17 +222,18 @@
       }
     },
     watch: {
-      workStatus(val){
+      async workStatus(val){
         try {
           if (val === 'online'){
             this.socket.emit('change_status', 'WAITING');
           } else if (val === 'break') {
             this.socket.emit('change_status', 'UNAVALIABLE');
+
           }
         } catch (e) {}
       }
       ,
-      isActiveWorkShift(val){
+      async isActiveWorkShift(val){
         if (this.$store.state.userStatus === 'operator') {
           if (val && this.workStatus === 'online') {
             let userId = 'dev';
@@ -325,6 +329,16 @@
             });
           } else {
             this.socket = null
+          }
+          if (val) {
+            console.log(localStorage.getItem('userId'))
+            let userInfo = await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/start-session/`)
+            console.log(userInfo)
+          } else {
+            console.log(localStorage.getItem('userId'))
+
+            let userInfo = await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/stop-session/`)
+            console.log(userInfo)
           }
         }
       }

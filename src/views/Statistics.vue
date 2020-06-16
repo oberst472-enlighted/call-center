@@ -21,7 +21,7 @@
           </div>
           <div
                   class="select-container"
-                  :class="{active : $store.state.popupActive === 'CallCenter' }"
+                  :class="{active : $store.state.popup.popupActive === 'CallCenter' }"
                   :style="{height: `${calcCenterHeight}`, bottom: `-${calcCenterHeight}`}"
           >
             <div
@@ -57,7 +57,7 @@
           </div>
           <div
                   class="select-container"
-                  :class="{active : $store.state.popupActive === 'CallStatus' }"
+                  :class="{active : $store.state.popup.popupActive === 'CallStatus' }"
                   :style="{height: `${calcStatusHeight}`, bottom: `-${calcStatusHeight}`}"
           >
             <div
@@ -115,10 +115,10 @@
         console.log(this.newLanguage)
       },
       selectCallCenter(type){
-        this.$store.dispatch('setPopup', type)
+        this.$store.dispatch('popup/setPopup', type)
       },
       selectCallStatus(type){
-        this.$store.dispatch('setPopup', type)
+        this.$store.dispatch('popup/setPopup', type)
       },
       setCallCenter(title){
         this.collCenter = title
@@ -132,14 +132,14 @@
     },
     computed: {
       calcStatusHeight(){
-        if (this.$store.state.popupActive === 'CallStatus') {
+        if (this.$store.state.popup.popupActive === 'CallStatus') {
           return `${this.callStatusces.length * 39}px`
         } else {
           return '0'
         }
       },
       calcCenterHeight(){
-        if (this.$store.state.popupActive === 'CallCenter') {
+        if (this.$store.state.popup.popupActive === 'CallCenter') {
           return `${this.callStatusces.length * 39}px`
         } else {
           return '0'

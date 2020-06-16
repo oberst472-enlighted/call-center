@@ -51,7 +51,7 @@
         </div>
       </div>
 
-      <div class="nav-right" @click.stop="$store.dispatch('setPopup', 'user')">
+      <div class="nav-right" @click.stop="$store.dispatch('popup/setPopup', 'user')">
         <div class="user">
           <div class="user-info">
             <div class="user-name">Елена Авантюрова</div>
@@ -64,7 +64,7 @@
         </div>
         <div
                 class="popup"
-                :class="{active : $store.state.popupActive === `user`}"
+                :class="{active : $store.state.popup.popupActive === `user`}"
         >
           <div class="popup-item">Изменить</div>
           <div class="popup-item" @click="logOut">Выйти</div>

@@ -1,5 +1,5 @@
 <template>
-  <div id="app" @click="$store.commit('cleanPopup')">
+  <div id="app" @click="$store.commit('popup/cleanPopup')">
     <component :is="layout">
       <router-view/>
     </component>
@@ -39,22 +39,14 @@ export default {
     if (sessionStorage.getItem('isUserLoggedIn')) {
       this.$store.commit('setUserStatus', sessionStorage.getItem('userType'))
       this.$store.commit('setTime', +localStorage.getItem('totalTime'))
-      this.$store.commit('setWorkShiftStatus', JSON.parse(localStorage.getItem('isActiveWorkShift')))
-      console.log(this.$store.state.workStatus)
-      localStorage.getItem('workStatus')
       this.$store.commit('toggleWorkingStatus', localStorage.getItem('workStatus'))
-
-      console.log(this.$store.state.workStatus)
-
+      this.$store.commit('setWorkShiftStatus', JSON.parse(localStorage.getItem('isActiveWorkShift')))
     } else if (localStorage.getItem('isUserLoggedIn')){
       this.$store.commit('setUserStatus', localStorage.getItem('userType'))
       this.$store.commit('setTime', +localStorage.getItem('totalTime'))
+      this.$store.commit('toggleWorkingStatus', localStorage.getItem('workStatus'))
       this.$store.commit('setWorkShiftStatus', JSON.parse(localStorage.getItem('isActiveWorkShift')))
-      console.log(this.$store.state.workStatus)
-      this.$store.commit('toggleWorkingStatus', localStorage.getItem('workStatus'))
 
-      this.$store.commit('toggleWorkingStatus', localStorage.getItem('workStatus'))
-      console.log(this.$store.state.workStatus)
     }
   },
   watch: {

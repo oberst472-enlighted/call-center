@@ -69,6 +69,11 @@ export default new Vuex.Store({
       commit('cleanTime')
     },
     async logIn({commit}, data){
+
+      localStorage.clear()
+      sessionStorage.clear()
+      Vue.$cookies.remove('token')
+
       let auth = await apiRequest.post('/api/auth/', {username: data.login, password: data.password})
 
       let userInfo = await apiRequest.get(`/api/users/${auth.data.userId}/`)
@@ -81,12 +86,14 @@ export default new Vuex.Store({
           localStorage.setItem('isUserLoggedIn', true)
           localStorage.setItem('token', auth.data.token)
           localStorage.setItem('userType', userInfo.data.user.userType.toLowerCase())
+          localStorage.setItem('userId', auth.data.userId)
 
           commit('setUserStatus', userInfo.data.user.userType.toLowerCase())
         } else {
           sessionStorage.setItem('isUserLoggedIn', true)
           sessionStorage.setItem('token', auth.data.token)
           sessionStorage.setItem('userType', userInfo.data.user.userType.toLowerCase())
+          localStorage.setItem('userId', auth.data.userId)
 
           commit('setUserStatus', userInfo.data.user.userType.toLowerCase())
         }
@@ -99,8 +106,13 @@ export default new Vuex.Store({
 
 
     },
-    logOut({commit}){
+    async logOut({commit, state}){
       // clearing all storages
+      console.log(state.isActiveWorkShift)
+      if (state.isActiveWorkShift) {
+        let userInfo = await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/stop-session/`)
+        console.log(userInfo)
+      }
       localStorage.clear()
       sessionStorage.clear()
       Vue.$cookies.remove('token')

@@ -58,9 +58,8 @@ export default new Vuex.Store({
       localStorage.clear()
       sessionStorage.clear()
       let auth = await apiRequest.post('/api/auth/', {username: data.login, password: data.password})
-
+      console.log(auth)
       let userInfo = await apiRequest.get(`/api/users/${auth.data.userId}/`)
-
       console.log(userInfo.data.user)
 
       if (auth.status === 200 && auth.data.auth) {

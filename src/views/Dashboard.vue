@@ -73,7 +73,7 @@
         margin-right: 20px;
       }
       .col-right{
-        width: 100%;
+        width: 300px;
       }
       .col{
         width: 50%;

@@ -36,9 +36,10 @@ VueRouter.prototype.push = function push(location) {
     {
       path: '/call-list',
       name: 'call-list',
-      meta: { layout: "main-layout", gotForward: true, middleware: [ user, admin ]},
+      meta: { layout: "main-layout", gotForward: true, middleware: [ user ]},
       component: () => import('../views/call/CallList.vue')
     },
+
     {
       path: '/call-list/:id',
       name: 'single-call',

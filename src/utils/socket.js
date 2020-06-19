@@ -56,6 +56,8 @@ export default {
       // КЛИЕНТ ПОВЕСИЛ ТРУБКУ
       this.socket.on('bye', (callId) => {
         console.log('bye received in operator');
+        this.$store.commit('callLogic/endCall')
+
         this.socket.emit('leave', callId, 'operator');
 
         if (this.$store.state.isCallInProgress) {

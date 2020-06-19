@@ -1,74 +1,93 @@
 <template>
-  <div id="CallList">
-<!--    <div class="row">-->
-<!--      <userStat />-->
-<!--      <callWindow />-->
-<!--    </div>-->
-<!--    <div class="row">-->
-<!--    </div>-->
-    <div class="head">
-      <div class="head-left">
-        <div class="header">История звонков</div>
-        <div class="sub_header">Последние</div>
-      </div>
-      <div class="head-right">
-        <div class="btn-group">
-          <div
-                  class="button"
-                  :class="{active : activeMod==='table'}"
-                  @click="toggleMode('table')"
-          >
-            Таблица
-          </div>
-          <div
-                  class="button"
-                  :class="{active : activeMod==='list'}"
-                  @click="toggleMode('list')"
-          >
-            Список
-          </div>
-        </div>
+  <div id="DashBoard">
+    <div class="row" v-if="$store.state.userStatus === 'operator'">
+      <div class="col-left">
+        <statusOperatorDashboard/>
 
-        <img
-                style="cursor: pointer"
-                src="../../assets/icons/Serach.png" alt="" class="head-right-img">
+        <div class="row">
+        </div>
+        <div class="row" v-if="$store.state.userStatus === 'admin'">
+        </div>
+      </div>
+      <div class="col-right" style="position: absolute; right: 0; width: 300px; min-height: 800px">
+        <callWindow
+                v-if="$store.state.userStatus === 'operator'"
+                :answer="answer"
+        />
       </div>
     </div>
-    <div id="call_history-list" v-if="activeMod === 'list'">
-      <div class="calls-list">
-        <callInHistory chatStatus="hide" />
-        <callInHistory chatStatus="hide" />
-        <callInHistory chatStatus="hide" />
-        <callInHistory chatStatus="hide" />
-        <callInHistory chatStatus="hide" />
-        <callInHistory chatStatus="hide" />
-        <callInHistory chatStatus="hide" />
-        <callInHistory chatStatus="hide" />
-        <callInHistory chatStatus="hide" />
+    <div id="CallList">
+      <!--    <div class="row">-->
+      <!--      <userStat />-->
+      <!--      <callWindow />-->
+      <!--    </div>-->
+      <!--    <div class="row">-->
+      <!--    </div>-->
+
+      <div class="head">
+        <div class="head-left">
+          <div class="header">История звонков</div>
+          <div class="sub_header">Последние</div>
+        </div>
+        <div class="head-right" v-if="$store.state.userStatus === 'admin'">
+          <div class="btn-group">
+            <div
+                    class="button"
+                    :class="{active : activeMod==='table'}"
+                    @click="toggleMode('table')"
+            >
+              Таблица
+            </div>
+            <div
+                    class="button"
+                    :class="{active : activeMod==='list'}"
+                    @click="toggleMode('list')"
+            >
+              Список
+            </div>
+          </div>
+
+          <img
+                  style="cursor: pointer"
+                  src="../../assets/icons/Serach.png" alt="" class="head-right-img">
+        </div>
       </div>
-    </div>
-    <div id="call_history-table" v-else>
-      <table width="100%">
-        <tr>
-          <th height="55px">Номер</th>
-          <th height="55px">Вокзал</th>
-          <th height="55px">Терминал</th>
-          <th height="55px">Дата и время</th>
-          <th height="55px">Язык</th>
-          <th height="55px">Статус</th>
-          <th height="55px">Оператор</th>
-          <th height="55px">Запись</th>
-        </tr>
-        <callInTable />
-        <callInTable />
-        <callInTable />
-        <callInTable />
-        <callInTable />
-        <callInTable />
-        <callInTable />
-        <callInTable />
-        <callInTable />
-      </table>
+      <div id="call_history-list" v-if="activeMod === 'list'">
+        <div class="calls-list">
+          <callInHistory chatStatus="hide" />
+          <callInHistory chatStatus="hide" />
+          <callInHistory chatStatus="hide" />
+          <callInHistory chatStatus="hide" />
+          <callInHistory chatStatus="hide" />
+          <callInHistory chatStatus="hide" />
+          <callInHistory chatStatus="hide" />
+          <callInHistory chatStatus="hide" />
+          <callInHistory chatStatus="hide" />
+        </div>
+      </div>
+      <div id="call_history-table" v-else>
+        <table width="100%">
+          <tr>
+            <th height="55px">Номер</th>
+            <th height="55px">Вокзал</th>
+            <th height="55px">Терминал</th>
+            <th height="55px">Дата и время</th>
+            <th height="55px">Язык</th>
+            <th height="55px">Статус</th>
+            <th height="55px">Оператор</th>
+            <th height="55px">Запись</th>
+          </tr>
+          <callInTable />
+          <callInTable />
+          <callInTable />
+          <callInTable />
+          <callInTable />
+          <callInTable />
+          <callInTable />
+          <callInTable />
+          <callInTable />
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -77,13 +96,20 @@
 
   import callInTable from "../../components/views/components/callInTable";
   import callInHistory from "../../components/views/components/callInHistory";
+  import callWindow from "../../components/layout/callWindow";
+  import statusOperatorDashboard from "../../components/views/statusOperatorDashboard";
+
+
   export default {
     name: "CallList",
-    components: { callInHistory, callInTable },
+    components: { callInHistory, callInTable, callWindow, statusOperatorDashboard },
     data() {
       return {
-        activeMod: 'table'
+        activeMod: 'list'
       }
+    },
+    props: {
+      answer: Function,
     },
     methods: {
       toggleMode(type) {
@@ -99,6 +125,28 @@
 </script>
 
 <style lang='scss'>
+  #DashBoard{
+    .row{
+      display: flex;
+      padding-top: 20px;
+      .col-left{
+        width: 68%;
+        margin-right: 20px;
+      }
+      .col-right{
+        width: 100%;
+      }
+      .col{
+        width: 50%;
+        &:first-child{
+          margin-right: 10px;
+        }
+        &:last-child{
+          margin-left: 10px;
+        }
+      }
+    }
+  }
 #CallList {
   width: 100%;
   min-height: 366px;

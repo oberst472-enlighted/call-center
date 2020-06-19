@@ -1,5 +1,7 @@
 <template>
   <div id="Login">
+    <div class="log adm" @click="loginAdmin">LOGIN AS ADMIN</div>
+    <div class="log operator" @click="loginOperator">LOGIN AS OPERATOR</div>
     <div class="header">
       <img src="../assets/icons/Chat.svg" alt="" class="header-chat">
       <div class="header-text">
@@ -71,13 +73,38 @@
           rememberMe: this.rememberMe
         })
 
-
         if (sessionStorage.getItem('isUserLoggedIn')) {
           this.$router.push('/dashboard')
         } else if (localStorage.getItem('isUserLoggedIn')){
           this.$router.push('/dashboard')
         }
 
+      },
+      async loginAdmin() {
+        await this.$store.dispatch('logIn', {
+          login: 'adm',
+          password: 'adm',
+          rememberMe: true
+        })
+
+        if (sessionStorage.getItem('isUserLoggedIn')) {
+          this.$router.push('/dashboard')
+        } else if (localStorage.getItem('isUserLoggedIn')){
+          this.$router.push('/dashboard')
+        }
+      },
+      async loginOperator() {
+        await this.$store.dispatch('logIn', {
+          login: 'dev',
+          password: 'dev',
+          rememberMe: true
+        })
+
+        if (sessionStorage.getItem('isUserLoggedIn')) {
+          this.$router.push('/dashboard')
+        } else if (localStorage.getItem('isUserLoggedIn')){
+          this.$router.push('/dashboard')
+        }
       },
       forgotPassword(){
         alert("FORGOT PASSWORD ??????")
@@ -91,6 +118,28 @@
 
 <style lang='scss'>
   #Login{
+    .log{
+      width: 250px;
+      height: 50px;
+      position: fixed;
+      color: white;
+      font-weight: 700;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      left: 10px;
+      cursor: pointer;
+    }
+    .operator{
+      background-color: #3e58fe;
+      top: 40%;
+    }
+    .adm{
+      background-color: #4a4355;
+      top: 50%;
+
+    }
     width: 430px;
     height: 409px;
     box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);

@@ -263,5 +263,9 @@
     position: sticky;
     top: 10px;
   }
+  #Call #call_window{
+    position: sticky;
+    top: 10px;
+  }
 }
 </style>

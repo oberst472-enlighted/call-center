@@ -14,28 +14,7 @@
           <div class="header">Доступность терминалов</div>
           <div class="sub_header">Доступные вам терминалы</div>
         </div>
-        <div class="head-right">
-          <div class="btn-group">
-            <div
-                    class="button"
-                    :class="{active : activeMod==='list'}"
-                    @click="toggleMode('list')"
-            >
-              Список
-            </div>
-            <div
-                    class="button"
-                    :class="{active : activeMod==='map'}"
-                    @click="toggleMode('map')"
-            >
-              На карте
-            </div>
-          </div>
 
-          <img
-                  style="cursor: pointer"
-                  src="../../assets/icons/Serach.png" alt="" class="head-right-img">
-        </div>
       </div>
 
       <div class="terminals">

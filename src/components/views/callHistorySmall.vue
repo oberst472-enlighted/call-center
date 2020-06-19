@@ -27,7 +27,7 @@
 
 <style lang='scss'>
   #call_history_small{
-    width: 100%;
+    width: 300px;
     box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);
     border-radius: 8px;
     background-color: #ffffff;

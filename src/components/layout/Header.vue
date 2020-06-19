@@ -76,6 +76,7 @@
 
 <script>
   import forward from "../UI/forward";
+  import apiRequest from "../../utils/apiRequest";
   export default {
     name: "Header",
     data() {
@@ -107,12 +108,27 @@
       toggleMode(type) {
         this.$store.commit('toggleWorkingStatus', type)
       },
-      closeSession(){
+      async startSession(){
+        if (!this.$store.state.isActiveWorkShift) {
+          let userInfo = await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/stop-session/`)
+          console.log(userInfo)
+        }
+      },
+      async closeSession(){
+        if (this.$store.state.isActiveWorkShift) {
+          let userInfo = await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/stop-session/`)
+          console.log(userInfo)
+        }
         console.log(`Вы закончили работу. Проработано ${this.$store.state.totalTime} секунд. Или ${this.formatTime}`)
         this.$store.dispatch('endWorkShift')
       },
       async logOut(){
-        await this.$store.dispatch('logOut')
+        if (this.$store.state.isActiveWorkShift) {
+          let userInfo = await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/stop-session/`)
+          console.log(userInfo)
+        }
+        this.$store.dispatch('endWorkShift')
+        this.$store.dispatch('logOut')
         this.$router.push('/login')
       }
     }

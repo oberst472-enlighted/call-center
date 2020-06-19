@@ -29,7 +29,7 @@
         <button
                 class="close-session nav-btn"
                 v-if="!$store.state.isActiveWorkShift"
-                @click="$store.dispatch('startWorkShift')"
+                @click="startSession"
                 style="background-color: #4fd161"
         >
           Начать смену
@@ -76,6 +76,7 @@
 
 <script>
   import forward from "../UI/forward";
+  import apiRequest from "../../utils/apiRequest";
   export default {
     name: "Header",
     data() {
@@ -107,12 +108,38 @@
       toggleMode(type) {
         this.$store.commit('toggleWorkingStatus', type)
       },
-      closeSession(){
+      async startSession(){
+        try {
+          if (!this.$store.state.isActiveWorkShift) {
+            let userInfo = await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/start-session/`)
+            console.log(userInfo)
+          }
+        } catch (e) {
+        }
+        this.$store.dispatch('startWorkShift')
+
+      },
+      async closeSession(){
+        try {
+          if (this.$store.state.isActiveWorkShift) {
+            let userInfo = await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/stop-session/`)
+            console.log(userInfo)
+          }
+        } catch (e) {
+        }
         console.log(`Вы закончили работу. Проработано ${this.$store.state.totalTime} секунд. Или ${this.formatTime}`)
         this.$store.dispatch('endWorkShift')
       },
       async logOut(){
-        await this.$store.dispatch('logOut')
+        try {
+          if (this.$store.state.isActiveWorkShift) {
+            let userInfo = await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/stop-session/`)
+            console.log(userInfo)
+          }
+        } catch (e) {}
+
+        this.$store.dispatch('endWorkShift')
+        this.$store.dispatch('logOut')
         this.$router.push('/login')
       }
     }

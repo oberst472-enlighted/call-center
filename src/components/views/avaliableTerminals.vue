@@ -5,30 +5,6 @@
         <div class="header">Доступность терминалов</div>
         <div class="sub_header">Доступные вам терминалы</div>
       </div>
-      <div class="head-right">
-        <div class="btn-group" v-if="$store.state.userStatus === 'operator'">
-          <div
-                  class="button"
-                  :class="{active: activeToggle === 'list'}"
-                  @click="activeToggle = 'list'"
-          >
-            Список
-          </div>
-          <div
-                  class="button"
-                  :class="{active: activeToggle === 'map'}"
-                  @click="activeToggle = 'map'"
-          >
-            На карте
-          </div>
-        </div>
-        <img
-                style=""
-                class="head-dots"
-                src="../../assets/icons/Serach.png"
-                alt=""
-        />
-      </div>
     </div>
     <div class="terminals">
       <terminal/>

@@ -58,9 +58,8 @@ export default new Vuex.Store({
       localStorage.clear()
       sessionStorage.clear()
       let auth = await apiRequest.post('/api/auth/', {username: data.login, password: data.password})
-
+      console.log(auth)
       let userInfo = await apiRequest.get(`/api/users/${auth.data.userId}/`)
-
       console.log(userInfo.data.user)
 
       if (auth.status === 200 && auth.data.auth) {
@@ -90,11 +89,6 @@ export default new Vuex.Store({
     },
     async logOut({state}){
       // clearing all storages
-      console.log(state.isActiveWorkShift)
-      if (state.isActiveWorkShift) {
-        let userInfo = await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/stop-session/`)
-        console.log(userInfo)
-      }
       localStorage.clear()
       sessionStorage.clear()
     }

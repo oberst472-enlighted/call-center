@@ -28,7 +28,6 @@
     props: {},
     mounted() {
       let ctx = this.$refs.myChart.getContext('2d')
-      console.log(ctx)
       Chart.defaults.global.legend.display = false;
       Chart.defaults.global.tooltips.enabled = false;
       Chart.defaults.scale.gridLines.display = false;

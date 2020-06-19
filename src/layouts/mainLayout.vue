@@ -9,7 +9,7 @@
       <div class="wrapper">
         <Header />
         <callWindow
-                v-if="$store.state.callLogic.isIncomingCall && $route.name !== 'dashboard'"
+                v-if="$store.state.callLogic.isIncomingCall && $route.name !== 'dashboard' && $route.name !== 'call-list'"
                 :answer="answerCall"
         />
         <router-view :answer="answerCall" />
@@ -37,12 +37,9 @@
     mixins: [socket],
     data() {
       return {
-        recorder: null,
-        socket: null,
         isChannelReady: true,
         isStarted: false,
         calling: new Audio(require("../assets/02433.mp3")),//
-        queue: 0,// ОЧЕРЕДЬ ЗВОНКОВ
       }
     },
     methods: {
@@ -229,7 +226,28 @@
         } catch (e) {
         }
       }
-      ,
+    },
+    async created() {
+      // try {
+      //   let d = await apiRequest.get( '/api/users/')
+      //   console.log(d.data)
+      // } catch (e) {}
+      //
+      // try {
+      //   let f = await apiRequest.get( `/api/users/5ee2142cd7fa8f68055a2089/`)
+      //   console.log(f.data.user)
+      // } catch (e) {}
+      //
+      // try {
+      //   let f = await apiRequest.get( '/api/callcenters/')
+      //   console.log(f.data)
+      // } catch (e) {}
+      //
+      // try {
+      //   let f = await apiRequest.get( '/api/callcenters/')
+      //   console.log(f.data)
+      // } catch (e) {}
+
     }
 
 

@@ -4,21 +4,21 @@ import apiRequest from "./apiRequest";
 export default {
   data(){
     return {
+      recorder: null,
+      socket: null,
       localStream: null,
-      pc: null,
       remoteStream: null,
-      callCenterId: 'dev',    }
+      pc: null,
+      queue: 0,// ОЧЕРЕДЬ ЗВОНКОВ
+    }
   },
   methods: {
     initSocket(){
-      let userId = 'dev';
-
       this.socket = io.connect('https://calls-dev.enlighted.ru');
-      this.uuid = 'operator_' + Math.ceil(Math.random() * 1000);
 
       this.calling.loop = true;
 
-      this.socket.emit("entered", userId, "operator", this.callCenterId);
+      this.socket.emit("entered", localStorage.getItem('username'), "operator", localStorage.getItem('callCenterId'));
 
 
       this.socket.emit('change_status', 'WAITING');
@@ -36,7 +36,9 @@ export default {
       this.socket.on('calling', (room) => {
         console.log('incoming call')
         console.log(room);
-        this.videoURL = room.videoURL
+        console.log(room.videoURL.split('8001')[0])
+        console.log(room.videoURL.split('8001')[1])
+        this.videoURL = room.videoURL.split('8001')[1]
         this.videoToken = room.videoToken
 
         this.$store.commit('callLogic/comeIncomingCall')
@@ -97,7 +99,7 @@ export default {
       this.socket.on('stat', (stat) => {
         // Выводит очередь
         const queue = JSON.parse(stat);
-        this.queue = queue[this.callCenterId] ? queue[this.callCenterId] : 0;
+        this.queue = queue[localStorage.getItem('callCenterId')] ? queue[localStorage.getItem('callCenterId')] : 0;
       });
 
       navigator.mediaDevices.getUserMedia({
@@ -113,27 +115,6 @@ export default {
 
   async mounted() {
     // ЕСЛИ ПОЛЬЗОВАТЕЛЬ ОПЕРАТОР ВКЛЮЧАЕТСЯ ЛОГИКА ЗВОНКА
-    try {
-      let d = await apiRequest.get( '/api/users/')
-      console.log(d.data)
-    } catch (e) {}
-
-    try {
-      let f = await apiRequest.get( `/api/users/5ee2142cd7fa8f68055a2089`)
-      console.log(f.data.user)
-    } catch (e) {}
-
-    try {
-      let f = await apiRequest.get( '/api/callcenters/')
-      console.log(f.data)
-    } catch (e) {}
-
-    try {
-      let f = await apiRequest.get( '/api/callcenters/')
-      console.log(f.data)
-    } catch (e) {}
-
-
     if (this.isActiveWorkShift && this.workStatus === 'online'){
       this.initSocket()
     }

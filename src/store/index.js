@@ -62,6 +62,9 @@ export default new Vuex.Store({
       let userInfo = await apiRequest.get(`/api/users/${auth.data.userId}/`)
       console.log(userInfo.data.user)
 
+      localStorage.setItem('username', userInfo.data.user.username)
+      localStorage.setItem('callCenterId', userInfo.data.user.callCenterId)
+
       if (auth.status === 200 && auth.data.auth) {
         if (data.rememberMe) {
           localStorage.setItem('isUserLoggedIn', true)

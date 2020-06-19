@@ -19,9 +19,30 @@
 
 <script>
   import userInHistory from "./components/userInHistory";
+  import apiRequest from "../../utils/apiRequest";
   export default {
     name: "usersSmall",
-    components: {userInHistory}
+    components: {userInHistory},
+    data() {
+      return {
+        users: null
+      }
+    },
+    async created(){
+      try {
+        let users = (await apiRequest.get( '/api/users/')).data
+        console.log(users)
+
+        let operators = users.filter(user => user.userType === "OPERATOR")
+        for (const operator of operators) {
+          console.log(operator)
+          try {
+            let operatorData = await apiRequest.get( `/api/users/${operator._id}`)
+            console.log(operatorData.data.user)
+          } catch (e) {}
+        }
+      } catch (e) {}
+    }
   }
 </script>
 

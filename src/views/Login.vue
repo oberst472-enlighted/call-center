@@ -1,7 +1,7 @@
 <template>
   <div id="Login">
-    <div class="log adm" @click="loginAdmin">LOGIN AS ADMIN</div>
-    <div class="log operator" @click="loginOperator">LOGIN AS OPERATOR</div>
+<!--    <div class="log adm" @click="loginAdmin">LOGIN AS ADMIN</div>-->
+<!--    <div class="log operator" @click="loginOperator">LOGIN AS OPERATOR</div>-->
     <div class="header">
       <img src="../assets/icons/Chat.svg" alt="" class="header-chat">
       <div class="header-text">

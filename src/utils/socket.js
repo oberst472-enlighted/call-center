@@ -36,9 +36,7 @@ export default {
       this.socket.on('calling', (room) => {
         console.log('incoming call')
         console.log(room);
-        console.log(room.videoURL.split('8001')[0])
-        console.log(room.videoURL.split('8001')[1])
-        this.videoURL = room.videoURL.split('8001')[1]
+        this.videoURL = room.videoURL
         this.videoToken = room.videoToken
 
         this.$store.commit('callLogic/comeIncomingCall')

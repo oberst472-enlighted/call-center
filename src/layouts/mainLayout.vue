@@ -146,7 +146,7 @@
           data.append('video_file', blob, 'long.webm');
 
           console.log(data)
-          console.dir(data)
+          console.error(this.videoURL)
           axios.patch(this.videoURL, data, {
             headers: {
               'Content-Type': 'multipart/form-data',

@@ -1,20 +1,20 @@
 <template>
   <div id="OperatorPage">
-    <div class="body">
+    <div class="body" v-if="operator">
       <div class="body-left">
         <div>
           <div class="header">
-            <div class="header-text">Оператор # {{$route.params.id}}</div>
+            <div class="header-text">Оператор # {{operator.number}}</div>
           </div>
           <div class="user">
             <img src="../../assets/images/user2.png" alt="" class="user-avatar">
             <div class="user-box">
               <div class="user-box-status">Онлайн</div>
-              <div class="user-box-name">Елена</div>
-              <div class="user-box-name">Авантюрова</div>
-              <div class="user-box-contacts" style="margin-bottom: 15px">Русский, English</div>
-              <div class="user-box-contacts">elena@avanta.ru</div>
-              <div class="user-box-contacts">+7 926 123-45-67</div>
+              <div class="user-box-name">{{operator.firstName}}</div>
+              <div class="user-box-name">{{operator.lastName}}</div>
+              <div class="user-box-contacts" style="margin-bottom: 15px">{{operator.langs.join(", ")}}</div>
+              <div class="user-box-contacts">{{operator.email}}</div>
+              <div class="user-box-contacts">{{operator.phone}}</div>
             </div>
           </div>
         </div>
@@ -27,7 +27,7 @@
         <div class="head">
           <div class="head-headers">
             <div class="head-headers-main">История звонков</div>
-            <div class="head-headers-secondary">Оператор # {{$route.params.id}}</div>
+            <div class="head-headers-secondary">Оператор # {{operator.number}}</div>
           </div>
         </div>
         <div class="calls-list">
@@ -44,9 +44,22 @@
 
 <script>
   import callInHistory from "../../components/views/components/callInHistory";
+  import apiRequest from "../../utils/apiRequest";
   export default {
     name: "OperatorPage",
-    components: {callInHistory}
+    components: {callInHistory},
+    data() {
+      return {
+        operator: null
+      }
+    },
+    async mounted() {
+      try {
+        this.operator = (await apiRequest.get( `/api/users/${this.$route.params.id}`)).data.user
+        console.log(this.operator)
+
+      } catch (e) {}
+    }
   }
 </script>
 
@@ -125,8 +138,8 @@
     margin-top: 32px;
     display: flex;
     &-avatar{
-      width: 100%;
-      height: 100%;
+      width: 110px;
+      height: 110px;
       margin-right: 20px;
     }
     &-box{

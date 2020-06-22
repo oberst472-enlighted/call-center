@@ -8,11 +8,7 @@
       <div class="button" @click="$router.push('/create-operator')">Добавить</div>
     </div>
     <div class="calls-list">
-      <userInHistory />
-      <userInHistory />
-      <userInHistory />
-      <userInHistory />
-      <userInHistory />
+      <userInHistory v-for="operator in operators" :key="operator._id" :data="operator"/>
     </div>
   </div>
 </template>
@@ -25,7 +21,7 @@
     components: {userInHistory},
     data() {
       return {
-        users: null
+        operators: null
       }
     },
     async created(){
@@ -33,14 +29,9 @@
         let users = (await apiRequest.get( '/api/users/')).data
         console.log(users)
 
-        let operators = users.filter(user => user.userType === "OPERATOR")
-        for (const operator of operators) {
-          console.log(operator)
-          try {
-            let operatorData = await apiRequest.get( `/api/users/${operator._id}`)
-            console.log(operatorData.data.user)
-          } catch (e) {}
-        }
+        this.operators = users.filter(user => user.userType === "OPERATOR")
+        console.log(this.operators)
+        console.log(this.operators[0])
       } catch (e) {}
     }
   }

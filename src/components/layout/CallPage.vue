@@ -63,24 +63,24 @@
             <div class="call-timer-time">10:32:12 - 10:33:31</div>
           </div>
         </div>
-        <div class="call-status">
-          <div class="call-status-header">СТАТУС ЗВОНКА</div>
-          <div class="call-status-buttons">
-            <div
-                    class="call-status-button"
-                    :class="{active : status==='solved'}"
-                    @click="toggleStatus('solved')"
-            >
-              Решено
-            </div>
-            <div
-                    class="call-status-button red"
-                    :class="{active : status==='unsolved'}"
-                    @click="toggleStatus('unsolved')">
-              Не могу помочь
-            </div>
-          </div>
-        </div>
+<!--        <div class="call-status">-->
+<!--          <div class="call-status-header">СТАТУС ЗВОНКА</div>-->
+<!--          <div class="call-status-buttons">-->
+<!--            <div-->
+<!--                    class="call-status-button"-->
+<!--                    :class="{active : status==='solved'}"-->
+<!--                    @click="toggleStatus('solved')"-->
+<!--            >-->
+<!--              Решено-->
+<!--            </div>-->
+<!--            <div-->
+<!--                    class="call-status-button red"-->
+<!--                    :class="{active : status==='unsolved'}"-->
+<!--                    @click="toggleStatus('unsolved')">-->
+<!--              Не могу помочь-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
         <div class="call-chat">
           <div class="call-chat-header">КОММЕНТАРИЙ ОПЕРАТОРА</div>
           <div class="call-chat-box">

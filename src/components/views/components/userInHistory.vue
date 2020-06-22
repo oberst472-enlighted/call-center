@@ -1,11 +1,11 @@
 <template>
   <div class="userInHistory">
     <hr>
-    <div class="call" @click="$router.push('/operator-list/1')">
+    <div class="call" @click="$router.push(`/operator-list/${data._id}`)">
       <div class="call-left">
-        <div class="call-left-date">оператор # 0011</div>
-        <div class="call-left-name">Евгений</div>
-        <div class="call-left-name">Петров</div>
+        <div class="call-left-date">оператор # {{data.number}}</div>
+        <div class="call-left-name">{{data.firstName}}</div>
+        <div class="call-left-name">{{data.lastName}}</div>
       </div>
       <div class="call-right">
         <div class="call-right-status">Свободен</div>
@@ -22,7 +22,9 @@
       return {}
     },
     components: {},
-    props: {}
+    props: {
+      data: Object,
+    }
   }
 </script>
 

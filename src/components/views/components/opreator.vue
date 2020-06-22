@@ -1,12 +1,12 @@
 <template>
-  <div class="terminal-wraper">
+  <div class="operator-wraper">
     <hr>
-    <div class="operator" @click="$router.push('/operator-list/1')">
+    <div class="operator" @click="$router.push(`/operator-list/${data._id}`)">
       <img src="../../../assets/images/user2.png" alt="" class="operator-img">
       <div class="operator-block">
-        <div class="operator-text">оператор # 0011</div>
-        <div class="operator-name">Евгений</div>
-        <div class="operator-name">Петров</div>
+        <div class="operator-text">оператор # {{data.number}}</div>
+        <div class="operator-name">{{data.firstName}}</div>
+        <div class="operator-name">{{data.lastName}}</div>
       </div>
       <div class="operator-actions">
         <div class="operator-status">Онлайн</div>
@@ -18,12 +18,15 @@
 
 <script>
   export default {
-    name: "operator"
+    name: "operator",
+    props: {
+      data: Object,
+    }
   }
 </script>
 
 <style lang='scss'>
-  .terminal-wraper{
+  .operator-wraper{
     padding: 0 10px;
     width: 33%;
     height: 86px;

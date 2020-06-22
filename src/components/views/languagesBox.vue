@@ -5,12 +5,12 @@
       <div style="cursor: pointer" class="box-header-btn" @click="$router.push('/add-language')">Добавить
       </div>
     </div>
-    <div class="box-body">
+    <div class="box-body" v-if="languages">
       <template v-for="(item, index) in languages">
         <div class="lang" :key="index">
           <div class="lang-left">
             <div class="lang-left-icon">
-              <img :src="require(`../../assets/icons/${item.icon}`)" alt="" class="" />
+              <img :src="`https://calls-dev.enlighted.ru${item.icon}`" alt="" class="" />
 
             </div>
             <div class="lang-left-text">{{item.title}}</div>
@@ -39,27 +39,24 @@
 </template>
 
 <script>
+  import apiRequest from "../../utils/apiRequest";
+
   export default {
     name: "languagesBox",
     data(){
       return {
-        languages: [
-          {
-            icon: 'rus.png',
-            title: 'РУССКИЙ'
-          },
-          {
-            icon: 'eng.png',
-            title: 'ENGLISH'
-          },
-        ],
-        activePopup: null
+        languages: null,
       }
     },
     methods:{
       setPopup(type){
         this.$store.dispatch('popup/setPopup', type)
       }
+    },
+    async created() {
+      this.languages = (await apiRequest.get( '/api//langs/')).data
+
+      console.log(this.languages)
     }
   }
 </script>

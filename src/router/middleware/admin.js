@@ -1,5 +1,5 @@
 export default function auth ({ next, store }){
-  if(store.state.userStatus !== 'admin'){
+  if((sessionStorage.getItem('userType') && sessionStorage.getItem('userType')) !== 'admin'){
     return next({
       path: '/dashboard'
     })

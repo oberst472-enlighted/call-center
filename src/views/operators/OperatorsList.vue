@@ -13,26 +13,33 @@
       </div>
     </div>
     <div class="operators">
-      <opreator/>
-      <opreator/>
-      <opreator/>
-      <opreator/>
-      <opreator/>
-      <opreator/>
-      <opreator/>
-      <opreator/>
-      <opreator/>
-
+      <opreator v-for="operator in operators" :key="operator._id" :data="operator"/>
     </div>
   </div>
 </template>
 
 <script>
   import opreator from "../../components/views/components/opreator";
+  import apiRequest from "../../utils/apiRequest";
 
   export default {
     name: "OperatorsList",
-    components: { opreator }
+    components: { opreator },
+    data() {
+      return {
+        operators: null
+      }
+    },
+    async created(){
+      try {
+        let users = (await apiRequest.get( '/api/users/')).data
+        console.log(users)
+
+        this.operators = users.filter(user => user.userType === "OPERATOR")
+        console.log(this.operators)
+        console.log(this.operators[0])
+      } catch (e) {}
+    }
   }
 </script>
 

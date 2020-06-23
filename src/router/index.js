@@ -61,13 +61,13 @@ VueRouter.prototype.push = function push(location) {
     {
       path: '/operator-list',
       name: 'operator-list',
-      meta: { layout: "main-layout", gotForward: true, middleware: [ user, admin ]},
+      meta: { layout: "main-layout", gotForward: true, middleware: [ user ]},
       component: () => import('../views/operators/OperatorsList')
     },
     {
       path: '/operator-list/:id',
       name: 'operator-page',
-      meta: { layout: "main-layout", gotForward: true, middleware: [ user, admin ]},
+      meta: { layout: "main-layout", gotForward: true, middleware: [ user ]},
       component: () => import('../views/operators/OperatorPage')
     },
     {

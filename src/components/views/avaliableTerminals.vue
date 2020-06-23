@@ -6,30 +6,29 @@
         <div class="sub_header">Доступные вам терминалы</div>
       </div>
     </div>
-    <div class="terminals">
-      <terminal/>
-      <terminal/>
-      <terminal/>
-      <terminal/>
-      <terminal/>
-      <terminal/>
-      <terminal/>
-      <terminal/>
-      <terminal/>
+    <div class="terminals" v-if="terminals">
+      <terminal v-for="(terminal, index) in terminals" :key="index" :data="terminal"/>
+
     </div>
   </div>
 </template>
 
 <script>
   import terminal from "./components/terminal";
+  import apiRequest from "../../utils/apiRequest";
   export default {
     name: "avaliableTerminals",
     components: { terminal },
     data(){
       return {
+        terminals: null,
         showButtons: true,
         activeToggle: 'list'
       }
+    },
+    async created() {
+      this.terminals = (await apiRequest.get( '/api/devices/')).data
+      console.log(this.terminals)
     }
   }
 </script>
@@ -37,7 +36,7 @@
 <style lang='scss'>
 #avaliable_terminals{
   width: 100%;
-  height: 366px;
+  min-height: 366px;
   box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);
   border-radius: 8px;
   background-color: #ffffff;
@@ -103,8 +102,8 @@
     margin-top: 15px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: stretch;
   }
 }
 </style>

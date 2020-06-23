@@ -50,14 +50,18 @@
     components: {callInHistory},
     data() {
       return {
-        operator: null
+        operator: null,
+        calls: null
       }
     },
     async mounted() {
       try {
         this.operator = (await apiRequest.get( `/api/users/${this.$route.params.id}`)).data.user
         console.log(this.operator)
+        console.log(`/api/users/${this.$route.params.id}/calls/`)
 
+        this.calls = (await apiRequest.get( `/api/users/${this.$route.params.id}/calls/`)).data.user
+        console.log(this.calls)
       } catch (e) {}
     }
   }

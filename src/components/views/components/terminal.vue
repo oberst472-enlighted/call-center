@@ -1,18 +1,29 @@
 <template>
   <div class="terminal-wraper">
     <hr>
-    <div class="terminal" @click="$router.push('/call-terminals/1')">
-      <div class="terminal-status">Онлайн</div>
-      <div class="terminal-name">Горький</div>
-      <div class="terminal-number">терминал #3612</div>
-      <div class="terminal-text">кассы</div>
+    <div class="terminal" @click="$router.push(`/call-terminals/${data.id}`)">
+      <div
+              class="terminal-status"
+              :style="!data.online ? 'background-color: #fceff2; color: #f3738c': ''"
+      >
+        {{ data.online? 'Онлайн': 'Не доступен'}}
+      </div>
+      <div class="terminal-name">{{data.term.title}}</div>
+      <div class="terminal-number">терминал # {{data.term.id}}</div>
+      <div class="terminal-text">{{data.title}}</div>
     </div>
   </div>
 </template>
 
 <script>
   export default {
-    name: "terminal"
+    name: "terminal",
+    props: {
+      data: Object
+    },
+    mounted() {
+      // console.log(this.data)
+    }
   }
 </script>
 
@@ -29,6 +40,7 @@
     line-height: 13px;
 
     .terminal{
+      flex: 1 1 auto;
       cursor: pointer;
       margin: 12px 0;
       &-status{

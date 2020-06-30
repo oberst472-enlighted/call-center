@@ -1,7 +1,7 @@
 <template>
   <div class="call_in_history">
     <hr>
-    <div class="call" @click="$router.push('/call-list/1')">
+    <div class="call" @click="$router.push(`/call-list/1`)">
       <div class="call-left">
         <div class="call-left-date">20.05.2020  <span>10:32:12 - 10:33:31</span></div>
         <div class="call-left-name">Казанский Вокзал</div>
@@ -27,14 +27,14 @@
   export default {
     name: "callInHistory",
     props: {
-      operator: {
-        type: String,
-        default: 'false'
-      },
       chatStatus: {
         type: String,
         default: 'show'
-      }
+      },
+      data: Object
+    },
+    mounted() {
+      console.log(this.data)
     }
   }
 </script>

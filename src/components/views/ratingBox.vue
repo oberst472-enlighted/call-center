@@ -2,7 +2,7 @@
   <div id="ratingBox">
     <div class="box-header">Оценка качества обслуживания</div>
     <div class="box-body">
-      <div class="box-body-mark">{{mark.toFixed(1)}}</div>
+      <div class="box-body-mark">{{data.toFixed(1)}}</div>
       <div class="box-body-stars">
         <img v-for="i in markFixed" src="../../assets/icons/starBlue.png" :key='i' alt="">
         <img v-for="i in (5 - markFixed)" src="../../assets/icons/starGrey.png" :key='`${i} + 55`' alt="">
@@ -21,11 +21,10 @@
     },
     computed: {
       markFixed(){
-        return Math.round(this.mark)
+        return Math.round(this.data)
       }
     },
-    components: {},
-    props: {}
+    props: ['data']
   }
 </script>
 

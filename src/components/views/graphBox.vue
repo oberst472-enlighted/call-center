@@ -7,10 +7,10 @@
           <div class="label-row green"/>
           Дозвонились
         </div>
-        <div class="label">
-          <div class="label-row red"/>
-          Не дозвонились
-        </div>
+<!--        <div class="label">-->
+<!--          <div class="label-row red"/>-->
+<!--          Не дозвонились-->
+<!--        </div>-->
       </div>
       <canvas ref="myChart" class="chartjs-render-monitor" style="display: block; width: 100%; height: 90px"></canvas>
     </div>
@@ -25,36 +25,39 @@
       return {}
     },
     components: {},
-    props: {},
+    props: {
+      data: Array
+    },
     mounted() {
       let ctx = this.$refs.myChart.getContext('2d')
       Chart.defaults.global.legend.display = false;
-      Chart.defaults.global.tooltips.enabled = false;
+      Chart.defaults.global.tooltips.enabled = true;
       Chart.defaults.scale.gridLines.display = false;
 
       let myChart = new Chart(ctx, {
         type: 'line',
         fill: false,
         data: {
-          labels: ['8.00', '10.00', '12.00', '14.00', '16.00', '18.00', '20.00'],
-          color: ['green', 'red'],
+          labels:
+              [ '8.00', '10.00', '12.00', '14.00', '16.00', '18.00', '20.00'],
+          color: ['green'],
           datasets: [
             {
               lineTension: 0,
               pointRadius: 0,
-              data: [ 120, 140, 100, 80, 150, 120, 110, 100 , 120 ],
+              data: this.data,
               borderColor: ['#4fd161'],
               backgroundColor: ['#faf9f9']
             },
-            {
-              lineTension: 0,
-              pointRadius: 0,
-              fill: false,
-              data: [ 60, 30, 60, 60, 30, 60, 50, 50, 60 ],
-              borderColor: ['#f04265'],
-              backgroundColor: ['#f04265']
-
-            }
+            // {
+            //   lineTension: 0,
+            //   pointRadius: 0,
+            //   fill: false,
+            //   data: [ 60, 30, 60, 60, 30, 60, 50, 50, 60 ],
+            //   borderColor: ['#f04265'],
+            //   backgroundColor: ['#f04265']
+            //
+            // }
           ],
           options: {
             bezierCurve: false,

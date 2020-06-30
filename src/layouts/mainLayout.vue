@@ -3,6 +3,7 @@
     <CallPage
             v-show="$store.state.callLogic.showCallPage"
             :hangup="hangup"
+            :closeModal="closeModal"
     />
     <Sidebar />
     <div class="wrapper-scroll">
@@ -115,6 +116,7 @@
       hangup() {
         this.stop();
         this.socket.emit('bye');
+        this.socket.emit('change_status', 'UNAVALIABLE');
       },
 
 
@@ -133,6 +135,12 @@
           },
         });
         this.recorder.startRecording();
+      },
+
+      closeModal() {
+        console.log('WAITING')
+        this.socket.emit('change_status', 'WAITING');
+        this.$store.commit('callLogic/closeCallPage')
       },
 
       // ЗАКОНЧИТЬ ЗАПИСЫВАТЬ ЗАПИСЬ И ОТПРАВИТЬ НА СЕРВЕР
@@ -201,8 +209,6 @@
         document.getElementById('remoteVideo').srcObject = event.stream;
         this.startRecord();
       },
-
-
     },
     computed: {
       workStatus() {
@@ -218,6 +224,7 @@
     watch: {
       async workStatus(val){
         try {
+          console.log(val)
           if (val === 'online'){
             this.socket.emit('change_status', 'WAITING');
           } else if (val === 'break') {
@@ -244,8 +251,14 @@
       // } catch (e) {}
       //
       try {
-        let f = await apiRequest.get( '/api/calls/')
+        let userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
+        console.log(userId)
+        let f = await apiRequest.get( `/api/users/${userId}/calls/`)
         console.log(f.data)
+        f = await apiRequest.get( `/api/calls/`)
+        console.log(f.data)
+        f = await apiRequest.get( `/api/me/`)
+        console.error(f.data)
       } catch (e) {}
 
     }

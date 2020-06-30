@@ -17,27 +17,8 @@
 
       </div>
 
-      <div class="terminals">
-        <terminal/>
-        <terminal/>
-        <terminal/>
-        <terminal/>
-        <terminal/>
-        <terminal/>
-        <terminal/>
-        <terminal/>
-        <terminal/>
-        <terminal/>
-        <terminal/>
-        <terminal/>
-        <terminal/>
-        <terminal/>
-        <terminal/>
-        <terminal/>
-        <terminal/>
-        <terminal/>
-        <terminal/>
-        <terminal/>
+      <div class="terminals" v-if="terminals">
+        <terminal v-for="(terminal, index) in terminals" :key="index" :data="terminal"/>
       </div>
     </div>
 </template>
@@ -48,11 +29,13 @@
   import callWindow from "../../components/layout/callWindow";
   import callHistorySmall from "../../components/views/callHistorySmall";
   import terminal from "../../components/views/components/terminal";
+  import apiRequest from "../../utils/apiRequest";
   export default {
     name: "CallList",
     components: { callWindow , userStat, callHistorySmall, avaliableTerminals, terminal},
     data() {
       return {
+        terminals: null,
         activeMod: 'list'
       }
     },
@@ -65,6 +48,11 @@
           this.activeMod = 'list'
         }
       }
+    },
+    async created() {
+      this.terminals = (await apiRequest.get( '/api/devices/')).data
+      console.log(this.terminals)
+      console.log(this.terminals[0])
     }
   }
 </script>
@@ -151,8 +139,8 @@
     margin-top: 15px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-start;
+    align-items: stretch;
     .terminal-wraper{
       width: 20%;
     }

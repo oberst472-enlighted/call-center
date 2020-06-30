@@ -146,7 +146,7 @@
           data.append('video_file', blob, 'long.webm');
 
           console.log(data)
-          console.error(this.videoURL)
+          console.warn(this.videoURL)
           axios.patch(this.videoURL, data, {
             headers: {
               'Content-Type': 'multipart/form-data',
@@ -243,10 +243,10 @@
       //   console.log(f.data)
       // } catch (e) {}
       //
-      // try {
-      //   let f = await apiRequest.get( '/api/callcenters/')
-      //   console.log(f.data)
-      // } catch (e) {}
+      try {
+        let f = await apiRequest.get( '/api/calls/')
+        console.log(f.data)
+      } catch (e) {}
 
     }
 

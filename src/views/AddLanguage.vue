@@ -3,13 +3,13 @@
     <div class="header">
       <div class="header-text">Добавление языка</div>
     </div>
-    <div class="body">
+    <div class="body" v-if="newLanguage">
       <div class="label">Выберите язык:</div>
       <div class="select">
         <div class="select-box" @click.stop="selectLanguage('selectPopout')">
           <div class="select-box-left">
-            <img :src="require(`../assets/icons/${newLanguage.icon}`)" alt="">
-            <div>{{newLanguage.lang}}</div>
+            <img :src="`https://calls-dev.enlighted.ru${newLanguage.icon}`" alt="">
+            <div>{{newLanguage.title}}</div>
           </div>
           <img src="../assets/icons/arrows.png" alt="" class="select-box-right">
         </div>
@@ -26,8 +26,8 @@
           >
             <div class="select-box">
               <div class="select-box-left">
-                <img :src="require(`../assets/icons/${item.icon}`)" alt="">
-                <div>{{item.lang}}</div>
+                <img :src="`https://calls-dev.enlighted.ru${item.icon}`" alt="">
+                <div>{{item.title}}</div>
               </div>
             </div>
           </div>
@@ -41,24 +41,14 @@
 </template>
 
 <script>
+  import apiRequest from "../utils/apiRequest";
+
   export default {
     name: "AddLanguage",
     data() {
       return {
-        languages: [
-          {
-            lang: 'Русский',
-            icon: 'rus.png'
-          },
-          {
-            lang: 'Английский',
-            icon: 'eng.png'
-          }
-        ],
-        newLanguage: {
-          lang: 'Русский',
-          icon: 'rus.png'
-        },
+        languages: null,
+        newLanguage: null,
         data: true
       }
     },
@@ -81,6 +71,12 @@
           return '0'
         }
       }
+    },
+
+    async created() {
+      this.languages = (await apiRequest.get( '/api/langs/')).data
+
+      this.newLanguage = this.languages[0]
     },
     components: {},
     props: {}
@@ -135,6 +131,7 @@
         }
         img{
           display: block;
+          height: 15px;
         }
       }
       &-container{

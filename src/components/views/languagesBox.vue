@@ -10,7 +10,7 @@
         <div class="lang" :key="index">
           <div class="lang-left">
             <div class="lang-left-icon">
-              <img :src="`https://calls-dev.enlighted.ru${item.icon}`" alt="" class="" />
+              <img :src="`https://calls-dev.enlighted.ru${item.icon}`" alt="" />
 
             </div>
             <div class="lang-left-text">{{item.title}}</div>
@@ -54,9 +54,7 @@
       }
     },
     async created() {
-      this.languages = (await apiRequest.get( '/api//langs/')).data
-
-      console.log(this.languages)
+      this.languages = (await apiRequest.get( '/api/langs/')).data
     }
   }
 </script>
@@ -111,6 +109,11 @@
           &-icon{
             display: block;
             margin-right: 7px;
+            height: 21px;
+            img{
+              height: 21px;
+              display: block
+            }
           }
         }
         &-right{

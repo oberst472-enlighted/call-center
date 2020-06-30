@@ -26,7 +26,7 @@
         <div class="col">
           <div class="label">Телефон:</div>
           <div class="input">
-            <input class="input-field" type="tel" v-model="newUser.phone"/>
+            <input class="input-field" type="tel" v-model="newUser.phone" v-mask="'+###-###-##-##'" />
           </div>
         </div>
       </div>
@@ -42,11 +42,15 @@
       <div class="body-col" style="padding: 0">
         <div class="col">
           <div class="label">Язык:</div>
-          <div class="input radio">
-            <span class="checkmark" @click="newUser.language = 'ru'" :class="{active: newUser.language === 'ru'}"></span>
-            <div @click="newUser.language = 'ru'">Русский</div>
-            <span class="checkmark" @click="newUser.language = 'en'" :class="{active: newUser.language === 'en'}"></span>
-            <div @click="newUser.language = 'en'">English</div>
+          <div class="input radio" v-if="languages">
+            <template v-for="language in languages">
+              <span  :key="language.title"
+                     class="checkmark"
+                     :class="{active: newUser.languages.includes(language.title)}"
+                     @click="toggleLanguage(language.title)"
+              />
+              <div @click="toggleLanguage(language.title)">{{language.title}}</div>
+            </template>
           </div>
         </div>
         <div class="col" />
@@ -59,30 +63,69 @@
         <div class="col" />
       </div>
     </div>
-    <div class="button" @click="submitButton">Сохранить</div>
+    <div class="button" @click="submitButton" :class="isFormValid? '' : 'disabled'">Сохранить</div>
   </div>
 </template>
 
 <script>
+  import apiRequest from "../utils/apiRequest";
+
   export default {
     name: "OperatorNew",
     data() {
       return {
+        languages: null,
         newUser: {
-          firstName: null,
-          lastName: null,
-          email: null,
-          phone: null,
-          language: null,
-          password: null,
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          languages: [],
+          password: '',
           file: null
         },
         isActive: false
       }
     },
+    computed: {
+      isFormValid() {
+        return (
+            this.newUser.firstName.length > 3 &&
+            this.newUser.lastName.length > 3 &&
+            this.newUser.email.includes('@') &&
+            this.newUser.phone.length === 14 &&
+            this.newUser.password.length > 8 &&
+            this.newUser.languages.length
+        )
+      }
+    },
     methods: {
-      submitButton(){
-        console.log(this.newUser)
+      toggleLanguage(val) {
+        if (this.newUser.languages.includes(val)) {
+          let id = this.newUser.languages.findIndex((i) => i === val)
+          this.newUser.languages.splice(id, 1)
+        } else {
+          this.newUser.languages.push(val)
+        }
+      },
+      async submitButton(){
+        if (!this.isFormValid) { return }
+        console.log(this.newUser.phone.length)
+        try {
+          await apiRequest.post('/api/users', {
+            username: this.newUser.firstName,
+            password: this.newUser.password,
+            callCenterId: 'dev',
+            userType: 'operator',
+            number: 0,
+            firstName: this.newUser.firstName,
+            phone: this.newUser.phone,
+            langs: this.newUser.languages,
+            email: this.newUser.email
+          })
+        } catch (e) {
+          console.log(e)
+        }
       },
       clickOnUpload(){
         document.getElementById('selectFile').click();
@@ -98,7 +141,11 @@
       },
     },
     components: {},
-    props: {}
+    props: {},
+    async created() {
+      this.languages = (await apiRequest.get( '/api/langs/')).data
+      console.log(this.languages)
+    },
   }
 </script>
 
@@ -109,6 +156,9 @@
   border-radius: 8px;
   background-color: #ffffff;
   padding: 21px;
+  .disabled{
+    background-color: #888888 !important;
+  }
   .header{
     display: flex;
     align-items: center;

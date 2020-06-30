@@ -14,7 +14,7 @@
         <div class="viewport-call-status">ПАССАЖИРОМ</div>
         <div
                 class="viewport-call-button"
-                @click="$store.commit('callLogic/closeCallPage')"
+                @click="closeModal()"
         >ПРОДОЛЖИТЬ РАБОТУ</div>
         <div class="viewport-call-time">00:00:10</div>
       </div>
@@ -47,7 +47,8 @@
           </div>
         </div>
         <div class="call-window-end" v-else>
-          <img src="../../assets/icons/Telephone.png" style="margin-right: 15px" alt="">ЗВОНОК ЗАВЕРШЕН
+          <img src="../../assets/icons/Telephone.png" style="margin-right: 15px" alt="">
+          ЗВОНОК ЗАВЕРШЕН
         </div>
       </div>
       <div class="col">
@@ -102,6 +103,7 @@
     name: "CallPage",
     props: {
       hangup: Function,
+      closeModal: Function
     },
 
     methods: {

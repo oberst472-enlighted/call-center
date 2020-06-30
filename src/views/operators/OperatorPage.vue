@@ -31,11 +31,7 @@
           </div>
         </div>
         <div class="calls-list">
-          <callInHistory />
-          <callInHistory />
-          <callInHistory />
-          <callInHistory />
-          <callInHistory />
+          <callInHistory v-for="(call, index) in calls" :key="index" :data="call"/>
         </div>
       </div>
     </div>
@@ -57,11 +53,11 @@
     async mounted() {
       try {
         this.operator = (await apiRequest.get( `/api/users/${this.$route.params.id}`)).data.user
-        console.log(this.operator)
-        console.log(`/api/users/${this.$route.params.id}/calls/`)
+        // console.log(this.operator)
+        // console.log(`/api/users/${this.$route.params.id}/calls/`)
 
-        this.calls = (await apiRequest.get( `/api/users/${this.$route.params.id}/calls/`)).data.user
-        console.log(this.calls)
+        this.calls = (await apiRequest.get( `/api/users/${this.$route.params.id}/calls/`)).data
+        // console.log(this.calls)
       } catch (e) {}
     }
   }

@@ -27,8 +27,8 @@ export default {
     layout() {
       return this.$route.meta.layout;
     },
-    workStatus() {
-      return this.$store.state.workStatus
+    isActiveWorkShift() {
+      return this.$store.state.isActiveWorkShift
     }
   },
   mounted() {
@@ -50,8 +50,9 @@ export default {
     }
   },
   watch: {
-    workStatus(val){
-      if (val === 'online') {
+    isActiveWorkShift(val){
+      console.log(val)
+      if (val) {
         this.interval = setInterval(() => {
           this.$store.commit('incrementTime')
         }, 1000)

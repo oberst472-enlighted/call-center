@@ -2,14 +2,14 @@
   <div id="DashBoard">
     <div class="row">
       <div class="col-left">
-        <statusAdminDashboard v-if="$store.state.userStatus === 'admin'" />
+        <statusAdminDashboard v-if="$store.state.userStatus === 'admin'  && statistics" :data="statistics"/>
         <statusOperatorDashboard v-else-if="$store.state.userStatus === 'operator'"/>
         <div class="row" v-if="$store.state.userStatus === 'admin'">
           <div class="col">
-            <graphBox />
+            <graphBox :data="graphData" />
           </div>
-          <div class="col">
-            <ratingBox />
+          <div class="col" v-if="statistics">
+            <ratingBox :data="statistics.callsHelpfulness"/>
           </div>
         </div>
         <div class="row">
@@ -43,6 +43,7 @@
   import ratingBox from "../components/views/ratingBox";
   import callHistoryBig from "../components/views/callHistoryBig";
   import usersSmall from "../components/views/usersSmall";
+  import apiRequest from "../utils/apiRequest";
   export default {
     name: "Home",
     components: {
@@ -59,6 +60,22 @@
     },
     props: {
       answer: Function,
+    },
+    data(){
+      return {
+        statistics: null,
+        graphData: []
+      }
+    },
+    async created() {
+      try {
+        this.statistics = (await apiRequest.get( `/api/callcenters/1111/stat/`)).data
+        let times = ['8', '10', '12', '14', '16', '18', '20']
+        times.forEach((time) => {
+          this.graphData.push(this.statistics.callsSuccessRate[time] * 100)
+        })
+
+      } catch (e) {}
     }
   }
 </script>

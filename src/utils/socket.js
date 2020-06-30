@@ -59,6 +59,7 @@ export default {
         this.$store.commit('callLogic/endCall')
 
         this.socket.emit('leave', callId, 'operator');
+        this.socket.emit('change_status', 'UNAVALIABLE');
 
         if (this.$store.state.isCallInProgress) {
           this.stop();
@@ -106,14 +107,19 @@ export default {
       }).then(this.gotStream).catch((e) => {
         console.log(e);
       });
-      this.socket.emit('change_status', 'WAITING');
+
+      if (this.workStatus === 'online') {
+        this.socket.emit('change_status', 'WAITING');
+      } else {
+        this.socket.emit('change_status', 'UNAVALIABLE');
+      }
 
     }
   },
 
   async mounted() {
     // ЕСЛИ ПОЛЬЗОВАТЕЛЬ ОПЕРАТОР ВКЛЮЧАЕТСЯ ЛОГИКА ЗВОНКА
-    if (this.isActiveWorkShift && this.workStatus === 'online'){
+    if (this.isActiveWorkShift){
       this.initSocket()
     }
   },
@@ -123,7 +129,9 @@ export default {
       if (sessionStorage.getItem('userType') || localStorage.getItem('userType') === 'operator') {
         if (val) {
           this.initSocket()
+          this.socket.emit('change_status', 'WAITING');
         } else {
+          this.socket.emit('change_status', 'UNAVALIABLE');
           this.socket = null
         }
       }

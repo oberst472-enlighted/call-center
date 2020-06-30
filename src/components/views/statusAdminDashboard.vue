@@ -6,7 +6,7 @@
     <div class="row">
       <div class="col">
         <div class="col-name">операторов на <br> линии</div>
-        <div class="col-num">125</div>
+        <div class="col-num">{{data.operatorsOnline}}</div>
 
         <hr style="background-color: #65528b">
 
@@ -14,7 +14,7 @@
       </div>
       <div class="col">
         <div class="col-name">активных <br> звонков</div>
-        <div class="col-num">123</div>
+        <div class="col-num">{{data.callsInProgress}}</div>
 
         <hr style="background-color: #4fd161">
 
@@ -22,7 +22,7 @@
       </div>
       <div class="col">
         <div class="col-name">ОЧЕРЕДЬ <br> ЗВОНКОВ</div>
-        <div class="col-num">123</div>
+        <div class="col-num">{{data.callsWaiting}}</div>
 
         <hr style="background-color: #65528b">
 
@@ -30,7 +30,12 @@
       </div>
       <div class="col">
         <div class="col-name">среднее время <br> звонк</div>
-        <div class="col-num" style="font-size: 20px">2 <span style="font-size: 12px">мин</span> 40 <span style="font-size: 13px">сек</span></div>
+        <div class="col-num" style="font-size: 20px">
+          {{Math.floor(data.callsAverageTime / 60)}}
+          <span style="font-size: 12px">мин</span>
+          {{data.callsAverageTime % 60}}
+          <span style="font-size: 13px">сек</span>
+        </div>
 
         <hr style="background-color: #f04265">
 
@@ -42,7 +47,11 @@
 
 <script>
   export default {
-    name: "statusDashboard"
+    name: "statusDashboard",
+    props: ['data'],
+    mounted() {
+      console.log(this.data)
+    }
   }
 </script>
 

@@ -70,12 +70,15 @@
     async created() {
       try {
         this.statistics = (await apiRequest.get( `/api/callcenters/1111/stat/`)).data
+        // console.log(this.statistics)
         let times = ['8', '10', '12', '14', '16', '18', '20']
         times.forEach((time) => {
           this.graphData.push(this.statistics.callsSuccessRate[time] * 100)
         })
 
-      } catch (e) {}
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 </script>

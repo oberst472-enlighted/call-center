@@ -51,8 +51,8 @@
     },
     async created() {
       this.terminals = (await apiRequest.get( '/api/devices/')).data
-      console.log(this.terminals)
-      console.log(this.terminals[0])
+      // console.log(this.terminals)
+      // console.log(this.terminals[0])
     }
   }
 </script>

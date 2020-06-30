@@ -51,7 +51,6 @@ export default {
   },
   watch: {
     isActiveWorkShift(val){
-      console.log(val)
       if (val) {
         this.interval = setInterval(() => {
           this.$store.commit('incrementTime')

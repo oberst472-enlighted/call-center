@@ -1,4 +1,5 @@
 import axios from 'axios'
+import router from "../router";
 import {API_URL} from '../config/types.js'
 import Vue from 'vue'
 
@@ -7,7 +8,16 @@ const request = (callback) => {
   return new Promise((resolve, reject) => {
     callback
         .then(data => resolve(data))
-        .catch(e => reject((e)));
+        .catch(e => {
+          if (e.message === 'Request failed with status code 401') {
+            localStorage.clear()
+            sessionStorage.clear()
+            router.push('/login')
+          }
+          else{
+            console.error(e)
+          }
+        });
   })
 }
 

@@ -252,14 +252,14 @@
       //
       try {
         let userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
-        console.log(userId)
         let f = await apiRequest.get( `/api/users/${userId}/calls/`)
-        console.log(f.data)
+        // console.log(f.data)
         f = await apiRequest.get( `/api/calls/`)
-        console.log(f.data)
+        // console.log(f.data)
         f = await apiRequest.get( `/api/me/`)
-        console.error(f.data)
-      } catch (e) {}
+        // console.error(f.data)
+      } catch (e) {
+      }
 
     }
 

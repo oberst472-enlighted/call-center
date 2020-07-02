@@ -8,11 +8,7 @@
       <img style="cursor: pointer" class="head-dots" src="../../assets/icons/ThreeDots.svg" alt=""/>
     </div>
     <div class="calls-list">
-      <callInHistory />
-      <callInHistory />
-      <callInHistory />
-      <callInHistory />
-      <callInHistory />
+      <callInHistory v-for="(item, index) in data" :key="index" :data="item"/>
     </div>
   </div>
 </template>
@@ -21,7 +17,10 @@
   import callInHistory from "./components/callInHistory";
   export default {
     name: "callHistory",
-    components: {callInHistory}
+    components: {callInHistory},
+    props: {
+      data: Array
+    },
   }
 </script>
 

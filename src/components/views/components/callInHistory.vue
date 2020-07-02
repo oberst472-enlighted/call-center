@@ -3,21 +3,24 @@
     <hr>
     <div class="call" @click="$router.push(`/call-list/1`)">
       <div class="call-left">
-        <div class="call-left-date">20.05.2020  <span>10:32:12 - 10:33:31</span></div>
-        <div class="call-left-name">Казанский Вокзал</div>
-        <div class="call-left-terminal">терминал #3462</div>
-        <div class="call-left-text">зал ожидания</div>
+        <div class="call-left-date">{{dateCall}}  <span>{{startTime}} - {{endTime}}</span></div>
+        <div class="call-left-name">{{data.device.term.title}}</div>
+        <div class="call-left-terminal">терминал #{{data.device.term.id}}</div>
+        <div class="call-left-text">{{data.device.title}}</div>
       </div>
       <div class="call-right">
-        <div class="call-right-status">Решено</div>
+        <div class="call-right-status" v-if="data.status === 'SUCCESS'">Решено</div>
         <img v-if="chatStatus === 'show'" src="../../../assets/icons/Write.svg" alt="">
       </div>
     </div>
-    <div class="operator">
+    <div
+            class="operator"
+            v-if="!userIsOperator"
+    >
       <img src="../../../assets/images/user2.png" alt="" class="operator-img">
       <div class="operator-block">
-        <div class="operator-text">Елена Авантюрова</div>
-        <div class="operator-text">оператор # 0011</div>
+        <div class="operator-text">{{data.operator.firstName}} {{data.operator.lastName}}</div>
+        <div class="operator-text">оператор # {{data.operator.number}}</div>
       </div>
     </div>
   </div>
@@ -33,8 +36,19 @@
       },
       data: Object
     },
-    mounted() {
-      console.log(this.data)
+    computed: {
+      userIsOperator() {
+        return localStorage.getItem('userType') && localStorage.getItem('userType') === 'operator'
+      },
+      dateCall() {
+        return this.data.startTime.split('T')[0].split('-').reverse().join('.')
+      },
+      startTime() {
+        return this.data.startTime.split('T')[1].split('.')[0]
+      },
+      endTime() {
+        return this.data.endTime.split('T')[1].split('.')[0]
+      }
     }
   }
 </script>

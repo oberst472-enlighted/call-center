@@ -2,14 +2,14 @@
   <div id="DashBoard">
     <div class="row">
       <div class="col-left">
-        <statusAdminDashboard v-if="$store.state.userStatus === 'admin'  && statistics" :data="statistics"/>
-        <statusOperatorDashboard v-else-if="$store.state.userStatus === 'operator'"/>
+        <statusAdminDashboard v-if="$store.state.userStatus === 'admin'  && statisticsAdmin" :data="statisticsAdmin"/>
+        <statusOperatorDashboard v-else-if="$store.state.userStatus === 'operator'  && $store.state.userData" />
         <div class="row" v-if="$store.state.userStatus === 'admin'">
           <div class="col">
             <graphBox :data="graphData" />
           </div>
-          <div class="col" v-if="statistics">
-            <ratingBox :data="statistics.callsHelpfulness"/>
+          <div class="col" v-if="statisticsAdmin">
+            <ratingBox :data="statisticsAdmin.callsHelpfulness"/>
           </div>
         </div>
         <div class="row">
@@ -26,7 +26,10 @@
                 :answer="answer"
         />
         <usersSmall v-if="$store.state.userStatus === 'admin'"/>
-        <callHistorySmall v-else-if="$store.state.userStatus === 'operator'" />
+        <callHistorySmall
+                v-else-if="$store.state.userStatus === 'operator' && callsOperator"
+                :data="callsOperator"
+        />
       </div>
     </div>
   </div>
@@ -63,19 +66,28 @@
     },
     data(){
       return {
-        statistics: null,
-        graphData: []
+        statisticsAdmin: null,
+        statisticsOperator: null,
+        graphData: [],
+        callsOperator: null,
+        callsAdmin: null,
       }
     },
     async created() {
       try {
-        this.statistics = (await apiRequest.get( `/api/callcenters/1111/stat/`)).data
-        // console.log(this.statistics)
-        let times = ['8', '10', '12', '14', '16', '18', '20']
-        times.forEach((time) => {
-          this.graphData.push(this.statistics.callsSuccessRate[time] * 100)
-        })
-
+        if ((localStorage.getItem('userType') || sessionStorage.getItem('userType')) === 'operator') {
+          // this.statisticsOperator = (await apiRequest.get( `/api/me/`)).data.lastSessionStat
+          // console.hideProto(this.statisticsOperator)
+          let userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
+          this.callsOperator = (await apiRequest.get( `/api/users/${userId}/calls/`)).data
+        } else {
+          this.statisticsAdmin = (await apiRequest.get( `/api/callcenters/1111/stat/`)).data
+          let times = ['8', '10', '12', '14', '16', '18', '20']
+          times.forEach((time) => {
+            this.graphData.push(this.statisticsAdmin.callsSuccessRate[time] * 100)
+          })
+          this.callsAdmin = (await apiRequest.get( `/api/calls/`)).data
+        }
       } catch (e) {
         console.log(e)
       }

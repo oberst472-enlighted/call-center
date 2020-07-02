@@ -1,36 +1,35 @@
 <template>
   <tr class="table-row">
     <td height="55px" width="11%">
-      <div class="table_1">#00342</div>
+      <div class="table_1"># {{data.__v}}</div>
     </td>
     <td height="55px" width="11%">
       <div class="table_2">
-        <div>Казанский</div>
-        <div>Вокзал</div>
+        <div>{{data.device.term.title}}</div>
       </div>
     </td>
     <td height="55px" width="14%">
       <div class="table_3">
-        <div>#2134</div>
-        <div>зал ожидания</div>
+        <div>#{{data.device.term.id}}</div>
+        <div>{{data.device.title}}</div>
       </div>
     </td>
     <td height="55px" width="14%">
       <div class="table_4">
-        <div>20.05.2020</div>
-        <div>10:32:12 - 10:33:31</div>
+        <div>{{dateCall}}</div>
+        <div>{{startTime}} - {{endTime}}</div>
       </div>
     </td>
     <td height="55px" width="12.5%">
-      <div class="table_5">Русский</div>
+      <div class="table_5">{{data.language}}</div>
     </td>
     <td height="55px" width="12.5%">
-      <div class="table_6">Решено</div>
+      <div class="table_6" v-if="data.status === 'SUCCESS'">Решено</div>
     </td>
     <td height="55px" width="14%">
       <div class="table_7">
-        <div>Елена</div>
-        <div>Авантюрова</div>
+        <div>{{data.operator.firstName}}</div>
+        <div>{{data.operator.lastName}}</div>
       </div>
     </td>
     <td height="55px" width="11%">
@@ -43,7 +42,24 @@
 
 <script>
   export default {
-    name: "callInTable"
+    name: "callInTable",
+    props: {
+      data: Object
+    },
+    computed: {
+      userIsOperator() {
+        return localStorage.getItem('userType') && localStorage.getItem('userType') === 'operator'
+      },
+      dateCall() {
+        return this.data.startTime.split('T')[0].split('-').reverse().join('.')
+      },
+      startTime() {
+        return this.data.startTime.split('T')[1].split('.')[0]
+      },
+      endTime() {
+        return this.data.endTime.split('T')[1].split('.')[0]
+      }
+    }
   }
 </script>
 

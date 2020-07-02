@@ -251,14 +251,19 @@
       // } catch (e) {}
       //
       try {
-        let userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
-        let f = await apiRequest.get( `/api/users/${userId}/calls/`)
-        // console.log(f.data)
-        f = await apiRequest.get( `/api/calls/`)
-        // console.log(f.data)
-        f = await apiRequest.get( `/api/me/`)
-        // console.error(f.data)
+
+        await this.$store.dispatch('fetchUserData')
+        // let userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
+        // let f = await apiRequest.get( `/api/users/${userId}/calls/`)
+        // console.hideProto(f.data, 'user calls')
+        // f = await apiRequest.get( `/api/calls/`)
+        // console.hideProto(f.data, 'all calls')
+        // f = await apiRequest.get( `/api/devices/148_IvanovoSynergo`)
+        // console.hideProto(f.data, 'terminal by id')
+
+
       } catch (e) {
+        await this.$store.dispatch('logOut')
       }
 
     }

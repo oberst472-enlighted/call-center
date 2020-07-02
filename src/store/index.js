@@ -12,8 +12,7 @@ export default new Vuex.Store({
     workStatus: null,
     userStatus: null,
     isActiveWorkShift: false,
-    // Logic for popup
-
+    userData: null
   },
   mutations: {
     incrementTime(state) {
@@ -42,6 +41,9 @@ export default new Vuex.Store({
       state.isActiveWorkShift = status
       localStorage.setItem('isActiveWorkShift', status)
     },
+    setUserData(state, data) {
+      state.userData = data
+    }
   },
   actions: {
     startWorkShift({commit}){
@@ -87,13 +89,23 @@ export default new Vuex.Store({
         commit('toggleWorkingStatus', 'break')
         commit('setWorkShiftStatus', false)
       }
-
-
     },
     async logOut({state}){
       // clearing all storages
       localStorage.clear()
       sessionStorage.clear()
+    },
+    async fetchUserData({commit}) {
+      if (localStorage.getItem('userType') && localStorage.getItem('userType') === 'operator') {
+        let userInfo = (await apiRequest.get( `/api/me/`)).data
+
+        commit('setUserData', userInfo)
+      } else {
+        let userInfo = (await apiRequest.get(`/api/users/${localStorage.getItem('userId')}/`)).data
+
+        commit('setUserData', userInfo)
+      }
+
     }
   },
   modules: {

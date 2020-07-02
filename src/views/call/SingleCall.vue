@@ -29,8 +29,8 @@
       </div>
       <div class="body-right">
 
-        <video v-if="video">
-          <source :src="video">
+        <video v-if="videoStream">
+          <source :src="videoStream">
         </video>
         <div class="play_btn" @click="toggleModalStatus">
           <img src="../../assets/icons/PlayWhite.png" alt="">
@@ -59,7 +59,7 @@
         call: null,
         operator: null,
         modalStatus: false,
-        video: null
+        videoStream: null
       }
     },
     computed: {
@@ -84,8 +84,15 @@
       console.hideProto(this.call, 'call by id')
       this.operator = (await apiRequest.get(`/api/users/${this.call.operator}/`)).data.user
 
-      this.video = (await apiRequest.getVideo(`http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream`))
-      console.log(this.video)
+      try {
+        let response = await apiRequest.getVideo(`http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream`)
+        console.log(response)
+        this.videoStream = response
+        console.log(this.videoStream)
+      } catch (e) {
+        console.log(e)
+      }
+
 
       if (this.$route.query.open === 'yes'){
         this.modalStatus = true

@@ -1,24 +1,24 @@
 <template>
-  <div id="SingleCall">
+  <div id="SingleCall" v-if="call">
     <div class="header">
-      <div class="header-text">Звонок #{{$route.params.id}}</div>
+      <div class="header-text">Звонок #{{call.__v}}</div>
     </div>
     <div class="body">
       <div class="body-left">
         <div class="time">
-          <div class="time-date">20.05.2020 МСК </div>
-          <div class="time-call_time">10:32:12 - 10:33:31</div>
+          <div class="time-date">{{dateCall}} МСК </div>
+          <div class="time-call_time">{{startTime}} - {{endTime}}</div>
         </div>
-        <div class="body-left-name">Казанский Вокзал</div>
-        <div class="body-left-terminal">терминал #3462</div>
-        <div class="body-left-text">зал ожидания</div>
+        <div class="body-left-name">{{call.device.term.title}}</div>
+        <div class="body-left-terminal">терминал #{{call.device.term.id}}</div>
+        <div class="body-left-text">{{call.device.title}}</div>
         <div class="body-left-status">Решено</div>
         <div class="comment">
-          <div class="comment-head">
+          <div class="comment-head" v-if="operator">
             <div class="comment-head-text">КОММЕНТАРИЙ ОПЕРАТОРА</div>
             <div class="comment-head-owner">
-              <div>оператор # 0012</div>
-              <div>Елена Авантюрова</div>
+              <div>оператор # {{operator.number}}</div>
+              <div>{{operator.firstName}} {{operator.lastName}}</div>
             </div>
           </div>
           <div class="comment-body">
@@ -28,8 +28,10 @@
         </div>
       </div>
       <div class="body-right">
-        <img src="../../assets/images/call1.png" alt="">
-        <img src="../../assets/images/admin2.png" alt="">
+
+        <video v-if="video">
+          <source :src="video">
+        </video>
         <div class="play_btn" @click="toggleModalStatus">
           <img src="../../assets/icons/PlayWhite.png" alt="">
         </div>
@@ -49,11 +51,26 @@
 
 <script>
   import forward from "../../components/UI/forward";
+  import apiRequest from "../../utils/apiRequest";
   export default {
     name: "SingleTerminal",
     data(){
       return{
-        modalStatus: false
+        call: null,
+        operator: null,
+        modalStatus: false,
+        video: null
+      }
+    },
+    computed: {
+      dateCall() {
+        return this.call.startTime.split('T')[0].split('-').reverse().join('.')
+      },
+      startTime() {
+        return this.call.startTime.split('T')[1].split('.')[0]
+      },
+      endTime() {
+        return this.call.endTime.split('T')[1].split('.')[0]
       }
     },
     methods: {
@@ -62,7 +79,14 @@
       },
     },
     components: { forward },
-    mounted() {
+    async mounted() {
+      this.call = (await apiRequest.get( `/api/calls/${this.$route.params.id}`)).data
+      console.hideProto(this.call, 'call by id')
+      this.operator = (await apiRequest.get(`/api/users/${this.call.operator}/`)).data.user
+
+      this.video = (await apiRequest.getVideo(`http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream`))
+      console.log(this.video)
+
       if (this.$route.query.open === 'yes'){
         this.modalStatus = true
       }

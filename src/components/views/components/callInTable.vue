@@ -34,7 +34,7 @@
     </td>
     <td height="55px" width="11%">
       <div class="table_8">
-        <img style="cursor: pointer" src="../../../assets/images/Play.png" alt="" @click="$router.push('/call-list/1?open=yes')">
+        <img style="cursor: pointer" src="../../../assets/images/Play.png" alt="" @click="$router.push(`/call-list/${data.id}?open=yes`)">
       </div>
     </td>
   </tr>

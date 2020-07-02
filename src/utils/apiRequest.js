@@ -37,6 +37,16 @@ export default class apiRequest {
     )
   }
 
+  static getVideo(path) {
+    return request(
+        axios({
+          method: 'get',
+          url: path,
+          headers: {'Authorization': 'Token 841604f050f5e9ec8fcab0489358215f571d4965'}
+        })
+    )
+  }
+
   static getPublic(path) {
     return request(axios.get(`${path}`));
   }

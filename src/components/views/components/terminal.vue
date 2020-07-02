@@ -1,7 +1,7 @@
 <template>
   <div class="terminal-wraper">
     <hr>
-    <div class="terminal" @click="$router.push(`/call-terminals/${data.id}`)">
+    <div class="terminal" @click="$router.push(`/call-terminals/${data.callCenterLogin}`)">
       <div
               class="terminal-status"
               :style="!data.online ? 'background-color: #fceff2; color: #f3738c': ''"

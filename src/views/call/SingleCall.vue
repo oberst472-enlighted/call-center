@@ -85,7 +85,7 @@
       this.operator = (await apiRequest.get(`/api/users/${this.call.operator}/`)).data.user
 
       try {
-        let response = await apiRequest.getVideo(`http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream`)
+        let response = await apiRequest.getVideo(`https://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream`)
         console.log(response)
         this.videoStream = response
         console.log(this.videoStream)

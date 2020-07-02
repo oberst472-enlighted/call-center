@@ -57,7 +57,6 @@
         // console.log(`/api/users/${this.$route.params.id}/calls/`)
 
         this.calls = (await apiRequest.get( `/api/users/${this.$route.params.id}/calls/`)).data
-        // console.log(this.calls)
       } catch (e) {}
     }
   }

@@ -9,6 +9,8 @@ const request = (callback) => {
     callback
         .then(data => resolve(data))
         .catch(e => {
+          console.error(e)
+
           if (e.message === 'Request failed with status code 401') {
             localStorage.clear()
             sessionStorage.clear()

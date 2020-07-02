@@ -13,6 +13,18 @@ import './assets/global.scss'
 Vue.config.productionTip = false
 Vue.use(VueCookies)
 
+// ADD METHOD TO LOG WITHOUT PROTO
+window.console.hideProto = function (data, title) {
+  console.group('-------------------GROUP---------------------')
+  if (title) {
+    console.log(title.toUpperCase())
+  }
+  console.log('')
+  console.dir(JSON.parse(JSON.stringify(data)))
+  console.log('')
+  console.groupEnd();
+}
+
 new Vue({
   router,
   store,

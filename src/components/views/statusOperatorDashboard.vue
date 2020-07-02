@@ -1,5 +1,5 @@
 <template>
-  <div id="statusOperatorDashboard">
+  <div id="statusOperatorDashboard" v-if="statistic">
     <div class="row">
       <div class="col">
         <div class="col-name">звонков <br> всего</div>

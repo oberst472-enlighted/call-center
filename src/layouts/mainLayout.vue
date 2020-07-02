@@ -250,19 +250,19 @@
       //   console.log(f.data)
       // } catch (e) {}
 
-      let f = await apiRequest.get( `/api/calls/`)
-      console.hideProto(f.data, 'all calls')
-
-
-
-      f = await apiRequest.get( `/api/calls/5efce7e86aa7f915db9edf87`)
-      console.hideProto(f.data, 'call by id')
-
-      f = await apiRequest.get( `/api/devices/`)
-      console.hideProto(f.data, 'all terminal')
-
-      f = await apiRequest.get( `/api/devices/dev`)
-      console.hideProto(f.data, 'terminal by id')
+      // let f = await apiRequest.get( `/api/calls/`)
+      // console.hideProto(f.data, 'all calls')
+      // //
+      // //
+      // //
+      // f = await apiRequest.get( `/api/calls/5efce7e86aa7f915db9edf87`)
+      // console.hideProto(f.data, 'call by id')
+      //
+      // f = await apiRequest.get( `/api/devices/`)
+      // console.hideProto(f.data, 'all terminal')
+      //
+      // f = await apiRequest.get( `/api/devices/dev`)
+      // console.hideProto(f.data, 'terminal by id')
 
       try {
 

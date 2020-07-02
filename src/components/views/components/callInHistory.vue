@@ -1,7 +1,7 @@
 <template>
   <div class="call_in_history">
     <hr>
-    <div class="call" @click="$router.push(`/call-list/1`)">
+    <div class="call" @click="$router.push(`/call-list/${data.id}`)">
       <div class="call-left">
         <div class="call-left-date">{{dateCall}}  <span>{{startTime}} - {{endTime}}</span></div>
         <div class="call-left-name">{{data.device.term.title}}</div>

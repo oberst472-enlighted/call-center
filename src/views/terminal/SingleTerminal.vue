@@ -1,17 +1,22 @@
 <template>
-  <div id="SingleTerminal">
+  <div id="SingleTerminal" v-if="terminal">
     <div class="header">
-      <div class="header-text">Терминал #{{$route.params.id}}</div>
+      <div class="header-text">Терминал # {{terminal.term.id}}</div>
     </div>
     <div class="body">
       <div class="body-left">
-        <div class="body-left-name">Казанский Вокзал</div>
-        <div class="body-left-terminal">терминал #3462</div>
-        <div class="body-left-text">зал ожидания</div>
-        <div class="body-left-status">Онлайн</div>
+        <div class="body-left-name">{{terminal.term.title}}</div>
+        <div class="body-left-terminal">терминал # {{terminal.term.id}}</div>
+        <div class="body-left-text">{{terminal.title}}</div>
+        <div
+                :style="!terminal.online ? 'background-color: #fceff2; color: #f3738c': ''"
+                class="body-left-status"
+        >
+          {{ terminal.online? 'Онлайн': 'Не доступен'}}
+        </div>
       </div>
-      <div class="body-right">
-        <img src="../../assets/images/terminal1.png" alt="">
+      <div class="body-right" v-if="terminal.picture">
+        <img :src="`https://calls-dev.enlighted.ru${terminal.picture}`" alt="">
       </div>
     </div>
   </div>
@@ -19,9 +24,23 @@
 
 <script>
   import forward from "../../components/UI/forward";
+  import apiRequest from "../../utils/apiRequest";
   export default {
     name: "SingleTerminal",
-    components: { forward }
+    components: { forward },
+    data() {
+      return {
+        terminal: null
+      }
+    },
+    async created() {
+      try {
+        this.terminal = (await apiRequest.get( `/api/devices/${this.$route.params.id}`)).data
+      } catch (e) {
+        this.$router.back()
+      }
+      console.log(this.terminal)
+    }
   }
 </script>
 
@@ -74,6 +93,11 @@
     }
     &-right{
       padding-left: 19px;
+      img{
+        display: block;
+        max-height: 330px;
+        object-fit: cover;
+      }
     }
   }
 }

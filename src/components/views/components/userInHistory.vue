@@ -24,6 +24,9 @@
     components: {},
     props: {
       data: Object,
+    },
+    created() {
+      console.log(this.data)
     }
   }
 </script>

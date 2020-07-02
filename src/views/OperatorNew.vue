@@ -110,7 +110,6 @@
       },
       async submitButton(){
         if (!this.isFormValid) { return }
-        console.log(this.newUser.phone.length)
         try {
           await apiRequest.post('/api/users', {
             username: this.newUser.firstName,
@@ -144,7 +143,6 @@
     props: {},
     async created() {
       this.languages = (await apiRequest.get( '/api/langs/')).data
-      console.log(this.languages)
     },
   }
 </script>

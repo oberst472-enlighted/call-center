@@ -12,8 +12,7 @@ export default new Vuex.Store({
     workStatus: null,
     userStatus: null,
     isActiveWorkShift: false,
-    // Logic for popup
-
+    userData: null
   },
   mutations: {
     incrementTime(state) {
@@ -42,6 +41,9 @@ export default new Vuex.Store({
       state.isActiveWorkShift = status
       localStorage.setItem('isActiveWorkShift', status)
     },
+    setUserData(state, data) {
+      state.userData = data
+    }
   },
   actions: {
     startWorkShift({commit}){
@@ -58,9 +60,9 @@ export default new Vuex.Store({
       localStorage.clear()
       sessionStorage.clear()
       let auth = await apiRequest.post('/api/auth/', {username: data.login, password: data.password})
-      console.log(auth)
+      // console.log(auth)
       let userInfo = await apiRequest.get(`/api/users/${auth.data.userId}/`)
-      console.error(userInfo.data.user)
+      // console.error(userInfo.data.user)
 
       localStorage.setItem('username', userInfo.data.user.username)
       localStorage.setItem('callCenterId', userInfo.data.user.callCenterId)
@@ -87,13 +89,23 @@ export default new Vuex.Store({
         commit('toggleWorkingStatus', 'break')
         commit('setWorkShiftStatus', false)
       }
-
-
     },
     async logOut({state}){
       // clearing all storages
       localStorage.clear()
       sessionStorage.clear()
+    },
+    async fetchUserData({commit}) {
+      if (localStorage.getItem('userType') && localStorage.getItem('userType') === 'operator') {
+        let userInfo = (await apiRequest.get( `/api/me/`)).data
+
+        commit('setUserData', userInfo)
+      } else {
+        let userInfo = (await apiRequest.get(`/api/users/${localStorage.getItem('userId')}/`)).data
+
+        commit('setUserData', userInfo)
+      }
+
     }
   },
   modules: {

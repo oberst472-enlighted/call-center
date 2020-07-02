@@ -1,6 +1,9 @@
 <template>
   <div id="DashBoard">
-    <div class="row" v-if="$store.state.userStatus === 'operator'">
+    <div
+            class="row"
+            v-if="$store.state.userStatus === 'operator'  && $store.state.userData"
+    >
       <div class="col-left">
         <statusOperatorDashboard/>
 
@@ -16,7 +19,7 @@
         />
       </div>
     </div>
-    <div id="CallList">
+    <div id="CallList" v-if="calls">
       <!--    <div class="row">-->
       <!--      <userStat />-->
       <!--      <callWindow />-->
@@ -54,15 +57,12 @@
       </div>
       <div id="call_history-list" v-if="activeMod === 'list'">
         <div class="calls-list">
-          <callInHistory chatStatus="hide" />
-          <callInHistory chatStatus="hide" />
-          <callInHistory chatStatus="hide" />
-          <callInHistory chatStatus="hide" />
-          <callInHistory chatStatus="hide" />
-          <callInHistory chatStatus="hide" />
-          <callInHistory chatStatus="hide" />
-          <callInHistory chatStatus="hide" />
-          <callInHistory chatStatus="hide" />
+          <callInHistory
+                  chatStatus="hide"
+                  v-for="(item, index) in calls"
+                  :key="index"
+                  :data="item"
+          />
         </div>
       </div>
       <div id="call_history-table" v-else>
@@ -77,15 +77,11 @@
             <th height="55px">Оператор</th>
             <th height="55px">Запись</th>
           </tr>
-          <callInTable />
-          <callInTable />
-          <callInTable />
-          <callInTable />
-          <callInTable />
-          <callInTable />
-          <callInTable />
-          <callInTable />
-          <callInTable />
+          <callInTable
+                  v-for="(item, index) in calls"
+                  :key="index"
+                  :data="item"
+          />
         </table>
       </div>
     </div>
@@ -98,6 +94,7 @@
   import callInHistory from "../../components/views/components/callInHistory";
   import callWindow from "../../components/layout/callWindow";
   import statusOperatorDashboard from "../../components/views/statusOperatorDashboard";
+  import apiRequest from "../../utils/apiRequest";
 
 
   export default {
@@ -105,7 +102,8 @@
     components: { callInHistory, callInTable, callWindow, statusOperatorDashboard },
     data() {
       return {
-        activeMod: 'list'
+        activeMod: 'list',
+        calls: null
       }
     },
     props: {
@@ -119,6 +117,17 @@
         } else {
           this.activeMod = 'list'
         }
+      }
+    },
+    async created() {
+      try {
+        if ((localStorage.getItem('userType') || sessionStorage.getItem('userType')) === 'operator') {
+          let userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
+          this.calls = (await apiRequest.get(`/api/users/${userId}/calls/`)).data
+        } else {
+          this.calls = (await apiRequest.get( `/api/calls/`)).data
+        }
+      } catch (e) {
       }
     }
   }

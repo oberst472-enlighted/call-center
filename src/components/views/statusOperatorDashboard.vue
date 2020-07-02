@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col">
         <div class="col-name">звонков <br> всего</div>
-        <div class="col-num">125</div>
+        <div class="col-num">{{ statistic.total }}</div>
 
         <hr style="background-color: #65528b">
 
@@ -11,27 +11,27 @@
       </div>
       <div class="col">
         <div class="col-name">звонков <br> принято</div>
-        <div class="col-num">123</div>
+        <div class="col-num">{{ statistic.received }}</div>
 
         <hr style="background-color: #4fd161">
 
-        <div class="col-stat">99% от входящих</div>
+        <div class="col-stat">{{ statistic.received / statistic.total * 100 || 0 }}% от входящих</div>
       </div>
       <div class="col">
         <div class="col-name">звонков <br> обработано</div>
-        <div class="col-num">123</div>
+        <div class="col-num">{{ statistic.success }}</div>
 
         <hr style="background-color: #65528b">
 
-        <div class="col-stat">99% от принятых</div>
+        <div class="col-stat">{{ statistic.success / statistic.total * 100 || 0 }}% от принятых</div>
       </div>
       <div class="col">
         <div class="col-name">звонков <br> не принято</div>
-        <div class="col-num">2</div>
+        <div class="col-num">{{ statistic.noAnswer }}</div>
 
         <hr style="background-color: #f04265">
 
-        <div class="col-stat">1% от входящих</div>
+        <div class="col-stat">{{ statistic.noAnswer / statistic.total * 100 || 0 }}% от входящих</div>
       </div>
     </div>
   </div>
@@ -39,7 +39,13 @@
 
 <script>
   export default {
-    name: "statusOperatorDashboard"
+    name: "statusOperatorDashboard",
+
+    computed: {
+      statistic() {
+        return this.$store.state.userData.lastSessionStat
+      }
+    }
   }
 </script>
 

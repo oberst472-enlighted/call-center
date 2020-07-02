@@ -63,7 +63,6 @@
     },
     components: { forward },
     mounted() {
-      console.log(this.$route.query.open)
       if (this.$route.query.open === 'yes'){
         this.modalStatus = true
       }

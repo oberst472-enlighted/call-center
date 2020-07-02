@@ -27,11 +27,11 @@
     async created(){
       try {
         let users = (await apiRequest.get( '/api/users/')).data
-        console.log(users)
+        // console.log(users)
 
         this.operators = users.filter(user => user.userType === "OPERATOR")
-        console.log(this.operators)
-        console.log(this.operators[0])
+        // console.log(this.operators)
+        // console.log(this.operators[0])
       } catch (e) {}
     }
   }

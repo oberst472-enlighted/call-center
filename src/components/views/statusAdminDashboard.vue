@@ -48,10 +48,7 @@
 <script>
   export default {
     name: "statusDashboard",
-    props: ['data'],
-    mounted() {
-      console.log(this.data)
-    }
+    props: ['data']
   }
 </script>
 

@@ -51,12 +51,18 @@
         </div>
       </div>
 
-      <div class="nav-right" @click.stop="$store.dispatch('popup/setPopup', 'user')">
-        <div class="user">
+      <div
+              class="nav-right"
+              @click.stop="$store.dispatch('popup/setPopup', 'user')"
+      >
+        <div
+                class="user"
+                v-if="userData"
+        >
           <div class="user-info">
-            <div class="user-name">Елена Авантюрова</div>
+            <div class="user-name">{{ userData.user.firstName }} {{ userData.user.lastName }}</div>
             <div class="user-operator" v-if="$store.state.userStatus === 'admin'">администратор</div>
-            <div class="user-operator" v-else>оператор # <span>0012</span></div>
+            <div class="user-operator" v-else>оператор # <span>{{ userData.user.number }}</span></div>
           </div>
           <div class="user-avatar">
             <img src="../../assets/icons/User.svg" alt="">
@@ -86,6 +92,9 @@
     },
     components: {forward},
     computed: {
+      userData() {
+        return this.$store.state.userData
+      },
       formatTime() {
         let pad = function(num, size) { return ('000' + num).slice(size * -1); }
         let time = parseFloat(this.$store.state.totalTime).toFixed(3)

@@ -249,17 +249,36 @@
       //   let f = await apiRequest.get( '/api/callcenters/')
       //   console.log(f.data)
       // } catch (e) {}
-      //
+
+      let f = await apiRequest.get( `/api/calls/`)
+      console.hideProto(f.data, 'all calls')
+
+
+
+      f = await apiRequest.get( `/api/calls/5efce7e86aa7f915db9edf87`)
+      console.hideProto(f.data, 'call by id')
+
+      f = await apiRequest.get( `/api/devices/`)
+      console.hideProto(f.data, 'all terminal')
+
+      f = await apiRequest.get( `/api/devices/dev`)
+      console.hideProto(f.data, 'terminal by id')
+
       try {
-        let userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
-        console.log(userId)
-        let f = await apiRequest.get( `/api/users/${userId}/calls/`)
-        console.log(f.data)
-        f = await apiRequest.get( `/api/calls/`)
-        console.log(f.data)
-        f = await apiRequest.get( `/api/me/`)
-        console.error(f.data)
-      } catch (e) {}
+
+        await this.$store.dispatch('fetchUserData')
+        // let userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
+        // let f = await apiRequest.get( `/api/users/${userId}/calls/`)
+        // console.hideProto(f.data, 'user calls')
+        // f = await apiRequest.get( `/api/calls/`)
+        // console.hideProto(f.data, 'all calls')
+        // f = await apiRequest.get( `/api/devices/148_IvanovoSynergo`)
+        // console.hideProto(f.data, 'terminal by id')
+
+
+      } catch (e) {
+        await this.$store.dispatch('logOut')
+      }
 
     }
 

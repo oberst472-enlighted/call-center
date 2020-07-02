@@ -8,23 +8,38 @@
       <img style="cursor: pointer" class="head-dots" src="../../assets/icons/ThreeDots.svg" alt=""/>
     </div>
     <div class="calls-list">
-      <callInHistory chatStatus="hide"/>
-      <callInHistory chatStatus="hide"/>
-      <callInHistory chatStatus="hide"/>
-      <callInHistory chatStatus="hide"/>
-      <callInHistory chatStatus="hide"/>
-      <callInHistory chatStatus="hide"/>
-      <callInHistory chatStatus="hide"/>
-      <callInHistory chatStatus="hide"/>
+      <callInHistory
+              chatStatus="hide"
+              v-for="(item, index) in calls"
+              :key="index"
+              :data="item"
+      />
     </div>
   </div>
 </template>
 
 <script>
   import callInHistory from "./components/callInHistory";
+  import apiRequest from "../../utils/apiRequest";
   export default {
     name: "callHistory",
-    components: {callInHistory}
+    components: {callInHistory},
+    data() {
+      return {
+        calls: null
+      }
+    },
+    async created() {
+      try {
+        if ((localStorage.getItem('userType') || sessionStorage.getItem('userType')) === 'operator') {
+          let userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
+          this.calls = (await apiRequest.get(`/api/users/${userId}/calls/`)).data
+        } else {
+          this.calls = (await apiRequest.get( `/api/calls/`)).data
+        }
+      } catch (e) {
+      }
+    }
   }
 </script>
 

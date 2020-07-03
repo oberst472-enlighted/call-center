@@ -9,7 +9,7 @@
           <div class="user">
             <img src="../../assets/images/user2.png" alt="" class="user-avatar">
             <div class="user-box">
-              <div class="user-box-status">Онлайн</div>
+              <div class="user-box-status" :style="statusStyle">{{statusText}}</div>
               <div class="user-box-name">{{operator.firstName}}</div>
               <div class="user-box-name">{{operator.lastName}}</div>
               <div class="user-box-contacts" style="margin-bottom: 15px">{{operator.langs.join(", ")}}</div>
@@ -50,10 +50,34 @@
         calls: null
       }
     },
+    computed: {
+      statusText() {
+        if (this.operator.status === 'OFFLINE') {
+          return 'Не онлайн'
+        } else if (this.operator.status === 'BREAK') {
+          return 'Перерыв'
+        } else if (this.operator.status === 'IN_CALL') {
+          return 'Занят'
+        } else {
+          return 'Свободен'
+        }
+      },
+      statusStyle() {
+        if (this.operator.status === 'OFFLINE') {
+          return 'background-color: #fceff2; color: #f04265;'
+        } else if (this.operator.status === 'BREAK') {
+          return 'background-color: #f2f9fc; color: #3e58ff;'
+        } else if (this.operator.status === 'IN_CALL') {
+          return 'background-color: #f7f1ff; color: #65528b;'
+        } else {
+          return ''
+        }
+      },
+    },
     async mounted() {
       try {
         this.operator = (await apiRequest.get( `/api/users/${this.$route.params.id}`)).data.user
-        // console.log(this.operator)
+        console.log(this.operator)
         // console.log(`/api/users/${this.$route.params.id}/calls/`)
 
         this.calls = (await apiRequest.get( `/api/users/${this.$route.params.id}/calls/`)).data

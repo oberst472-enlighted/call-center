@@ -8,7 +8,7 @@
         <div class="call-left-name">{{data.lastName}}</div>
       </div>
       <div class="call-right">
-        <div class="call-right-status">Свободен</div>
+        <div class="call-right-status" :style="statusStyle">{{statusText}}</div>
         <img src="../../../assets/icons/ThreeDots.svg" alt="">
       </div>
     </div>
@@ -24,6 +24,30 @@
     components: {},
     props: {
       data: Object,
+    },
+    computed: {
+      statusText() {
+        if (this.data.status === 'OFFLINE') {
+          return 'Не онлайн'
+        } else if (this.data.status === 'BREAK') {
+          return 'Перерыв'
+        } else if (this.data.status === 'IN_CALL') {
+          return 'Занят'
+        } else {
+          return 'Свободен'
+        }
+      },
+      statusStyle() {
+        if (this.data.status === 'OFFLINE') {
+          return 'background-color: #fceff2; color: #f04265;'
+        } else if (this.data.status === 'BREAK') {
+          return 'background-color: #f2f9fc; color: #3e58ff;'
+        } else if (this.data.status === 'IN_CALL') {
+          return 'background-color: #f7f1ff; color: #65528b;'
+        } else {
+          return ''
+        }
+      },
     },
     created() {
       console.log(this.data)

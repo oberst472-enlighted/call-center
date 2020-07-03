@@ -10,7 +10,8 @@ export default {
       remoteStream: null,
       pc: null,
       queue: 0,// ОЧЕРЕДЬ ЗВОНКОВ
-      callObjectId: null
+      callObjectId: null,
+      messageText: ''
     }
   },
   methods: {

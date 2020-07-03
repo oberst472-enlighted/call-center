@@ -3,7 +3,8 @@ export default {
   state: {
     showCallPage: false,//------------ СТАТУС ОТКРЫТОГО ЗВОНКА
     isIncomingCall: false,//---------- СТАТУС ВХОДЯЩЕГО ЗВОНКА
-    isCallInProgress: false, //------- СТАТУС ЗВОНКА В ПРОГРЕССЕ
+    isCallInProgress: false, //------- СТАТУС ЗВОНКА В ПРОГРЕССЕ,
+    messageText: ''
   },
   getters: {},
   mutations: {
@@ -24,6 +25,9 @@ export default {
     },
     endCall(state){//----------------- ЗАКОНЧИТЬ АКТИВНЫЙ РАЗГОВОР
       state.isCallInProgress = false
+    },
+    setMessage(state, data){//----------------- ЗАКОНЧИТЬ АКТИВНЫЙ РАЗГОВОР
+      state.messageText = data
     }
   },
   actions: {

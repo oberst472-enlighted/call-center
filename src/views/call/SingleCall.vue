@@ -21,9 +21,9 @@
               <div>{{operator.firstName}} {{operator.lastName}}</div>
             </div>
           </div>
-          <div class="comment-body">
-            <p>Пассажиру нужна медицинская помощь, вызвала бригаду на вокзал</p>
-            <p>Бригада приехала</p>
+          <div class="comment-body" v-if="call.comment">
+            <p>{{call.comment}}</p>
+
           </div>
         </div>
       </div>
@@ -33,6 +33,7 @@
                 autoplay
                 width="100%"
                 id="callVideo"
+                type="video/webm"
         />
         <div class="play_btn" @click="toggleModalStatus">
           <img src="../../assets/icons/PlayWhite.png" alt="">
@@ -86,43 +87,58 @@
     components: { forward },
     async mounted() {
       this.call = (await apiRequest.get( `/api/calls/${this.$route.params.id}`)).data
-      console.hideProto(this.call, 'call by id')
 
       this.operator = (await apiRequest.get(`/api/users/${this.call.operator}/`)).data.user
-      console.hideProto(this.operator, 'operator by id')
 
-      // this.comment = (await apiRequest.get(`/api/calls/${this.$route.params.id}/comment`)).data.user
-      // console.hideProto(this.operator, 'operator by id')
-      //
 
+      console.dir(document.getElementById('callVideo'))
       videojs.xhr({
-        url: `http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream`,
-        headers: {
-          'Authorization': "Token 841604f050f5e9ec8fcab0489358215f571d4965"
-        }
+        // url: `http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream`,
+        // headers: {
+        //   'Authorization': "Token 841604f050f5e9ec8fcab0489358215f571d4965"
+        // }
       }, (err, response, body) => {
         if(err) throw err;
         if( response.statusCode === 200 ) {
           player.src(body)
           this.showVideo= true
         } else {
-
+          console.log('error')
           console.error(response)
         }
       })
 
+
+      let player = videojs("callVideo")
+      player.src({
+        url: `http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`,
+        type: "video/mp4",
+
+      });
+
+
+
+
+
+
+
+
       // videojs.Hls.xhr.beforeRequest = function(options) {
       //   options.headers = {
-      //     'Authorization': `Token ${this.call.videoToken}`
-      //   }
+      //     'Authorization': "Token 841604f050f5e9ec8fcab0489358215f571d4965"
+      //   };
       //   return options;
       // };
-
-      let player = videojs('callVideo')
+      //
+      // let player = videojs('callVideo');
       // player.src({
-      //   src:`http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream`,
+      //   src: `http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream`,
       //   type: 'video/webm'
       // });
+
+
+
+
 
 
       if (this.$route.query.open === 'yes'){

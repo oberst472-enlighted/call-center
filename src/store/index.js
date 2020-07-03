@@ -62,7 +62,6 @@ export default new Vuex.Store({
       let auth = await apiRequest.post('/api/auth/', {username: data.login, password: data.password})
       // console.log(auth)
       let userInfo = await apiRequest.get(`/api/users/${auth.data.userId}/`)
-      // console.error(userInfo.data.user)
 
 
       localStorage.setItem('username', userInfo.data.user.username)
@@ -101,9 +100,22 @@ export default new Vuex.Store({
       if (localStorage.getItem('userType') && localStorage.getItem('userType') === 'operator') {
         let userInfo = (await apiRequest.get( `/api/me/`)).data
 
+        console.log(userInfo.session)
+        if (!userInfo.session.stopTime) {
+          console.log('isActive')
+          // console.log(Date(userInfo.session.stopTime).getTime() - Date(userInfo.session.startTime).getTime())
+
+          commit('setWorkShiftStatus', true)
+          commit('toggleWorkingStatus', 'break')
+        } else {
+
+          commit('setWorkShiftStatus', false)
+        }
         commit('setUserData', userInfo)
       } else {
+
         let userInfo = (await apiRequest.get(`/api/users/${localStorage.getItem('userId')}/`)).data
+        console.log(userInfo)
 
         commit('setUserData', userInfo)
       }

@@ -61,6 +61,7 @@
       return{
         call: null,
         operator: null,
+        comment: null,
         modalStatus: false,
         videoStream: null
       }
@@ -89,11 +90,14 @@
       this.operator = (await apiRequest.get(`/api/users/${this.call.operator}/`)).data.user
       console.hideProto(this.operator, 'operator by id')
 
+      this.comment = (await apiRequest.get(`/api/calls/${this.$route.params.id}/comment`)).data.user
+      console.hideProto(this.operator, 'operator by id')
+
 
       videojs.xhr({
         url: `http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream`,
         headers: {
-          'Authorization': "Token 7a8bcfc6eecaa204279041715bb0bfdd7aa847b7"
+          'Authorization': "Token 841604f050f5e9ec8fcab0489358215f571d4965"
         }
       }, (err, response, body) => {
         if(err) throw err;

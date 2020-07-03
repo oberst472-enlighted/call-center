@@ -104,7 +104,6 @@ export default {
         this.queue = queue[localStorage.getItem('callCenterId')] ? queue[localStorage.getItem('callCenterId')] : 0;
       });
 
-
       navigator.mediaDevices.getUserMedia({
         audio: true,
         video: true,
@@ -125,16 +124,6 @@ export default {
     // ЕСЛИ ПОЛЬЗОВАТЕЛЬ ОПЕРАТОР ВКЛЮЧАЕТСЯ ЛОГИКА ЗВОНКА
     if (this.isActiveWorkShift){
       this.initSocket()
-    }
-  },
-
-  async updated() {
-    // ЕСЛИ ПОЛЬЗОВАТЕЛЬ ОПЕРАТОР ВКЛЮЧАЕТСЯ ЛОГИКА ЗВОНКА
-    if (this.isActiveWorkShift){
-      this.initSocket()
-    } else {
-      this.socket = null
-
     }
   },
   watch: {

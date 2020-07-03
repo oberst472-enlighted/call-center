@@ -100,20 +100,15 @@ export default new Vuex.Store({
       if (localStorage.getItem('userType') && localStorage.getItem('userType') === 'operator') {
         let userInfo = (await apiRequest.get( `/api/me/`)).data
 
-        console.log(userInfo.user.status === 'WAITING')
+        console.log(userInfo.session)
         if (!userInfo.session.stopTime) {
           console.log('isActive')
-
           // console.log(Date(userInfo.session.stopTime).getTime() - Date(userInfo.session.startTime).getTime())
 
           commit('setWorkShiftStatus', true)
           commit('toggleWorkingStatus', 'break')
-          // if (userInfo.user.status === 'WAITING') {
-          //   commit('toggleWorkingStatus', 'online')
-          // } else {
-          //   commit('toggleWorkingStatus', 'break')
-          // }
         } else {
+
           commit('setWorkShiftStatus', false)
         }
         commit('setUserData', userInfo)

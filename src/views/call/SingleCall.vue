@@ -27,7 +27,7 @@
           </div>
         </div>
       </div>
-      <div class="body-right">
+      <div class="body-right" v-if="showVideo">
 
         <video
                 autoplay
@@ -64,7 +64,8 @@
         operator: null,
         comment: null,
         modalStatus: false,
-        videoStream: null
+        videoStream: null,
+        showVideo: false
       }
     },
     computed: {
@@ -100,6 +101,7 @@
         if(err) throw err;
         if( response.statusCode === 200 ) {
           player.src(body)
+          this.showVideo= true
         } else {
           console.log('error')
           console.error(response)

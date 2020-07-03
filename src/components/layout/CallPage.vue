@@ -6,7 +6,7 @@
               id="remoteVideo"
               ref="remoteVideo"
               autoplay
-              v-if="$store.state.callLogic.isCallInProgress"
+              v-show="$store.state.callLogic.isCallInProgress"
       />
 
       <div class="viewport-call" v-show="!$store.state.callLogic.isCallInProgress">

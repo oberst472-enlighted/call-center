@@ -29,9 +29,11 @@
       </div>
       <div class="body-right">
 
-        <video v-if="videoStream">
-          <source :src="videoStream">
-        </video>
+        <video
+                autoplay
+                width="100%"
+                id="callVideo"
+        />
         <div class="play_btn" @click="toggleModalStatus">
           <img src="../../assets/icons/PlayWhite.png" alt="">
         </div>
@@ -52,6 +54,7 @@
 <script>
   import forward from "../../components/UI/forward";
   import apiRequest from "../../utils/apiRequest";
+  import videojs from "video.js"
   export default {
     name: "SingleTerminal",
     data(){
@@ -82,22 +85,44 @@
     async mounted() {
       this.call = (await apiRequest.get( `/api/calls/${this.$route.params.id}`)).data
       console.hideProto(this.call, 'call by id')
-      this.operator = (await apiRequest.get(`/api/users/${this.call.operator}/`)).data.user
 
-      try {
-        let response = await apiRequest.getVideo(`http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream`)
-        console.log(response)
-        this.videoStream = response
-        console.log(this.videoStream)
-      } catch (e) {
-        console.log(e)
-      }
+      this.operator = (await apiRequest.get(`/api/users/${this.call.operator}/`)).data.user
+      console.hideProto(this.operator, 'operator by id')
+
+
+      videojs.xhr({
+        url: `http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream`,
+        headers: {
+          'Authorization': "Token 7a8bcfc6eecaa204279041715bb0bfdd7aa847b7"
+        }
+      }, (err, response, body) => {
+        if(err) throw err;
+        if( response.statusCode === 200 ) {
+          player.src(body)
+        } else {
+          console.error(response)
+        }
+      })
+
+      // videojs.Hls.xhr.beforeRequest = function(options) {
+      //   options.headers = {
+      //     'Authorization': `Token ${this.call.videoToken}`
+      //   }
+      //   return options;
+      // };
+
+      let player = videojs('callVideo')
+      // player.src({
+      //   src:`http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream`,
+      //   type: 'video/webm'
+      // });
 
 
       if (this.$route.query.open === 'yes'){
         this.modalStatus = true
       }
-    }
+
+    },
   }
 </script>
 

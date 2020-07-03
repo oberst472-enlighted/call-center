@@ -27,7 +27,7 @@
           </div>
         </div>
       </div>
-      <div class="body-right">
+      <div class="body-right" v-if="showVideo">
 
         <video
                 autoplay
@@ -63,7 +63,8 @@
         operator: null,
         comment: null,
         modalStatus: false,
-        videoStream: null
+        videoStream: null,
+        showVideo: false
       }
     },
     computed: {
@@ -90,9 +91,9 @@
       this.operator = (await apiRequest.get(`/api/users/${this.call.operator}/`)).data.user
       console.hideProto(this.operator, 'operator by id')
 
-      this.comment = (await apiRequest.get(`/api/calls/${this.$route.params.id}/comment`)).data.user
-      console.hideProto(this.operator, 'operator by id')
-
+      // this.comment = (await apiRequest.get(`/api/calls/${this.$route.params.id}/comment`)).data.user
+      // console.hideProto(this.operator, 'operator by id')
+      //
 
       videojs.xhr({
         url: `http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream`,
@@ -103,7 +104,9 @@
         if(err) throw err;
         if( response.statusCode === 200 ) {
           player.src(body)
+          this.showVideo= true
         } else {
+
           console.error(response)
         }
       })

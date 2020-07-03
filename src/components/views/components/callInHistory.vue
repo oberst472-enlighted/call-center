@@ -3,7 +3,7 @@
     <hr>
     <div class="call" @click="$router.push(`/call-list/${data.id}`)">
       <div class="call-left">
-        <div class="call-left-date">{{dateCall}}  <span>{{startTime}} - {{endTime}}</span></div>
+        <div class="call-left-date">{{dateCall}}  <span>{{startTime}} - {{data.endTime ? endTime : ''}}</span></div>
         <div class="call-left-name">{{data.device.term.title}}</div>
         <div class="call-left-terminal">терминал #{{data.device.term.id}}</div>
         <div class="call-left-text">{{data.device.title}}</div>

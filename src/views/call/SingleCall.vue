@@ -21,9 +21,9 @@
               <div>{{operator.firstName}} {{operator.lastName}}</div>
             </div>
           </div>
-          <div class="comment-body">
-            <p>Пассажиру нужна медицинская помощь, вызвала бригаду на вокзал</p>
-            <p>Бригада приехала</p>
+          <div class="comment-body" v-if="call.comment">
+            <p>{{call.comment}}</p>
+
           </div>
         </div>
       </div>

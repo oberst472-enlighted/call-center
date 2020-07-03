@@ -85,7 +85,7 @@
         <div class="call-chat">
           <div class="call-chat-header">КОММЕНТАРИЙ ОПЕРАТОРА</div>
           <div class="call-chat-box">
-            <textarea class="call-chat-box__inner" v-model="comment" />
+            <textarea class="call-chat-box__inner" v-model="message" />
 
             <div class="call-chat-box-bottom">сохранено</div>
           </div>
@@ -103,9 +103,22 @@
     name: "CallPage",
     props: {
       hangup: Function,
-      closeModal: Function
+      closeModal: Function,
+      messageText: String,
     },
 
+    computed:{
+      message: {
+        // геттер:
+        get: function () {
+          return this.$store.state.callLogic.messageText
+        },
+        // сеттер:
+        set: function (newValue) {
+          this.$store.commit('callLogic/setMessage', newValue)
+        }
+      }
+    },
     methods: {
       toggleStatus(type) {
         if (type === this.status) return
@@ -120,7 +133,6 @@
     data() {
       return {
         status: null,
-        comment: 'Пассажиру нужна медицинская помощь, вызвала бригадуна вокзал. Бригада приехала',
       }
     }
   }

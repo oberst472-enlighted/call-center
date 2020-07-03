@@ -4,6 +4,7 @@
             v-show="$store.state.callLogic.showCallPage"
             :hangup="hangup"
             :closeModal="closeModal"
+            :messageText="messageText"
     />
     <Sidebar />
     <div class="wrapper-scroll">
@@ -137,8 +138,15 @@
         this.recorder.startRecording();
       },
 
-      closeModal() {
+      async closeModal() {
         console.log('WAITING')
+        console.log(this.$store.state.callLogic.messageText)
+        let resp = await apiRequest.post(`/api/calls/${this.callObjectId}/comment/`, {
+          comment: this.$store.state.callLogic.messageText
+        })
+        console.log(resp)
+        this.$store.commit('callLogic/setMessage', '')
+
         this.socket.emit('change_status', 'WAITING');
         this.$store.commit('callLogic/closeCallPage')
       },

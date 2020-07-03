@@ -10,6 +10,8 @@ export default {
       remoteStream: null,
       pc: null,
       queue: 0,// ОЧЕРЕДЬ ЗВОНКОВ
+      callObjectId: null,
+      messageText: ''
     }
   },
   methods: {
@@ -38,6 +40,7 @@ export default {
         console.log(room);
         this.videoURL = room.videoURL
         this.videoToken = room.videoToken
+        this.callObjectId = room.callObjectId
 
         this.$store.commit('callLogic/comeIncomingCall')
 

@@ -27,26 +27,28 @@
           </div>
         </div>
       </div>
-      <div class="body-right" v-if="showVideo">
+      <div class="body-right">
 
         <video
-                autoplay
                 width="100%"
-                id="callVideo"
-                type="video/webm"
+                src="http://vjs.zencdn.net/v/oceans.mp4"
         />
         <div class="play_btn" @click="toggleModalStatus">
           <img src="../../assets/icons/PlayWhite.png" alt="">
         </div>
       </div>
     </div>
-    <div class="video-modal" v-if="modalStatus">
+    <div class="video-modal" v-show="modalStatus">
       <div class="video-modal-close">
         <img src="../../assets/icons/Close.png" alt="" @click="toggleModalStatus">
       </div>
       <div class="video-modal-viewport">
-        <img src="../../assets/images/call1.png" alt="">
-        <img src="../../assets/images/admin2.png" alt="">
+        <video
+                controls
+                width="100%"
+                id="callVideo"
+                src="http://vjs.zencdn.net/v/oceans.mp4"
+        />
       </div>
     </div>
   </div>
@@ -57,7 +59,7 @@
   import apiRequest from "../../utils/apiRequest";
   import videojs from "video.js"
   export default {
-    name: "SingleTerminal",
+    name: "SingleCall",
     data(){
       return{
         call: null,
@@ -65,7 +67,8 @@
         comment: null,
         modalStatus: false,
         videoStream: null,
-        showVideo: false
+        showVideo: false,
+        player: null
       }
     },
     computed: {
@@ -82,6 +85,11 @@
     methods: {
       toggleModalStatus() {
         this.modalStatus =! this.modalStatus
+        if (this.modalStatus) {
+          this.player.play()
+        } else {
+          this.player.pause()
+        }
       },
     },
     components: { forward },
@@ -90,32 +98,37 @@
 
       this.operator = (await apiRequest.get(`/api/users/${this.call.operator}/`)).data.user
 
+      this.player = document.getElementById('callVideo')
 
-      console.dir(document.getElementById('callVideo'))
-      videojs.xhr({
-        // url: `http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream`,
-        // headers: {
-        //   'Authorization': "Token 841604f050f5e9ec8fcab0489358215f571d4965"
-        // }
-      }, (err, response, body) => {
-        if(err) throw err;
-        if( response.statusCode === 200 ) {
-          player.src(body)
-          this.showVideo= true
-        } else {
-          console.log('error')
-          console.error(response)
-        }
-      })
+      console.log(player)
+
+      // console.log(videojs)
+      // let player = videojs('callVideo')
+      //
+      // player.src({
+      //   src: 'http://vjs.zencdn.net/v/oceans.mp4',
+      //   type: "video/mp4",
+      //
+      // });
+      // console.dir(this.call.videoId)
+      // videojs.xhr({
+      //   url: `http://vjs.zencdn.net/v/oceans.mp4`,
+      //   // headers: {
+      //   //   'Authorization': "Token 841604f050f5e9ec8fcab0489358215f571d4965"
+      //   // }
+      // }, (err, response, body) => {
+      //   if(err) throw err;
+      //   if( response.statusCode === 200 ) {
+      //     player.src(body)
+      //     this.showVideo= true
+      //   } else {
+      //     console.error('EROOR')
+      //     console.error(response)
+      //   }
+      // })
 
 
 
-      let player = videojs("callVideo")
-      player.src({
-        url: `http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`,
-        type: "video/mp4",
-
-      });
 
 
 
@@ -140,10 +153,8 @@
 
 
 
-
-
       if (this.$route.query.open === 'yes'){
-        this.modalStatus = true
+        this.toggleModalStatus()
       }
 
     },

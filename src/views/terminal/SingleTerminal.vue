@@ -1,5 +1,5 @@
 <template>
-  <div id="SingleTerminal" v-if="terminal">
+  <div id="SingleTerminal" v-if="terminal && terminal !== 'not found'">
     <div class="header">
       <div class="header-text">Терминал # {{terminal.term.id}}</div>
     </div>
@@ -33,13 +33,24 @@
         terminal: null
       }
     },
+    metaInfo() {
+      return {
+        title: `Терминал ${this.terminalName}`
+      }
+    },
+    computed: {
+      terminalName(){
+        return (this.terminal && this.terminal !== 'not found') ? this.terminal.term.title : ''
+      }
+    },
     async created() {
+      console.log(this.$route.params.id === 'null')
       try {
         this.terminal = (await apiRequest.get( `/api/devices/${this.$route.params.id}`)).data
       } catch (e) {
         this.$router.back()
       }
-      console.log(this.terminal)
+      if (this.terminal === 'not found') this.$router.back()
     }
   }
 </script>

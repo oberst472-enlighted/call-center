@@ -51,7 +51,7 @@
   position: sticky;
   right: 0;
   top: 0;
-  z-index: 5;
+  z-index: 20;
   .empty-call{
     text-align: center;
     width: 100px;

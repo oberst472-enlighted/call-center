@@ -12,7 +12,7 @@
         <div class="row" v-if="$store.state.userStatus === 'admin'">
         </div>
       </div>
-      <div class="col-right" style="position: absolute; right: 0; width: 300px; min-height: 800px">
+      <div class="col-right" style="position: absolute; right: 0; width: 300px; min-height: 100%">
         <callWindow
                 v-if="$store.state.userStatus === 'operator'"
                 :answer="answer"
@@ -106,6 +106,12 @@
         calls: null
       }
     },
+
+    metaInfo() {
+      return {
+        title: `Список звонков`
+      }
+    },
     props: {
       answer: Function,
     },
@@ -129,6 +135,8 @@
         }
       } catch (e) {
       }
+
+      console.hideProto(this.calls)
     }
   }
 </script>
@@ -157,6 +165,8 @@
     }
   }
 #CallList {
+  position: relative;
+  z-index: 10;
   width: 100%;
   min-height: 366px;
   box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);
@@ -239,7 +249,7 @@
     .calls-list{
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
       .call_in_history{
         padding: 0 10px;

@@ -15,7 +15,7 @@
     </div>
     <div
             class="operator"
-            v-if="!userIsOperator"
+            v-if="!userIsOperator && this.$route.name !== 'operator-page'"
     >
       <img src="../../../assets/images/user2.png" alt="" class="operator-img">
       <div class="operator-block">

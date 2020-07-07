@@ -52,6 +52,11 @@
         data: true
       }
     },
+    metaInfo() {
+      return {
+        title: 'Добавить язык'
+      }
+    },
     methods: {
       submitButton(){
         console.log(this.newLanguage)

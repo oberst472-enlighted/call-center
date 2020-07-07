@@ -4,7 +4,12 @@ export default {
     showCallPage: false,//------------ СТАТУС ОТКРЫТОГО ЗВОНКА
     isIncomingCall: false,//---------- СТАТУС ВХОДЯЩЕГО ЗВОНКА
     isCallInProgress: false, //------- СТАТУС ЗВОНКА В ПРОГРЕССЕ,
-    messageText: ''
+    messageText: '',
+    callTime: 0,
+    callDate: null,
+    startTime: null, //
+    endTime: null
+
   },
   getters: {},
   mutations: {
@@ -28,6 +33,21 @@ export default {
     },
     setMessage(state, data){//----------------- ЗАКОНЧИТЬ АКТИВНЫЙ РАЗГОВОР
       state.messageText = data
+    },
+    incrementCallTime(state) {
+      state.callTime += 1
+    },
+    cleanCallTime(state) {
+      state.callTime = 0
+    },
+    setDate(state, date) {
+      state.callDate = date
+    },
+    setStartTime(state, date) {
+      state.startTime = date
+    },
+    setEndTime(state, date) {
+      state.endTime = date
     }
   },
   actions: {

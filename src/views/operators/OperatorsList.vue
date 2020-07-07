@@ -30,6 +30,12 @@
         operators: null
       }
     },
+
+    metaInfo() {
+      return {
+        title: `Список операторов`
+      }
+    },
     async created(){
       try {
         let users = (await apiRequest.get( '/api/users/')).data

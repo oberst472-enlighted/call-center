@@ -5,7 +5,6 @@
         <div class="head-headers-main">История звонков</div>
         <div class="head-headers-secondary">Последние</div>
       </div>
-      <img style="cursor: pointer" class="head-dots" src="../../assets/icons/ThreeDots.svg" alt=""/>
     </div>
     <div class="calls-list">
       <callInHistory

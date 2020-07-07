@@ -5,6 +5,12 @@
             :hangup="hangup"
             :closeModal="closeModal"
             :messageText="messageText"
+            :stopAudio="stopAudio"
+            :stopVideo="stopVideo"
+            :continueAudio="continueAudio"
+            :continueVideo="continueVideo"
+            :isVideoOn="isVideoOn"
+            :isSoundOn="isSoundOn"
     />
     <Sidebar />
     <div class="wrapper-scroll">
@@ -42,12 +48,48 @@
         isChannelReady: true,
         isStarted: false,
         calling: new Audio(require("../assets/02433.mp3")),//
+        interval: null,
+        isVideoOn: true,
+        isSoundOn: true,
+        local: null
       }
     },
     methods: {
+      stopAudio() {
+        this.isSoundOn = false
 
+        let audio = this.localStream.getTracks().find(item => item.kind === 'audio')
+        console.log(audio)
+
+        // audio.muted = true
+        // audio.stop()
+      },
+      stopVideo() {
+        this.isVideoOn = false
+        let video = this.localStream.getTracks().find(item => item.kind === 'video')
+        console.log(video)
+
+        // video.stop()
+      },
+      continueAudio() {
+        this.isSoundOn = true
+
+        let audio = this.localStream.getTracks().find(item => item.kind === 'audio')
+        console.log(audio)
+        // audio.muted = false
+
+        // audio.play()
+      },
+      continueVideo() {
+        this.isVideoOn = true
+        let video = this.localStream.getTracks().find(item => item.kind === 'video')
+        console.log(video)
+
+        // video.play()
+      },
       gotStream(stream) {
-        document.getElementById('localVideo').srcObject = stream;
+        this.local = document.getElementById('localVideo')
+        this.local.srcObject = stream;
         this.localStream = stream;
         this.sendMessage('got user media');
       },
@@ -92,6 +134,20 @@
 
       // ПОДНЯТЬ ТЕЛЕФОН
       answerCall() {
+        let date = new Date()
+
+        let day = `${date.getDate()}`.length === 1 ? `0${date.getDate()}` : `${date.getDate()}`
+        let month = `${date.getMonth()}`.length === 1 ? `0${date.getMonth()}` : `${date.getMonth()}`
+        let year = date.getFullYear()
+
+        this.$store.commit('callLogic/setDate', `${day}:${month}:${year}`)
+
+        let hours = `${date.getHours()}`.length === 1 ? `0${date.getHours()}` : `${date.getHours()}`
+        let minutes = `${date.getMinutes()}`.length === 1 ? `0${date.getMinutes()}` : `${date.getMinutes()}`
+        let seconds = `${date.getSeconds()}`.length === 1 ? `0${date.getSeconds()}` : `${date.getSeconds()}`
+
+        this.$store.commit('callLogic/setStartTime', `${hours}:${minutes}:${seconds}`)
+
         this.calling.pause();
         this.socket.emit('message', 'receiverReadyToCall');
         this.maybeStart();
@@ -115,6 +171,14 @@
 
       // СБРОСИТЬ ТРУБКУ
       hangup() {
+        let date = new Date()
+
+        let hours = `${date.getHours()}`.length === 1 ? `0${date.getHours()}` : `${date.getHours()}`
+        let minutes = `${date.getMinutes()}`.length === 1 ? `0${date.getMinutes()}` : `${date.getMinutes()}`
+        let seconds = `${date.getSeconds()}`.length === 1 ? `0${date.getSeconds()}` : `${date.getSeconds()}`
+
+        this.$store.commit('callLogic/setEndTime', `${hours}:${minutes}:${seconds}`)
+
         this.stop();
         this.socket.emit('bye');
         this.socket.emit('change_status', 'UNAVALIABLE');
@@ -129,7 +193,7 @@
           checkForInactiveTracks: true,
           timeSlice: 1000,
           ondataavailable(blob) {
-            console.log('has data');
+            // console.log('has data');
           },
           onStateChange(state) {
             console.log(state);
@@ -140,11 +204,14 @@
 
       async closeModal() {
         console.log('WAITING')
+        this.$store.commit('callLogic/cleanCallTime')
+
         console.log(this.$store.state.callLogic.messageText)
         let resp = await apiRequest.post(`/api/calls/${this.callObjectId}/comment/`, {
           comment: this.$store.state.callLogic.messageText
         })
         console.log(resp)
+
         this.$store.commit('callLogic/setMessage', '')
 
         this.socket.emit('change_status', 'WAITING');
@@ -227,7 +294,10 @@
       },
       isCallInProgress() {
         return this.$store.state.isCallInProgress
-      }
+      },
+      getCallStatus() {
+        return this.$store.state.callLogic.isCallInProgress
+      },
     },
     watch: {
       async workStatus(val){
@@ -239,6 +309,16 @@
             this.socket.emit('change_status', 'UNAVALIABLE');
           }
         } catch (e) {
+        }
+      },
+      getCallStatus(val) {
+        if (val) {
+          this.interval = setInterval(() => {
+            this.$store.commit('callLogic/incrementCallTime')
+          }, 1000)
+        } else {
+          clearInterval(this.interval)
+
         }
       }
     },

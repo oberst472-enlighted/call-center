@@ -46,7 +46,6 @@
         <forward v-if="$route.meta.gotForward"/>
         <div v-else class="dash-nav-buttons">
           <div style="cursor: pointer" class="button" @click="$router.push('/create-operator')">Добавить сотрудника</div>
-          <div class="button"  style="cursor: pointer">Добавить очередь</div>
           <div  style="cursor: pointer" class="button" @click="$router.push('/add-language')">Добавить язык</div>
         </div>
       </div>
@@ -72,7 +71,6 @@
                 class="popup"
                 :class="{active : $store.state.popup.popupActive === `user`}"
         >
-          <div class="popup-item">Изменить</div>
           <div class="popup-item" @click="logOut">Выйти</div>
         </div>
       </div>
@@ -191,7 +189,7 @@
   }
   .popup.active{
     width: 100px;
-    height: 66px;
+    height: 33px;
     transition: height ease 0.5s;
   }
   .nav{

@@ -50,7 +50,17 @@
         calls: null
       }
     },
+
+    metaInfo() {
+      return {
+        title: `Оператор ${this.operatorName}`
+      }
+    },
+
     computed: {
+      operatorName(){
+        return this.operator ? `${this.operator.firstName} ${this.operator.lastName}` : ''
+      },
       statusText() {
         if (this.operator.status === 'OFFLINE') {
           return 'Не онлайн'

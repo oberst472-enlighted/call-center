@@ -1,5 +1,9 @@
 <template>
-  <tr class="table-row">
+  <tr
+          class="table-row"
+          @click.stop="$router.push(`/call-list/${data.id}`)"
+          style="cursor: pointer"
+  >
     <td height="55px" width="11%">
       <div class="table_1"># {{data.__v}}</div>
     </td>
@@ -34,7 +38,7 @@
     </td>
     <td height="55px" width="11%">
       <div class="table_8">
-        <img style="cursor: pointer" src="../../../assets/images/Play.png" alt="" @click="$router.push(`/call-list/${data.id}?open=yes`)">
+        <img style="cursor: pointer" src="../../../assets/images/Play.png" alt="" @click.stop="$router.push(`/call-list/${data.id}?open=yes`)">
       </div>
     </td>
   </tr>
@@ -54,10 +58,10 @@
         return this.data.startTime.split('T')[0].split('-').reverse().join('.')
       },
       startTime() {
-        return this.data.startTime.split('T')[1].split('.')[0]
+        return this.data.startTime? this.data.startTime.split('T')[1].split('.')[0] : ''
       },
       endTime() {
-        return this.data.endTime.split('T')[1].split('.')[0]
+        return this.data.endTime? this.data.endTime.split('T')[1].split('.')[0] : ''
       }
     }
   }

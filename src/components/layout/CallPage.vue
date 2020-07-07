@@ -16,7 +16,7 @@
                 class="viewport-call-button"
                 @click="closeModal()"
         >ПРОДОЛЖИТЬ РАБОТУ</div>
-        <div class="viewport-call-time">00:00:10</div>
+        <div class="viewport-call-time">{{formatTime}}</div>
       </div>
       <div class="viewport-call" v-show="$store.state.callLogic.isCallInProgress">
         <video
@@ -36,14 +36,39 @@
           <div class="call-window-head-terminal">кассы</div>
         </div>
         <div class="call-window-bottom" v-if="$store.state.callLogic.isCallInProgress">
-          <div class="call-window-bottom-endcall" @click="hangup">
+          <div
+                  class="call-window-bottom-endcall"
+                  @click="hangup"
+          >
             <img src="../../assets/icons/Phone.svg" alt=''/>
           </div>
-          <div class="call-window-bottom-microphone">
+          <div
+                  class="call-window-bottom-microphone"
+                  @click="stopAudio"
+                  v-show="isSoundOn"
+          >
             <img src="../../assets/icons/microphome.svg" alt=''/>
           </div>
-          <div class="call-window-bottom-video">
+          <div
+                  class="call-window-bottom-microphone"
+                  @click="continueAudio"
+                  v-show="!isSoundOn"
+          >
+            <img src="../../assets/icons/microphomeON.svg" alt=''/>
+          </div>
+          <div
+                  class="call-window-bottom-video"
+                  @click="stopVideo"
+                  v-show="isVideoOn"
+          >
             <img src="../../assets/icons/video.svg" alt=''/>
+          </div>
+          <div
+                  class="call-window-bottom-video"
+                  @click="continueVideo"
+                  v-show="!isVideoOn"
+          >
+            <img src="../../assets/icons/videoON.svg" alt=''/>
           </div>
         </div>
         <div class="call-window-end" v-else>
@@ -56,12 +81,12 @@
           <div class="call-timer-header">ПРОДОЛЖИТЕЛЬНОСТЬ ЗВОНКА</div>
 
           <div class="call-timer-wrapper" v-if="$store.state.callLogic.isCallInProgress">
-            <div class="call-timer-time">00:01:13</div>
+            <div class="call-timer-time">{{formatTime}}</div>
           </div>
 
           <div class="call-timer-wrapper" v-else>
-            <div class="call-timer-date">21.05.2020</div>
-            <div class="call-timer-time">10:32:12 - 10:33:31</div>
+            <div class="call-timer-date">{{$store.state.callLogic.callDate}}</div>
+            <div class="call-timer-time">{{$store.state.callLogic.startTime}} - {{$store.state.callLogic.endTime}}</div>
           </div>
         </div>
 <!--        <div class="call-status">-->
@@ -105,6 +130,13 @@
       hangup: Function,
       closeModal: Function,
       messageText: String,
+      stopAudio: Function,
+      stopVideo: Function,
+      continueAudio: Function,
+      continueVideo: Function,
+      isVideoOn: Boolean,
+      isSoundOn: Boolean
+
     },
 
     computed:{
@@ -117,17 +149,34 @@
         set: function (newValue) {
           this.$store.commit('callLogic/setMessage', newValue)
         }
+      },
+      getCallTime() {
+        return +this.$store.state.callLogic.callTime
+      },
+      formatTime() {
+        let pad = function(num, size) { return ('000' + num).slice(size * -1); }
+        let time = parseFloat(this.getCallTime).toFixed(3)
+        let hours = Math.floor(time / 60 / 60)
+        let minutes = Math.floor(time / 60) % 60
+        let seconds = Math.floor(time - minutes * 60)
+        return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2)
+      },
+    },
+    watch: {
+      getCallStatus(val) {
+        console.error(val)
+        if (val) {
+          this.interval = setInterval(() => {
+            this.$store.commit('callLogic/incrementCallTime')
+          }, 1000)
+        } else {
+          clearInterval(this.interval)
+          this.$store.commit('callLogic/cleanCallTime')
+
+        }
       }
     },
     methods: {
-      toggleStatus(type) {
-        if (type === this.status) return
-        if (this.status === 'solved') {
-          this.status = 'unsolved'
-        } else {
-          this.status = 'solved'
-        }
-      }
     },
 
     data() {
@@ -142,7 +191,7 @@
   #CallPage{
     position: fixed;
     top: 0;
-    z-index: 10;
+    z-index: 900;
     min-width: 100vw;
     min-height: 100vh;
     display: flex;

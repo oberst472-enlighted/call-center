@@ -64,6 +64,13 @@
     props: {
       answer: Function,
     },
+    metaInfo() {
+      return {
+        title: ((localStorage.getItem('userType') || sessionStorage.getItem('userType')) === 'operator') ?
+            `Dashboard - Колл-центр ${localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')}` :
+            'Dashboard - Aдмин панель'
+      }
+    },
     data(){
       return {
         statisticsAdmin: null,
@@ -91,6 +98,7 @@
       } catch (e) {
         console.log(e)
       }
+
     }
   }
 </script>

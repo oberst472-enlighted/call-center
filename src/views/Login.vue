@@ -1,7 +1,7 @@
 <template>
   <div id="Login">
-<!--    <div class="log adm" @click="loginAdmin">LOGIN AS ADMIN</div>-->
-<!--    <div class="log operator" @click="loginOperator">LOGIN AS OPERATOR</div>-->
+    <div class="log adm" @click="loginAdmin">LOGIN AS ADMIN</div>
+    <div class="log operator" @click="loginOperator">LOGIN AS OPERATOR</div>
     <div class="header">
       <img src="../assets/icons/Chat.svg" alt="" class="header-chat">
       <div class="header-text">
@@ -9,7 +9,7 @@
         <div class="header-text__bottom">Введите свои данные</div>
       </div>
     </div>
-    <div v-if="errorText.length > 0" class="error-text">{{errorText}}</div>
+    <div class="error-text" :style="error ? 'opacity: 1' : 'opacity: 0'">Логин или пароль введен неверно.</div>
     <div class="inputs">
       <div class="input">
         <div class="input-icon">
@@ -52,10 +52,16 @@
     data(){
       return {
         passType: 'password',
-        login: "dev",
-        password: "dev",
+        login: "",
+        password: "",
         rememberMe: false,
-        errorText: ''
+        error: false
+      }
+    },
+
+    metaInfo() {
+      return {
+        title: `Вход в систему`
       }
     },
     methods: {
@@ -67,7 +73,7 @@
         }
       },
       async submitRegistration() {
-        await this.$store.dispatch('logIn', {
+        this.error = await this.$store.dispatch('logIn', {
           login: this.login.trim(),
           password: this.password.trim(),
           rememberMe: this.rememberMe

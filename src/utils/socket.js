@@ -59,6 +59,14 @@ export default {
       // КЛИЕНТ ПОВЕСИЛ ТРУБКУ
       this.socket.on('bye', (callId) => {
         console.log('bye received in operator');
+        let date = new Date()
+
+        let hours = `${date.getHours()}`.length === 1 ? `0${date.getHours()}` : `${date.getHours()}`
+        let minutes = `${date.getMinutes()}`.length === 1 ? `0${date.getMinutes()}` : `${date.getMinutes()}`
+        let seconds = `${date.getSeconds()}`.length === 1 ? `0${date.getSeconds()}` : `${date.getSeconds()}`
+
+        this.$store.commit('callLogic/setEndTime', `${hours}:${minutes}:${seconds}`)
+
         this.$store.commit('callLogic/endCall')
 
         this.socket.emit('leave', callId, 'operator');

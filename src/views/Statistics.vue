@@ -110,6 +110,12 @@
       }
     },
 
+    metaInfo() {
+      return {
+        title: 'Выгрузка статистики'
+      }
+    },
+
     methods: {
       submitButton(){
         console.log(this.newLanguage)

@@ -27,7 +27,6 @@
                     class="lang-right-popup"
                     :class="{active : $store.state.popup.popupActive === `popup-language-${index}`}"
             >
-              <div class="lang-right-popup-item">Изменить</div>
               <div class="lang-right-popup-item">Удалить</div>
             </div>
           </div>
@@ -159,7 +158,7 @@
           }
           &-popup.active{
             width: 100px;
-            height: 66px;
+            height: 33px;
             transition: height ease 0.5s;
           }
         }

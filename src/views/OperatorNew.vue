@@ -10,39 +10,55 @@
           <div class="input">
             <input class="input-field" type="text" v-model="newUser.firstName"/>
           </div>
+          <div class="error-text" :class="isFirstNameValid? 'active' : ''">Введите имя</div>
         </div>
         <div class="col">
           <div class="label">Фамилия:</div>
           <div class="input">
             <input class="input-field" type="text" v-model="newUser.lastName"/>
           </div>
+          <div class="error-text" :class="isLastNameValid? 'active' : ''">Введите фамилию</div>
         </div>
         <div class="col">
           <div class="label">Email:</div>
           <div class="input">
             <input class="input-field" type="email" v-model="newUser.email"/>
           </div>
+          <div class="error-text" :class="isEmailValid? 'active' : ''">Введите коректный email</div>
         </div>
         <div class="col">
           <div class="label">Телефон:</div>
           <div class="input">
-            <input class="input-field" type="tel" v-model="newUser.phone" v-mask="'+###-###-##-##'" />
+            <input class="input-field" type="tel" v-model="newUser.phone" v-mask="'+7-###-###-##-##'" />
           </div>
+          <div class="error-text" :class="isPhoneValid? 'active' : ''">Введите коректный телефон</div>
         </div>
       </div>
-      <div class="body-col">
-        <div class="drag-box" :class="{active: isActive}" aria-dropeffect="move" @drop.prevent="addFile" @dragover.prevent="isActive = true" @dragleave="isActive = false">
-          <input type="file" style="display: none" id="selectFile" accept="image/*">
+      <div class="body-col" v-if="!url">
+        <form class="drag-box" :class="{active: isActive}" aria-dropeffect="move" @drop.prevent="addFile" @dragover.prevent="isActive = true" @dragleave="isActive = false">
+          <input
+                  type="file"
+                  accept="image/*"
+                  style="display: none"
+                  id="selectFile"
+                  ref="fileInput"
+                  v-on:change="uploadFile"
+          >
           <div  style="width: 130px" class="button" @click="clickOnUpload">Добавить фото</div>
           <div class="text">или перетащите фото сюда</div>
-        </div>
+        </form>
       </div>
+      <div class="body-col body-col-img" v-else>
+        <div class="clean" @click="cleanImg">Удалить</div>
+        <img :src="url" alt="" style="max-height: 180px; margin: 0 auto">
+      </div>
+
     </div>
     <div class="body" style="padding: 0">
       <div class="body-col" style="padding: 0">
         <div class="col">
           <div class="label">Язык:</div>
-          <div class="input radio" v-if="languages">
+          <div class="input radio" v-if="languages" style="margin-bottom: 5px">
             <template v-for="language in languages">
               <span  :key="language.title"
                      class="checkmark"
@@ -52,6 +68,7 @@
               <div @click="toggleLanguage(language.title)">{{language.title}}</div>
             </template>
           </div>
+          <div class="error-text" :class="isLanguageValid? 'active' : ''">Выберете хотя бы 1 язык</div>
         </div>
         <div class="col" />
         <div class="col">
@@ -59,6 +76,7 @@
           <div class="input" v-model="newUser.password">
             <input class="input-field" type="password" v-model="newUser.password"/>
           </div>
+          <div class="error-text" :class="isPasswordValidMin || isPasswordValidMax? 'active' : ''">{{passwordError}}</div>
         </div>
         <div class="col" />
       </div>
@@ -84,22 +102,65 @@
           password: '',
           file: null
         },
+        url: null,
         isActive: false
       }
     },
+
+    metaInfo() {
+      return {
+        title: 'Добавить оператора'
+      }
+    },
     computed: {
+      isFirstNameValid() {
+        console.log(this.newUser.firstName.length === 0)
+        return (this.newUser.firstName.length === 0)
+      },
+      isLastNameValid() {
+        return (this.newUser.lastName.length === 0)
+      },
+      isEmailValid() {
+        return !/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.newUser.email)
+      },
+      isPhoneValid() {
+        return !(this.newUser.phone.length === 16)
+      },
+      isLanguageValid() {
+        return !this.newUser.languages.length
+      },
+      isPasswordValidMin() {
+        return !(this.newUser.password.length >7)
+      },
+      isPasswordValidMax() {
+        return !(this.newUser.password.length <17)
+      },
+      passwordError() {
+        if (this.isPasswordValidMin) {
+          return 'Мин. длина 8 символов'
+        } else if (this.isPasswordValidMax) {
+          return 'Макс. длина 16 символов'
+        } else {
+          return '3'
+        }
+      },
       isFormValid() {
-        return (
-            this.newUser.firstName.length > 3 &&
-            this.newUser.lastName.length > 3 &&
-            this.newUser.email.includes('@') &&
-            this.newUser.phone.length === 14 &&
-            this.newUser.password.length > 8 &&
-            this.newUser.languages.length
+        return !(
+            this.isFirstNameValid ||
+            this.isLastNameValid ||
+            this.isEmailValid ||
+            this.isPhoneValid ||
+            this.isLanguageValid ||
+            this.isPasswordValidMin ||
+            this.isPasswordValidMax
         )
       }
     },
     methods: {
+      cleanImg(){
+        this.newUser.file = null
+        this.url = ''
+      },
       toggleLanguage(val) {
         if (this.newUser.languages.includes(val)) {
           let id = this.newUser.languages.findIndex((i) => i === val)
@@ -110,8 +171,15 @@
       },
       async submitButton(){
         if (!this.isFormValid) { return }
+        console.warn('SENDING DATA')
         try {
-          await apiRequest.post('/api/users', {
+          // let formData = new FormData();
+          // formData.append("username", this.newUser.firstName);
+          // formData.append("photo", this.newUser.file);
+          // console.log(formData)
+
+
+          let resp = await apiRequest.post('/api/users', {
             username: this.newUser.firstName,
             password: this.newUser.password,
             callCenterId: 'dev',
@@ -120,11 +188,22 @@
             firstName: this.newUser.firstName,
             phone: this.newUser.phone,
             langs: this.newUser.languages,
-            email: this.newUser.email
+            email: this.newUser.email,
+            photo: this.newUser.file
           })
+          console.log(resp)
         } catch (e) {
           console.log(e)
         }
+      },
+      uploadFile(e) {
+        let files = e.target.files || e.dataTransfer.files;
+        if (!files.length) return;
+
+        this.newUser.file = files[0]
+        this.url = URL.createObjectURL(this.newUser.file);
+        this.isActive =false
+
       },
       clickOnUpload(){
         document.getElementById('selectFile').click();
@@ -136,6 +215,7 @@
         ([...droppedFiles]).forEach(f => {
           this.newUser.file = f
         });
+        this.url = URL.createObjectURL(this.newUser.file);
         this.isActive =false
       },
     },
@@ -170,12 +250,17 @@
     margin-top: 30px;
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
     line-height: 19px;
     .body-col{
       width: 50%;
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
+      position: relative;
+    }
+    .clean{
+      display: none;
     }
     .body-col:first-child{
       padding-right: 10px;
@@ -195,7 +280,6 @@
         display: flex;
         align-items: center;
         margin-top: 10px;
-        margin-bottom: 10px;
         &-field{
           width: 100%;
           height: 39px;
@@ -232,6 +316,34 @@
         }
       }
     }
+  }
+  .body-col-img:hover .clean{
+    cursor: pointer;
+    width: 100px;
+    height: 33px;
+    color: white;
+    position: absolute;
+    top: calc(50% - 16px);
+    left: calc(50% - 50px);
+    background-color: red;
+    font-size: 14px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+  .body-col-img:hover .clean:hover{
+    zoom: 1.05;
+  }
+  .error-text{
+    color: red;
+    margin-left: 10px;
+    margin-bottom: 5px;
+    opacity: 0;
+  }
+  .error-text.active{
+    opacity: 1;
   }
   .button {
     width: 100px;

@@ -4,7 +4,12 @@ import router from './router'
 import store from './store'
 import VueCookies from 'vue-cookies'
 import VueMask from 'v-mask'
-Vue.use(VueMask);
+import VueMeta from 'vue-meta'
+import Vuelidate from 'vuelidate'
+
+Vue.use(Vuelidate)
+Vue.use(VueMeta)
+Vue.use(VueMask)
 
 import 'normalize.css'
 import './assets/montserrat.css'

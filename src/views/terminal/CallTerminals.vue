@@ -31,12 +31,18 @@
   import terminal from "../../components/views/components/terminal";
   import apiRequest from "../../utils/apiRequest";
   export default {
-    name: "CallList",
+    name: "CallTerminals",
     components: { callWindow , userStat, callHistorySmall, avaliableTerminals, terminal},
     data() {
       return {
         terminals: null,
         activeMod: 'list'
+      }
+    },
+
+    metaInfo() {
+      return {
+        title: `Список терминалов`
       }
     },
     methods: {
@@ -51,6 +57,7 @@
     },
     async created() {
       this.terminals = (await apiRequest.get( '/api/devices/')).data
+      console.log(this.terminals[0])
       // console.log(this.terminals)
       // console.log(this.terminals[0])
     }

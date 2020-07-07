@@ -1,7 +1,7 @@
 <template>
   <div id="Sidebar" :class="{active : isCollapsed}">
     <div class="buttons_top">
-      <div class="sidebarLink">
+      <div class="sidebarLink" @click="$router.push('dashboard')">
         <img alt="" class="sidebarLink-icon" src="../../assets/icons/Chat.svg">
         <div class="sidebarLink-title">Video-Calls</div>
       </div>

@@ -8,6 +8,7 @@ deploy:
       - develop
   script:
         - npm install
+        - npm audit fix
         - npm run build
         - mv dist/ $CI_COMMIT_REF_SLUG
         - zip -r $CI_COMMIT_REF_SLUG.zip $CI_COMMIT_REF_SLUG/

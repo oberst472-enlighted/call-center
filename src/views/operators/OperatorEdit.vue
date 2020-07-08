@@ -1,10 +1,10 @@
 <template>
   <div id="OperatorNew">
     <div class="header">
-      <div class="header-text">Добавление оператора</div>
+      <div class="header-text">Изменение оператора</div>
     </div>
     <div class="body">
-      <div class="body-col">
+      <div class="body-col" v-if="operator">
         <div class="col">
           <div class="label">Имя:</div>
           <div class="input">
@@ -54,7 +54,7 @@
       </div>
 
     </div>
-    <div class="body" style="padding: 0">
+    <div class="body" style="padding: 0" v-if="operator">
       <div class="body-col" style="padding: 0">
         <div class="col">
           <div class="label">Язык:</div>
@@ -62,10 +62,10 @@
             <template v-for="language in languages">
               <span  :key="language.title"
                      class="checkmark"
-                     :class="{active: newUser.languages.includes(language)}"
-                     @click="toggleLanguage(language)"
+                     :class="{active: newUser.languages.includes(language.title)}"
+                     @click="toggleLanguage(language.title)"
               />
-              <div @click="toggleLanguage(language)">{{language.title}}</div>
+              <div @click="toggleLanguage(language.title)">{{language.title}}</div>
             </template>
           </div>
           <div class="error-text" :class="isLanguageValid? 'active' : ''">Выберете хотя бы 1 язык</div>
@@ -86,12 +86,15 @@
 </template>
 
 <script>
-  import apiRequest from "../utils/apiRequest";
-
+  import callInHistory from "../../components/views/components/callInHistory";
+  import apiRequest from "../../utils/apiRequest";
   export default {
-    name: "OperatorNew",
+    name: "OperatorEdit",
+    components: {callInHistory},
     data() {
       return {
+        operator: null,
+        calls: null,
         languages: null,
         newUser: {
           firstName: '',
@@ -109,12 +112,12 @@
 
     metaInfo() {
       return {
-        title: 'Добавить оператора'
+        title: `Изменение оператора ${this.operatorName}`
       }
     },
+
     computed: {
       isFirstNameValid() {
-        console.log(this.newUser.firstName.length === 0)
         return (this.newUser.firstName.length === 0)
       },
       isLastNameValid() {
@@ -154,7 +157,44 @@
             this.isPasswordValidMin ||
             this.isPasswordValidMax
         )
-      }
+      },
+      operatorName(){
+        return this.operator ? `${this.operator.firstName} ${this.operator.lastName}` : ''
+      },
+    },
+    async mounted() {
+      try {
+        this.languages = (await apiRequest.get( '/api/langs/')).data
+        // console.log(this.languages)
+
+        this.operator = (await apiRequest.get( `/api/users/${this.$route.params.id}`)).data.user
+        // console.log(this.operator)
+        this.newUser.firstName = this.operator.firstName
+        this.newUser.lastName = this.operator.lastName
+        this.newUser.email = this.operator.email
+        this.newUser.phone = this.operator.phone
+
+        let userLangs = []
+        this.languages.map(item => {
+          try {
+            if (this.operator.langs.includes(item._id)) {
+              userLangs.push(item)
+            }
+          } catch (e) {}
+        })
+
+        // userLangs.forEach((item, index) =>{
+        //
+        //   this.$set(this.newUser.languages, index, item)
+        // })
+
+        // this.newUser.languages = Object.assign([], userLangs)
+        this.newUser.password = ''
+        if (this.operator.photo) {
+          this.url = `https://calls-dev.enlighted.ru${this.operator.photo}`
+        }
+        // console.log(`/api/users/${this.$route.params.id}/calls/`)
+      } catch (e) {}
     },
     methods: {
       cleanImg(){
@@ -173,7 +213,7 @@
         if (!this.isFormValid) { return }
         console.warn('SENDING DATA')
         try {
-          let formData = new FormData();
+          // let formData = new FormData();
           // formData.append("username", this.newUser.firstName);
           // formData.append("photo", this.newUser.file);
           // console.log(formData)
@@ -183,6 +223,7 @@
             username: this.newUser.firstName,
             password: this.newUser.password,
             callCenterId: 'dev',
+            userType: 'operator',
             number: 0,
             firstName: this.newUser.firstName,
             phone: this.newUser.phone,
@@ -220,176 +261,172 @@
         this.isActive =false
       },
     },
-    components: {},
-    props: {},
-    async created() {
-      this.languages = (await apiRequest.get( '/api/langs/')).data
-    },
+
   }
 </script>
 
 <style lang='scss'>
-#OperatorNew {
-  width: 100%;
-  box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);
-  border-radius: 8px;
-  background-color: #ffffff;
-  padding: 21px;
-  .disabled{
-    background-color: #888888 !important;
-  }
-  .header{
-    display: flex;
-    align-items: center;
-    &-text{
-      color: #685c7b;
-      font-size: 17px;
-      font-weight: 500;
+  #OperatorNew {
+    width: 100%;
+    box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);
+    border-radius: 8px;
+    background-color: #ffffff;
+    padding: 21px;
+    .disabled{
+      background-color: #888888 !important;
     }
-  }
-  .body{
-    margin-top: 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    line-height: 19px;
-    .body-col{
-      width: 50%;
+    .header{
       display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      position: relative;
-    }
-    .clean{
-      display: none;
-    }
-    .body-col:first-child{
-      padding-right: 10px;
-    }
-    .body-col:last-child{
-      padding-left: 10px;
-    }
-    .col{
-      margin-right: 20px;
-      width: calc(50% - 20px);
-      .label{
-        color: #343a41;
-        font-size: 12px;
+      align-items: center;
+      &-text{
+        color: #685c7b;
+        font-size: 17px;
         font-weight: 500;
       }
-      .input{
+    }
+    .body{
+      margin-top: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      line-height: 19px;
+      .body-col{
+        width: 50%;
         display: flex;
-        align-items: center;
-        margin-top: 10px;
-        &-field{
-          width: 100%;
-          height: 39px;
-          border-radius: 8px;
-          border: 1px solid #dddddd;
-          outline: none;
-          padding: 0 13px;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        position: relative;
+      }
+      .clean{
+        display: none;
+      }
+      .body-col:first-child{
+        padding-right: 10px;
+      }
+      .body-col:last-child{
+        padding-left: 10px;
+      }
+      .col{
+        margin-right: 20px;
+        width: calc(50% - 20px);
+        .label{
+          color: #343a41;
+          font-size: 12px;
+          font-weight: 500;
+        }
+        .input{
+          display: flex;
+          align-items: center;
+          margin-top: 10px;
+          &-field{
+            width: 100%;
+            height: 39px;
+            border-radius: 8px;
+            border: 1px solid #dddddd;
+            outline: none;
+            padding: 0 13px;
+          }
+        }
+        .input.radio{
+          display: flex;
+          align-items: center;
+          color: #4e545b;
+          font-size: 12px;
+          font-weight: 400;
+          cursor: pointer;
+          .checkmark {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            border-radius: 50%;
+            background-color: #f4f3f7;
+          }
+          .checkmark:hover {
+            background-color: #ccc;
+          }
+          .checkmark.active{
+            border: 1px solid #66538a;
+            border: 4px solid #f4f3f7;
+            background-color: #66538a;
+          }
+          div{
+            margin-right: 10px;
+          }
         }
       }
-      .input.radio{
-        display: flex;
-        align-items: center;
-        color: #4e545b;
-        font-size: 12px;
-        font-weight: 400;
-        cursor: pointer;
-        .checkmark {
-          width: 18px;
-          height: 18px;
-          margin-right: 8px;
-          border-radius: 50%;
-          background-color: #f4f3f7;
-        }
-        .checkmark:hover {
-          background-color: #ccc;
-        }
-        .checkmark.active{
-          border: 1px solid #66538a;
-          border: 4px solid #f4f3f7;
-          background-color: #66538a;
-        }
-        div{
-          margin-right: 10px;
-        }
-      }
     }
-  }
-  .body-col-img:hover .clean{
-    cursor: pointer;
-    width: 100px;
-    height: 33px;
-    color: white;
-    position: absolute;
-    top: calc(50% - 16px);
-    left: calc(50% - 45px);
-    background-color: red;
-    font-size: 14px;
-    font-weight: 400;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-  }
-  .body-col-img:hover .clean:hover{
-    zoom: 1.05;
-  }
-  .error-text{
-    color: red;
-    margin-left: 10px;
-    margin-bottom: 5px;
-    opacity: 0;
-  }
-  .error-text.active{
-    opacity: 1;
-  }
-  .button {
-    width: 100px;
-    height: 33px;
-    margin-top: 30px;
-    border-radius: 8px;
-    background-color: #66538a;
-    color: #ffffff;
-    font-size: 12px;
-    font-weight: 400;
-    margin-right: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 10px;
-    cursor: pointer;
-
-    &:hover {
-      transform: scale(1.03);
+    .body-col-img:hover .clean{
+      cursor: pointer;
+      width: 100px;
+      height: 33px;
+      color: white;
+      position: absolute;
+      top: calc(50% - 16px);
+      left: calc(50% - 45px);
+      background-color: red;
+      font-size: 14px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
     }
-  }
-  .drag-box{
-    margin-top: 29px;
-    width: 100%;
-    min-height: 117px;
-    border-radius: 8px;
-    border: 1px dashed #685c7b;
-    background-color: #f1eef5;
-    padding: 0 35px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    transition: all ease 0.5s;
-    .button{
-      margin: 0;
+    .body-col-img:hover .clean:hover{
+      zoom: 1.05;
     }
-    .text{
-      color: #685c7b;
+    .error-text{
+      color: red;
+      margin-left: 10px;
+      margin-bottom: 5px;
+      opacity: 0;
+    }
+    .error-text.active{
+      opacity: 1;
+    }
+    .button {
+      width: 100px;
+      height: 33px;
+      margin-top: 30px;
+      border-radius: 8px;
+      background-color: #66538a;
+      color: #ffffff;
       font-size: 12px;
       font-weight: 400;
+      margin-right: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
+      cursor: pointer;
+
+      &:hover {
+        transform: scale(1.03);
+      }
+    }
+    .drag-box{
+      margin-top: 29px;
+      width: 100%;
+      min-height: 117px;
+      border-radius: 8px;
+      border: 1px dashed #685c7b;
+      background-color: #f1eef5;
+      padding: 0 35px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all ease 0.5s;
+      .button{
+        margin: 0;
+      }
+      .text{
+        color: #685c7b;
+        font-size: 12px;
+        font-weight: 400;
+      }
+    }
+    .drag-box.active{
+      border: 1px solid #685c7b;
+      transform: scale(1.02);
     }
   }
-  .drag-box.active{
-    border: 1px solid #685c7b;
-    transform: scale(1.02);
-  }
-}
 </style>

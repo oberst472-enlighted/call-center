@@ -96,6 +96,7 @@
     async mounted() {
       this.call = (await apiRequest.get( `/api/calls/${this.$route.params.id}`)).data
 
+      console.log(this.call)
       this.operator = (await apiRequest.get(`/api/users/${this.call.operator}/`)).data.user
 
       this.player = document.getElementById('callVideo')
@@ -154,6 +155,7 @@
 
 
       if (this.$route.query.open === 'yes'){
+        console.log('yes')
         this.toggleModalStatus()
       }
 

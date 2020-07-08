@@ -6,7 +6,9 @@ import VueCookies from 'vue-cookies'
 import VueMask from 'v-mask'
 import VueMeta from 'vue-meta'
 import Vuelidate from 'vuelidate'
+import VueFilterDateFormat from 'vue-filter-date-format';
 
+Vue.use(VueFilterDateFormat);
 Vue.use(Vuelidate)
 Vue.use(VueMeta)
 Vue.use(VueMask)

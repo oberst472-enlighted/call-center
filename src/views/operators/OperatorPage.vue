@@ -7,7 +7,7 @@
             <div class="header-text">Оператор # {{operator.number}}</div>
           </div>
           <div class="user">
-            <img src="../../assets/images/user2.png" alt="" class="user-avatar">
+            <img :src="operator.photo? `https://calls-dev.enlighted.ru${operator.photo}` : require('../../assets/images/user2.png')" alt="" class="user-avatar">
             <div class="user-box">
               <div class="user-box-status" :style="statusStyle">{{statusText}}</div>
               <div class="user-box-name">{{operator.firstName}}</div>
@@ -17,9 +17,10 @@
               <div class="user-box-contacts">{{operator.phone}}</div>
             </div>
           </div>
+<!--          ../../assets/images/user2.png-->
         </div>
         <div class="btn-group">
-          <div class="button">Изменить</div>
+          <div class="button" @click="$router.push(`/operator-list/${operator._id}/edit`)">Изменить</div>
           <div class="button block">Блокировать оператора</div>
         </div>
       </div>
@@ -87,7 +88,19 @@
     async mounted() {
       try {
         this.operator = (await apiRequest.get( `/api/users/${this.$route.params.id}`)).data.user
+        let languages = (await apiRequest.get( '/api/langs/')).data
+
         console.log(this.operator)
+        let userLangs = []
+        this.operator.langs.forEach(langOperator => {
+          languages.forEach(lang => {
+            if (langOperator === lang._id) {
+              userLangs.push(lang.title)
+            }
+          })
+        })
+        this.operator.langs = userLangs
+
         // console.log(`/api/users/${this.$route.params.id}/calls/`)
 
         this.calls = (await apiRequest.get( `/api/users/${this.$route.params.id}/calls/`)).data
@@ -171,6 +184,7 @@
     margin-top: 32px;
     display: flex;
     &-avatar{
+      border-radius: 50%;
       width: 110px;
       height: 110px;
       margin-right: 20px;

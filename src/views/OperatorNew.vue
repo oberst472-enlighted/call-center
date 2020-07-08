@@ -174,24 +174,34 @@
         console.warn('SENDING DATA')
         try {
           let formData = new FormData();
-          // formData.append("username", this.newUser.firstName);
-          // formData.append("photo", this.newUser.file);
-          // console.log(formData)
-
-
-          let resp = await apiRequest.post('/api/users', {
-            username: this.newUser.firstName,
-            password: this.newUser.password,
-            callCenterId: 'dev',
-            number: 0,
-            firstName: this.newUser.firstName,
-            phone: this.newUser.phone,
-            langs: this.newUser.languages.map(i => {
-              return (i._id)
-            }),
-            email: this.newUser.email,
-            photo: this.newUser.file
+          this.newUser.languages.forEach(i => {
+            formData.append("langs", i._id);
           })
+          formData.append("firstName", this.newUser.firstName);
+          formData.append("username", this.newUser.lastName);
+          formData.append("email", this.newUser.email);
+          formData.append("phone", this.newUser.phone);
+          formData.append("password", this.newUser.password);
+          formData.append("photo", this.newUser.file);
+          formData.append("callCenterId", 'dev');
+          formData.append("number", '0');
+          console.log(formData)
+
+          let resp = await apiRequest.post('/api/users', formData)
+
+          // let resp = await apiRequest.post('/api/users', {
+          //   username: this.newUser.lastName,
+          //   password: this.newUser.password,
+          //   callCenterId: 'dev',
+          //   number: 0,
+          //   firstName: this.newUser.firstName,
+          //   phone: this.newUser.phone,
+          //   langs: this.newUser.languages.map(i => {
+          //     return (i._id)
+          //   }),
+          //   email: this.newUser.email,
+          //   photo: this.newUser.file
+          // })
           console.log(resp)
         } catch (e) {
           console.log(e)
@@ -225,6 +235,9 @@
     async created() {
       this.languages = (await apiRequest.get( '/api/langs/')).data
     },
+    updated() {
+      console.log(this.newUser.languages)
+    }
   }
 </script>
 

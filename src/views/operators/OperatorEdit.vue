@@ -62,10 +62,10 @@
             <template v-for="language in languages">
               <span  :key="language.title"
                      class="checkmark"
-                     :class="{active: newUser.languages.includes(language.title)}"
-                     @click="toggleLanguage(language.title)"
+                     :class="{active: newUser.languages.includes(language)}"
+                     @click="toggleLanguage(language)"
               />
-              <div @click="toggleLanguage(language.title)">{{language.title}}</div>
+              <div @click="toggleLanguage(language)">{{language.title}}</div>
             </template>
           </div>
           <div class="error-text" :class="isLanguageValid? 'active' : ''">Выберете хотя бы 1 язык</div>
@@ -162,6 +162,10 @@
         return this.operator ? `${this.operator.firstName} ${this.operator.lastName}` : ''
       },
     },
+
+    updated() {
+      console.log(this.newUser.languages)
+    },
     async mounted() {
       try {
         this.languages = (await apiRequest.get( '/api/langs/')).data
@@ -170,9 +174,12 @@
         this.operator = (await apiRequest.get( `/api/users/${this.$route.params.id}`)).data.user
         // console.log(this.operator)
         this.newUser.firstName = this.operator.firstName
-        this.newUser.lastName = this.operator.lastName
+        this.newUser.lastName = this.operator.username
         this.newUser.email = this.operator.email
         this.newUser.phone = this.operator.phone
+        console.log(this.operator)
+        console.log(this.operator.email)
+        console.log(this.newUser.email)
 
         let userLangs = []
         this.languages.map(item => {
@@ -182,11 +189,10 @@
             }
           } catch (e) {}
         })
-
-        // userLangs.forEach((item, index) =>{
-        //
-        //   this.$set(this.newUser.languages, index, item)
-        // })
+        console.log(userLangs)
+        userLangs.forEach((item, index) =>{
+          this.$set(this.newUser.languages, index, item)
+        })
 
         // this.newUser.languages = Object.assign([], userLangs)
         this.newUser.password = ''

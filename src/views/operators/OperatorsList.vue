@@ -41,7 +41,7 @@
         let users = (await apiRequest.get( '/api/users/')).data
         // console.log(users)
 
-        this.operators = users.filter(user => user.userType === "OPERATOR")
+        this.operators = users.filter(user => (user.userType === "OPERATOR" || user.userType === "operator"))
         // console.log(this.operators)
         // console.log(this.operators[0])
       } catch (e) {}
@@ -83,7 +83,6 @@
       }
     }
     width: 100%;
-    height: 366px;
     box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);
     border-radius: 8px;
     background-color: #ffffff;

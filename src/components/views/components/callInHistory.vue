@@ -9,7 +9,8 @@
         <div class="call-left-text">{{data.device.title}}</div>
       </div>
       <div class="call-right">
-        <div class="call-right-status" v-if="data.status === 'SUCCESS'">Решено</div>
+        <div class="call-right-status" v-if="data.videoAvailable">Решено</div>
+        <div class="call-right-status" v-else style="background-color: rgb(252, 239, 242); color: rgb(243, 115, 140);">Не прийнято</div>
         <img v-if="chatStatus === 'show'" src="../../../assets/icons/Write.svg" alt="">
       </div>
     </div>

@@ -28,7 +28,8 @@
       <div class="table_5">{{data.language}}</div>
     </td>
     <td height="55px" width="12.5%">
-      <div class="table_6" v-if="data.status === 'SUCCESS'">Решено</div>
+      <div class="table_6" v-if="data.videoAvailable">Решено</div>
+      <div class="table_6" v-else style="background-color: rgb(252, 239, 242); color: rgb(243, 115, 140);">Не прийнято</div>
     </td>
     <td height="55px" width="14%">
       <div class="table_7">
@@ -38,7 +39,7 @@
     </td>
     <td height="55px" width="11%">
       <div class="table_8">
-        <img style="cursor: pointer" src="../../../assets/images/Play.png" alt="" @click.stop="$router.push(`/call-list/${data.id}?open=yes`)">
+        <img v-if="data.videoAvailable" style="cursor: pointer" src="../../../assets/images/Play.png" alt="" @click.stop="$router.push(`/call-list/${data.id}?open=yes`)">
       </div>
     </td>
   </tr>

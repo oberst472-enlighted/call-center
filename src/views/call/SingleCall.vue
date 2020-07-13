@@ -12,7 +12,8 @@
         <div class="body-left-name">{{call.device.term.title}}</div>
         <div class="body-left-terminal">терминал #{{call.device.term.id}}</div>
         <div class="body-left-text">{{call.device.title}}</div>
-        <div class="body-left-status">Решено</div>
+        <div v-if="call.videoAvailable" class="body-left-status">Решено</div>
+        <div v-else style="background-color: rgb(252, 239, 242); color: rgb(243, 115, 140); width: 100px;" class="body-left-status">Не прийнято</div>
         <div class="comment">
           <div class="comment-head" v-if="operator">
             <div class="comment-head-text">КОММЕНТАРИЙ ОПЕРАТОРА</div>
@@ -95,19 +96,21 @@
     async mounted() {
       this.call = (await apiRequest.get( `/api/calls/${this.$route.params.id}`)).data
 
+      console.log(this.call.videoAvailable)
       this.operator = (await apiRequest.get(`/api/users/${this.call.operator}/`)).data.user
-      this.player = document.getElementById('callVideo')
 
-      let url = `http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream?token=841604f050f5e9ec8fcab0489358215f571d4965`
 
-      try {
-        console.log('start')
-        this.videoStream = (await apiRequest.getVideo(url))
-        this.url = url
-        if (this.$route.query.open === 'yes'){
-          this.openModal()
-        }
-      } catch (e) {}
+      if (this.call.videoAvailable) {
+        try {
+          let url = `http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream?token=841604f050f5e9ec8fcab0489358215f571d4965`
+          this.player = document.getElementById('callVideo')
+          this.url = url
+          if (this.$route.query.open === 'yes'){
+            this.openModal()
+          }
+        } catch (e) {}
+      }
+
 
       // console.log(videojs)
       // let player = videojs('callVideo')

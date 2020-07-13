@@ -72,6 +72,13 @@
         </div>
         <div class="col" />
         <div class="col">
+          <div class="label">Username:</div>
+          <div class="input" v-model="newUser.username">
+            <input class="input-field" type="text" v-model="newUser.username"/>
+          </div>
+          <div class="error-text" :class="isUsernameValid? 'active' : ''">Введите username</div>
+        </div>
+        <div class="col">
           <div class="label">Пароль:</div>
           <div class="input" v-model="newUser.password">
             <input class="input-field" type="password" v-model="newUser.password"/>
@@ -103,6 +110,7 @@
           phone: '',
           languages: [],
           password: '',
+          username: '',
           file: null
         },
         url: null,
@@ -117,6 +125,9 @@
     },
 
     computed: {
+      isUsernameValid() {
+        return (this.newUser.username.length === 0)
+      },
       isFirstNameValid() {
         return (this.newUser.firstName.length === 0)
       },
@@ -133,7 +144,7 @@
         return !this.newUser.languages.length
       },
       isPasswordValidMin() {
-        return !(this.newUser.password.length >7)
+        return !(this.newUser.password.length >2)
       },
       isPasswordValidMax() {
         return !(this.newUser.password.length <17)
@@ -149,6 +160,7 @@
       },
       isFormValid() {
         return !(
+            this.isUsernameValid ||
             this.isFirstNameValid ||
             this.isLastNameValid ||
             this.isEmailValid ||
@@ -163,20 +175,19 @@
       },
     },
 
-    updated() {
-      console.log(this.newUser.languages)
-    },
     async mounted() {
+      console.log(this.$route.params.id)
       try {
         this.languages = (await apiRequest.get( '/api/langs/')).data
         // console.log(this.languages)
 
         this.operator = (await apiRequest.get( `/api/users/${this.$route.params.id}`)).data.user
         // console.log(this.operator)
-        this.newUser.firstName = this.operator.firstName
-        this.newUser.lastName = this.operator.username
-        this.newUser.email = this.operator.email
-        this.newUser.phone = this.operator.phone
+        this.newUser.firstName = this.operator.firstName || ''
+        this.newUser.lastName = this.operator.lastName || ''
+        this.newUser.username = this.operator.username || ''
+        this.newUser.email = this.operator.email || ''
+        this.newUser.phone = this.operator.phone || ''
         console.log(this.operator)
         console.log(this.operator.email)
         console.log(this.newUser.email)
@@ -217,15 +228,16 @@
       },
       async submitButton(){
         if (!this.isFormValid) { return }
-        console.warn('SENDING DATA')
         try {
+          console.warn('SENDING DATA')
+
           // let formData = new FormData();
           // formData.append("username", this.newUser.firstName);
           // formData.append("photo", this.newUser.file);
           // console.log(formData)
 
 
-          let resp = await apiRequest.post('/api/users', {
+          let resp = await apiRequest.patch(`/api/users/${this.$route.params.id}`, {
             username: this.newUser.firstName,
             password: this.newUser.password,
             callCenterId: 'dev',
@@ -239,7 +251,11 @@
             email: this.newUser.email,
             photo: this.newUser.file
           })
-          console.log(resp)
+          console.warn(resp)
+
+          if (resp.status === 200) {
+            this.$router.back()
+          }
         } catch (e) {
           console.log(e)
         }

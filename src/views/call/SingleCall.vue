@@ -1,7 +1,7 @@
 <template>
   <div id="SingleCall" v-if="call">
     <div class="header">
-      <div class="header-text">Звонок #{{call.__v}}</div>
+      <div class="header-text">Звонок #{{call.number}}</div>
     </div>
     <div class="body">
       <div class="body-left">
@@ -23,31 +23,30 @@
           </div>
           <div class="comment-body" v-if="call.comment">
             <p>{{call.comment}}</p>
-
           </div>
         </div>
       </div>
-      <div class="body-right">
+      <div class="body-right" v-show="url">
 
         <video
                 width="100%"
-                src="http://vjs.zencdn.net/v/oceans.mp4"
         />
-        <div class="play_btn" @click="toggleModalStatus">
+        <div class="play_btn" @click="openModal">
           <img src="../../assets/icons/PlayWhite.png" alt="">
         </div>
       </div>
     </div>
-    <div class="video-modal" v-show="modalStatus">
+    <div class="video-modal" v-show="modalStatus && url">
       <div class="video-modal-close">
-        <img src="../../assets/icons/Close.png" alt="" @click="toggleModalStatus">
+        <img src="../../assets/icons/Close.png" alt="" @click="closeModal">
       </div>
-      <div class="video-modal-viewport">
+      <div class="video-modal-viewport" v-show="url">
         <video
-                controls
                 width="100%"
                 id="callVideo"
-                src="http://vjs.zencdn.net/v/oceans.mp4"
+                controls
+                :src="url"
+
         />
       </div>
     </div>
@@ -57,7 +56,6 @@
 <script>
   import forward from "../../components/UI/forward";
   import apiRequest from "../../utils/apiRequest";
-  import videojs from "video.js"
   export default {
     name: "SingleCall",
     data(){
@@ -68,7 +66,8 @@
         modalStatus: false,
         videoStream: null,
         showVideo: false,
-        player: null
+        player: null,
+        url: null
       }
     },
     computed: {
@@ -83,25 +82,32 @@
       }
     },
     methods: {
-      toggleModalStatus() {
-        this.modalStatus =! this.modalStatus
-        if (this.modalStatus) {
-          this.player.play()
-        } else {
-          this.player.pause()
-        }
+      openModal() {
+        this.modalStatus =true
+      },
+      closeModal() {
+        this.modalStatus = false
+        this.player.pause()
+        this.player.currentTime = 0;
       },
     },
     components: { forward },
     async mounted() {
       this.call = (await apiRequest.get( `/api/calls/${this.$route.params.id}`)).data
 
-      console.log(this.call)
       this.operator = (await apiRequest.get(`/api/users/${this.call.operator}/`)).data.user
-
       this.player = document.getElementById('callVideo')
 
-      console.log(player)
+      let url = `http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream?token=841604f050f5e9ec8fcab0489358215f571d4965`
+
+      try {
+        console.log('start')
+        this.videoStream = (await apiRequest.getVideo(url))
+        this.url = url
+        if (this.$route.query.open === 'yes'){
+          this.openModal()
+        }
+      } catch (e) {}
 
       // console.log(videojs)
       // let player = videojs('callVideo')
@@ -132,12 +138,6 @@
 
 
 
-
-
-
-
-
-
       // videojs.Hls.xhr.beforeRequest = function(options) {
       //   options.headers = {
       //     'Authorization': "Token 841604f050f5e9ec8fcab0489358215f571d4965"
@@ -152,12 +152,6 @@
       // });
 
 
-
-
-      if (this.$route.query.open === 'yes'){
-        console.log('yes')
-        this.toggleModalStatus()
-      }
 
     },
   }

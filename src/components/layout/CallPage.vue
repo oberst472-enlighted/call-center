@@ -23,17 +23,17 @@
                 class="viewport-call-admin"
                 id="localVideo"
                 autoplay muted
-                v-show="$store.state.callLogic.isCallInProgress"
+                v-show="$store.state.callLogic.isCallInProgress && isVideoOn"
         />
       </div>
     </div>
     <div class="sidebar" :class="{'call-active': $store.state.callLogic.isCallInProgress}">
       <div class="call-window">
-        <div class="call-window-head">
-          <div class="call-window-head-new">НОВЫЙ ЗВОНОК <span>РУССКИЙ</span></div>
-          <div class="call-window-head-name">Казанский Вокзал</div>
-          <div class="call-window-head-terminal">терминал #3462</div>
-          <div class="call-window-head-terminal">кассы</div>
+        <div class="call-window-head" v-if="$store.state.callLogic.incomingData">
+          <div class="call-window-head-new">НОВЫЙ ЗВОНОК <span>{{$store.state.callLogic.incomingData.lang}}</span></div>
+          <div class="call-window-head-name">{{$store.state.callLogic.incomingData.station}}</div>
+          <div class="call-window-head-terminal">терминал #{{$store.state.callLogic.incomingData.stationId}}</div>
+          <div class="call-window-head-terminal">{{$store.state.callLogic.incomingData.terminal}}</div>
         </div>
         <div class="call-window-bottom" v-if="$store.state.callLogic.isCallInProgress">
           <div
@@ -296,6 +296,7 @@
           font-weight: 700;
         }
         &-terminal{
+          text-align: center;
           color: #ffffff;
           font-size: 14px;
           font-weight: 400;

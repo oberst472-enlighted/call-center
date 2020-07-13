@@ -64,7 +64,10 @@
             <div class="user-operator" v-else>оператор # <span>{{ userData.user.number }}</span></div>
           </div>
           <div class="user-avatar">
-            <img src="../../assets/icons/User.svg" alt="">
+            <img
+                    :src="userData.photo ? `https://calls-dev.enlighted.ru${userData.photo}` : require('../../assets/icons/User.svg')"
+                    alt=""
+            >
           </div>
         </div>
         <div

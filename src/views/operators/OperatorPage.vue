@@ -11,7 +11,7 @@
             <div class="user-box">
               <div class="user-box-status" :style="statusStyle">{{statusText}}</div>
               <div class="user-box-name">{{operator.firstName}}</div>
-              <div class="user-box-name">{{operator.username}}</div>
+              <div class="user-box-name">{{operator.lastName}}</div>
               <div class="user-box-contacts" style="margin-bottom: 15px">{{operator.langs.join(", ")}}</div>
               <div class="user-box-contacts">{{operator.email}}</div>
               <div class="user-box-contacts">{{operator.phone}}</div>

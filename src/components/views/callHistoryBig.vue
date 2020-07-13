@@ -49,6 +49,8 @@
     border-radius: 8px;
     background-color: #ffffff;
     padding: 21px;
+    max-height: calc(100vh - 315px);
+    overflow: auto;
     .head{
       display: flex;
       justify-content: space-between;

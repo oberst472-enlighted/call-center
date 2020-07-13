@@ -31,10 +31,9 @@ export default {
       return this.$store.state.isActiveWorkShift
     }
   },
-  mounted() {
-    // console.dir(localStorage.key)
-    // console.dir(sessionStorage.key)
-    // console.log(document.cookie)
+  async mounted() {
+
+
 
     if (sessionStorage.getItem('isUserLoggedIn')) {
       this.$store.commit('setUserStatus', sessionStorage.getItem('userType'))
@@ -52,8 +51,8 @@ export default {
   watch: {
     isActiveWorkShift(val){
       if (val) {
-        this.interval = setInterval(() => {
-          this.$store.commit('incrementTime')
+        this.interval = setInterval(async () => {
+          this.$store.commit('incrementTime');
         }, 1000)
       } else {
         clearInterval(this.interval)

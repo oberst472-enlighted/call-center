@@ -37,11 +37,17 @@ export default {
       // ВХОДЯШИЙ ЗВОНОК
       this.socket.on('calling', (room) => {
         console.log('incoming call')
-        console.log(room);
+        console.log(room.device);
         this.videoURL = room.videoURL
         this.videoToken = room.videoToken
         this.callObjectId = room.callObjectId
 
+        this.$store.commit('callLogic/setIncomingData', {
+          lang: room.device.lang,
+          station: room.device.term.title,
+          stationId: room.device.term.id,
+          terminal: room.device.title
+        })
         this.$store.commit('callLogic/comeIncomingCall')
 
         const playPromise = this.calling.play();

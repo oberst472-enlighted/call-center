@@ -2,7 +2,11 @@
   <div class="operator-wraper">
     <hr>
     <div class="operator" @click="$router.push(`/operator-list/${data._id}`)">
-      <img src="../../../assets/images/user2.png" alt="" class="operator-img">
+      <img
+              :src="data.photo ? `https://calls-dev.enlighted.ru${data.photo}` : require('../../../assets/images/user2.png')"
+              alt=""
+              class="operator-img"
+      >
       <div class="operator-block">
         <div class="operator-text">оператор # {{data.number}}</div>
         <div class="operator-name">{{data.firstName}}</div>
@@ -91,6 +95,7 @@
         font-weight: 400;
       }
       &-img{
+        border-radius: 50%;
         height: 40px;
         width: 40px;
         margin-right: 17px;

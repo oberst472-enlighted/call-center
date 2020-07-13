@@ -5,7 +5,7 @@
           style="cursor: pointer"
   >
     <td height="55px" width="11%">
-      <div class="table_1"># {{data.__v}}</div>
+      <div class="table_1"># {{data.number}}</div>
     </td>
     <td height="55px" width="11%">
       <div class="table_2">

@@ -7,10 +7,10 @@
       ОЖИДАНИЕ ЗВОНКА
     </div>
     <div class="active-call" v-else>
-      <div class="active-call-new">НОВЫЙ ЗВОНОК <span>РУССКИЙ</span></div>
-      <div class="active-call-name">Казанский Вокзал</div>
-      <div class="active-call-terminal">терминал #3462</div>
-      <div class="active-call-text">зал ожидания</div>
+      <div class="active-call-new">НОВЫЙ ЗВОНОК <span>{{$store.state.callLogic.incomingData.lang}}</span></div>
+      <div class="active-call-name">{{$store.state.callLogic.incomingData.station}}</div>
+      <div class="active-call-terminal">терминал #{{$store.state.callLogic.incomingData.stationId}}</div>
+      <div class="active-call-text">{{$store.state.callLogic.incomingData.terminal}}</div>
       <div class="active-call-button">
         <div class="circle-first"></div>
         <div class="circle-second"></div>

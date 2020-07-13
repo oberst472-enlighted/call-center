@@ -51,6 +51,8 @@
 
 <style lang='scss'>
   #OperatorsList{
+    max-height: calc(100vh - 100px);
+    overflow: auto;
     .head{
       display: flex;
       justify-content: space-between;

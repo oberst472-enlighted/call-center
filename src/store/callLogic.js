@@ -8,7 +8,8 @@ export default {
     callTime: 0,
     callDate: null,
     startTime: null, //
-    endTime: null
+    endTime: null,
+    incomingData: null
 
   },
   getters: {},
@@ -48,6 +49,9 @@ export default {
     },
     setEndTime(state, date) {
       state.endTime = date
+    },
+    setIncomingData (state, data) {
+      state.incomingData = data
     }
   },
   actions: {

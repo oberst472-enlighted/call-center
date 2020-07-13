@@ -66,6 +66,8 @@
 
 <style lang='scss'>
 #TerminalsList {
+  max-height: calc(100vh - 100px);
+  overflow: auto;
   /*.row{*/
   /*  display: flex;*/
   /*  justify-content: space-between;*/

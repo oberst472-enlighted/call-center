@@ -17,7 +17,11 @@
             class="operator"
             v-if="!userIsOperator && this.$route.name !== 'operator-page'"
     >
-      <img src="../../../assets/images/user2.png" alt="" class="operator-img">
+      <img
+              :src="data.operator.photo ? `https://calls-dev.enlighted.ru${data.operator.photo}` : require('../../../assets/images/user2.png')"
+              alt=""
+              class="operator-img"
+      >
       <div class="operator-block">
         <div class="operator-text">{{data.operator.firstName}} {{data.operator.lastName}}</div>
         <div class="operator-text">оператор # {{data.operator.number}}</div>
@@ -35,6 +39,9 @@
         default: 'show'
       },
       data: Object
+    },
+    created() {
+      console.warn(`ID: ${this.data.id}  STATUS: ${this.data.status}`)
     },
     computed: {
       userIsOperator() {
@@ -126,8 +133,10 @@
         color: #685c7b;
         font-size: 10px;
         font-weight: 400;
-        line-height: 12px;    }
+        line-height: 12px;
+      }
       &-img{
+        border-radius: 50%;
         height: 40px;
         width: 40px;
         margin-right: 14px;

@@ -31,6 +31,8 @@
     background-color: #ffffff;
     padding: 17px;
     margin-top: 20px;
+    max-height: calc(100vh - 315px);
+    overflow: auto;
     .head{
       display: flex;
       justify-content: space-between;

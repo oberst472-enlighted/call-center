@@ -72,6 +72,13 @@
         </div>
         <div class="col" />
         <div class="col">
+          <div class="label">Username:</div>
+          <div class="input" v-model="newUser.username">
+            <input class="input-field" type="text" v-model="newUser.username"/>
+          </div>
+          <div class="error-text" :class="isUsernameValid? 'active' : ''">Введите username</div>
+        </div>
+        <div class="col">
           <div class="label">Пароль:</div>
           <div class="input" v-model="newUser.password">
             <input class="input-field" type="password" v-model="newUser.password"/>
@@ -100,6 +107,7 @@
           phone: '',
           languages: [],
           password: '',
+          username: '',
           file: null
         },
         url: null,
@@ -113,8 +121,10 @@
       }
     },
     computed: {
+      isUsernameValid() {
+        return (this.newUser.username.length === 0)
+      },
       isFirstNameValid() {
-        console.log(this.newUser.firstName.length === 0)
         return (this.newUser.firstName.length === 0)
       },
       isLastNameValid() {
@@ -130,7 +140,7 @@
         return !this.newUser.languages.length
       },
       isPasswordValidMin() {
-        return !(this.newUser.password.length >7)
+        return !(this.newUser.password.length >2)
       },
       isPasswordValidMax() {
         return !(this.newUser.password.length <17)
@@ -146,6 +156,7 @@
       },
       isFormValid() {
         return !(
+            this.isUsernameValid ||
             this.isFirstNameValid ||
             this.isLastNameValid ||
             this.isEmailValid ||
@@ -177,8 +188,9 @@
           this.newUser.languages.forEach(i => {
             formData.append("langs", i._id);
           })
+          formData.append("username", this.newUser.username);
           formData.append("firstName", this.newUser.firstName);
-          formData.append("username", this.newUser.lastName);
+          formData.append("lastName", this.newUser.lastName);
           formData.append("email", this.newUser.email);
           formData.append("phone", this.newUser.phone);
           formData.append("password", this.newUser.password);
@@ -203,6 +215,9 @@
           //   photo: this.newUser.file
           // })
           console.log(resp)
+          if (resp.status === 200) {
+            this.$router.back()
+          }
         } catch (e) {
           console.log(e)
         }

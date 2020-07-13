@@ -12,14 +12,18 @@
         <div class="row" v-if="$store.state.userStatus === 'admin'">
         </div>
       </div>
-      <div class="col-right" style="position: absolute; right: 0; width: 300px; min-height: 100%">
+      <div class="col-right" style="position: absolute; right: 0; width: 300px; min-height: calc(100% - 100px)">
         <callWindow
                 v-if="$store.state.userStatus === 'operator'"
                 :answer="answer"
         />
       </div>
     </div>
-    <div id="CallList" v-if="calls">
+    <div
+            id="CallList"
+            v-if="calls"
+            :style="$store.state.userStatus === 'admin' ? 'max-height: calc(100vh - 100px)' : 'max-height: calc(100vh - 315px)'"
+    >
       <!--    <div class="row">-->
       <!--      <userStat />-->
       <!--      <callWindow />-->
@@ -173,6 +177,7 @@
   border-radius: 8px;
   background-color: #ffffff;
   padding: 17px 25px;
+  overflow: auto;
   /*.row{*/
   /*  display: flex;*/
   /*  justify-content: space-between;*/

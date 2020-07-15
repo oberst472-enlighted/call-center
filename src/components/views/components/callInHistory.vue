@@ -4,9 +4,9 @@
     <div class="call" @click="$router.push(`/call-list/${data.id}`)">
       <div class="call-left">
         <div class="call-left-date">{{dateCall}}  <span>{{startTime}} - {{data.endTime ? endTime : ''}}</span></div>
-        <div class="call-left-name">{{data.device.term.title}}</div>
-        <div class="call-left-terminal">терминал #{{data.device.term.id}}</div>
-        <div class="call-left-text">{{data.device.title}}</div>
+        <div class="call-left-name" v-if="data.device">{{data.device.term.title}}</div>
+<!--        <div class="call-left-terminal" v-if="data.device">терминал #{{data.device.term.id}}</div>-->
+        <div class="call-left-text" v-if="data.device">{{data.device.title}}</div>
       </div>
       <div class="call-right">
         <div class="call-right-status" v-if="data.videoAvailable">Решено</div>
@@ -42,8 +42,8 @@
       data: Object
     },
     created() {
-      console.error(this.data)
-      // console.warn(`ID: ${this.data.id}  STATUS: ${this.data.status}`)
+      console.warn(this.data)
+      console.warn(`ID: ${this.data.id}  STATUS: ${this.data.status}`)
     },
     computed: {
       userIsOperator() {

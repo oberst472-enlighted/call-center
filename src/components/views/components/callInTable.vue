@@ -9,13 +9,13 @@
     </td>
     <td height="55px" width="11%">
       <div class="table_2">
-        <div>{{data.device.term.title}}</div>
+        <div v-if="data.device">{{data.device.term.title}}</div>
       </div>
     </td>
     <td height="55px" width="14%">
       <div class="table_3">
-        <div>#{{data.device.term.id}}</div>
-        <div>{{data.device.title}}</div>
+        <div v-if="data.device">#{{data.device.term.id}}</div>
+        <div v-if="data.device">{{data.device.title}}</div>
       </div>
     </td>
     <td height="55px" width="14%">

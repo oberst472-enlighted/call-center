@@ -51,7 +51,7 @@
       },
     },
     created() {
-      console.log(this.data)
+      console.warn(this.data.status)
     }
   }
 </script>

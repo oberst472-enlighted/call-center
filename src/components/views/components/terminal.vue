@@ -9,7 +9,7 @@
         {{ data.online? 'Онлайн': 'Не доступен'}}
       </div>
       <div class="terminal-name">{{data.term.title}}</div>
-      <div class="terminal-number">терминал # {{data.term.id}}</div>
+<!--      <div class="terminal-number">терминал # {{data.term.id}}</div>-->
       <div class="terminal-text">{{data.title}}</div>
     </div>
   </div>

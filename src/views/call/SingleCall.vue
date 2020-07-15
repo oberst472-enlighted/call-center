@@ -9,9 +9,9 @@
           <div class="time-date">{{dateCall}} МСК </div>
           <div class="time-call_time">{{startTime}} - {{endTime}}</div>
         </div>
-        <div class="body-left-name">{{call.device.term.title}}</div>
-        <div class="body-left-terminal">терминал #{{call.device.term.id}}</div>
-        <div class="body-left-text">{{call.device.title}}</div>
+        <div class="body-left-name" v-if="call.device">{{call.device.term.title}}</div>
+<!--        <div class="body-left-terminal" v-if="call.device">терминал #{{call.device.term.id}}</div>-->
+        <div class="body-left-text" v-if="call.device">{{call.device.title}}</div>
         <div v-if="call.videoAvailable" class="body-left-status">Решено</div>
         <div v-else style="background-color: rgb(252, 239, 242); color: rgb(243, 115, 140); width: 100px;" class="body-left-status">Не принят</div>
         <div class="comment">

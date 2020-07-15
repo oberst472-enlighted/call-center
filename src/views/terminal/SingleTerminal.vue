@@ -6,7 +6,7 @@
     <div class="body">
       <div class="body-left">
         <div class="body-left-name">{{terminal.term.title}}</div>
-        <div class="body-left-terminal">терминал # {{terminal.term.id}}</div>
+<!--        <div class="body-left-terminal">терминал # {{terminal.term.id}}</div>-->
         <div class="body-left-text">{{terminal.title}}</div>
         <div
                 :style="!terminal.online ? 'background-color: #fceff2; color: #f3738c': ''"

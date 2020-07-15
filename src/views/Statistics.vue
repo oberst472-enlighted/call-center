@@ -95,7 +95,7 @@
 
       </div>
     </div>
-    <div class="button">Выгрузить</div>
+    <div class="button" @click="download">Выгрузить</div>
   </div>
 </template>
 
@@ -196,6 +196,23 @@
           this.operatorsSelected = []
         }
       },
+
+      async download() {
+        try {
+          let auth = await apiRequest.post('/api/report/', {
+            startDate: this.dateRange.startDate,
+            endDate: this.dateRange.endDate,
+            operators: this.operatorsSelected.map(user => user._id),
+            callStatus: this.callStatusces
+          })
+          console.log(auth.data)
+        } catch (e) {
+          return true
+        }
+      }
+    },
+    updated() {
+      console.log(this.operatorsSelected.map(user => user._id))
     },
     computed: {
       getInputName(){
@@ -224,19 +241,6 @@
           return '0'
         }
       },
-      async download() {
-        try {
-          let auth = await apiRequest.post('/api/report/', {
-            startDate: data.login,
-            endDate: data.login,
-            operators: data.login,
-            callStatus: data.password
-          })
-          console.log(auth)
-        } catch (e) {
-          return true
-        }
-      }
     },
   }
 </script>

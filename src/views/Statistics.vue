@@ -120,7 +120,7 @@
         callStatus: 'Решено',
         callStatusces: [
           {
-            title: 'Не прийнято',
+            title: 'Не принят',
           },
           {
             title: 'Решено',
@@ -222,6 +222,19 @@
           return `${this.operators.length * 39 + 39}px`
         } else {
           return '0'
+        }
+      },
+      async download() {
+        try {
+          let auth = await apiRequest.post('/api/report/', {
+            startDate: data.login,
+            endDate: data.login,
+            operators: data.login,
+            callStatus: data.password
+          })
+          console.log(auth)
+        } catch (e) {
+          return true
         }
       }
     },

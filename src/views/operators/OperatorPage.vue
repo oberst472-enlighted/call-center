@@ -12,7 +12,7 @@
               <div class="user-box-status" :style="statusStyle">{{statusText}}</div>
               <div class="user-box-name">{{operator.firstName}}</div>
               <div class="user-box-name">{{operator.lastName}}</div>
-              <div class="user-box-contacts" style="margin-bottom: 15px">{{operator.langs.join(", ")}}</div>
+              <div class="user-box-contacts" style="margin-bottom: 15px">{{langs.join(", ")}}</div>
               <div class="user-box-contacts">{{operator.email}}</div>
               <div class="user-box-contacts">{{operator.phone}}</div>
             </div>
@@ -21,7 +21,8 @@
         </div>
         <div class="btn-group">
           <div class="button" @click="$router.push(`/operator-list/${operator._id}/edit`)">Изменить</div>
-          <div class="button block">Блокировать оператора</div>
+          <div class="button block" v-if="operator.isActive" @click="blockOperator">Блокировать оператора</div>
+          <div class="button block" v-else style="background-color: #4fd161" @click="unblockOperator">Разлокировать оператора</div>
         </div>
       </div>
       <div class="body-right">
@@ -48,7 +49,8 @@
     data() {
       return {
         operator: null,
-        calls: null
+        calls: null,
+        langs: []
       }
     },
 
@@ -57,7 +59,35 @@
         title: `Оператор ${this.operatorName}`
       }
     },
-
+    methods: {
+      async blockOperator(){
+        await apiRequest.patch(`/api/users/${this.$route.params.id}`, {
+          isActive: false
+        })
+        await this.fetchUser()
+      },
+      async unblockOperator(){
+        await apiRequest.patch(`/api/users/${this.$route.params.id}`, {
+          isActive: true
+        })
+        await this.fetchUser()
+      },
+      async fetchUser() {
+        try {
+          this.operator = (await apiRequest.get( `/api/users/${this.$route.params.id}`)).data.user
+          let languages = (await apiRequest.get( '/api/langs/')).data
+          this.langs =[]
+          this.operator.langs.forEach(langOperator => {
+            languages.forEach(lang => {
+              if (langOperator === lang._id) {
+                this.langs.push(lang.title)
+              }
+            })
+          })
+          this.calls = (await apiRequest.get( `/api/users/${this.$route.params.id}/calls/`)).data
+        } catch (e) {}
+      }
+    },
     computed: {
       operatorName(){
         return this.operator ? `${this.operator.firstName} ${this.operator.lastName}` : ''
@@ -86,25 +116,7 @@
       },
     },
     async mounted() {
-      try {
-        this.operator = (await apiRequest.get( `/api/users/${this.$route.params.id}`)).data.user
-        let languages = (await apiRequest.get( '/api/langs/')).data
-
-        console.log(this.operator)
-        let userLangs = []
-        this.operator.langs.forEach(langOperator => {
-          languages.forEach(lang => {
-            if (langOperator === lang._id) {
-              userLangs.push(lang.title)
-            }
-          })
-        })
-        this.operator.langs = userLangs
-
-        // console.log(`/api/users/${this.$route.params.id}/calls/`)
-
-        this.calls = (await apiRequest.get( `/api/users/${this.$route.params.id}/calls/`)).data
-      } catch (e) {}
+      await this.fetchUser()
     }
   }
 </script>

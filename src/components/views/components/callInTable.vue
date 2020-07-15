@@ -29,7 +29,7 @@
     </td>
     <td height="55px" width="12.5%">
       <div class="table_6" v-if="data.videoAvailable">Решено</div>
-      <div class="table_6" v-else style="background-color: rgb(252, 239, 242); color: rgb(243, 115, 140);">Не прийнято</div>
+      <div class="table_6" v-else style="background-color: rgb(252, 239, 242); color: rgb(243, 115, 140);">Не принят</div>
     </td>
     <td height="55px" width="14%">
       <div class="table_7">

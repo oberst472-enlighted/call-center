@@ -42,7 +42,8 @@
       data: Object
     },
     created() {
-      console.warn(`ID: ${this.data.id}  STATUS: ${this.data.status}`)
+      console.error(this.data)
+      // console.warn(`ID: ${this.data.id}  STATUS: ${this.data.status}`)
     },
     computed: {
       userIsOperator() {

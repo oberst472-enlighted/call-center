@@ -96,13 +96,13 @@
     async mounted() {
       this.call = (await apiRequest.get( `/api/calls/${this.$route.params.id}`)).data
 
-      console.log(this.call.videoAvailable)
+      console.log(this.call)
       this.operator = (await apiRequest.get(`/api/users/${this.call.operator}/`)).data.user
 
 
       if (this.call.videoAvailable) {
         try {
-          let url = `http://188.43.103.251:8001/api/v1/videos/${this.call.videoId}/stream?token=841604f050f5e9ec8fcab0489358215f571d4965`
+          let url = `${this.call.video}/stream?token=841604f050f5e9ec8fcab0489358215f571d4965`
           this.player = document.getElementById('callVideo')
           this.url = url
           if (this.$route.query.open === 'yes'){

@@ -20,9 +20,9 @@
         </div>
       </div>
       <div class="col-right">
-        <languagesBox v-if="$store.state.userStatus === 'admin'" />
+<!--        <languagesBox v-if="$store.state.userStatus === 'admin'" />-->
         <callWindow
-                v-else-if="$store.state.userStatus === 'operator'"
+                v-if="$store.state.userStatus === 'operator'"
                 :answer="answer"
         />
         <usersSmall v-if="$store.state.userStatus === 'admin'"/>
@@ -42,7 +42,7 @@
   import avaliableTerminals from "../components/views/avaliableTerminals";
   import statusAdminDashboard from "../components/views/statusAdminDashboard";
   import graphBox from "../components/views/graphBox";
-  import languagesBox from "../components/views/languagesBox";
+  // import languagesBox from "../components/views/languagesBox";
   import ratingBox from "../components/views/ratingBox";
   import callHistoryBig from "../components/views/callHistoryBig";
   import usersSmall from "../components/views/usersSmall";
@@ -53,7 +53,7 @@
       statusAdminDashboard,
       statusOperatorDashboard,
       graphBox,
-      languagesBox,
+      // languagesBox,
       ratingBox,
       avaliableTerminals,
       callHistoryBig,

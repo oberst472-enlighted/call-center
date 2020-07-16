@@ -90,7 +90,7 @@ export default new Vuex.Store({
         if (userInfo.data.user.userType.toLowerCase() === 'operator') {
           localStorage.setItem('userType', userInfo.data.user.userType.toLowerCase())
         }
-        dispatch('fetchUserData')
+        await dispatch('fetchUserData')
         commit('toggleWorkingStatus', 'break')
         commit('setWorkShiftStatus', false)
       }
@@ -101,9 +101,14 @@ export default new Vuex.Store({
       sessionStorage.clear()
     },
     async fetchUserData({commit}) {
+      console.error(localStorage.getItem('token') || sessionStorage.getItem('token'))
       if (localStorage.getItem('userType') && localStorage.getItem('userType') === 'operator') {
-        let userInfo = (await apiRequest.get( `/api/me/`)).data
-
+        let userInfo
+        try {
+          userInfo = (await apiRequest.get( `/api/me/`)).data
+        } catch (e) {
+          console.log(e)
+        }
         console.log(userInfo.session)
         if (!userInfo.session.stopTime) {
           console.log('isActive')

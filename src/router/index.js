@@ -88,12 +88,12 @@ VueRouter.prototype.push = function push(location) {
       meta: { layout: "main-layout", gotForward: true, middleware: [ user, admin ]},
       component: () => import('../views/OperatorNew')
     },
-    {
-      path: '/add-language',
-      name: 'add-language',
-      meta: { layout: "main-layout", gotForward: true, middleware: [ user, admin ]},
-      component: () => import('../views/AddLanguage')
-    },
+    // {
+    //   path: '/add-language',
+    //   name: 'add-language',
+    //   meta: { layout: "main-layout", gotForward: true, middleware: [ user, admin ]},
+    //   component: () => import('../views/AddLanguage')
+    // },
 ]
 
 

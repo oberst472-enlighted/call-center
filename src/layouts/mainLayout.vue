@@ -58,7 +58,11 @@
       stopAudio() {
         this.isSoundOn = false
 
-        let audio = this.localStream.getTracks().find(item => item.kind === 'audio')
+        let audio = this.localStream.getTracks().forEach(item => {
+          if (item.kind === 'audio') {
+            item.enabled = !item.enabled;
+          }
+        })
         console.log(audio)
 
         // audio.muted = true
@@ -66,7 +70,11 @@
       },
       stopVideo() {
         this.isVideoOn = false
-        let video = this.localStream.getTracks().find(item => item.kind === 'video')
+        let video = this.localStream.getTracks().forEach(item => {
+          if (item.kind === 'video') {
+            item.enabled = !item.enabled;
+          }
+        })
         console.log(video)
 
         // video.stop()
@@ -74,7 +82,11 @@
       continueAudio() {
         this.isSoundOn = true
 
-        let audio = this.localStream.getTracks().find(item => item.kind === 'audio')
+        let audio = this.localStream.getTracks().forEach(item => {
+          if (item.kind === 'audio') {
+            item.enabled = !item.enabled;
+          }
+        })
         console.log(audio)
         // audio.muted = false
 
@@ -82,7 +94,11 @@
       },
       continueVideo() {
         this.isVideoOn = true
-        let video = this.localStream.getTracks().find(item => item.kind === 'video')
+        let video = this.localStream.getTracks().forEach(item => {
+          if (item.kind === 'video') {
+            item.enabled = !item.enabled;
+          }
+        })
         console.log(video)
 
         // video.play()

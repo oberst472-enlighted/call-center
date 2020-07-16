@@ -46,7 +46,7 @@
         <forward v-if="$route.meta.gotForward"/>
         <div v-else class="dash-nav-buttons">
           <div style="cursor: pointer" class="button" @click="$router.push('/create-operator')">Добавить сотрудника</div>
-          <div  style="cursor: pointer" class="button" @click="$router.push('/add-language')">Добавить язык</div>
+<!--          <div  style="cursor: pointer" class="button" @click="$router.push('/add-language')">Добавить язык</div>-->
         </div>
       </div>
 

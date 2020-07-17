@@ -29,6 +29,7 @@
       data: Array
     },
     mounted() {
+      console.error(this.data)
       let ctx = this.$refs.myChart.getContext('2d')
       Chart.defaults.global.legend.display = false;
       Chart.defaults.global.tooltips.enabled = true;

@@ -167,8 +167,21 @@
     },
 
     async created(){
-      let users = (await apiRequest.get( '/api/users/')).data
-      this.operators = users.filter(user => user.userType === "OPERATOR")
+      if ((sessionStorage.getItem('userType') || localStorage.getItem('userType')) === 'operator') {
+        if (!this.$store.state.userData) {
+          await this.$store.dispatch('fetchUserData')
+        }
+        this.operatorsSelected = [
+            {
+              _id: (sessionStorage.getItem('userId') || localStorage.getItem('userId')),
+              firstName: `${this.$store.state.userData.user.firstName} ${this.$store.state.userData.user.lastName}`
+            }
+        ]
+      } else {
+        let users = (await apiRequest.get( '/api/users/')).data
+        this.operators = users.filter(user => (user.userType === "OPERATOR" || user.userType === "operator"))
+        console.log((sessionStorage.getItem('userType') || localStorage.getItem('userType')))
+      }
     },
     methods: {
       updateValues(val){
@@ -211,21 +224,23 @@
         }
       }
     },
-    updated() {
-      console.log(this.operatorsSelected.map(user => user._id))
-    },
     computed: {
       getInputName(){
         let name = []
-        this.operatorsSelected.map(item => name.push(item.firstName))
-        let isAllSelected = JSON.stringify(this.operatorsSelected) === JSON.stringify(this.operators)
-        if (isAllSelected) {
-          return 'Все'
-        } else if (name.length === 0) {
-          return "Никто не выбран"
+        if (this.operatorsSelected.length) {
+          this.operatorsSelected.map(item => name.push(item.firstName))
+          let isAllSelected = JSON.stringify(this.operatorsSelected) === JSON.stringify(this.operators)
+          if (isAllSelected) {
+            return 'Все'
+          } else if (name.length === 0) {
+            return "Никто не выбран"
+          } else {
+            return name.join(', ')
+          }
         } else {
-          return name.join(', ')
+          return "Никто не выбран"
         }
+
       },
       calcStatusHeight(){
         if (this.$store.state.popup.popupActive === 'CallStatus') {

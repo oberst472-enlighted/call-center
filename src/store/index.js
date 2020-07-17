@@ -101,7 +101,6 @@ export default new Vuex.Store({
       sessionStorage.clear()
     },
     async fetchUserData({commit}) {
-      console.error(localStorage.getItem('token') || sessionStorage.getItem('token'))
       if (localStorage.getItem('userType') && localStorage.getItem('userType') === 'operator') {
         let userInfo
         try {

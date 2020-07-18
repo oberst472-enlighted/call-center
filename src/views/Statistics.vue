@@ -1,7 +1,7 @@
 <template>
   <div id="Statistics">
     <div class="header">
-      <div class="header-text">Выгрузка статистики</div>
+      <div class="header-text">Выгрузка статистики {{isFormValid}}</div>
     </div>
     <div class="body">
       <div class="col">
@@ -95,7 +95,7 @@
 
       </div>
     </div>
-    <div class="button" @click="download">Выгрузить</div>
+    <div class="button" @click="download" :class="isFormValid? '' : 'disabled'">Выгрузить</div>
   </div>
 </template>
 
@@ -211,8 +211,32 @@
       },
 
       async download() {
+        if (!this.isFormValid) return
+        function calcDate (date){
+          let dateNew = new Date(date)
+          let dd = String(dateNew.getDate()).padStart(2, '0');
+          let mm = String(dateNew.getMonth() + 1).padStart(2, '0'); //January is 0!
+          let yyyy = dateNew.getFullYear();
+          console.error(`${yyyy}-${mm}-${dd}`)
+          return  `${yyyy}-${mm}-${dd}`;
+        }
+
+
         try {
-          let auth = await apiRequest.post('/api/report/', {
+          let startDate = `startDate=${calcDate(this.dateRange.startDate)}`
+          let endDate = `endDate=${calcDate(this.dateRange.endDate)}`
+          let operators = this.operatorsSelected.map(user => `operators=${user._id}`).join("&")
+          let status;
+          if (this.callStatus === 'Решено') {
+            status = 'callStatus=SUCCESS'
+          } else if (this.callStatus === 'Не принят') {
+            status = 'callStatus=NO_ANSWER'
+          } else if (this.callStatus === 'Не решено') {
+            status = 'callStatus=FAIL'
+          }
+          let url = `/api/report/?${startDate}&${endDate}&${status}&${operators}`
+          console.log(url)
+          let auth = await apiRequest.get(url, {
             startDate: this.dateRange.startDate,
             endDate: this.dateRange.endDate,
             operators: this.operatorsSelected.map(user => user._id),
@@ -225,6 +249,9 @@
       }
     },
     computed: {
+      isFormValid() {
+        return !!this.operatorsSelected.length && !!this.dateRange.startDate && !!this.dateRange.endDate && !!this.callStatus
+      },
       getInputName(){
         let name = []
         if (this.operatorsSelected.length) {
@@ -267,6 +294,9 @@
   border-radius: 8px;
   background-color: #ffffff;
   padding: 21px;
+  .disabled{
+    background-color: #888888 !important;
+  }
   .header{
     display: flex;
     align-items: center;

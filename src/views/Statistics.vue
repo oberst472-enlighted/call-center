@@ -129,7 +129,8 @@
             title: 'Не решено',
           }
         ],
-        data: true
+        data: true,
+        fileLink: null
       }
     },
 
@@ -235,15 +236,35 @@
             status = 'callStatus=FAIL'
           }
           let url = `/api/report/?${startDate}&${endDate}&${status}&${operators}`
-          console.log(url)
-          let auth = await apiRequest.get(url, {
-            startDate: this.dateRange.startDate,
-            endDate: this.dateRange.endDate,
-            operators: this.operatorsSelected.map(user => user._id),
-            callStatus: this.callStatusces
+          // console.log(url)
+          fetch(url, {
+            headers: {
+              'x-access-token': localStorage.getItem('token') || sessionStorage.getItem('token')
+            }
           })
-          console.log(auth.data)
+              .then(resp => resp.blob())
+              .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.style.display = "none";
+                a.href = url;
+                // the filename you want
+                a.download = "report.csv";
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+              })
+              .catch(() => alert("oh no!"));
+          // let resp = await apiRequest.get(url)
+          // console.log(resp.blob())
+          // FileDownload(resp.data, 'report.csv')
+          // console.log(auth.data)
+          // document.getElementById('fileLink').href = url
+          // document.getElementById('fileLink').click()
+          // let link = URL.createObjectURL(auth.data)
+          // console.log(link)
         } catch (e) {
+          console.warn(e)
           return true
         }
       }

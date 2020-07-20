@@ -28,8 +28,9 @@
       <div class="table_5">{{data.language}}</div>
     </td>
     <td height="55px" width="12.5%">
-      <div class="table_6" v-if="data.videoAvailable">Решено</div>
-      <div class="table_6" v-else style="background-color: rgb(252, 239, 242); color: rgb(243, 115, 140);">Не принят</div>
+      <div class="table_6" v-if="data.status === 'SUCCESS'">Решено</div>
+      <div class="table_6" v-else-if="data.status === 'NO_ANSWER'" style="background-color: rgb(252, 239, 242); color: rgb(243, 115, 140);">Не принят</div>
+      <div class="table_6" v-else-if="data.status === 'FAIL'" style="background-color: rgb(252, 239, 242); color: rgb(243, 115, 140);">Не решено</div>
     </td>
     <td height="55px" width="14%">
       <div class="table_7">

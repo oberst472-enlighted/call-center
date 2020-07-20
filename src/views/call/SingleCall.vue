@@ -12,8 +12,9 @@
         <div class="body-left-name" v-if="call.device">{{call.device.term.title}}</div>
 <!--        <div class="body-left-terminal" v-if="call.device">терминал #{{call.device.term.id}}</div>-->
         <div class="body-left-text" v-if="call.device">{{call.device.title}}</div>
-        <div v-if="call.videoAvailable" class="body-left-status">Решено</div>
-        <div v-else style="background-color: rgb(252, 239, 242); color: rgb(243, 115, 140); width: 100px;" class="body-left-status">Не принят</div>
+        <div v-if="call.status === 'SUCCESS'" class="body-left-status">Решено</div>
+        <div v-else-if="call.status === 'NO_ANSWER'" style="background-color: rgb(252, 239, 242); color: rgb(243, 115, 140); width: 100px;" class="body-left-status">Не принят</div>
+        <div v-else-if="call.status === 'FAIL'" style="background-color: rgb(252, 239, 242); color: rgb(243, 115, 140); width: 100px;" class="body-left-status">Не решено</div>
         <div class="comment">
           <div class="comment-head" v-if="operator">
             <div class="comment-head-text">КОММЕНТАРИЙ ОПЕРАТОРА</div>

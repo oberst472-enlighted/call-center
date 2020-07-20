@@ -44,7 +44,6 @@
     border-radius: 8px;
     background-color: #ffffff;
     padding: 21px;
-    margin-top: 27px;
     max-height: calc(100vh - 15px);
     overflow: auto;
     .head{

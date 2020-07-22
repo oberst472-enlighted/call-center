@@ -1,15 +1,20 @@
 <template>
-  <div id="Login">
+  <div id="RestorePass">
 <!--    <div class="log adm" @click="loginAdmin">LOGIN AS ADMIN</div>-->
 <!--    <div class="log operator" @click="loginOperator">LOGIN AS OPERATOR</div>-->
     <div class="header">
       <img src="../assets/icons/Chat.svg" alt="" class="header-chat">
       <div class="header-text">
-        <div class="header-text__top">Вход в колл-центр</div>
-        <div class="header-text__bottom">Введите свои данные</div>
+        <div class="header-text__top">Востановление пароля</div>
+        <div class="header-text__bottom">Введите свой email</div>
       </div>
     </div>
-    <div class="error-text" :style="error ? 'opacity: 1' : 'opacity: 0'">Логин или пароль введен неверно.</div>
+    <div class="error-text" :style="messageType ? 'opacity: 1' : 'opacity: 0'">
+      <div style="color: green; min-height: 26px" v-if="messageType === 'success'">Запрос на восстановление пароля успешно создан. Ответ поступит Вам на почту.</div>
+      <div style="color: red; min-height: 26px" v-else-if="messageType === 'userNotFound'">Пользователя с таким логином не найдено.</div>
+      <div style="color: red; min-height: 26px" v-else-if="messageType === 'hasBeenSend'">Запрос уже был отправлен, ожидайте ответа.</div>
+      <div style="color: red; min-height: 26px" v-else />
+    </div>
     <div class="inputs">
       <div class="input">
         <div class="input-icon">
@@ -17,110 +22,65 @@
         </div>
         <input class="input-field" type="text" v-model="login"/>
       </div>
-      <div class="input">
-        <div class="input-icon" @click="togglePassType">
-          <img src="../assets/icons/key.png" alt="">
-        </div>
-        <input class="input-field" :type="passType" v-model="password"/>
-      </div>
-    </div>
-    <div class="checkbox">
-      <div class="checkmark" :class="{active: rememberMe}" @click="rememberMe = !rememberMe"></div>
-      <div @click="rememberMe = !rememberMe">Запомнить меня</div>
     </div>
     <button
             class="button"
-            :disabled="!login || !password"
-            @click="submitRegistration"
+            :disabled="!login"
+            @click="submitRestore"
     >
-      Войти
+      Запросить новый пароль
     </button>
     <div class="bottom">
-      <div class="bottom__bottom" @click="$router.push('restore-pass')">
-        Забыл пароль?
+      <div class="bottom__bottom" @click="$router.push('login')">
+        Назад
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import apiRequest from "../utils/apiRequest";
+
   export default {
-    name: "Login",
+    name: "RestorePass",
     data(){
       return {
-        passType: 'password',
         login: "",
-        password: "",
-        rememberMe: false,
-        error: false
+        messageType: '',
       }
     },
 
     metaInfo() {
       return {
-        title: `Вход в систему`
+        title: `Запрос на востановление пароля`
       }
     },
     methods: {
-      togglePassType(){
-        if (this.passType === 'password'){
-          this.passType = 'text'
-        } else {
-          this.passType = 'password'
-        }
-      },
-      async submitRegistration() {
-        this.error = await this.$store.dispatch('logIn', {
-          login: this.login.trim(),
-          password: this.password.trim(),
-          rememberMe: this.rememberMe
-        })
+      async submitRestore() {
+        console.log(this.login)
+        try {
+          let resp = await apiRequest.post('/api/users/reset-password/', {
+            login: this.login
+          })
 
-        if (sessionStorage.getItem('isUserLoggedIn')) {
-          this.$router.push('/dashboard')
-        } else if (localStorage.getItem('isUserLoggedIn')){
-          this.$router.push('/dashboard')
+          console.log(resp)
+          this.messageType = 'success'
+
+        } catch (e) {
+          if (e.response.status === 404) {
+            this.messageType = 'userNotFound'
+          } else if (e.response.status === 400) {
+            this.messageType = 'hasBeenSend'
+          }
         }
 
       },
-      async loginAdmin() {
-        await this.$store.dispatch('logIn', {
-          login: 'adm',
-          password: 'adm',
-          rememberMe: true
-        })
-
-        if (sessionStorage.getItem('isUserLoggedIn')) {
-          this.$router.push('/dashboard')
-        } else if (localStorage.getItem('isUserLoggedIn')){
-          this.$router.push('/dashboard')
-        }
-      },
-      async loginOperator() {
-        await this.$store.dispatch('logIn', {
-          login: 'dev',
-          password: 'dev',
-          rememberMe: true
-        })
-
-        if (sessionStorage.getItem('isUserLoggedIn')) {
-          this.$router.push('/dashboard')
-        } else if (localStorage.getItem('isUserLoggedIn')){
-          this.$router.push('/dashboard')
-        }
-      },
-      forgotPassword(){
-        alert("FORGOT PASSWORD ??????")
-      },
-      askForAccount(){
-        alert("ASKING FOR PASSWORD ??????")
-      }
     }
   }
 </script>
 
 <style lang='scss'>
-  #Login{
+  #RestorePass{
     .log{
       width: 250px;
       height: 50px;
@@ -144,7 +104,7 @@
 
     }
     width: 430px;
-    height: 409px;
+    height: 340px;
     box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);
     border-radius: 8px;
     background-color: #ffffff;
@@ -219,11 +179,11 @@
     .button{
       display: block;
       align-self: end;
-      width: 100px;
+      width: 180px;
       height: 33px;
       border-radius: 8px;
       background-color: #66538a;
-      margin-left: 235px;
+      margin-left: 155px;
       color: #ffffff;
       font-size: 12px;
       font-weight: 400;

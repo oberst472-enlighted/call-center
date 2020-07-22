@@ -30,6 +30,8 @@
                 v-else-if="$store.state.userStatus === 'operator' && callsOperator"
                 :data="callsOperator"
         />
+        <restoreQue v-if="$store.state.userStatus === 'admin'"/>
+
       </div>
     </div>
   </div>
@@ -47,6 +49,7 @@
   import callHistoryBig from "../components/views/callHistoryBig";
   import usersSmall from "../components/views/usersSmall";
   import apiRequest from "../utils/apiRequest";
+  import restoreQue from "../components/views/restoreQue";
   export default {
     name: "Home",
     components: {
@@ -59,7 +62,8 @@
       callHistoryBig,
       usersSmall,
       callWindow,
-      callHistorySmall
+      callHistorySmall,
+      restoreQue
     },
     props: {
       answer: Function,

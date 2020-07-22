@@ -28,6 +28,13 @@ VueRouter.prototype.push = function push(location) {
       component: () => import('../views/Login.vue')
     },
     {
+      path: '/restore-pass',
+      name: 'restore-pass',
+      meta: {
+        layout: "empty-layout", gotForward: true, middleware: [ guest ]},
+      component: () => import('../views/RestorePass')
+    },
+    {
       path: '/dashboard',
       name: 'dashboard',
       meta: { layout: "main-layout", gotForward: false, middleware: [ user ]},

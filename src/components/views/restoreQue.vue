@@ -66,6 +66,7 @@
           this.$store.commit('popup/cleanPopup')
           this.requestsList = (await apiRequest.get('/api/users/recovery-requests/')).data
 
+
         } catch (e) {
 
         }

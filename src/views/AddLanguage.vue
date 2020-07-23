@@ -54,7 +54,7 @@
     },
     metaInfo() {
       return {
-        title: 'Добавить язык'
+        title: `Добавить язык - Колл-центр ${localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')}`
       }
     },
     methods: {

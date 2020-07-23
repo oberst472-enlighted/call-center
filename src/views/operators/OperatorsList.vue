@@ -33,7 +33,7 @@
 
     metaInfo() {
       return {
-        title: `Список операторов`
+        title: `Список операторов - Колл-центр ${localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')}`
       }
     },
     async created(){

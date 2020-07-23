@@ -147,7 +147,7 @@
     },
     metaInfo() {
       return {
-        title: 'Выгрузка статистики'
+        title: `Выгрузка статистики - Колл-центр ${localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')}`
       }
     },
     filters:{

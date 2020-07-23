@@ -72,6 +72,11 @@
         url: null
       }
     },
+    metaInfo() {
+      return {
+        title: `Звонок # ${this.call ? this.call.number : 0} - Колл-центр ${localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')}`
+      }
+    },
     computed: {
       dateCall() {
         return this.call.startTime.split('T')[0].split('-').reverse().join('.')

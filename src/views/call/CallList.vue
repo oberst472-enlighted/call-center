@@ -113,7 +113,7 @@
 
     metaInfo() {
       return {
-        title: `Список звонков`
+        title: `Список звонков - Колл-центр ${localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')}`
       }
     },
     props: {

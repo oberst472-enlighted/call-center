@@ -117,7 +117,7 @@
 
     metaInfo() {
       return {
-        title: 'Добавить оператора'
+        title: `Добавить оператора - Колл-центр ${localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')}`
       }
     },
     computed: {

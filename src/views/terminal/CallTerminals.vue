@@ -42,7 +42,7 @@
 
     metaInfo() {
       return {
-        title: `Список терминалов`
+        title: `Список терминалов - Колл-центр ${localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')}`
       }
     },
     methods: {

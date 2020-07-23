@@ -56,7 +56,7 @@
 
     metaInfo() {
       return {
-        title: `Оператор ${this.operatorName}`
+        title: `Оператор ${this.operatorName} - Колл-центр ${localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')}`
       }
     },
     methods: {

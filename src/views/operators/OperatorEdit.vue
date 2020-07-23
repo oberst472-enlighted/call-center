@@ -120,7 +120,7 @@
 
     metaInfo() {
       return {
-        title: `Изменение оператора ${this.operatorName}`
+        title: `Изменение оператора ${this.operatorName} - Колл-центр ${localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')}`
       }
     },
 

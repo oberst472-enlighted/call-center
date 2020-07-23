@@ -70,9 +70,7 @@
     },
     metaInfo() {
       return {
-        title: ((localStorage.getItem('userType') || sessionStorage.getItem('userType')) === 'operator') ?
-            `Dashboard - Колл-центр ${localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')}` :
-            'Dashboard - Aдмин панель'
+        title: `Dashboard - Колл-центр ${localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')}`
       }
     },
     data(){

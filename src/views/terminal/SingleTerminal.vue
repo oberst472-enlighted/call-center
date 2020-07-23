@@ -35,7 +35,7 @@
     },
     metaInfo() {
       return {
-        title: `Терминал ${this.terminalName}`
+        title: `Терминал ${this.terminalName} - Колл-центр ${localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')}`
       }
     },
     computed: {

@@ -102,7 +102,7 @@
     },
     async created(){
       try {
-        this.requestsList = (await apiRequest.get('/api/users//recovery-requests/')).data
+        this.requestsList = (await apiRequest.get('/api/users/recovery-requests/')).data
 
         console.hideProto(this.requestsList)
       } catch (e) {}

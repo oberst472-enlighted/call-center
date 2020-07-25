@@ -140,7 +140,6 @@
       } catch (e) {
       }
 
-      console.hideProto(this.calls)
     }
   }
 </script>

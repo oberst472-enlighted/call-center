@@ -4,7 +4,7 @@
       <div class="header-text">Добавление оператора</div>
     </div>
     <div class="header-text popup"
-         :class="error.length? 'active' : ''"
+         :class="errorShow ? 'active' : ''"
     >
       {{error}}
     </div>
@@ -117,7 +117,8 @@
           file: null,
         },
         url: null,
-        error: '',
+        error: 'qweweqweqwqeweq',
+        errorShow: false,
         isActive: false
       }
     },
@@ -175,10 +176,10 @@
       }
     },
     watch: {
-      error(val){
-        if (val.length) {
+      errorShow(val){
+        if (val) {
           setTimeout(()=> {
-            this.error = ''
+            this.errorShow = false
           }, 3000)
         }
       }
@@ -198,44 +199,49 @@
       },
       async submitButton(){
 
-        if (!this.isFormValid) { return }
-        try {
-          let formData = new FormData();
-          this.newUser.languages.forEach(i => {
-            formData.append("langs", i._id);
-          })
-          formData.append("username", this.newUser.username);
-          formData.append("firstName", this.newUser.firstName);
-          formData.append("lastName", this.newUser.lastName);
-          formData.append("email", this.newUser.email);
-          formData.append("phone", this.newUser.phone);
-          formData.append("password", this.newUser.password);
-          formData.append("photo", this.newUser.file);
-          formData.append("callCenterId", 'dev');
-          formData.append("number", '0');
-
-          let resp = await apiRequest.post('/api/users', formData)
-
-          // let resp = await apiRequest.post('/api/users', {
-          //   username: this.newUser.lastName,
-          //   password: this.newUser.password,
-          //   callCenterId: 'dev',
-          //   number: 0,
-          //   firstName: this.newUser.firstName,
-          //   phone: this.newUser.phone,
-          //   langs: this.newUser.languages.map(i => {
-          //     return (i._id)
-          //   }),
-          //   email: this.newUser.email,
-          //   photo: this.newUser.file
-          // })
-          console.log(resp)
-          if (resp.status === 200) {
-            this.$router.back()
-          }
-        } catch (e) {
-          this.error = Object.values(e.response.data.errors)[0]
+        if (this.errorShow) {
+          this.errorShow = false
+        } else {
+          this.errorShow = true
         }
+        // if (!this.isFormValid) { return }
+        // try {
+        //   let formData = new FormData();
+        //   this.newUser.languages.forEach(i => {
+        //     formData.append("langs", i._id);
+        //   })
+        //   formData.append("username", this.newUser.username);
+        //   formData.append("firstName", this.newUser.firstName);
+        //   formData.append("lastName", this.newUser.lastName);
+        //   formData.append("email", this.newUser.email);
+        //   formData.append("phone", this.newUser.phone);
+        //   formData.append("password", this.newUser.password);
+        //   formData.append("photo", this.newUser.file);
+        //   formData.append("callCenterId", 'dev');
+        //   formData.append("number", '0');
+        //
+        //   let resp = await apiRequest.post('/api/users', formData)
+        //
+        //   // let resp = await apiRequest.post('/api/users', {
+        //   //   username: this.newUser.lastName,
+        //   //   password: this.newUser.password,
+        //   //   callCenterId: 'dev',
+        //   //   number: 0,
+        //   //   firstName: this.newUser.firstName,
+        //   //   phone: this.newUser.phone,
+        //   //   langs: this.newUser.languages.map(i => {
+        //   //     return (i._id)
+        //   //   }),
+        //   //   email: this.newUser.email,
+        //   //   photo: this.newUser.file
+        //   // })
+        //   console.log(resp)
+        //   if (resp.status === 200) {
+        //     this.$router.back()
+        //   }
+        // } catch (e) {
+        //   this.error = Object.values(e.response.data.errors)[0]
+        // }
       },
       uploadFile(e) {
         let files = e.target.files || e.dataTransfer.files;
@@ -278,6 +284,10 @@
   .disabled{
     background-color: #888888 !important;
   }
+  @keyframes fade {
+    0%,100% { opacity: 0 }
+    50% { opacity: 1 }
+  }
   .popup{
     color: red !important;
     text-align: center;
@@ -288,15 +298,14 @@
     border-radius: 8px;
     border: 1px solid #685c7b;
     position: fixed;
-    top: 70px;
-    right: 60px;
+    top: 10px;
+    right: 10px;
     visibility: hidden;
     z-index: 99;
-    transition: height ease 0.2s;
-    width: 0;
     height: 0;
     opacity: 0;
     overflow: hidden;
+    transition: all ease 0.7s;
   }
   .popup.active{
     background-color: #f1eef5;
@@ -305,8 +314,8 @@
     visibility: visible;
     opacity: 1;
     width: auto;
-    height: 25px;
-    transition: height ease 0.2s;
+    height: 28px;
+    transition: all ease 1.2s;
   }
   .header{
     display: flex;

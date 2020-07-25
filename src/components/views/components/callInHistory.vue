@@ -42,10 +42,6 @@
       },
       data: Object
     },
-    created() {
-      console.warn(this.data)
-      console.warn(`ID: ${this.data.id}  STATUS: ${this.data.status}`)
-    },
     computed: {
       userIsOperator() {
         return localStorage.getItem('userType') && localStorage.getItem('userType') === 'operator'

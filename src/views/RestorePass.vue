@@ -57,7 +57,6 @@
     },
     methods: {
       async submitRestore() {
-        console.log(this.login)
         try {
           let resp = await apiRequest.post('/api/users/reset-password/', {
             login: this.login

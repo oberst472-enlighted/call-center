@@ -59,7 +59,6 @@
     },
     methods: {
       submitButton(){
-        console.log(this.newLanguage)
       },
       selectLanguage(type){
         this.$store.dispatch('popup/setPopup', type)

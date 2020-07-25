@@ -82,8 +82,6 @@
         let seconds = `${date.getSeconds()}`.length === 1 ? `0${date.getSeconds()}` : `${date.getSeconds()}`
 
         let time = `${hours}:${minutes}:${seconds}`
-        console.log(dateDays)
-        console.log(time)
         return `${time} ${dateDays}`
       }
     },
@@ -104,7 +102,6 @@
       try {
         this.requestsList = (await apiRequest.get('/api/users/recovery-requests/')).data
 
-        console.hideProto(this.requestsList)
       } catch (e) {}
     }
   }

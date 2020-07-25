@@ -27,8 +27,6 @@
     async created(){
       try {
         let users = (await apiRequest.get( '/api/users/')).data
-        console.log(users)
-
         this.operators = users.filter(user => (user.userType === "OPERATOR" || user.userType === "operator"))
         // console.log(this.operators)
         // console.log(this.operators[0])

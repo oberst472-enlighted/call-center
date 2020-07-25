@@ -3,6 +3,12 @@
     <div class="header">
       <div class="header-text">Добавление оператора</div>
     </div>
+    <div class="header-text popup"
+         :class="error.length? 'active' : ''"
+    >
+      {{error}}
+    </div>
+
     <div class="body">
       <div class="body-col">
         <div class="col">
@@ -108,9 +114,10 @@
           languages: [],
           password: '',
           username: '',
-          file: null
+          file: null,
         },
         url: null,
+        error: 'Данное имя пользователя уже занято',
         isActive: false
       }
     },
@@ -167,6 +174,15 @@
         )
       }
     },
+    watch: {
+      error(val){
+        if (val.length) {
+          setTimeout(()=> {
+            this.error = ''
+          }, 3000)
+        }
+      }
+    },
     methods: {
       cleanImg(){
         this.newUser.file = null
@@ -181,46 +197,49 @@
         }
       },
       async submitButton(){
-        if (!this.isFormValid) { return }
-        console.warn('SENDING DATA')
-        try {
-          let formData = new FormData();
-          this.newUser.languages.forEach(i => {
-            formData.append("langs", i._id);
-          })
-          formData.append("username", this.newUser.username);
-          formData.append("firstName", this.newUser.firstName);
-          formData.append("lastName", this.newUser.lastName);
-          formData.append("email", this.newUser.email);
-          formData.append("phone", this.newUser.phone);
-          formData.append("password", this.newUser.password);
-          formData.append("photo", this.newUser.file);
-          formData.append("callCenterId", 'dev');
-          formData.append("number", '0');
-          console.log(formData)
-
-          let resp = await apiRequest.post('/api/users', formData)
-
-          // let resp = await apiRequest.post('/api/users', {
-          //   username: this.newUser.lastName,
-          //   password: this.newUser.password,
-          //   callCenterId: 'dev',
-          //   number: 0,
-          //   firstName: this.newUser.firstName,
-          //   phone: this.newUser.phone,
-          //   langs: this.newUser.languages.map(i => {
-          //     return (i._id)
-          //   }),
-          //   email: this.newUser.email,
-          //   photo: this.newUser.file
-          // })
-          console.log(resp)
-          if (resp.status === 200) {
-            this.$router.back()
-          }
-        } catch (e) {
-          console.log(e)
+        if (this.error.length) {
+          this.error = ''
+        } else {
+          this.error = 'Данное имя пользователя уже занято'
         }
+        // if (!this.isFormValid) { return }
+        // try {
+        //   let formData = new FormData();
+        //   this.newUser.languages.forEach(i => {
+        //     formData.append("langs", i._id);
+        //   })
+        //   formData.append("username", this.newUser.username);
+        //   formData.append("firstName", this.newUser.firstName);
+        //   formData.append("lastName", this.newUser.lastName);
+        //   formData.append("email", this.newUser.email);
+        //   formData.append("phone", this.newUser.phone);
+        //   formData.append("password", this.newUser.password);
+        //   formData.append("photo", this.newUser.file);
+        //   formData.append("callCenterId", 'dev');
+        //   formData.append("number", '0');
+        //
+        //   let resp = await apiRequest.post('/api/users', formData)
+        //
+        //   // let resp = await apiRequest.post('/api/users', {
+        //   //   username: this.newUser.lastName,
+        //   //   password: this.newUser.password,
+        //   //   callCenterId: 'dev',
+        //   //   number: 0,
+        //   //   firstName: this.newUser.firstName,
+        //   //   phone: this.newUser.phone,
+        //   //   langs: this.newUser.languages.map(i => {
+        //   //     return (i._id)
+        //   //   }),
+        //   //   email: this.newUser.email,
+        //   //   photo: this.newUser.file
+        //   // })
+        //   console.log(resp)
+        //   if (resp.status === 200) {
+        //     this.$router.back()
+        //   }
+        // } catch (e) {
+        //   this.error = Object.values(e.response.data.errors)[0]
+        // }
       },
       uploadFile(e) {
         let files = e.target.files || e.dataTransfer.files;
@@ -249,9 +268,6 @@
     props: {},
     async created() {
       this.languages = (await apiRequest.get( '/api/langs/')).data
-    },
-    updated() {
-      console.log(this.newUser.languages)
     }
   }
 </script>
@@ -266,6 +282,36 @@
   .disabled{
     background-color: #888888 !important;
   }
+  .popup{
+    color: red !important;
+    text-align: center;
+    font-size: 15px !important;
+    margin: auto;
+    padding: 3px 15px;
+    background-color: #f1eef5;
+    border-radius: 8px;
+    border: 1px solid #685c7b;
+    position: fixed;
+    top: 70px;
+    right: 60px;
+    visibility: hidden;
+    z-index: 99;
+    transition: height ease 0.2s;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+  .popup.active{
+    background-color: #f1eef5;
+    border-radius: 8px;
+    border: 1px solid #685c7b;
+    visibility: visible;
+    opacity: 1;
+    width: auto;
+    height: 25px;
+    transition: height ease 0.2s;
+  }
   .header{
     display: flex;
     align-items: center;
@@ -276,7 +322,7 @@
     }
   }
   .body{
-    margin-top: 30px;
+    margin-top: 15px;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;

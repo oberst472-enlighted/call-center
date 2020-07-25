@@ -140,7 +140,6 @@
     watch: {
       dateStart(val) {
         if (val) {
-          console.dir(document.getElementById('selectEndDate'))
           document.getElementById('selectEndDate').click();
         }
       }
@@ -181,21 +180,16 @@
       } else {
         let users = (await apiRequest.get( '/api/users/')).data
         this.operators = users.filter(user => (user.userType === "OPERATOR" || user.userType === "operator"))
-        console.log((sessionStorage.getItem('userType') || localStorage.getItem('userType')))
       }
     },
     methods: {
       updateValues(val){
-        console.log(val)
       },
       checkOpen(){},
       setCallStatus(title){
         this.callStatus = title
       },
       setOperator(title){
-        console.log(title)
-        console.log(this.operatorsSelected)
-
         if (this.operatorsSelected.includes(title)) {
           let id = this.operatorsSelected.findIndex(item => item.firtName === title.firtName)
           this.operatorsSelected.splice(id, 1)
@@ -218,7 +212,6 @@
           let dd = String(dateNew.getDate()).padStart(2, '0');
           let mm = String(dateNew.getMonth() + 1).padStart(2, '0'); //January is 0!
           let yyyy = dateNew.getFullYear();
-          console.error(`${yyyy}-${mm}-${dd}`)
           return  `${yyyy}-${mm}-${dd}`;
         }
 

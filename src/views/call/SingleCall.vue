@@ -101,8 +101,6 @@
     components: { forward },
     async mounted() {
       this.call = (await apiRequest.get( `/api/calls/${this.$route.params.id}`)).data
-
-      console.log(this.call)
       this.operator = (await apiRequest.get(`/api/users/${this.call.operator}/`)).data.user
 
 

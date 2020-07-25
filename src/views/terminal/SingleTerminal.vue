@@ -44,7 +44,6 @@
       }
     },
     async created() {
-      console.log(this.$route.params.id === 'null')
       try {
         this.terminal = (await apiRequest.get( `/api/devices/${this.$route.params.id}`)).data
       } catch (e) {

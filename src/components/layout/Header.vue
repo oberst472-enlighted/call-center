@@ -121,8 +121,7 @@
       async startSession(){
         try {
           if (!this.$store.state.isActiveWorkShift) {
-            let userInfo = await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/start-session/`)
-            console.log(userInfo)
+            await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/start-session/`)
           }
         } catch (e) {
         }
@@ -132,8 +131,7 @@
       async closeSession(){
         try {
           if (this.$store.state.isActiveWorkShift) {
-            let userInfo = await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/stop-session/`)
-            console.log(userInfo)
+            await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/stop-session/`)
           }
         } catch (e) {
         }
@@ -143,8 +141,7 @@
       async logOut(){
         try {
           if (this.$store.state.isActiveWorkShift) {
-            let userInfo = await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/stop-session/`)
-            console.log(userInfo)
+            await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/stop-session/`)
           }
         } catch (e) {}
 

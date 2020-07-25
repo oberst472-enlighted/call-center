@@ -176,21 +176,15 @@
     },
 
     async mounted() {
-      console.log(this.$route.params.id)
       try {
         this.languages = (await apiRequest.get( '/api/langs/')).data
-        // console.log(this.languages)
 
         this.operator = (await apiRequest.get( `/api/users/${this.$route.params.id}`)).data.user
-        // console.log(this.operator)
         this.newUser.firstName = this.operator.firstName || ''
         this.newUser.lastName = this.operator.lastName || ''
         this.newUser.username = this.operator.username || ''
         this.newUser.email = this.operator.email || ''
         this.newUser.phone = this.operator.phone || ''
-        console.log(this.operator)
-        console.log(this.operator.email)
-        console.log(this.newUser.email)
 
         let userLangs = []
         this.languages.map(item => {
@@ -200,7 +194,6 @@
             }
           } catch (e) {}
         })
-        console.log(userLangs)
         userLangs.forEach((item, index) =>{
           this.$set(this.newUser.languages, index, item)
         })
@@ -229,8 +222,6 @@
       async submitButton(){
         if (!this.isFormValid) { return }
         try {
-          console.warn('SENDING DATA')
-
           // let formData = new FormData();
           // formData.append("username", this.newUser.firstName);
           // formData.append("photo", this.newUser.file);

@@ -49,9 +49,6 @@
         }
       },
     },
-    created() {
-      console.log(this.data)
-    }
   }
 </script>
 

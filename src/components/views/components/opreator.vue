@@ -50,9 +50,6 @@
         }
       },
     },
-    created() {
-      console.warn(this.data.status)
-    }
   }
 </script>
 

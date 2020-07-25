@@ -123,7 +123,6 @@ export default new Vuex.Store({
       } else {
 
         let userInfo = (await apiRequest.get(`/api/users/${localStorage.getItem('userId')}/`)).data
-        console.log(userInfo)
 
         commit('setUserData', userInfo)
       }

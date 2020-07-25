@@ -78,6 +78,7 @@ export default {
         this.socket.emit('leave', callId, 'operator');
         this.socket.emit('change_status', 'UNAVALIABLE');
 
+        this.terminatedBy = 'ПАСАЖИРОМ'
         if (this.$store.state.isCallInProgress) {
           this.stop();
         } else {

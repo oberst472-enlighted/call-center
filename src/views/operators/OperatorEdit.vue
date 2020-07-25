@@ -4,10 +4,11 @@
       <div class="header-text">Изменение оператора</div>
     </div>
     <div class="header-text popup"
-         :class="error.length? 'active' : ''"
+         :class="errorShow ? 'active' : ''"
     >
       {{error}}
     </div>
+
     <div class="body">
       <div class="body-col" v-if="operator">
         <div class="col">
@@ -120,6 +121,7 @@
         },
         url: null,
         error: '',
+        errorShow: false,
         isActive: false
       }
     },
@@ -213,10 +215,10 @@
       } catch (e) {}
     },
     watch: {
-      error(val){
-        if (val.length) {
+      errorShow(val){
+        if (val) {
           setTimeout(()=> {
-            this.error = ''
+            this.errorShow = false
           }, 3000)
         }
       }
@@ -263,8 +265,8 @@
             this.$router.back()
           }
         } catch (e) {
-          console.log(Object.values(e.response.data.errors)[0])
           this.error = Object.values(e.response.data.errors)[0]
+          this.errorShow = true
 
         }
       },
@@ -315,15 +317,14 @@
       border-radius: 8px;
       border: 1px solid #685c7b;
       position: fixed;
-      top: 70px;
-      right: 60px;
+      top: 10px;
+      right: 10px;
       visibility: hidden;
       z-index: 99;
-      transition: height ease 0.2s;
-      width: 0;
       height: 0;
       opacity: 0;
       overflow: hidden;
+      transition: all ease 0.7s;
     }
     .popup.active{
       background-color: #f1eef5;
@@ -332,8 +333,8 @@
       visibility: visible;
       opacity: 1;
       width: auto;
-      height: 25px;
-      transition: height ease 0.2s;
+      height: 28px;
+      transition: all ease 1.2s;
     }
     .header{
       display: flex;

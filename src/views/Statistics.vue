@@ -1,7 +1,7 @@
 <template>
   <div id="Statistics">
     <div class="header">
-      <div class="header-text">Выгрузка статистики {{isFormValid}}</div>
+      <div class="header-text">Выгрузка статистики</div>
     </div>
     <div class="body">
       <div class="col">

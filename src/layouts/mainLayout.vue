@@ -11,6 +11,7 @@
             :continueVideo="continueVideo"
             :isVideoOn="isVideoOn"
             :isSoundOn="isSoundOn"
+            :terminatedBy="terminatedBy"
     />
     <Sidebar />
     <div class="wrapper-scroll">
@@ -51,7 +52,8 @@
         interval: null,
         isVideoOn: true,
         isSoundOn: true,
-        local: null
+        local: null,
+        terminatedBy: ''
       }
     },
     methods: {
@@ -188,6 +190,7 @@
       // СБРОСИТЬ ТРУБКУ
       hangup() {
         let date = new Date()
+        this.terminatedBy = 'ОПЕРАТОРОМ'
 
         let hours = `${date.getHours()}`.length === 1 ? `0${date.getHours()}` : `${date.getHours()}`
         let minutes = `${date.getMinutes()}`.length === 1 ? `0${date.getMinutes()}` : `${date.getMinutes()}`

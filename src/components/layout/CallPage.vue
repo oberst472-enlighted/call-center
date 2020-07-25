@@ -11,7 +11,7 @@
 
       <div class="viewport-call" v-show="!$store.state.callLogic.isCallInProgress">
         <div class="viewport-call-status">ЗВОНОК ЗАВЕРШЕН</div>
-        <div class="viewport-call-status">ПАССАЖИРОМ</div>
+        <div class="viewport-call-status" v-if="terminatedBy">{{terminatedBy}}</div>
         <div
                 class="viewport-call-button"
                 @click="closeModal()"
@@ -135,7 +135,8 @@
       continueAudio: Function,
       continueVideo: Function,
       isVideoOn: Boolean,
-      isSoundOn: Boolean
+      isSoundOn: Boolean,
+      terminatedBy: String
 
     },
 

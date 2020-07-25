@@ -3,6 +3,11 @@
     <div class="header">
       <div class="header-text">Изменение оператора</div>
     </div>
+    <div class="header-text popup"
+         :class="error.length? 'active' : ''"
+    >
+      {{error}}
+    </div>
     <div class="body">
       <div class="body-col" v-if="operator">
         <div class="col">
@@ -114,6 +119,7 @@
           file: null
         },
         url: null,
+        error: '',
         isActive: false
       }
     },
@@ -206,6 +212,15 @@
         // console.log(`/api/users/${this.$route.params.id}/calls/`)
       } catch (e) {}
     },
+    watch: {
+      error(val){
+        if (val.length) {
+          setTimeout(()=> {
+            this.error = ''
+          }, 3000)
+        }
+      }
+    },
     methods: {
       cleanImg(){
         this.newUser.file = null
@@ -248,7 +263,9 @@
             this.$router.back()
           }
         } catch (e) {
-          console.log(e)
+          console.log(Object.values(e.response.data.errors)[0])
+          this.error = Object.values(e.response.data.errors)[0]
+
         }
       },
       uploadFile(e) {
@@ -287,6 +304,36 @@
     padding: 21px;
     .disabled{
       background-color: #888888 !important;
+    }
+    .popup{
+      color: red !important;
+      text-align: center;
+      font-size: 15px !important;
+      margin: auto;
+      padding: 3px 15px;
+      background-color: #f1eef5;
+      border-radius: 8px;
+      border: 1px solid #685c7b;
+      position: fixed;
+      top: 70px;
+      right: 60px;
+      visibility: hidden;
+      z-index: 99;
+      transition: height ease 0.2s;
+      width: 0;
+      height: 0;
+      opacity: 0;
+      overflow: hidden;
+    }
+    .popup.active{
+      background-color: #f1eef5;
+      border-radius: 8px;
+      border: 1px solid #685c7b;
+      visibility: visible;
+      opacity: 1;
+      width: auto;
+      height: 25px;
+      transition: height ease 0.2s;
     }
     .header{
       display: flex;

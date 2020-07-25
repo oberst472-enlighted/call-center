@@ -117,7 +117,7 @@
           file: null,
         },
         url: null,
-        error: 'Данное имя пользователя уже занято',
+        error: '',
         isActive: false
       }
     },
@@ -197,49 +197,45 @@
         }
       },
       async submitButton(){
-        if (this.error.length) {
-          this.error = ''
-        } else {
-          this.error = 'Данное имя пользователя уже занято'
+
+        if (!this.isFormValid) { return }
+        try {
+          let formData = new FormData();
+          this.newUser.languages.forEach(i => {
+            formData.append("langs", i._id);
+          })
+          formData.append("username", this.newUser.username);
+          formData.append("firstName", this.newUser.firstName);
+          formData.append("lastName", this.newUser.lastName);
+          formData.append("email", this.newUser.email);
+          formData.append("phone", this.newUser.phone);
+          formData.append("password", this.newUser.password);
+          formData.append("photo", this.newUser.file);
+          formData.append("callCenterId", 'dev');
+          formData.append("number", '0');
+
+          let resp = await apiRequest.post('/api/users', formData)
+
+          // let resp = await apiRequest.post('/api/users', {
+          //   username: this.newUser.lastName,
+          //   password: this.newUser.password,
+          //   callCenterId: 'dev',
+          //   number: 0,
+          //   firstName: this.newUser.firstName,
+          //   phone: this.newUser.phone,
+          //   langs: this.newUser.languages.map(i => {
+          //     return (i._id)
+          //   }),
+          //   email: this.newUser.email,
+          //   photo: this.newUser.file
+          // })
+          console.log(resp)
+          if (resp.status === 200) {
+            this.$router.back()
+          }
+        } catch (e) {
+          this.error = Object.values(e.response.data.errors)[0]
         }
-        // if (!this.isFormValid) { return }
-        // try {
-        //   let formData = new FormData();
-        //   this.newUser.languages.forEach(i => {
-        //     formData.append("langs", i._id);
-        //   })
-        //   formData.append("username", this.newUser.username);
-        //   formData.append("firstName", this.newUser.firstName);
-        //   formData.append("lastName", this.newUser.lastName);
-        //   formData.append("email", this.newUser.email);
-        //   formData.append("phone", this.newUser.phone);
-        //   formData.append("password", this.newUser.password);
-        //   formData.append("photo", this.newUser.file);
-        //   formData.append("callCenterId", 'dev');
-        //   formData.append("number", '0');
-        //
-        //   let resp = await apiRequest.post('/api/users', formData)
-        //
-        //   // let resp = await apiRequest.post('/api/users', {
-        //   //   username: this.newUser.lastName,
-        //   //   password: this.newUser.password,
-        //   //   callCenterId: 'dev',
-        //   //   number: 0,
-        //   //   firstName: this.newUser.firstName,
-        //   //   phone: this.newUser.phone,
-        //   //   langs: this.newUser.languages.map(i => {
-        //   //     return (i._id)
-        //   //   }),
-        //   //   email: this.newUser.email,
-        //   //   photo: this.newUser.file
-        //   // })
-        //   console.log(resp)
-        //   if (resp.status === 200) {
-        //     this.$router.back()
-        //   }
-        // } catch (e) {
-        //   this.error = Object.values(e.response.data.errors)[0]
-        // }
       },
       uploadFile(e) {
         let files = e.target.files || e.dataTransfer.files;

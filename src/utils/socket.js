@@ -16,7 +16,7 @@ export default {
   },
   methods: {
     initSocket(){
-      this.socket = io.connect('https://calls-dev.enlighted.ru');
+      this.socket = io.connect(process.env.VUE_APP_URL);
 
       this.calling.loop = true;
 

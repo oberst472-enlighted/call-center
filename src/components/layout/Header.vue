@@ -122,11 +122,11 @@
         try {
           if (!this.$store.state.isActiveWorkShift) {
             await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/start-session/`)
+            this.$store.dispatch('startWorkShift')
           }
         } catch (e) {
+          console.log(e)
         }
-        this.$store.dispatch('startWorkShift')
-
       },
       async closeSession(){
         try {

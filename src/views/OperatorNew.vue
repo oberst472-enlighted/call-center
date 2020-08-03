@@ -67,7 +67,7 @@
           <div class="input radio" v-if="languages" style="margin-bottom: 5px">
             <template v-for="language in languages">
               <span  :key="language.title"
-                     class="checkmark"
+                     class="checkmark checkmark--square"
                      :class="{active: newUser.languages.includes(language)}"
                      @click="toggleLanguage(language)"
               />
@@ -211,8 +211,8 @@
           formData.append("phone", this.newUser.phone);
           formData.append("password", this.newUser.password);
           formData.append("photo", this.newUser.file);
-          formData.append("callCenterId", 'dev');
           formData.append("number", '0');
+          formData.append("callCenterId", localStorage.getItem('callCenterId'));
 
           let resp = await apiRequest.post('/api/users', formData)
 
@@ -373,6 +373,9 @@
           margin-right: 8px;
           border-radius: 50%;
           background-color: #f4f3f7;
+          &--square{
+            border-radius: 0 !important;
+          }
         }
         .checkmark:hover {
           background-color: #ccc;

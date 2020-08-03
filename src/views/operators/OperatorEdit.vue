@@ -67,7 +67,7 @@
           <div class="input radio" v-if="languages" style="margin-bottom: 5px">
             <template v-for="language in languages">
               <span  :key="language.title"
-                     class="checkmark"
+                     class="checkmark checkmark--square"
                      :class="{active: newUser.languages.includes(language)}"
                      @click="toggleLanguage(language)"
               />

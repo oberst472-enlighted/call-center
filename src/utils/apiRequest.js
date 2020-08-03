@@ -40,7 +40,7 @@ export default class apiRequest {
         axios({
           method: 'get',
           url: path,
-          headers: {'Authorization': 'Token 841604f050f5e9ec8fcab0489358215f571d4965'}
+          headers: {'Authorization': `Token ${process.env.VUE_APP_TOKEN}`}
         })
     )
   }

@@ -108,9 +108,12 @@ export default new Vuex.Store({
         } catch (e) {
           console.log(e)
         }
-        if (!userInfo.session.stopTime) {
+        if (!userInfo.session) {
           // console.log(Date(userInfo.session.stopTime).getTime() - Date(userInfo.session.startTime).getTime())
 
+          commit('setWorkShiftStatus', true)
+          commit('toggleWorkingStatus', 'break')
+        } else if (!userInfo.session.stopTime) {
           commit('setWorkShiftStatus', true)
           commit('toggleWorkingStatus', 'break')
         } else {

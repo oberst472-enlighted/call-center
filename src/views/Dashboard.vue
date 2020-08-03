@@ -90,7 +90,8 @@
           let userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
           this.callsOperator = (await apiRequest.get( `/api/users/${userId}/calls/`)).data
         } else {
-          this.statisticsAdmin = (await apiRequest.get( `/api/callcenters/1111/stat/`)).data
+          let userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
+          this.statisticsAdmin = (await apiRequest.get( `/api/callcenters/${userId}/stat/`)).data
           let times = ['8', '10', '12', '14', '16', '18', '20']
           times.forEach((time) => {
             this.graphData.push(this.statisticsAdmin.callsSuccessRate[time] * 100)

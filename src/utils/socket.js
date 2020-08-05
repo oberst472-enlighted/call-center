@@ -42,12 +42,26 @@ export default {
         this.videoToken = room.videoToken
         this.callObjectId = room.callObjectId
 
-        this.$store.commit('callLogic/setIncomingData', {
-          lang: room.device.lang,
-          station: room.device.term.title,
-          stationId: room.device.term.id,
-          terminal: room.device.title
-        })
+        console.log(room)
+
+        let payload
+        if (!room.device) {
+          payload = {
+            lang: 'Неизвестный язык',
+            station: 'Неизвестный вокзал',
+            stationId: '',
+            terminal: 'Неизвестный терминал'
+          }
+        } else {
+          payload = {
+            lang: room.device.lang,
+            station: room.device.term.title,
+            stationId: room.device.term.id,
+            terminal: room.device.title
+          }
+        }
+
+        this.$store.commit('callLogic/setIncomingData', payload)
         this.$store.commit('callLogic/comeIncomingCall')
 
         const playPromise = this.calling.play();

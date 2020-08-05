@@ -136,6 +136,10 @@ export default new Vuex.Store({
         commit('setUserData', userInfo)
       }
 
+    },
+    async updateWorkingShiftStats({state}) {
+      const userInfo = (await apiRequest.get( `/api/me/`)).data
+      state.userData.lastSessionStat = userInfo.lastSessionStat
     }
   },
   modules: {

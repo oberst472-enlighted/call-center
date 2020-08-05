@@ -14,7 +14,7 @@
         <div class="viewport-call-status" v-if="terminatedBy">{{terminatedBy}}</div>
         <div
                 class="viewport-call-button"
-                @click="closeModal()"
+                @click="onReturnToWorkClick()"
         >ПРОДОЛЖИТЬ РАБОТУ</div>
         <div class="viewport-call-time">{{formatTime}}</div>
       </div>
@@ -178,6 +178,10 @@
       }
     },
     methods: {
+      onReturnToWorkClick() {
+        this.closeModal()
+        this.$store.dispatch('updateWorkingShiftStats')
+      }
     },
 
     data() {

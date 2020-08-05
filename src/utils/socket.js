@@ -23,7 +23,6 @@ export default {
 
       this.socket.emit("entered", localStorage.getItem('username'), "operator", localStorage.getItem('callCenterId'));
 
-
       this.socket.emit('change_status', 'WAITING');
       this.socket.on('has_client', (roomId) => {
         console.log(`has new call ${roomId}`);
@@ -144,7 +143,6 @@ export default {
   },
   watch: {
     async isActiveWorkShift(val){
-      console.log(val)
       if (sessionStorage.getItem('userType') || localStorage.getItem('userType') === 'operator') {
         if (val) {
           this.initSocket()

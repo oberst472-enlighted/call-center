@@ -76,11 +76,15 @@
           rememberMe: this.rememberMe
         })
 
+
+
         if (sessionStorage.getItem('isUserLoggedIn')) {
           this.$router.push('/dashboard')
         } else if (localStorage.getItem('isUserLoggedIn')){
           this.$router.push('/dashboard')
         }
+
+        this.$store.commit('toggleWorkingStatus', 'online')
 
       },
       async loginAdmin() {

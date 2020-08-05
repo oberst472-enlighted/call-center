@@ -56,7 +56,7 @@ export default new Vuex.Store({
       commit('cleanTime')
     },
     async logIn({commit, dispatch}, data){
-
+      console.log('logggin')
       localStorage.clear()
       sessionStorage.clear()
       let auth
@@ -91,8 +91,17 @@ export default new Vuex.Store({
           localStorage.setItem('userType', userInfo.data.user.userType.toLowerCase())
         }
         await dispatch('fetchUserData')
-        commit('toggleWorkingStatus', 'break')
-        commit('setWorkShiftStatus', false)
+
+        const userSessionData = userInfo.data.session
+        if (userSessionData) {
+          if (userSessionData.stopTime) {
+            await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/start-session/`)
+            dispatch('startWorkShift')
+          }
+        }
+
+        // commit('toggleWorkingStatus', 'break')
+        // commit('setWorkShiftStatus', false)
       }
     },
     async logOut({state}){
@@ -113,7 +122,7 @@ export default new Vuex.Store({
             // console.log(Date(userInfo.session.stopTime).getTime() - Date(userInfo.session.startTime).getTime())
 
             commit('setWorkShiftStatus', true)
-            commit('toggleWorkingStatus', 'break')
+            // commit('toggleWorkingStatus', 'break')
           } else {
 
             commit('setWorkShiftStatus', false)

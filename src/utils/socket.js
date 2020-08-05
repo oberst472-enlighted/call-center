@@ -1,5 +1,6 @@
 import io from "../assets/js/socket.io";
 import apiRequest from "./apiRequest";
+import {baseAppUrl} from './const';
 
 export default {
   data(){
@@ -16,7 +17,7 @@ export default {
   },
   methods: {
     initSocket(){
-      this.socket = io.connect(process.env.VUE_APP_URL);
+      this.socket = io.connect(baseAppUrl);
 
       this.calling.loop = true;
 

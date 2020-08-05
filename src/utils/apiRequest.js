@@ -1,8 +1,8 @@
 import axios from 'axios'
 import router from "../router";
+import {appToken} from './const';
 import {API_URL} from '../config/types.js'
 import Vue from 'vue'
-
 
 const request = (callback) => {
   return new Promise((resolve, reject) => {
@@ -40,7 +40,7 @@ export default class apiRequest {
         axios({
           method: 'get',
           url: path,
-          headers: {'Authorization': `Token ${process.env.VUE_APP_TOKEN}`}
+          headers: {'Authorization': `Token ${appToken}`}
         })
     )
   }

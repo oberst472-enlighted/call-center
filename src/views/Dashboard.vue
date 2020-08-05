@@ -50,6 +50,7 @@
   import usersSmall from "../components/views/usersSmall";
   import apiRequest from "../utils/apiRequest";
   import restoreQue from "../components/views/restoreQue";
+  import {mapState, mapActions} from 'vuex'
   export default {
     name: "Home",
     components: {
@@ -78,17 +79,21 @@
         statisticsAdmin: null,
         statisticsOperator: null,
         graphData: [],
-        callsOperator: null,
         callsAdmin: null,
       }
+    },
+    computed: {
+      ...mapState(['callsOperator'])
+    },
+    methods: {
+      ...mapActions(['fetchCallsOperator'])
     },
     async created() {
       try {
         if ((localStorage.getItem('userType') || sessionStorage.getItem('userType')) === 'operator') {
           // this.statisticsOperator = (await apiRequest.get( `/api/me/`)).data.lastSessionStat
           // console.hideProto(this.statisticsOperator)
-          let userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
-          this.callsOperator = (await apiRequest.get( `/api/users/${userId}/calls/`)).data
+          this.fetchCallsOperator()
         } else {
           let callCenterId = localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')
           this.statisticsAdmin = (await apiRequest.get( `/api/callcenters/${callCenterId}/stat/`)).data

@@ -15,7 +15,7 @@
 
         <hr style="background-color: #4fd161">
 
-        <div class="col-stat">{{ statistic.received / statistic.total * 100 || 0 }}% от входящих</div>
+        <div class="col-stat">{{ (statistic.received / statistic.total * 100).toFixed(2) || 0 }}% от входящих</div>
       </div>
       <div class="col">
         <div class="col-name">звонков <br> обработано</div>
@@ -23,7 +23,7 @@
 
         <hr style="background-color: #65528b">
 
-        <div class="col-stat">{{ statistic.success / statistic.total * 100 || 0 }}% от принятых</div>
+        <div class="col-stat">{{ (statistic.success / statistic.total * 100).toFixed(2) || 0 }}% от принятых</div>
       </div>
       <div class="col">
         <div class="col-name">звонков <br> не принято</div>
@@ -31,7 +31,7 @@
 
         <hr style="background-color: #f04265">
 
-        <div class="col-stat">{{ statistic.noAnswer / statistic.total * 100 || 0 }}% от входящих</div>
+        <div class="col-stat">{{ (statistic.noAnswer / statistic.total * 100).toFixed(2) || 0 }}% от входящих</div>
       </div>
     </div>
   </div>

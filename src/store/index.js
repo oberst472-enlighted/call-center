@@ -12,7 +12,8 @@ export default new Vuex.Store({
     workStatus: null,
     userStatus: null,
     isActiveWorkShift: false,
-    userData: null
+    userData: null,
+    callsOperator: null
   },
   mutations: {
     incrementTime(state) {
@@ -137,7 +138,15 @@ export default new Vuex.Store({
       }
 
     },
-    async updateWorkingShiftStats({state}) {
+    async updateWorkingShiftStats({state, dispatch}) {
+      dispatch('fetchStats')
+      dispatch('fetchCallsOperator')
+    },
+    async fetchCallsOperator({state}) {
+      let userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
+      state.callsOperator = (await apiRequest.get( `/api/users/${userId}/calls/`)).data
+    },
+    async fetchStats({state}) {
       const userInfo = (await apiRequest.get( `/api/me/`)).data
       state.userData.lastSessionStat = userInfo.lastSessionStat
     }

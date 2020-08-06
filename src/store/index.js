@@ -44,6 +44,12 @@ export default new Vuex.Store({
     },
     setUserData(state, data) {
       state.userData = data
+    },
+    updateUserData(state, {firstName, lastName, phone, email}) {
+      state.userData.user.firstName = firstName
+      state.userData.user.lastName = lastName
+      state.userData.user.phone = phone
+      state.userData.user.email = email
     }
   },
   actions: {

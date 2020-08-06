@@ -75,6 +75,9 @@
                 :class="{active : $store.state.popup.popupActive === `user`}"
         >
           <div class="popup-item" @click="logOut">Выйти</div>
+            <template v-if="userData">
+                <div v-if="userData.user.userType === 'OPERATOR'" class="popup-item" @click="onEditProfileClick">Редактировать</div>
+            </template>
         </div>
       </div>
     </div>
@@ -148,6 +151,9 @@
         this.$store.dispatch('endWorkShift')
         this.$store.dispatch('logOut')
         this.$router.push('/login')
+      },
+      onEditProfileClick() {
+        this.$router.push('/profile')
       }
     }
   }
@@ -191,6 +197,8 @@
     width: 100px;
     height: 33px;
     transition: height ease 0.5s;
+    z-index: 99;
+    height: 66px;
   }
   .nav{
     display: flex;

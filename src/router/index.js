@@ -41,6 +41,12 @@ VueRouter.prototype.push = function push(location) {
       component: () => import('../views/Dashboard.vue')
     },
     {
+      path: '/profile',
+      name: 'profile',
+      meta: { layout: "main-layout", gotForward: false, middleware: [ operator ]},
+      component: () => import('../views/OperatorProfile.vue')
+    },
+    {
       path: '/call-list',
       name: 'call-list',
       meta: { layout: "main-layout", gotForward: true, middleware: [ user ]},

@@ -139,7 +139,6 @@
             console.log('Failed to create PeerConnection, exception: ' + e.message);
             alert('Cannot create RTCPeerConnection object.');
           }
-
           this.pc.addStream(this.localStream);
           this.isStarted = true;
         } else {

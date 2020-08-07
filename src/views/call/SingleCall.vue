@@ -58,6 +58,8 @@
 <script>
   import forward from "../../components/UI/forward";
   import apiRequest from "../../utils/apiRequest";
+  import { appToken } from '../../utils/const';
+
   export default {
     name: "SingleCall",
     data(){
@@ -106,7 +108,7 @@
 
       if (this.call.videoAvailable) {
         try {
-          let url = `${this.call.video}/stream?token=841604f050f5e9ec8fcab0489358215f571d4965`
+          let url = `${this.call.video}/stream?token=${appToken}`
           this.player = document.getElementById('callVideo')
           this.url = url
           if (this.$route.query.open === 'yes'){

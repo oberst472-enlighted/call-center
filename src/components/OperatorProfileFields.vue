@@ -126,7 +126,11 @@
       },
       methods: {
         async onSubmitButtonClick() {
-          if (!this.isFormValid) return
+          ['localEmail', 'localPhone', 'localFirstName', 'localLastName'].forEach(field => {
+            this.$v[field].$touch()
+          })
+
+          if (this.$v.$anyError ) return
           const loader = this.$loading.show()
           try {
             const payload = {
@@ -136,7 +140,7 @@
               lastName: this.localLastName,
               photo: this.avatarImagePicture
             }
-            if (this.password !== '') await apiRequest.patch('api/users/set-password', {login: this.login, password: this.password})
+            if (this.password !== '') await apiRequest.post('api/users/set-password', {login: this.login, password: this.password})
             let resp = await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}`, payload)
 
             console.warn(resp)

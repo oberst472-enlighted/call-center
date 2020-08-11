@@ -38,6 +38,7 @@ export default {
       this.socket.on('calling', (room) => {
         console.log('incoming call')
         console.log(room.device);
+        this.callRoomID = room.callRoomID
         this.videoURL = room.videoURL
         this.videoToken = room.videoToken
         this.callObjectId = room.callObjectId

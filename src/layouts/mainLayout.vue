@@ -152,6 +152,9 @@
       // ПОДНЯТЬ ТЕЛЕФОН
       answerCall() {
         let date = new Date()
+        console.log('нажали зеленую кнопку')
+        console.log(this.callRoomID)
+        this.socket.emit('callPickup', this.callRoomID);
 
         let day = `${date.getDate()}`.length === 1 ? `0${date.getDate()}` : `${date.getDate()}`
         let month = `${date.getMonth()}`.length === 1 ? `0${date.getMonth()}` : `${date.getMonth()}`
@@ -239,7 +242,9 @@
       // ЗАКОНЧИТЬ ЗАПИСЫВАТЬ ЗАПИСЬ И ОТПРАВИТЬ НА СЕРВЕР
       stopRecord() {
         const self = this;
-        this.recorder.stopRecording(() => {
+
+        if (this.recorder) {
+                  this.recorder.stopRecording(() => {
           const blob = self.recorder.getBlob();
           console.log(blob)
           const data = new FormData();
@@ -263,6 +268,11 @@
           self.recorder.destroy();
           self.recorder = null;
         });
+        } else {
+          console.log('recorder not found')
+        }
+
+
       },
 
       // ВТОРИЧНАЯ ЛОГИКА

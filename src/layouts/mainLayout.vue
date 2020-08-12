@@ -169,7 +169,8 @@
         this.$store.commit('callLogic/setStartTime', `${hours}:${minutes}:${seconds}`)
 
         this.calling.pause();
-        // this.socket.emit('message', 'receiverReadyToCall');
+
+        this.socket.emit('message', 'receiverReadyToCall');
         this.maybeStart();
         this.$store.dispatch('callLogic/startSpeech')
       },
@@ -188,7 +189,10 @@
         this.remoteStream = null;
         document.getElementById('remoteVideo').srcObject = null;
       },
-
+      onSocketStopRinging() {
+        this.$store.commit('callLogic/cancelIncomingCall')
+        this.calling.pause()
+      },
       // СБРОСИТЬ ТРУБКУ
       hangup() {
         let date = new Date()
@@ -308,6 +312,7 @@
         console.log('Failed to create session description: ' + error.toString());
       },
       handleRemoteStreamAdded(event) {
+        console.log('operator handleRemoteStreamAdded')
         this.remoteStream = event.stream;
         document.getElementById('remoteVideo').srcObject = event.stream;
         this.startRecord();

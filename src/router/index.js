@@ -101,6 +101,12 @@ VueRouter.prototype.push = function push(location) {
       meta: { layout: "main-layout", gotForward: true, middleware: [ user, admin ]},
       component: () => import('../views/OperatorNew')
     },
+    {
+      path: '/test-call',
+      name: 'test-call',
+      meta: { layout: "test-call-layout", gotForward: true, middleware: [ user ]},
+      component: () => import('../layouts/testCallLayout')
+    },
     // {
     //   path: '/add-language',
     //   name: 'add-language',

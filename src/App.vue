@@ -10,6 +10,8 @@
 import emptyLayout from "./layouts/emptyLayout";
 import mainLayout from "./layouts/mainLayout";
 import callLayout from "./layouts/callLayout";
+import testCallLayout from "./layouts/testCallLayout";
+
 export default {
   name: "App",
 
@@ -21,7 +23,8 @@ export default {
   components: {
     emptyLayout,
     mainLayout,
-    callLayout
+    callLayout,
+    testCallLayout
   },
   computed: {
     layout() {

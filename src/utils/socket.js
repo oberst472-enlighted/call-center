@@ -127,6 +127,10 @@ export default {
         }
       });
 
+      this.socket.on('stop_ringing', () => {
+        this.onSocketStopRinging()
+      })
+
       // КАЛЬКУЛЯЦИЯ ОЧЕРЕДИ ЗВОНКОВ
       this.socket.on('stat', (stat) => {
         // Выводит очередь

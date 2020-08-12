@@ -91,7 +91,7 @@ export default {
         this.$store.commit('callLogic/endCall')
 
         this.socket.emit('leave', callId, 'operator');
-        this.socket.emit('change_status', 'UNAVALIABLE');
+        this.socket.emit('change_status', 'WAITING');
 
         this.terminatedBy = 'ПАСАЖИРОМ'
         if (this.$store.state.isCallInProgress) {

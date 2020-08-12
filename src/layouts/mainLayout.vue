@@ -169,7 +169,7 @@
         this.$store.commit('callLogic/setStartTime', `${hours}:${minutes}:${seconds}`)
 
         this.calling.pause();
-        this.socket.emit('message', 'receiverReadyToCall');
+        // this.socket.emit('message', 'receiverReadyToCall');
         this.maybeStart();
         this.$store.dispatch('callLogic/startSpeech')
       },

@@ -25,14 +25,6 @@
 
         <div class="col-stat">{{ (statistic.success / statistic.total * 100).toFixed(2) || 0 }}% от принятых</div>
       </div>
-      <div class="col">
-        <div class="col-name">звонков <br> не принято</div>
-        <div class="col-num">{{ statistic.noAnswer }}</div>
-
-        <hr style="background-color: #f04265">
-
-        <div class="col-stat">{{ (statistic.noAnswer / statistic.total * 100).toFixed(2) || 0 }}% от входящих</div>
-      </div>
     </div>
   </div>
 </template>

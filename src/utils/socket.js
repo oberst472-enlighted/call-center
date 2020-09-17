@@ -79,6 +79,7 @@ export default {
 
       // КЛИЕНТ ПОВЕСИЛ ТРУБКУ
       this.socket.on('bye', (callId) => {
+        this.stopRecord();
         console.log('bye received in operator');
         let date = new Date()
 

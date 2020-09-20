@@ -4,8 +4,16 @@
             <video class="test-call-page__video" id="localVideo" ref="localVideo" muted autoplay playsinline></video>
             <video class="test-call-page__video" id="remoteVideo" ref="remoteVideo" autoplay playsinline></video>
         </div>
-        <button v-if="callingSessionActive" class="test-call-page__call-btn" @click="onStopBtnClick">Stop</button>
-        <button v-else class="test-call-page__call-btn" @click="onCallBtnClick">Call</button>
+        <template v-if="callingSessionActive">
+            <button class="test-call-page__call-btn" @click="onStopBtnClick">Stop</button>
+        </template>
+        <template v-else>
+            <div class="test-call-page__callcenter-wrapper">
+                <span>Callceter ID</span>
+                <input class="test-call-page__callcenter" v-model="callCenterId" type="text" placeholder="CallCenter ID">
+            </div>
+            <button class="test-call-page__call-btn" @click="onCallBtnClick">Call</button>
+        </template>
     </div>
 </template>
 
@@ -18,7 +26,8 @@
         socket: null,
         localStream: null,
         pc: null,
-        callingSessionActive: false
+        callingSessionActive: false,
+        callCenterId: '5f119d7ee6b5a61d04e7cba9'
       }
     },
     methods: {
@@ -28,7 +37,7 @@
         navigator.mediaDevices.getUserMedia({video: true, audio: true})
           .then(this.gotStream).then(()=> {
           this.pc.addStream(this.localStream);
-          this.socket.emit('entered', 'device_dev', 'client', '5f119d7ee6b5a61d04e7cba9')
+          this.socket.emit('entered', 'device_dev', 'client', this.callCenterId)
           this.callingSessionActive = true
         })
       },
@@ -142,6 +151,20 @@
             font-size: 20px;
             padding: 5px;
             display: block;
+        }
+        &__callcenter{
+            height: 40px;
+            margin: 0 auto;
+            font-size: 13px;
+            padding: 5px;
+            margin-top: 10px;
+            &-wrapper{
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
         }
     }
 </style>

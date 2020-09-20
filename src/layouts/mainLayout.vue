@@ -355,6 +355,12 @@
         }
       }
     },
+    mounted() {
+      setInterval(() => {
+        if (this.getCallStatus) return
+        location.reload()
+      }, 600000)
+    },
     async created() {
       // try {
       //   let d = await apiRequest.get( '/api/users/')
@@ -402,8 +408,6 @@
       }
 
     }
-
-
   }
 </script>
 

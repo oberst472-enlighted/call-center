@@ -5,105 +5,88 @@
     </div>
     <div class="row">
       <div class="col">
-        <div class="col-name">операторов на <br> линии</div>
-        <div class="col-num">{{data.operatorsOnline}}</div>
-
-        <hr style="background-color: #65528b">
-
-        <div class="col-stat">всего онлайн</div>
+        <LocalStatusAdminDashboardItem
+            :count="stat.operatorsOnline"
+            title="операторов на <br> линии"
+            signature="всего онлайн"
+        />
       </div>
+
       <div class="col">
-        <div class="col-name">активных <br> звонков</div>
-        <div class="col-num">{{data.callsInProgress}}</div>
-
-        <hr style="background-color: #4fd161">
-
-        <div class="col-stat">на лини</div>
+        <LocalStatusAdminDashboardItem
+            color="positive"
+            :count="stat.callsInProgress"
+            title="активных <br> звонков"
+            signature="на линии"
+        />
       </div>
+
       <div class="col">
-        <div class="col-name">ОЧЕРЕДЬ <br> ЗВОНКОВ</div>
-        <div class="col-num">{{data.callsWaiting}}</div>
-
-        <hr style="background-color: #65528b">
-
-        <div class="col-stat">подпись</div>
+        <LocalStatusAdminDashboardItem
+            :count="stat.callsWaiting"
+            title="очередь <br> звонков"
+            signature="рыба текст"
+        />
       </div>
+
       <div class="col">
-        <div class="col-name">среднее время <br> звонк</div>
-        <div class="col-num" style="font-size: 20px">
-          {{Math.floor(data.callsAverageTime / 60)}}
-          <span style="font-size: 12px">мин</span>
-          {{data.callsAverageTime % 60}}
-          <span style="font-size: 13px">сек</span>
-        </div>
+        <LocalStatusAdminDashboardItem
+            color="negative"
+            :count="Math.floor(stat.callsAverageTime / 60)"
+            title="среднее время <br> звонка"
+            time-text-active
 
-        <hr style="background-color: #f04265">
-
-        <div class="col-stat">подпись</div>
+            signature="рыба текст"
+        />
       </div>
+
     </div>
   </div>
 </template>
 
 <script>
+import LocalStatusAdminDashboardItem from './status-admin-dashboard-item'
+import {mapState} from 'vuex'
+
 export default {
-  name: "statusDashboard",
-  props: ['data']
+  components: {
+    LocalStatusAdminDashboardItem
+  },
+  computed: {
+    ...mapState('stat', ['stat'])
+  }
 }
 </script>
 
 <style lang='scss'>
-#status_dashboard{
+#status_dashboard {
   width: 605px;
   height: 175px;
   box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);
   border-radius: 8px;
   background-color: #ffffff;
   padding: 17px 35px;
-  .user_stat_header{
+
+  .user_stat_header {
     width: 100%;
     text-align: center;
-    color: #685c7b;
+    color: $color--primary;
     font-size: 17px;
     font-weight: 700;
     margin-bottom: 30px;
   }
-  .row{
+
+  .row {
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-  .col{
+
+  .col {
     width: 21% !important;
     text-align: center;
-    color: #786d89;
     margin: 0 5px;
-    &-name{
-      font-size: 10px;
-      font-weight: 500;
-      text-transform: uppercase;
-      padding-bottom: 6px;
-    }
-    &-num{
-      color: #65528b;
-      font-size: 25px;
-      font-weight: 500;
-      padding-bottom: 3px;
-      letter-spacing: 0;
-      word-spacing: 0;
-      span{
-        font-size: 10px;
-        font-weight: 500;
-        letter-spacing: 0;
-        word-spacing: 0;
-      }
-    }
-    &-stat{
-      padding-top: 3px;
-      font-size: 10px;
-      font-weight: 500;
-    }
   }
 }
 </style>

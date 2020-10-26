@@ -10,36 +10,48 @@
     </div>
 
     <div class="calls-list">
-      <LocalUserSmallItem
-          v-for="operator in operators"
+      <LocalBlocklUserSmallItem
+          v-for="operator in getUsersOperators"
           :key="operator._id"
-          :data="operator"
+          :info="operator"
       />
     </div>
   </div>
 </template>
 
 <script>
-import LocalUserSmallItem from './user-small-item'
+import LocalBlocklUserSmallItem from './user-small-item'
 import apiRequest from '@/utils/apiRequest'
+import {mapState, mapGetters, mapActions} from 'vuex'
 
 export default {
   components: {
-    LocalUserSmallItem
+    LocalBlocklUserSmallItem
   },
   data() {
     return {
       operators: null
     }
   },
-  async created() {
-    try {
-      let users = (await apiRequest.get('/api/users/')).data
-      this.operators = users.filter(user => (user.userType === 'OPERATOR' || user.userType === 'operator'))
-      // console.log(this.operators)
-      // console.log(this.operators[0])
-    } catch (e) {
-    }
+  computed: {
+    ...mapGetters('users', ['getUsersOperators']),
+    ...mapState('users', ['users'])
+  },
+  methods: {
+
+    ...mapActions('users', ['stGetUsers'])
+  },
+  created() {
+    console.log(this.$store)
+    // const lol = await this.stGetUsers()
+    // console.log(lol)
+    // try {
+    //   let users = (await apiRequest.get('/api/users/')).data
+    //   this.operators = users.filter(user => (user.userType === 'OPERATOR' || user.userType === 'operator'))
+    //   // console.log(this.operators)
+    //   // console.log(this.operators[0])
+    // } catch (e) {
+    // }
   }
 }
 </script>

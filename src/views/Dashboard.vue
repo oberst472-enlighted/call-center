@@ -65,6 +65,7 @@ import callHistoryBig from '../components/views/callHistoryBig'
 import apiRequest from '../utils/apiRequest'
 import restoreQue from '../components/views/restoreQue'
 import {mapActions, mapState} from 'vuex'
+import store from '@/store'
 
 export default {
   components: {
@@ -127,6 +128,18 @@ export default {
       console.log(e)
     }
 
+  },
+  async beforeRouteEnter(to, from, next) {
+    const response = await Promise.all([
+      store.dispatch('users/stGetUsers'),
+      store.dispatch('stat/stGetStat', store.getters.getCallCenterId),
+    ])
+    if (response.every(item => item)) {
+      next()
+    } else {
+      next(false)
+      //выводим попап с ошибкой
+    }
   }
 }
 </script>

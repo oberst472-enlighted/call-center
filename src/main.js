@@ -15,9 +15,9 @@ Vue.use(Vuelidate)
 Vue.use(VueMeta)
 Vue.use(VueMask)
 
+
 import 'normalize.css'
-import './assets/montserrat.css'
-import './assets/global.scss'
+import './assets/scss/main.scss'
 
 Vue.config.productionTip = false
 Vue.use(VueCookies)

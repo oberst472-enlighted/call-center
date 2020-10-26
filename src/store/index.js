@@ -2,7 +2,9 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import callLogic from './callLogic'
 import popup from './popup'
-import apiRequest from "../utils/apiRequest";
+import apiRequest from '../utils/apiRequest'
+import users from './modules/users'
+import stat from './modules/stat'
 
 Vue.use(Vuex)
 
@@ -35,10 +37,10 @@ export default new Vuex.Store({
       state.workStatus = 'break'
       localStorage.setItem('workStatus', 'break')
     },
-    setUserStatus(state, type){
+    setUserStatus(state, type) {
       state.userStatus = type
     },
-    setWorkShiftStatus(state, status){
+    setWorkShiftStatus(state, status) {
       state.isActiveWorkShift = status
       localStorage.setItem('isActiveWorkShift', status)
     },
@@ -52,17 +54,26 @@ export default new Vuex.Store({
       state.userData.user.email = email
     }
   },
+  getters: {
+    getCallCenterId() {
+      return localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')
+    },
+    getIsRoleOperator() {
+      return localStorage.getItem('userType') === 'operator' ||
+          sessionStorage.getItem('userType') === 'operator'
+    }
+  },
   actions: {
-    startWorkShift({commit}){
+    startWorkShift({commit}) {
       commit('setWorkShiftStatus', true)
       commit('toggleWorkingStatus', 'online')
     },
-    endWorkShift({commit}){
+    endWorkShift({commit}) {
       commit('setWorkShiftStatus', false)
       commit('toggleWorkingStatus', 'break')
       commit('cleanTime')
     },
-    async logIn({commit, dispatch}, data){
+    async logIn({commit, dispatch}, data) {
       console.log('logggin')
       localStorage.clear()
       sessionStorage.clear()
@@ -111,7 +122,7 @@ export default new Vuex.Store({
         // commit('setWorkShiftStatus', false)
       }
     },
-    async logOut({state}){
+    async logOut({state}) {
       // clearing all storages
       localStorage.clear()
       sessionStorage.clear()
@@ -120,11 +131,11 @@ export default new Vuex.Store({
       if (localStorage.getItem('userType') && localStorage.getItem('userType') === 'operator') {
         let userInfo
         try {
-          userInfo = (await apiRequest.get( `/api/me/`)).data
+          userInfo = (await apiRequest.get(`/api/me/`)).data
         } catch (e) {
           console.log(e)
         }
-        if(userInfo.session) {
+        if (userInfo.session) {
           if (!userInfo.session.stopTime) {
             // console.log(Date(userInfo.session.stopTime).getTime() - Date(userInfo.session.startTime).getTime())
 
@@ -150,15 +161,17 @@ export default new Vuex.Store({
     },
     async fetchCallsOperator({state}) {
       let userId = localStorage.getItem('userId') || sessionStorage.getItem('userId')
-      state.callsOperator = (await apiRequest.get( `/api/users/${userId}/calls/`)).data
+      state.callsOperator = (await apiRequest.get(`/api/users/${userId}/calls/`)).data
     },
     async fetchStats({state}) {
-      const userInfo = (await apiRequest.get( `/api/me/`)).data
+      const userInfo = (await apiRequest.get(`/api/me/`)).data
       state.userData.lastSessionStat = userInfo.lastSessionStat
     }
   },
   modules: {
     callLogic,
-    popup
+    popup,
+    users,
+    stat
   }
 })

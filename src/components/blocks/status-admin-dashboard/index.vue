@@ -46,9 +46,10 @@
 </template>
 
 <script>
-  export default {
-    props: ['data']
-  }
+export default {
+  name: "statusDashboard",
+  props: ['data']
+}
 </script>
 
 <style lang='scss'>

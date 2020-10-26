@@ -2,117 +2,171 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '../store'
 
-import middlewarePipeline from "./middlewarePipeline";
-import guest from "./middleware/guest";
-import user from "./middleware/user"
-import admin from "./middleware/admin";
-import operator from "./middleware/operator";
+import middlewarePipeline from './middlewarePipeline'
+import guest from './middleware/guest'
+import user from './middleware/user'
+import admin from './middleware/admin'
+import operator from './middleware/operator'
 
 Vue.use(VueRouter)
 
 
-const originalPush = VueRouter.prototype.push;
+const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
-};
-  const routes = [
-    {
-      path: '/',
-      redirect: '/dashboard'
+}
+const routes = [
+  {
+    path: '/',
+    redirect: '/dashboard'
+  },
+  {
+    path: '/login',
+    name: 'login',
+    meta: {
+      layout: 'empty-layout',
+      gotForward: true,
+      middleware: [guest]
     },
-    {
-      path: '/login',
-      name: 'login',
-      meta: {
-        layout: "empty-layout", gotForward: true, middleware: [ guest ]},
-      component: () => import('../views/Login.vue')
+    component: () => import('../views/Login.vue')
+  },
+  {
+    path: '/restore-pass',
+    name: 'restore-pass',
+    meta: {
+      layout: 'empty-layout',
+      gotForward: true,
+      middleware: [guest]
     },
-    {
-      path: '/restore-pass',
-      name: 'restore-pass',
-      meta: {
-        layout: "empty-layout", gotForward: true, middleware: [ guest ]},
-      component: () => import('../views/RestorePass')
+    component: () => import('../views/RestorePass')
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    meta: {
+      layout: 'main-layout',
+      gotForward: false,
+      middleware: [user]
     },
-    {
-      path: '/dashboard',
-      name: 'dashboard',
-      meta: { layout: "main-layout", gotForward: false, middleware: [ user ]},
-      component: () => import('../views/Dashboard.vue')
+    component: () => import('../views/Dashboard.vue')
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    meta: {
+      layout: 'main-layout',
+      gotForward: false,
+      middleware: [operator]
     },
-    {
-      path: '/profile',
-      name: 'profile',
-      meta: { layout: "main-layout", gotForward: false, middleware: [ operator ]},
-      component: () => import('../views/OperatorProfile.vue')
+    component: () => import('../views/OperatorProfile.vue')
+  },
+  {
+    path: '/call-list',
+    name: 'call-list',
+    meta: {
+      layout: 'main-layout',
+      gotForward: true,
+      middleware: [user]
     },
-    {
-      path: '/call-list',
-      name: 'call-list',
-      meta: { layout: "main-layout", gotForward: true, middleware: [ user ]},
-      component: () => import('../views/call/CallList.vue')
-    },
+    component: () => import('../views/call/CallList.vue')
+  },
 
-    {
-      path: '/call-list/:id',
-      name: 'single-call',
-      meta: { layout: "main-layout", gotForward: true, middleware: [ user ]},
-      component: () => import('../views/call/SingleCall.vue')
+  {
+    path: '/call-list/:id',
+    name: 'single-call',
+    meta: {
+      layout: 'main-layout',
+      gotForward: true,
+      middleware: [user]
     },
-    {
-      path: '/call-terminals',
-      name: 'call-terminals',
-      meta: { layout: "main-layout", gotForward: true, middleware: [ user ]},
-      component: () => import('../views/terminal/CallTerminals.vue')
+    component: () => import('../views/call/SingleCall.vue')
+  },
+  {
+    path: '/call-terminals',
+    name: 'call-terminals',
+    meta: {
+      layout: 'main-layout',
+      gotForward: true,
+      middleware: [user]
     },
-    {
-      path: '/call-terminals/:id',
-      name: 'single-terminal',
-      meta: { layout: "main-layout", gotForward: true, middleware: [ user ]},
-      component: () => import('../views/terminal/SingleTerminal.vue')
+    component: () => import('../views/terminal/CallTerminals.vue')
+  },
+  {
+    path: '/call-terminals/:id',
+    name: 'single-terminal',
+    meta: {
+      layout: 'main-layout',
+      gotForward: true,
+      middleware: [user]
     },
-    {
-      path: '/operator-list',
-      name: 'operator-list',
-      meta: { layout: "main-layout", gotForward: true, middleware: [ user ]},
-      component: () => import('../views/operators/OperatorsList')
+    component: () => import('../views/terminal/SingleTerminal.vue')
+  },
+  {
+    path: '/operator-list',
+    name: 'operator-list',
+    meta: {
+      layout: 'main-layout',
+      gotForward: true,
+      middleware: [user]
     },
-    {
-      path: '/operator-list/:id',
-      name: 'operator-page',
-      meta: { layout: "main-layout", gotForward: true, middleware: [ user ]},
-      component: () => import('../views/operators/OperatorPage')
+    component: () => import('../views/operators/OperatorsList')
+  },
+  {
+    path: '/operator-list/:id',
+    name: 'operator-page',
+    meta: {
+      layout: 'main-layout',
+      gotForward: true,
+      middleware: [user]
     },
-    {
-      path: '/operator-list/:id/edit',
-      name: 'operator-edit',
-      meta: { layout: "main-layout", gotForward: true, middleware: [ user ]},
-      component: () => import('../views/operators/OperatorEdit')
+    component: () => import('../views/operators/OperatorPage')
+  },
+  {
+    path: '/operator-list/:id/edit',
+    name: 'operator-edit',
+    meta: {
+      layout: 'main-layout',
+      gotForward: true,
+      middleware: [user]
     },
-    {
-      path: '/statistics',
-      name: 'statistics',
-      meta: { layout: "main-layout", gotForward: true, middleware: [ user ]},
-      component: () => import('../views/Statistics')
+    component: () => import('../views/operators/OperatorEdit')
+  },
+  {
+    path: '/statistics',
+    name: 'statistics',
+    meta: {
+      layout: 'main-layout',
+      gotForward: true,
+      middleware: [user]
     },
-    {
-      path: '/create-operator',
-      name: 'create-operator',
-      meta: { layout: "main-layout", gotForward: true, middleware: [ user, admin ]},
-      component: () => import('../views/OperatorNew')
+    component: () => import('../views/Statistics')
+  },
+  {
+    path: '/create-operator',
+    name: 'create-operator',
+    meta: {
+      layout: 'main-layout',
+      gotForward: true,
+      middleware: [user, admin]
     },
-    {
-      path: '/test-call',
-      name: 'test-call',
-      meta: { layout: "test-call-layout", gotForward: true, middleware: [ user ]},
-      component: () => import('../layouts/testCallLayout')
+    component: () => import('../views/OperatorNew')
+  },
+  {
+    path: '/test-call',
+    name: 'test-call',
+    meta: {
+      layout: 'test-call-layout',
+      gotForward: true,
+      middleware: [user]
     },
-    // {
-    //   path: '/add-language',
-    //   name: 'add-language',
-    //   meta: { layout: "main-layout", gotForward: true, middleware: [ user, admin ]},
-    //   component: () => import('../views/AddLanguage')
-    // },
+    component: () => import('../layouts/testCallLayout')
+  },
+  // {
+  //   path: '/add-language',
+  //   name: 'add-language',
+  //   meta: { layout: "main-layout", gotForward: true, middleware: [ user, admin ]},
+  //   component: () => import('../views/AddLanguage')
+  // },
 ]
 
 
@@ -122,7 +176,7 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next)=>{
+router.beforeEach((to, from, next) => {
   if (!to.meta.middleware) {
     return next()
   }

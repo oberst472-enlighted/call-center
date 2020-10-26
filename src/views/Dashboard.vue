@@ -2,10 +2,7 @@
   <div id="DashBoard">
     <div class="row">
       <div class="col-left">
-        <BlockStatusAdminDashboard
-            v-if="isStatusAdminDashboardActive"
-            :data="statisticsAdmin"
-        />
+        <BlockStatusAdminDashboard v-if="isStatusAdminDashboardActive"/>
 
         <statusOperatorDashboard
             v-else-if="$store.state.userStatus === 'operator'
@@ -14,10 +11,11 @@
 
         <div class="row" v-if="$store.state.userStatus === 'admin'">
           <div class="col">
-            <graphBox :data="graphData"/>
+            <BlockGraph/>
+          <!--            <graphBox :data="graphData"/>-->
           </div>
-          <div class="col" v-if="statisticsAdmin">
-            <ratingBox :data="statisticsAdmin.callsHelpfulness"/>
+          <div class="col" v-if="stat">
+            <ratingBox :data="stat.callsHelpfulness"/>
           </div>
         </div>
 
@@ -53,11 +51,13 @@
 <script>
 import BlockStatusAdminDashboard from '@/components/blocks/status-admin-dashboard'
 import BlockUserSmall from '@/components/blocks/user-small'
+import BlockGraph from '@/components/blocks/graph'
 
 import statusOperatorDashboard from '../components/views/statusOperatorDashboard'
 import callHistorySmall from '../components/views/callHistorySmall'
 import callWindow from '../components/layout/callWindow'
 import avaliableTerminals from '../components/views/avaliableTerminals'
+
 import graphBox from '../components/views/graphBox'
 // import languagesBox from "../components/views/languagesBox";
 import ratingBox from '../components/views/ratingBox'
@@ -71,6 +71,7 @@ export default {
   components: {
     BlockStatusAdminDashboard,
     BlockUserSmall,
+    BlockGraph,
     statusOperatorDashboard,
     graphBox,
     // languagesBox,
@@ -99,46 +100,59 @@ export default {
   },
   computed: {
     ...mapState(['callsOperator']),
+    ...mapState('stat', ['stat']),
     isStatusAdminDashboardActive() {
-      return this.$store.state.userStatus === 'admin' && this.statisticsAdmin
+      return this.$store.state.userStatus === 'admin' && this.stat
     },
     isBlockUserSmallActive() {
       return this.$store.state.userStatus === 'admin'
     }
   },
-  methods: {
-    ...mapActions(['fetchCallsOperator'])
-  },
-  async created() {
-    try {
-      if ((localStorage.getItem('userType') || sessionStorage.getItem('userType')) === 'operator') {
-        // this.statisticsOperator = (await apiRequest.get( `/api/me/`)).data.lastSessionStat
-        // console.hideProto(this.statisticsOperator)
-        this.fetchCallsOperator()
-      } else {
-        let callCenterId = localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')
-        this.statisticsAdmin = (await apiRequest.get(`/api/callcenters/${callCenterId}/stat/`)).data
-        let times = ['8', '10', '12', '14', '16', '18', '20']
-        times.forEach((time) => {
-          this.graphData.push(this.statisticsAdmin.callsSuccessRate[time] * 100)
-        })
-        this.callsAdmin = (await apiRequest.get(`/api/calls/`)).data
-      }
-    } catch (e) {
-      console.log(e)
-    }
-
-  },
+  // methods: {
+  //   // ...mapActions(['fetchCallsOperator'])
+  // },
+  // async created() {
+  //   try {
+  //     if ((localStorage.getItem('userType') || sessionStorage.getItem('userType')) === 'operator') {
+  //       // this.statisticsOperator = (await apiRequest.get( `/api/me/`)).data.lastSessionStat
+  //       // console.hideProto(this.statisticsOperator)
+  //       this.fetchCallsOperator()
+  //     } else {
+  //       let callCenterId = localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')
+  //       this.statisticsAdmin = (await apiRequest.get(`/api/callcenters/${callCenterId}/stat/`)).data
+  //       this.callsAdmin = (await apiRequest.get(`/api/calls/`)).data
+  //     }
+  //   } catch (e) {
+  //     console.log(e)
+  //   }
+  //
+  // },
   async beforeRouteEnter(to, from, next) {
-    const response = await Promise.all([
-      store.dispatch('users/stGetUsers'),
-      store.dispatch('stat/stGetStat', store.getters.getCallCenterId),
-    ])
-    if (response.every(item => item)) {
-      next()
-    } else {
-      next(false)
-      //выводим попап с ошибкой
+    //если авторизован оператор
+    if(store.getters.getIsRoleOperator) {
+      const response = await Promise.all([
+        store.dispatch('users/stCallsOperator', store.getters.getUserId),
+      ])
+      if (response.every(item => item)) {
+        next()
+      } else {
+        next(false)
+        //выводим попап с ошибкой
+      }
+    }
+    //если авторизован админ
+    else {
+      const response = await Promise.all([
+        store.dispatch('users/stGetUsers'),
+        store.dispatch('stat/stGetStat', store.getters.getCallCenterId),
+        store.dispatch('calls/stGetCalls'),
+      ])
+      if (response.every(item => item)) {
+        next()
+      } else {
+        next(false)
+        //выводим попап с ошибкой
+      }
     }
   }
 }

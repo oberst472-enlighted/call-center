@@ -5,6 +5,7 @@ import popup from './popup'
 import apiRequest from '../utils/apiRequest'
 import users from './modules/users'
 import stat from './modules/stat'
+import calls from './modules/calls'
 
 Vue.use(Vuex)
 
@@ -61,6 +62,9 @@ export default new Vuex.Store({
     getIsRoleOperator() {
       return localStorage.getItem('userType') === 'operator' ||
           sessionStorage.getItem('userType') === 'operator'
+    },
+    getUserId() {
+      return localStorage.getItem('userId') || sessionStorage.getItem('userId')
     }
   },
   actions: {
@@ -172,6 +176,7 @@ export default new Vuex.Store({
     callLogic,
     popup,
     users,
-    stat
+    stat,
+    calls,
   }
 })

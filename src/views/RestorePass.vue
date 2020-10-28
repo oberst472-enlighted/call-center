@@ -1,7 +1,7 @@
 <template>
   <div id="RestorePass">
-<!--    <div class="log adm" @click="loginAdmin">LOGIN AS ADMIN</div>-->
-<!--    <div class="log operator" @click="loginOperator">LOGIN AS OPERATOR</div>-->
+<!--    <div class="log adm" @click="loginAdmin">login AS ADMIN</div>-->
+<!--    <div class="log operator" @click="loginOperator">login AS OPERATOR</div>-->
     <div class="header">
       <img src="../assets/icons/Chat.svg" alt="" class="header-chat">
       <div class="header-text">

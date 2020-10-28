@@ -18,7 +18,7 @@
 </template>
 
 <script>
-  import sidebarLink from "../UI/sidebarLink";
+  import sidebarLink from "../ui/sidebarLink";
   export default {
     name: "Sidebar",
     components: {sidebarLink},

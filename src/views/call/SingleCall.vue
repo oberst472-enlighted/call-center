@@ -56,7 +56,7 @@
 </template>
 
 <script>
-  import forward from "../../components/UI/forward";
+  import forward from "../../components/ui/forward";
   import apiRequest from "../../utils/apiRequest";
   import { appToken } from '../../utils/const';
 

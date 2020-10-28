@@ -23,7 +23,7 @@
 </template>
 
 <script>
-  import forward from "../../components/UI/forward";
+  import forward from "../../components/ui/forward";
   import apiRequest from "../../utils/apiRequest";
   export default {
     name: "SingleTerminal",

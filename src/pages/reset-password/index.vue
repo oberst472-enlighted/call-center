@@ -1,13 +1,13 @@
 <template>
-  <div>
-    <PagesHomeAdmin/>
-  </div>
+    <div>
+        reset-password
+    </div>
 </template>
 
 <script>
 export default {}
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="">
 
 </style>

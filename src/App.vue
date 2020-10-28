@@ -1,72 +1,76 @@
 <template>
-  <div id="app" @click="$store.commit('popup/cleanPopup')">
-    <component :is="layout">
-      <router-view/>
-    </component>
-  </div>
+    <div id="app">
+        <SectionBg v-if="isBgActive"/>
+        <router-view/>
+    </div>
 </template>
 
 <script>
-import emptyLayout from "./layouts/emptyLayout";
-import mainLayout from "./layouts/mainLayout";
-import callLayout from "./layouts/callLayout";
-import testCallLayout from "./layouts/testCallLayout";
+import SectionBg from '@/components/sections/bg'
+import emptyLayout from './layouts/emptyLayout'
+import mainLayout from '@/layouts/admin/main/'
+import callLayout from './layouts/callLayout'
+import testCallLayout from './layouts/testCallLayout'
+import {mapState} from 'vuex'
 
 export default {
-  name: "App",
+    name: 'App',
 
-  data(){
-    return {
-      interval: null
-    }
-  },
-  components: {
-    emptyLayout,
-    mainLayout,
-    callLayout,
-    testCallLayout
-  },
-  computed: {
-    layout() {
-      return this.$route.meta.layout;
+    data() {
+        return {
+            interval: null
+        }
     },
-    isActiveWorkShift() {
-      return this.$store.state.isActiveWorkShift
+    components: {
+        SectionBg,
+        emptyLayout,
+        mainLayout,
+        callLayout,
+        testCallLayout
+    },
+    computed: {
+        ...mapState(['isBgActive']),
+        layout() {
+            return this.$route.meta.layout
+        },
+        isActiveWorkShift() {
+            return this.$store.state.isActiveWorkShift
+        }
+    },
+    async mounted() {
+
+
+        if (sessionStorage.getItem('isUserLoggedIn')) {
+            this.$store.commit('setUserStatus', sessionStorage.getItem('userType'))
+            this.$store.commit('setTime', +localStorage.getItem('totalTime'))
+            this.$store.commit('toggleWorkingStatus', localStorage.getItem('workStatus'))
+            this.$store.commit('setWorkShiftStatus', JSON.parse(localStorage.getItem('isActiveWorkShift')))
+        } else if (localStorage.getItem('isUserLoggedIn')) {
+            this.$store.commit('setUserStatus', localStorage.getItem('userType'))
+            this.$store.commit('setTime', +localStorage.getItem('totalTime'))
+            this.$store.commit('toggleWorkingStatus', localStorage.getItem('workStatus'))
+            this.$store.commit('setWorkShiftStatus', JSON.parse(localStorage.getItem('isActiveWorkShift')))
+
+        }
+    },
+    watch: {
+        isActiveWorkShift(val) {
+            if (val) {
+                this.interval = setInterval(async () => {
+                    this.$store.commit('incrementTime')
+                }, 1000)
+            } else {
+                clearInterval(this.interval)
+            }
+        }
     }
-  },
-  async mounted() {
-
-
-
-    if (sessionStorage.getItem('isUserLoggedIn')) {
-      this.$store.commit('setUserStatus', sessionStorage.getItem('userType'))
-      this.$store.commit('setTime', +localStorage.getItem('totalTime'))
-      this.$store.commit('toggleWorkingStatus', localStorage.getItem('workStatus'))
-      this.$store.commit('setWorkShiftStatus', JSON.parse(localStorage.getItem('isActiveWorkShift')))
-    } else if (localStorage.getItem('isUserLoggedIn')){
-      this.$store.commit('setUserStatus', localStorage.getItem('userType'))
-      this.$store.commit('setTime', +localStorage.getItem('totalTime'))
-      this.$store.commit('toggleWorkingStatus', localStorage.getItem('workStatus'))
-      this.$store.commit('setWorkShiftStatus', JSON.parse(localStorage.getItem('isActiveWorkShift')))
-
-    }
-  },
-  watch: {
-    isActiveWorkShift(val){
-      if (val) {
-        this.interval = setInterval(async () => {
-          this.$store.commit('incrementTime');
-        }, 1000)
-      } else {
-        clearInterval(this.interval)
-      }
-    }
-  }
-};
+}
 </script>
 <style lang="scss">
-@import "~normalize.css";
+
 #app {
-  min-height: 100vh;
+    display: flex;
+    width: 100vw;
+    min-height: 100vh;
 }
 </style>

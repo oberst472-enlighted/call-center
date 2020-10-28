@@ -72,7 +72,7 @@ export default {
           }).catch((error) => {
             console.log(error);
             // Automatic playback failed.
-            // Show a UI element to let the user manually start playback.
+            // Show a ui element to let the user manually start playback.
           });
         }
       });

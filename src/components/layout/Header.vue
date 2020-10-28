@@ -85,7 +85,7 @@
 </template>
 
 <script>
-  import forward from "../UI/forward";
+  import forward from "../ui/forward";
   import apiRequest from "../../utils/apiRequest";
   export default {
     name: "Header",

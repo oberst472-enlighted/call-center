@@ -87,7 +87,6 @@
 
 <script>
     import apiRequest from '../utils/apiRequest';
-    import { required, email, minLength } from 'vuelidate/lib/validators'
     export default {
       props: {
         login: {

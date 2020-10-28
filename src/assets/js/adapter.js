@@ -2415,10 +2415,10 @@
           } else {
             // Safari UA substrings of interest for reference:
             // - webkit version:           AppleWebKit/602.1.25 (also used in Op,Cr)
-            // - safari UI version:        Version/9.0.3 (unique to Safari)
-            // - safari UI webkit version: Safari/601.4.4 (also used in Op,Cr)
+            // - safari ui version:        Version/9.0.3 (unique to Safari)
+            // - safari ui webkit version: Safari/601.4.4 (also used in Op,Cr)
             //
-            // if the webkit version and safari UI webkit versions are equals,
+            // if the webkit version and safari ui webkit versions are equals,
             // ... this is a stable version.
             //
             // only the internal webkit version is important today to know if

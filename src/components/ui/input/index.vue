@@ -11,7 +11,7 @@
                     </span>
                 </transition>
 
-                <transition name="fade">
+                <transition name="try">
                     <span
                         v-if="isEmpty"
                         class="ui-input__error">
@@ -140,10 +140,24 @@ export default {
 
     &__error {
         position: absolute;
-        bottom: -20px;
+        bottom: -26px;
         margin: 4px 0 4px 0;
-        font-size: 11px;
-        color: $color--negative;
+        font-size: 9px;
+        color: #ffffff;
+        padding: 3px;
+        border-radius: 3px;
+        background-color: $color--negative;
+        &:before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: -3px;
+            width: 6px;
+            height: 6px;
+            background-color: $color--negative;
+            transform: rotate(-45deg);
+            border-top-right-radius: 2px;
+        }
     }
 
     &__box {
@@ -176,7 +190,6 @@ export default {
 
         &::placeholder {
             font-size: 13px;
-            transition-duration: 0.3s;
 
         }
 
@@ -236,6 +249,9 @@ export default {
     &--error {
         .ui-input__box {
             border-color: $color--negative
+        }
+        .ui-input__inp {
+            border-color: $color--negative;
         }
     }
 }

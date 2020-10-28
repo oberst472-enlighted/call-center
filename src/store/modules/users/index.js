@@ -1,4 +1,4 @@
-import { apiGetUsers, ApiCallsOperator } from "@/api";
+import { apiGetUsers, ApiCallsOperator, apiGetUserById } from "@/api";
 
 export default {
     namespaced: true,
@@ -35,6 +35,15 @@ export default {
                 return false;
             }
         },
+        async stGetUserById(context, id) {
+            const response = await apiGetUserById(id);
+            if (Boolean(response) && response.status < 300 && response.statusText === "OK") {
+                return {isSuccess: true, response};
+            } else {
+                return {isSuccess: false};
+            }
+        },
+
         async stCallsOperator({ commit }, id) {
             const response = await ApiCallsOperator(id);
             if (

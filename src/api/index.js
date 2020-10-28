@@ -6,7 +6,7 @@ import token from './token'
 export async function apiLogin(form) {
     const options = {
         method: 'post',
-        url: `/api/auth/`,
+        url: `/auth/login/`,
         body: form,
         token: ''
     }
@@ -19,6 +19,18 @@ export async function apiGetUsers() {
   const url = `/api/users/`
   const body = null
   return axiosUrl('get', url, body, token)
+}
+
+//получить юзера по id
+export async function apiGetUserById(form) {
+    const options = {
+        method: 'get',
+        url: `/api/users/${id}`,
+        body: null,
+        token: ''
+    }
+    const response = await axiosUrl(options)
+    return response
 }
 
 //получить статистику

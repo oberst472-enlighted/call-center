@@ -1,23 +1,21 @@
 <template>
     <div :class="{'section-aside--active' : isAsideActive}" class="section-aside">
         <div class="section-aside__top">
-            <div class="section-aside__logo-box" @click="$router.push('dashboard')">
+            <div
+                class="section-aside__logo-box"
+                @click="$router.push({name: 'home'})"
+            >
                 <LocalAsideLogo/>
             </div>
+
             <LocalAsideLinkItem
-                v-for="(item, index) in linksOperator"
+                v-for="(item, index) in links"
                 :key="index"
                 :icon="item.icon"
                 :title="item.title"
             />
-
-
-            <!--            <sidebarLink src="Dash.png" title="Dashboard" link="dashboard"/>-->
-            <!--            <sidebarLink src="Calls.png" title="Звонки" link="call-list"/>-->
-            <!--            <sidebarLink src="Terminal.png" title="Терминалы" link="call-terminals"/>-->
-            <!--            <sidebarLink v-if="$store.state.userStatus === 'admin'" src="Operator.png" title="Операторы" link="operator-list"/>-->
-            <!--            <sidebarLink src="Statistics.png" title="Статистика" link="statistics"/>-->
         </div>
+
         <button
             class="section-aside__toggle-state-btn"
             @click="TOGGLE_ASIDE_ACTIVE(!isAsideActive)"
@@ -31,6 +29,7 @@
 </template>
 
 <script>
+import linksOperator from './assets/links-operator'
 import LocalAsideLogo from './aside-logo'
 import LocalAsideLinkItem from './aside-link-item'
 import {mapMutations, mapState} from 'vuex'
@@ -43,37 +42,40 @@ export default {
     data() {
         return {
             isCollapsed: false,
-            linksOperator: [
-                {
-                    title: 'Главная',
-                    icon: 'IconHome',
-                    href: 'home'
-                },
-                {
-                    title: 'Звонки',
-                    icon: 'IconCall',
-                    href: 'home'
-                },
-                {
-                    title: 'Терминалы',
-                    icon: 'IconTerminals',
-                    href: 'home'
-                },
-                {
-                    title: 'Операторы',
-                    icon: 'IconUsers',
-                    href: 'home'
-                },
-                {
-                    title: 'Статистика',
-                    icon: 'IconStat',
-                    href: 'home'
-                }
-            ]
+            // linksOperator: [
+            //     {
+            //         title: 'Главная',
+            //         icon: 'IconHome',
+            //         href: 'home'
+            //     },
+            //     {
+            //         title: 'Звонки',
+            //         icon: 'IconCall',
+            //         href: 'home'
+            //     },
+            //     {
+            //         title: 'Терминалы',
+            //         icon: 'IconTerminals',
+            //         href: 'home'
+            //     },
+            //     {
+            //         title: 'Операторы',
+            //         icon: 'IconUsers',
+            //         href: 'home'
+            //     },
+            //     {
+            //         title: 'Статистика',
+            //         icon: 'IconStat',
+            //         href: 'home'
+            //     }
+            // ]
         }
     },
     computed: {
-        ...mapState(['isAsideActive'])
+        ...mapState(['isAsideActive']),
+        links() {
+            return linksOperator
+        }
     },
     methods: {
         ...mapMutations(['TOGGLE_ASIDE_ACTIVE'])
@@ -135,8 +137,6 @@ export default {
             transition-delay: 0s;
             &-text {
                 opacity: 1;
-                //transition-property: opacity;
-                //transition-delay: 0.3s;
             }
 
         }
@@ -149,48 +149,4 @@ export default {
 
     }
 }
-
-//#Sidebar {
-//  padding: 30px;
-//  left: 0;
-//  width: 100px;
-//  height: 100vh;
-//  background-color: #ffffff;
-//  box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);
-//  display: flex;
-//  flex-direction: column;
-//  justify-content: space-between;
-//  align-items: center;
-//  transition: all ease .5s;
-//  overflow: hidden;
-//  .buttons_top{
-//    display: flex;
-//    flex-direction: column;
-//    align-items: center;
-//    justify-content: center;
-//  }
-//  .buttons_bottom{
-//      cursor: pointer;
-//      padding: 10px;
-//  }
-//  .buttons_bottom:hover{
-//    border-radius: 10px;
-//    background-color: #f1eef5 !important;
-//  }
-//
-//}
-//#Sidebar.active{
-//  width: 200px;
-//  padding: 30px 20px;
-//  .sidebarLink-title {
-//    display: block;
-//    width: 100%;
-//    opacity: 1;
-//    margin: 5px 12px;
-//
-//  }
-//  .buttons_top{
-//    align-items: flex-start
-//  }
-//}
 </style>

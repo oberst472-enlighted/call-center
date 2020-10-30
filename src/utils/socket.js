@@ -105,7 +105,7 @@ export default {
 
       // ОТПРАВКА СООБЩЕНИЯ
       this.socket.on('message', (message) => {
-        console.log('Client received message:', message);
+        console.log('Client received alert:', message);
         if (message.type === 'offer') {
           this.pc.setRemoteDescription(new RTCSessionDescription(message)).then(() => {
             console.log('remote desc set');

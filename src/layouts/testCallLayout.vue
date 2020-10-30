@@ -98,7 +98,7 @@
           this.socket.emit('calling')
         });
         this.socket.on('message', m => {
-          console.log('message from operator: ', m)
+          console.log('alert from operator: ', m)
           if (m === 'receiverReadyToCall'){
             this.pc.createOffer({offerToReceiveVideo: 1,})
               .then(this.createdOffer)

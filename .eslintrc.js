@@ -122,7 +122,7 @@ module.exports = {
         'eol-last': ['error', 'always'],
         'array-element-newline': ['error', 'consistent'],
         // 'camelcase': ['error', {properties: 'always'}],
-        'comma-dangle': ['error', 'never'],
+        'comma-dangle': ['error', 'only-multiline'],
         'func-call-spacing': ['error', 'never'],
         'function-paren-newline': ['error', 'never'],
         'comma-spacing': ['error', {before: false, after: true }],

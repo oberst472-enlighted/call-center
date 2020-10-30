@@ -36,6 +36,10 @@
             textPosition: {
                 type: String,
                 default: 'right'
+            },
+            disabled: {
+                type: Boolean,
+                default: false
             }
         },
         data() {
@@ -45,7 +49,8 @@
         computed: {
             classes() {
                 return {
-                    [`ui-checkbox--text-position-${this.textPosition}`]: true
+                    [`ui-checkbox--text-position-${this.textPosition}`]: true,
+                    [`ui-checkbox--disabled`]: this.disabled
                 }
             }
         }
@@ -55,6 +60,7 @@
 <style scoped lang="scss">
     .ui-checkbox {
         font-family: $family--default;
+        transition-duration: 0.3s;
         &:hover {
             .ui-checkbox__label-text {
                 color: $color--positive
@@ -133,6 +139,10 @@
                     flex-direction: row-reverse;
                 }
             }
+        }
+        &--disabled {
+            opacity: 0.3;
+            pointer-events: none;
         }
     }
 </style>

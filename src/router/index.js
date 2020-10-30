@@ -21,22 +21,45 @@ export default new VueRouter({
         // },
         {
             path: '',
-            component: require('../layouts/login').default,
+            component: require('@/layouts/login/').default,
             children: [
                 {
                     path: '/login',
                     name: 'login',
                     components: {
-                        default: require('../pages/login').default
+                        default: require('@/pages/login').default
                     }
                 },
                 {
                     path: '/reset-password',
                     name: 'resetPassword',
                     components: {
-                        default: require('../pages/reset-password').default
+                        default: require('@/pages/reset-password').default
                     }
                 }
+            ]
+        },
+        {
+            path: '',
+            component: require('@/layouts/operator/default/').default,
+            children: [
+                {
+                    path: '/home',
+                    name: 'home',
+                    components: {
+                        default: require('@/pages/operator/dashboard').default,
+                        header: require('@/components/sections/header-operator/').default,
+                        aside: require('@/components/sections/aside/').default,
+                    }
+                }
+                // },
+                // {
+                //     path: '/reset-password',
+                //     name: 'resetPassword',
+                //     components: {
+                //         default: require('@/pages/reset-password').default
+                //     }
+                // }
             ]
         },
         // {
@@ -178,10 +201,10 @@ export default new VueRouter({
         //     children: [
         //         {
         //             path: '/supervisor/dashboard/',
-        //             name: 'home-supervisor',
+        //             name: 'dashboard-supervisor',
         //             components: {
-        //                 header: require('@/components/sections/header/supervisor/home').default,
-        //                 default: require('@/pages/supervisor/home').default
+        //                 header: require('@/components/sections/header/supervisor/dashboard').default,
+        //                 default: require('@/pages/supervisor/dashboard').default
         //             }
         //         },
         //         {
@@ -404,7 +427,7 @@ export default new VueRouter({
 //       gotForward: false,
 //       middleware: [user]
 //     },
-//     component: () => import('../pages/admin/home/')
+//     component: () => import('../pages/admin/dashboard/')
 //   },
 //   {
 //     path: '/profile',

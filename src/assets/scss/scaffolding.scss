@@ -11,6 +11,12 @@ body {
     background-image: linear-gradient(180deg, #fafafc 0%, #e5e7f4 100%);
 }
 
+.wrapper {
+    width: 100%;
+    max-width: 904px;
+    margin: 0 auto;
+}
+
 //Basic change hr
 hr{
     border: none;

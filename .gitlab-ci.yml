@@ -14,4 +14,4 @@ deploy:
         - zip -r $CI_COMMIT_REF_SLUG.zip $CI_COMMIT_REF_SLUG/
         - scp $CI_COMMIT_REF_SLUG.zip dashboard@calls-dev.enlighted.ru:/var/www/call/dashboard/ && rm -rf $CI_COMMIT_REF_SLUG.zip
         - ssh dashboard@calls-dev.enlighted.ru "cd /var/www/call/dashboard/ && rm -rf $CI_COMMIT_REF_SLUG && unzip $CI_COMMIT_REF_SLUG.zip && rm -rf $CI_COMMIT_REF_SLUG.zip"
-#      - sh /home/gitlab-runner/tg.sh "<b>RZD Call-Manager</b> обновлен"
+#      - sh /dashboard/gitlab-runner/tg.sh "<b>RZD Call-Manager</b> обновлен"

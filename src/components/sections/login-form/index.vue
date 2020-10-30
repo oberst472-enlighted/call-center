@@ -1,16 +1,20 @@
 <template>
     <form class="section-login" @submit.prevent="send">
-        <div class="section-login__header">
-            <img alt="logo" class="section-login__logo" src="@/assets/icons/Chat.svg">
-            <div class="section-login__text">
-                <span class="section-login__text-top">Вход в колл-центр</span>
-                <span class="section-login__text-bottom">Введите свои данные</span>
-            </div>
+        <div class="section-login__header-box">
+            <BlockFormHeader
+                title="Вход в колл-центр"
+                subtitle="Введите свои данные"
+            />
         </div>
 
         <div class="section-login__body">
             <transition name="fade">
-                <span v-if="isError" class="section-login__error-text">Такого пользователя нет <br> или данные введены не корректно</span>
+                <span
+                    v-if="isError"
+                    class="section-login__error-text"
+                >
+                    Такого пользователя нет <br> или данные введены не корректно
+                </span>
             </transition>
 
             <div class="section-login__inp-box">
@@ -38,6 +42,7 @@
                 <UiCheckbox
                     v-model="rememberMe"
                     :checked="rememberMe"
+                    :disabled="!isFormFilled && !rememberMe"
                 >
                     Запомнить меня
                 </UiCheckbox>
@@ -48,17 +53,20 @@
             </div>
 
             <div class="section-login__send-pass-box">
-                <UiLink @click="$router.push('restore-pass')">Забыл пароль?</UiLink>
+                <UiLink @click="$router.push({name: 'resetPassword'})">Забыл пароль?</UiLink>
             </div>
         </div>
     </form>
 </template>
 
 <script>
+import BlockFormHeader from '@/components/blocks/form-header'
 import {mapActions} from 'vuex'
 
 export default {
-    components: {},
+    components: {
+        BlockFormHeader
+    },
     data() {
         return {
             form: {
@@ -86,37 +94,54 @@ export default {
     methods: {
         ...mapActions('login', ['stLogin']),
         ...mapActions('users', ['stGetUserById']),
+        ...mapActions('alerts', ['showAlert']),
         async send() {
             if (!this.isLoading) {
-                if (this.isFormFilled) {
-                    this.isError = false
-                    this.isLoading = true
-                    const response = await this.stLogin(this.form)
-                    if (response.isSuccess) {
-                        this.saveInfoOnStorage(response.response.data)
-                        this.isLoading = false
+                try {
+                    if (this.isFormFilled) {
+                        this.isError = false
+                        this.isLoading = true
+                        const response = await this.stLogin(this.form)
+                        if (response.isSuccess) {
+                            this.saveInfoOnStorage(response.response.data)
 
+                        } else {
+                            this.isError = true
+                        }
                     } else {
-                        this.isError = true
-                        this.isLoading = false
+                        this.showEmptyErrors()
+                        console.error('Одно или несколько полей формы пусты')
                     }
-                } else {
-                    //логика если поля пустые
-                    this.showEmptyErrors()
+                } catch {
+                    this.showAlert(['negative', 'Возник системный сбой, перезагрузите страницу и повторите операцию!'])
+                    console.error('Системный сбой')
+                } finally {
                     this.isLoading = false
-                    console.error('Одно или несколько полей формы пусты')
                 }
             }
 
         },
         saveInfoOnStorage(payload) {
-            console.log(payload)
+            const storage = this.rememberMe ? localStorage : sessionStorage
+            localStorage.deleteItem('token')
+            localStorage.deleteItem('userInfo')
+
+            sessionStorage.deleteItem('token')
+            sessionStorage.deleteItem('userInfo')
+
+            storage.setItem('token', payload.token)
+            storage.setItem('userInfo', JSON.stringify(payload.user))
 
         },
         toggleSaveLoginAndPasswordInStorage(val) {
-            val ?
-                localStorage.setItem('userData', JSON.stringify(this.form)) :
+            if (this.rememberMe) {
+                val ?
+                    localStorage.setItem('userData', JSON.stringify(this.form)) :
+                    localStorage.removeItem('userData')
+            }
+            else {
                 localStorage.removeItem('userData')
+            }
         },
         showEmptyErrors() {
             if (!this.form.username.length) {
@@ -157,35 +182,12 @@ export default {
 }
 </script>
 
-<style lang='scss'>
+<style lang='scss' scoped>
 .section-login {
     background-color: #fff;
 
-    &__header {
-        display: flex;
+    &__header-box {
         margin-top: 10px;
-    }
-
-    &__logo {
-        width: 62px;
-        margin-right: 20px;
-    }
-
-    &__text {
-        display: flex;
-        flex-direction: column;
-
-        &-top {
-            font-size: 17px;
-            color: #362b4f;
-            font-weight: 400;
-        }
-
-        &-bottom {
-            font-size: 15px;
-            color: #cfcbd5;
-            font-weight: 400;
-        }
     }
 
     &__body {
@@ -223,7 +225,7 @@ export default {
 
     &__send-pass-box {
         width: 100%;
-        margin-top: $gutter + 20px;
+        margin-top: $gutter + 10px;
         text-align: center;
     }
 

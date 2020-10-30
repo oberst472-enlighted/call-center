@@ -4,6 +4,7 @@ import callLogic from './callLogic';
 import popup from './popup';
 import apiRequest from '../utils/apiRequest';
 import login from './modules/login';
+import alerts from './modules/alerts';
 import users from './modules/users';
 import stat from './modules/stat';
 import calls from './modules/calls';
@@ -18,11 +19,15 @@ export default new Vuex.Store({
         userStatus: null,
         isActiveWorkShift: false,
         userData: null,
-        callsOperator: null
+        callsOperator: null,
+        isAsideActive: false
     },
     mutations: {
         TOGGLE_BG_ACTIVE(state, payload = true) {
             state.isBgActive = payload;
+        },
+        TOGGLE_ASIDE_ACTIVE(state, payload = true) {
+            state.isAsideActive = payload;
         },
         incrementTime(state) {
             state.totalTime += 1;
@@ -204,6 +209,7 @@ export default new Vuex.Store({
         callLogic,
         popup,
         login,
+        alerts,
         users,
         stat,
         calls

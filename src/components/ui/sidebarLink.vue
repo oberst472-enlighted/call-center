@@ -1,28 +1,27 @@
 <template>
-  <div
-          class="sidebarLink"
-          :class="{active : isRouteActive}"
-          @click="$router.push(`/${link}`)"
-  >
-    <img
+    <div
+        class="sidebarLink"
+        :class="{active : isRouteActive}"
+        @click="$router.push(`/${link}`)"
+    >
+        <img
             alt="" class="sidebarLink-icon"
             :src="require(`../../assets/icons/${src}`)"
             @click="$router.push(`/${link}`)"
-    >
-    <div class="sidebarLink-title">{{title}}</div>
-  </div>
-
+        >
+        <div class="sidebarLink-title">{{ title }}</div>
+    </div>
 </template>
 
 <script>
   export default {
-    name: "sidebarLink",
+    name: 'sidebarLink',
     props: {
       src: String,
       title: String,
       link: String,
     },
-    computed:{
+    computed: {
       isRouteActive() {
         return this.$route.name === this.link
       }

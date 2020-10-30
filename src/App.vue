@@ -1,6 +1,9 @@
 <template>
     <div id="app">
         <SectionBg v-if="isBgActive"/>
+
+        <UiAlert/>
+
         <router-view/>
     </div>
 </template>
@@ -68,9 +71,4 @@ export default {
 </script>
 <style lang="scss">
 
-#app {
-    display: flex;
-    width: 100vw;
-    min-height: 100vh;
-}
 </style>

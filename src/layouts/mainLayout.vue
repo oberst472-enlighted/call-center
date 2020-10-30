@@ -170,7 +170,7 @@
 
         this.calling.pause();
 
-        // this.socket.emit('message', 'receiverReadyToCall');
+        // this.socket.emit('alert', 'receiverReadyToCall');
         this.maybeStart();
         this.$store.dispatch('callLogic/startSpeech')
       },
@@ -305,7 +305,7 @@
       },
       setLocalAndSendMessage(sessionDescription) {
         this.pc.setLocalDescription(sessionDescription);
-        console.log('setLocalAndSendMessage sending message', sessionDescription);
+        console.log('setLocalAndSendMessage sending alert', sessionDescription);
         this.sendMessage(sessionDescription);
       },
       onCreateSessionDescriptionError(error) {

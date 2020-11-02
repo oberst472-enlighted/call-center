@@ -10,26 +10,26 @@
 export default {}
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .section-aside__logo {
-    width: 100%;
     display: flex;
     align-items: center;
+    width: 100%;
+
     &-icon {
         position: relative;
         left: -10px;
         transition-duration: 0.3s;
-        //width: 36px;
-        //transform: scale(1.4);
     }
+
     &-text {
-        opacity: 0;
         margin-left: 15px;
-        font-weight: 700;
         font-size: 15px;
         color: $color--primary;
-       white-space: nowrap;
+        font-weight: 700;
+        opacity: 0;
         transition-duration: 0.3s;
+        white-space: nowrap;
 
     }
 }

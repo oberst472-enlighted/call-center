@@ -118,6 +118,7 @@ export default {
 <style lang='scss'>
 .section-reset-password {
     background-color: #fff;
+    padding: $gutter / 2;
 
     &__header-box {
         margin-top: 10px;

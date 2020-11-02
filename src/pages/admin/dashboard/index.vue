@@ -14,10 +14,7 @@
 
         <div class="page-home__terminals">
             <SectionBox>
-                Ожидание терминалов
-                lol
-                {{ isAdmin }}
-                {{ isAuth }}
+                админка
             </SectionBox>
         </div>
 
@@ -30,13 +27,13 @@
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!
                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!
-<!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
-<!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
-<!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
-<!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
-<!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
-<!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
-<!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
+                    <!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
+                    <!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
+                    <!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
+                    <!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
+                    <!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
+                    <!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
+                    <!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
                 </div>
             </SectionBox>
         </div>

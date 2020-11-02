@@ -70,5 +70,8 @@ export default {
 }
 </script>
 <style lang="scss">
-
+#app {
+    min-height: 100vh;
+    display: flex;
+}
 </style>

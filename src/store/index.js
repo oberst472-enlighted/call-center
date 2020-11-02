@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import callLogic from './callLogic';
 import popup from './popup';
 import apiRequest from '../utils/apiRequest';
+import middleware from './modules/middleware';
 import login from './modules/login';
 import alerts from './modules/alerts';
 import users from './modules/users';
@@ -208,6 +209,7 @@ export default new Vuex.Store({
     modules: {
         callLogic,
         popup,
+        middleware,
         login,
         alerts,
         users,

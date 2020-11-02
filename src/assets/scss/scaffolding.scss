@@ -12,8 +12,11 @@ body {
 }
 
 .wrapper {
+    display: flex;
     width: 100%;
     max-width: 904px;
+    padding: 0 15px;
+    box-sizing: border-box;
     margin: 0 auto;
 }
 

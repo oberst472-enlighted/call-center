@@ -1,6 +1,9 @@
 <template>
     <div class="page-login">
-        <SectionBox class="page-login__box">
+        <SectionBox
+            class="page-login__box"
+            gutters
+        >
             <SectionLoginForm/>
         </SectionBox>
     </div>

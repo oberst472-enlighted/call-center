@@ -61,7 +61,7 @@
 
 <script>
 import BlockFormHeader from '@/components/blocks/form-header'
-import {mapActions} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
     components: {
@@ -87,6 +87,7 @@ export default {
         }
     },
     computed: {
+        ...mapGetters('middleware', ['isAdmin', 'isAuth', 'isOperator', 'isAdmin']),
         isFormFilled() {
             return Boolean(this.form.username && this.form.password)
         }
@@ -101,9 +102,12 @@ export default {
                     if (this.isFormFilled) {
                         this.isError = false
                         this.isLoading = true
+
                         const response = await this.stLogin(this.form)
                         if (response.isSuccess) {
                             this.saveInfoOnStorage(response.response.data)
+
+                            this.goToAdminPanel()
 
                         } else {
                             this.isError = true
@@ -123,11 +127,12 @@ export default {
         },
         saveInfoOnStorage(payload) {
             const storage = this.rememberMe ? localStorage : sessionStorage
-            localStorage.deleteItem('token')
-            localStorage.deleteItem('userInfo')
 
-            sessionStorage.deleteItem('token')
-            sessionStorage.deleteItem('userInfo')
+            localStorage.removeItem('token')
+            localStorage.removeItem('userInfo')
+
+            sessionStorage.removeItem('token')
+            sessionStorage.removeItem('userInfo')
 
             storage.setItem('token', payload.token)
             storage.setItem('userInfo', JSON.stringify(payload.user))
@@ -149,6 +154,19 @@ export default {
             }
             if (!this.form.password.length) {
                 this.isPasswordEmpty = true
+            }
+        },
+        goToAdminPanel() {
+            if (this.isAuth) {
+                if (this.isAdmin) {
+                    this.$router.push({name: 'home-admin'})
+                }
+                else if (this.isOperator) {
+                    this.$router.push({name: 'home-operator'})
+                }
+            }
+            else {
+                console.error('Системный сбой')
             }
         }
     },
@@ -184,6 +202,7 @@ export default {
 
 <style lang='scss' scoped>
 .section-login {
+    padding: $gutter / 2;
     background-color: #fff;
 
     &__header-box {

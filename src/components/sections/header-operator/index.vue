@@ -1,81 +1,64 @@
 <template>
-    <div id="Header">
-        <div class="nav">
-            <div class="nav-left">
-                <forward v-if="$route.meta.gotForward"/>
+    <div class="section-header">
+        <div class="section-header__back-box" v-if="false">
+            <LocalHeaderBack/>
+        </div>
 
-                <div class="ui-toggle-box">
+        <transition name="fade" mode="out-in">
+            <div class="section-header__options" v-if="isActive" :key="'options'">
+                <div class="section-header__toggle-box">
                     <UiToggle/>
                 </div>
 
-                <div
-                    v-if="$store.state.isActiveWorkShift"
-                    class="time"
-                >
-                    {{ formatTime }}
+                <div class="section-header__timer-box">
+                    <LocalHeaderOperatorTimer/>
                 </div>
-                <UiBtn @click="pauseSession">начать смену</UiBtn>
+
+                <div class="section-header__btn-box">
+                    <UiBtn @click="isActive = false"
+                           theme="negative"
+                    >
+                        Завершить смену
+                    </UiBtn>
+                </div>
             </div>
 
-            <div class="nav-right"
-                 @click.stop="$store.dispatch('popup/setPopup', 'user')"
-            >
-                <div
-                    v-if="true"
-                    class="user"
+            <div class="section-header__start-btn-box" v-else :key="'start'">
+                <UiBtn @click="isActive = true"
+                       theme="positive"
                 >
-                    <div class="user-info">
-                        <div class="user-name">{{ userData.user.firstName }} {{ userData.user.lastName }}</div>
-                        <div v-if="$store.state.userStatus === 'admin'" class="user-operator">администратор</div>
-                        <div v-else class="user-operator">оператор # <span>{{ userData.user.number }}</span></div>
-                    </div>
-                    <div class="user-avatar">
-                        <img
-                            :src="userData.photo ? `https://calls-dev.enlighted.ru${userData.photo}` : require('@/assets/icons/User.svg')"
-                            alt=""
-                        >
-                    </div>
-                </div>
-                <div
-                    :class="{active : $store.state.popup.popupActive === `user`}"
-                    class="popup"
-                >
-                    <div class="popup-item" @click="logOut">Выйти</div>
-                    <template v-if="userData">
-                        <div v-if="userData.user.userType === 'OPERATOR'" class="popup-item" @click="onEditProfileClick">
-                            Редактировать
-                        </div>
-                    </template>
-                </div>
+                    Начать смену
+                </UiBtn>
             </div>
+        </transition>
+
+        <div class="section-header__user-box">
+            <LocalHeaderOperatorUSer/>
         </div>
     </div>
 </template>
 
 <script>
-import forward from '@/components/ui/forward'
+import LocalHeaderBack from './header-operator-back'
+import LocalHeaderOperatorTimer from './header-operator-timer'
+import LocalHeaderOperatorUSer from './header-operator-user'
 import apiRequest from '@/utils/apiRequest'
 
 export default {
-    components: {forward},
+    components: {
+        LocalHeaderBack,
+        LocalHeaderOperatorTimer,
+        LocalHeaderOperatorUSer
+    },
     data() {
         return {
+            isActive: false,
             activeMod: 'online'
         }
     },
     computed: {
         userData() {
             return this.$store.state.userData
-        },
-        formatTime() {
-            let pad = function(num, size) {
-                return ('000' + num).slice(size * -1)
-            }
-            let time = parseFloat(this.$store.state.totalTime).toFixed(3)
-            let hours = Math.floor(time / 60 / 60)
-            let minutes = Math.floor(time / 60) % 60
-            let seconds = Math.floor(time - minutes * 60)
-            return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2)
         },
         workStatus() {
             return this.$store.state.workStatus
@@ -134,9 +117,40 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-.ui-toggle-box {
+.lol-enter-active, .lol-leave-active {
+    transition: opacity 0.3s;
+}
+.lol-enter, .lol-leave-to {
+    opacity: 0;
+}
+.section-header {
+    display: flex;
     width: 100%;
-    max-width: 150px;
+    min-height: 84px;
+    align-items: center;
+    padding: 15px 0;
+    &__options {
+        display: flex;
+        align-items: center;
+    }
+    &__toggle-box {
+        max-width: 200px;
+        width: 100%;
+        margin-right: 18px;
+        flex-shrink: 0;
+    }
+    &__timer-box {
+        margin-right: 18px;
+        flex-shrink: 0;
+    }
+    &__btn-box {
+        //min-width: 150px;
+    }
+    &__user-box {
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
 }
 #Header {
     width: 100%;
@@ -237,16 +251,6 @@ export default {
         &-avatar {
             margin-left: 5px;
         }
-    }
-
-
-    .time {
-        width: 115px;
-        margin: 0 18px;
-        font-size: 20px;
-        color: #4c3b60;
-        font-weight: 400;
-        text-align: center;
     }
 
     .close-session {

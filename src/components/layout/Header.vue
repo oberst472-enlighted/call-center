@@ -159,7 +159,7 @@
   }
 </script>
 
-<style lang='scss'>
+<style lang='scss' scoped>
 #Header{
   min-height: 83px;
   width: 100%;

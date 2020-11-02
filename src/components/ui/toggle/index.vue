@@ -41,6 +41,7 @@ export default {
 
 <style lang="scss" scoped>
 .ui-toggle {
+    width: 100%;
     position: relative;
     display: flex;
     height: 33px;

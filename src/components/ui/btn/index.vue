@@ -1,9 +1,7 @@
-<!--suppress SassScssResolvedByNameOnly -->
 <template>
     <div :class="btnClasses" class="ui-btn">
         <component
             :class="btnItemClasses"
-            :style="btnStyles"
             :href="href"
             :is="tag"
             :target="href ? '_blank' : ''"
@@ -17,13 +15,6 @@
                 <slot/>
             </span>
         </component>
-        <transition name="fade">
-            <span class="ui-btn__confirm" v-if="confirm && isConfirmActive">
-                <span class="ui-btn__confirm-text">{{ confirm }}</span>
-                <span @click="confirmYes" class="ui-btn__confirm-btn">Да</span>
-                <span @click="confirmNo" class="ui-btn__confirm-btn">Нет</span>
-            </span>
-        </transition>
     </div>
 </template>
 
@@ -54,14 +45,6 @@
                 type: Object,
                 default: null
             },
-            confirm: {
-                type: String,
-                default: ''
-            },
-            confirmPosition: {
-                type: String,
-                default: 'bottom'
-            },
             icon: {
                 type: String,
                 default: ''
@@ -70,14 +53,9 @@
                 type: Boolean,
                 default: false
             },
-            styles: {
-                type: Object,
-                default: () => null
-            }
         },
         data() {
             return {
-                isConfirmActive: false
             }
         },
         computed: {
@@ -92,20 +70,7 @@
             },
             btnClasses() {
                 return {
-                    'ui-btn--confirm-active': this.isConfirmActive,
-                    [`ui-btn--confirm-position-${this.confirmPosition}`]: true,
                     [`ui-btn--size-${this.size}`]: true
-                }
-            },
-            btnStyles() {
-                if (this.styles) {
-                    return [
-                        {'background-color': this.styles.btn_bg_color},
-                        {color: this.styles.btn_text_color}
-                    ]
-                }
-                else {
-                    return ''
                 }
             },
             tag() {
@@ -120,15 +85,8 @@
         },
         methods: {
             click() {
-                !this.confirm ? this.$emit('click') : this.isConfirmActive = true
+               this.$emit('click')
             },
-            confirmYes() {
-                this.$emit('click')
-                this.isConfirmActive = false
-            },
-            confirmNo() {
-                this.isConfirmActive = false
-            }
         }
     }
 </script>
@@ -159,6 +117,7 @@
             -webkit-tap-highlight-color: transparent;
 
             &-value {
+                white-space: nowrap;
                 letter-spacing: 0.03em;
                 width: 100%;
                 display: flex;
@@ -227,18 +186,6 @@
                     }
                 }
 
-                &-accent {
-                    color: #ffffff;
-                    background-color: $color--positive;
-
-                    &:hover {
-                        background-color: #BF65A8;
-                    }
-                    &:active {
-                        transition-duration: 0s;
-                        background-color: #AB5096;
-                    }
-                }
             }
 
             &--disabled {
@@ -305,81 +252,8 @@
             }
         }
 
-        &__confirm {
-            position: absolute;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: flex-start;
-            min-width: 150px;
-            padding: $gutter / 2;
-            font-size: 14px;
-            color: $color--text-invert;
-            border-radius: 5px;
-            background-color: lighten($color--primary, 10%);
-
-
-            &-text {
-                width: 100%;
-                margin-bottom: 10px;
-                text-align: center;
-                font-size: 12px;
-            }
-
-            &-btn {
-                box-sizing: border-box;
-                width: 45%;
-                padding: 5px;
-                border-radius: 5px;
-                background-color: $color--primary;
-                cursor: pointer;
-                user-select: none;
-                transition: background-color 0.3s ease;
-                text-align: center;
-                font-size: 12px;
-
-                &:hover {
-                    background-color: darken($color--primary, 15%);
-                }
-
-                &:active {
-                    opacity: 0.6;
-                }
-            }
-
-            &:before {
-                content: '';
-                position: absolute;
-                width: 10px;
-                height: 10px;
-                background-color: lighten($color--primary, 10%);
-            }
-        }
 
         &--size {
-            &-large {
-                width: 100%;
-                min-width: 100px;
-                height: 33px;
-                font-size: 14px;
-
-                .ui-btn__item {
-                    padding: 0;
-                }
-
-                .ui-btn__item-loading {
-                    width: 20px;
-                    height: 20px;
-                    border-width: 3px;
-
-                    &:before {
-                        width: 4px;
-                        height: 4px;
-                        border: 3px solid currentColor;
-                    }
-                }
-            }
-
             &-medium {
                 width: auto;
                 min-width: 75px;
@@ -403,118 +277,8 @@
                     }
                 }
             }
-
-            &-small {
-                min-width: 60px;
-                min-height: 33px;
-                font-size: 10px;
-
-                .ui-btn__item {
-                    padding: 5px $gutter / 3;
-                }
-
-                .ui-btn__item-loading {
-                    width: 12px;
-                    height: 12px;
-                    border-width: 2px;
-
-                    &:before {
-                        width: 2px;
-                        height: 2px;
-                        border: 2px solid currentColor;
-                    }
-                }
-            }
-            &-mini {
-                min-width: 60px;
-                min-height: 25px;
-                font-size: 12px;
-
-                .ui-btn__item {
-                    padding: 5px $gutter / 3;
-                }
-                .ui-btn__item-value {
-                    font-size: 12px;
-                }
-
-                .ui-btn__item-loading {
-                    width: 12px;
-                    height: 12px;
-                    border-width: 2px;
-
-                    &:before {
-                        width: 2px;
-                        height: 2px;
-                        border: 2px solid currentColor;
-                    }
-                }
-            }
-
-            &-mini {
-            }
         }
 
-        &--confirm {
-            &-active {
-                z-index: 3;
-            }
-
-            &-position-left {
-                .ui-btn__confirm {
-                    top: 50%;
-                    right: calc(100% + 10px);
-                    transform: translateY(-50%);
-
-                    &:before {
-                        top: 50%;
-                        right: -5px;
-                        transform: translateY(-50%) rotate(45deg);
-                    }
-                }
-            }
-
-            &-position-right {
-                .ui-btn__confirm {
-                    top: 50%;
-                    left: calc(100% + 10px);
-                    transform: translateY(-50%);
-
-                    &:before {
-                        top: 50%;
-                        left: -5px;
-                        transform: translateY(-50%) rotate(45deg);
-                    }
-                }
-            }
-
-            &-position-top {
-                .ui-btn__confirm {
-                    bottom: calc(100% + 10px);
-                    left: 50%;
-                    transform: translateX(-50%);
-
-                    &:before {
-                        bottom: -5px;
-                        left: 50%;
-                        transform: translateX(-50%) rotate(45deg);
-                    }
-                }
-            }
-
-            &-position-bottom {
-                .ui-btn__confirm {
-                    top: calc(100% + 10px);
-                    left: 50%;
-                    transform: translateX(-50%);
-
-                    &:before {
-                        top: -5px;
-                        left: 50%;
-                        transform: translateX(-50%) rotate(45deg);
-                    }
-                }
-            }
-        }
     }
 
     @keyframes spin {

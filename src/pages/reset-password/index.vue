@@ -1,6 +1,9 @@
 <template>
     <div class="page-reset-password">
-        <SectionBox class="page-reset-password__box">
+        <SectionBox
+            class="page-reset-password__box"
+            gutters
+        >
             <SectionResetPasswordForm/>
         </SectionBox>
     </div>

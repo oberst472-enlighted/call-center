@@ -2,11 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '../store'
 
-import middlewarePipeline from './middlewarePipeline'
-import guest from './middleware/guest'
-import user from './middleware/user'
-import admin from './middleware/admin'
-import operator from './middleware/operator'
 
 Vue.use(VueRouter)
 
@@ -45,9 +40,32 @@ export default new VueRouter({
             children: [
                 {
                     path: '/home',
-                    name: 'home',
+                    name: 'home-operator',
                     components: {
                         default: require('@/pages/operator/dashboard').default,
+                        header: require('@/components/sections/header-operator/').default,
+                        aside: require('@/components/sections/aside/').default,
+                    }
+                }
+                // },
+                // {
+                //     path: '/reset-password',
+                //     name: 'resetPassword',
+                //     components: {
+                //         default: require('@/pages/reset-password').default
+                //     }
+                // }
+            ]
+        },
+        {
+            path: '',
+            component: require('@/layouts/admin/default/').default,
+            children: [
+                {
+                    path: '/home',
+                    name: 'home-admin',
+                    components: {
+                        default: require('@/pages/admin/dashboard').default,
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
                     }

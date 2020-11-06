@@ -46,6 +46,15 @@ export default new VueRouter({
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
                     }
+                },
+                {
+                    path: '/test-call',
+                    name: 'test-call',
+                    components: {
+                        default: require('@/pages/operator/test-call').default,
+                        header: require('@/components/sections/header-operator/').default,
+                        aside: require('@/components/sections/aside/').default,
+                    }
                 }
                 // },
                 // {

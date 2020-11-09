@@ -8,7 +8,8 @@ module.exports = {
     types.forEach(type => addStyleResource(config.module.rule('scss').oneOf(type)))
   },
     devServer: {
-        proxy: url
+        proxy: url,
+        https: true
     }
 };
 

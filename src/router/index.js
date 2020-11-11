@@ -55,6 +55,9 @@ export default new VueRouter({
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
                     }
+                    // components: {
+                    //     default: require('@/layouts/testCallLayout').default,
+                    // }
                 }
                 // },
                 // {

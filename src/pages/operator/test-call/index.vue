@@ -102,6 +102,8 @@ export default {
 
                 if (isCallAnsweredEvent) {
                     console.info(`оператор снял трубку: id звонка ${info.call_id}`)
+
+                    //шлем запрос к терминалу на открытие webRTC соединения
                 }
 
                 if (isMessageEvent) {

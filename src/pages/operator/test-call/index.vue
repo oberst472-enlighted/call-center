@@ -1,12 +1,13 @@
 <template>
     <div class="test-call-page">
         <div class="test-call-page__video-wrapper">
-            <video id="localVideo" ref="localVideo" autoplay class="test-call-page__video" muted playsinline></video>
-            <video id="remoteVideo" ref="remoteVideo" autoplay class="test-call-page__video" playsinline></video>
+            <video id="localVideo" ref="userVideo" autoplay class="test-call-page__video" muted playsinline></video>
+            <video id="remoteVideo" ref="partnerVideo" autoplay class="test-call-page__video" playsinline></video>
         </div>
 
         <div>
             <uiBtn @click="pickUpThePhone">Ответить на звонок</uiBtn>
+            <uiBtn @click="testClick">TestBtn</uiBtn>
         </div>
 
         <!--        <div v-if="isBtnsPanelActive">-->
@@ -30,13 +31,32 @@ export default {
             socket: null,
             isSocketOpen: false,
 
-            callID: ''
+            peer: null,
+
+            userStream: '',
+
+            options: {audio: true, video: true},
+
+            callID: '',
+            clientChannel: '',
+            constraints: {
+                iceServers: [
+                    { url: 'stun:stun1.l.google.com:19302' },
+                    { url: 'stun:stun2.l.google.com:19302' },
+                    { url: 'stun:stun3.l.google.com:19302' },
+                    {
+                        url: 'turn:coturn.sverstal.ru:3478',
+                        username: 'tab1',
+                        credential: '123456',
+                    },
+                ],
+            },
             // callCenterId: '5f119d7ee6b5a61d04e7cba9'
         }
     },
     methods: {
         socketConnect() {
-            const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6Im9wZXJhdG9yIiwiZXhwIjoxNjA1MTYyNzQ0LCJlbWFpbCI6bnVsbCwib3JpZ19pYXQiOjE2MDUwNzYzNDR9.xTDeA8CukaQKMCnVE_kdc4tpj80Fwj64buY-A33gM_s'
+            const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6Im9wZXJhdG9yIiwiZXhwIjoxNjA1NTkyNzM1LCJlbWFpbCI6bnVsbCwib3JpZ19pYXQiOjE2MDU1MDYzMzV9.Oa4pgwi1mXp-OsBukEtNWkugsHjlCWXR3S_blmfoAzM'
             const callCenterId = 'Q2FsbENlbnRlcjox'
             const type = 'operator'
             const url = `wss://vc-dev.enlighted.ru/ws/call-center-channel/${callCenterId}/?type=${type}&token=${token}`
@@ -94,38 +114,105 @@ export default {
             const isCallAnsweredEvent = eventName === 'call_answered' //оператор поднял трубку
             const isMessageEvent = eventName === 'message' // пришло сообщение от терминала
 
-            if (data.type === 'message') {
-                if (isIncomingCallEvent) {
-                    console.info(`идет запрос на звонок от терминала, id звонка: ${info.call_id}`)
-                    this.callID = info.call_id
+            console.log(eventName)
+            console.log(info)
+
+            if (isIncomingCallEvent) {
+                console.info(`идет запрос на звонок от терминала, id звонка: ${info.call_id}`)
+                this.callID = info.call_id
+            }
+
+            if (isCallAnsweredEvent) {
+                console.info(`оператор снял трубку: id звонка ${info.call_id}`)
+                //шлем запрос к терминалу на открытие webRTC соединения
+            }
+
+            if (isMessageEvent) {
+                this.clientChannel = info.from
+                const messageData = info.message_data
+                const data = messageData.data
+
+                const isIceCandidateEvent = messageData.event === 'ice-candidate'
+                const isOfferEvent = messageData.event === 'offer' //получение офера с терминала
+
+
+                console.info(`пришло сообщение от терминала`)
+
+                if (isIceCandidateEvent) {
+                    console.info(`пришел евент ICE-CANDIDATE от терминала`)
+                    console.info(data)
+
+                    const candidate = new RTCIceCandidate(data);
+
+                    this.peer.addIceCandidate(candidate)
+                        .catch(e => console.log(e));
+
                 }
 
-                if (isCallAnsweredEvent) {
-                    console.info(`оператор снял трубку: id звонка ${info.call_id}`)
+                if (isOfferEvent) {
+                    console.info(`пришел евент OFFER от терминала`)
+                    console.info(data)
+                    // this._callUser()
+                    this._createAnswer(data)
 
-                    //шлем запрос к терминалу на открытие webRTC соединения
+                    // this._handleNewICECandidateMsg()
                 }
-
-                if (isMessageEvent) {
-                    // eslint-disable-next-line no-unused-vars
-                    const {from: clientChannel, message_data: messageData} = info
-                    console.info(`пришло сообщение от терминала с id канала: ${clientChannel} на установку webRTC`)
-
-                    setTimeout(() => {
-                        const data = {
-                            to: clientChannel,
-                            message_data: {
-                                lol: 'test-operator'
-                            }
-                        }
-                        this.sendMessage('message_to', data)
-                    }, 3000);
-                }
-
 
             }
-            else {
-                console.info('data.type !== message')
+        },
+
+        async _mediaStream() {
+            const stream = await navigator.mediaDevices.getUserMedia(this.options)
+
+            this.$refs.userVideo.srcObject = stream
+            this.userStream = stream
+        },
+
+        async _createAnswer(payload) {
+            console.log('начинаем формировать ANSWER')
+            console.log(payload.sdp)
+            await this._mediaStream()
+            this._createPeer();
+            const desc = new RTCSessionDescription(payload.sdp);
+            await this.peer.setRemoteDescription(desc)
+            this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream))
+            const answer = await this.peer.createAnswer()
+            await this.peer.setLocalDescription(answer)
+
+
+            const pay = {
+                sdp: this.peer.localDescription
+            }
+            const data = {
+                to: this.clientChannel,
+                message_data: {
+                    event: 'answer',
+                    data: pay
+                }
+            }
+            console.log(data)
+            this.sendMessage('message_to', data)
+        },
+
+        _createPeer() {
+            this.peer = new RTCPeerConnection(this.constraints);
+            this.peer.onicecandidate = e => {
+                if (e.candidate) {
+                    console.log('отправляем ice кандидата терминалу')
+                    const payload = {
+                        event: 'ice-candidate',
+                        candidate: e.candidate,
+                    }
+                    this.sendMessage('message_to', payload)
+                }
+            }
+            this.peer.ontrack = e => {
+                if (e) {
+                    this.$refs.partnerVideo.srcObject = e.streams[0];
+                }
+                else {
+                    console.log('_handleTrackEvent не отработал, e пустой!!!')
+                }
             }
         },
 
@@ -141,6 +228,21 @@ export default {
                 data
             }
             this.socket.send(this.getStringFromJson(payload))
+        },
+        testClick() {
+            const payload = {
+                // caller: socketRef.current.id,
+                sdp: 'answer!!!'
+            }
+            const data = {
+                to: this.clientChannel,
+                message_data: {
+                    event: 'answer',
+                    data: payload
+                }
+            }
+            console.log(data)
+            this.sendMessage('message_to', data)
         }
     },
 

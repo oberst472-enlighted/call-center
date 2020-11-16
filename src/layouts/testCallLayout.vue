@@ -1,20 +1,20 @@
 <template>
-  <div class="test-call-page">
-    <div class="test-call-page__video-wrapper">
-      <video class="test-call-page__video" id="localVideo" ref="localVideo" muted autoplay playsinline></video>
-      <video class="test-call-page__video" id="remoteVideo" ref="remoteVideo" autoplay playsinline></video>
+    <div class="test-call-page">
+        <div class="test-call-page__video-wrapper">
+            <video class="test-call-page__video" id="localVideo" ref="localVideo" muted autoplay playsinline></video>
+            <video class="test-call-page__video" id="remoteVideo" ref="remoteVideo" autoplay playsinline></video>
+        </div>
+        <template v-if="callingSessionActive">
+            <button class="test-call-page__call-btn" @click="onStopBtnClick">Stop</button>
+        </template>
+        <template v-else>
+            <div class="test-call-page__callcenter-wrapper">
+                <span>Callceter ID</span>
+                <input class="test-call-page__callcenter" v-model="callCenterId" type="text" placeholder="CallCenter ID">
+            </div>
+            <button class="test-call-page__call-btn" @click="onCallBtnClick">Call</button>
+        </template>
     </div>
-    <template v-if="callingSessionActive">
-      <button class="test-call-page__call-btn" @click="onStopBtnClick">Stop</button>
-    </template>
-    <template v-else>
-      <div class="test-call-page__callcenter-wrapper">
-        <span>Callceter ID</span>
-        <input class="test-call-page__callcenter" v-model="callCenterId" type="text" placeholder="CallCenter ID">
-      </div>
-      <button class="test-call-page__call-btn" @click="onCallBtnClick">Call</button>
-    </template>
-  </div>
 </template>
 
 <script>
@@ -35,7 +35,7 @@ export default {
       this.initSocket()
       this.setRTC()
       navigator.mediaDevices.getUserMedia({video: true, audio: true})
-          .then(this.gotStream).then(()=> {
+          .then(this.gotStream).then(() => {
         this.pc.addStream(this.localStream);
         this.socket.emit('entered', 'device_dev', 'client', this.callCenterId)
         this.callingSessionActive = true
@@ -61,14 +61,14 @@ export default {
     setRTC() {
 
       this.pc = new RTCPeerConnection({
-        'iceServers': [
-          { 'url':'stun:stun1.l.google.com:19302' },
-          { 'url':'stun:stun2.l.google.com:19302' },
-          { 'url':'stun:stun3.l.google.com:19302' },
+        iceServers: [
+          { url: 'stun:stun1.l.google.com:19302' },
+          { url: 'stun:stun2.l.google.com:19302' },
+          { url: 'stun:stun3.l.google.com:19302' },
           {
-            'url': 'turn:coturn.sverstal.ru:3478',
-            'username': 'tab1',
-            'credential': '123456',
+            url: 'turn:coturn.sverstal.ru:3478',
+            username: 'tab1',
+            credential: '123456',
           },
         ],
       });
@@ -85,13 +85,13 @@ export default {
           .then(() => {
             this.socket.emit('message', description)
             // setLocalDescriptionSuccess(localPeerConnection);
-          }).catch( e => {
+          }).catch(e => {
         console.log(e);
       });
     },
     initSocket() {
       this.socket = io.connect(baseAppUrl);
-      this.socket.on('has_operator', (roomId) => {
+      this.socket.on('has_operator', roomId => {
         console.log(roomId)
         console.log('has_operator')
         this.socket.emit('join', roomId, 'client');
@@ -100,12 +100,12 @@ export default {
       this.socket.on('message', m => {
         console.log('message from operator: ', m)
         if (m === 'receiverReadyToCall'){
-          this.pc.createOffer({offerToReceiveVideo: 1,})
+          this.pc.createOffer({offerToReceiveVideo: 1})
               .then(this.createdOffer)
         } else if (m.type === 'answer') {
           this.pc.setRemoteDescription(new RTCSessionDescription(m)).then(() => {
             console.log('remote desc set');
-          }, (err) => {
+          }, err => {
             console.log(err);
           });
         } else if (m.type === 'candidate') {
@@ -116,7 +116,7 @@ export default {
           // console.log('add ice candidate');
           this.pc.addIceCandidate(candidate).then(() => {
             // console.log('ice candidate added')
-          }, (err) => {
+          }, err => {
             // console.log('ice candidate err');
             console.log(err);
           });

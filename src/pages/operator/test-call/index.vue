@@ -104,7 +104,7 @@ export default {
             return JSON.stringify(payload)
         },
 
-        messageProcessing(data) {
+        async messageProcessing(data) {
             const payload = this.getJsonFromString(data.data)
 
             const info = payload.data
@@ -114,8 +114,6 @@ export default {
             const isCallAnsweredEvent = eventName === 'call_answered' //оператор поднял трубку
             const isMessageEvent = eventName === 'message' // пришло сообщение от терминала
 
-            console.log(eventName)
-            console.log(info)
 
             if (isIncomingCallEvent) {
                 console.info(`идет запрос на звонок от терминала, id звонка: ${info.call_id}`)
@@ -139,26 +137,26 @@ export default {
                 console.info(`пришло сообщение от терминала`)
 
                 if (isIceCandidateEvent) {
-                    console.info(`пришел евент ICE-CANDIDATE от терминала`)
-                    console.info(data)
-
-                    const candidate = new RTCIceCandidate(data);
-
-                    this.peer.addIceCandidate(candidate)
-                        .catch(e => console.log(e));
+                    // console.info(`пришел евент ICE-CANDIDATE от терминала`)
+                    await this._handleNewICECandidateMsg(data.candidate)
 
                 }
 
                 if (isOfferEvent) {
                     console.info(`пришел евент OFFER от терминала`)
-                    console.info(data)
-                    // this._callUser()
-                    this._createAnswer(data)
+                    await this._createAnswer(data)
 
                     // this._handleNewICECandidateMsg()
                 }
 
             }
+        },
+
+        async _handleNewICECandidateMsg(incoming) {
+            const candidate = await new RTCIceCandidate(incoming);
+            console.log(candidate)
+            this.peer.addIceCandidate(candidate)
+                .catch(e => console.log(e));
         },
 
         async _mediaStream() {
@@ -169,11 +167,9 @@ export default {
         },
 
         async _createAnswer(payload) {
-            console.log('начинаем формировать ANSWER')
-            console.log(payload.sdp)
             await this._mediaStream()
-            this._createPeer();
-            const desc = new RTCSessionDescription(payload.sdp);
+            await this._createPeer();
+            const desc = await new RTCSessionDescription(payload.sdp);
             await this.peer.setRemoteDescription(desc)
             this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream))
             const answer = await this.peer.createAnswer()
@@ -190,24 +186,36 @@ export default {
                     data: pay
                 }
             }
-            console.log(data)
             this.sendMessage('message_to', data)
         },
 
-        _createPeer() {
-            this.peer = new RTCPeerConnection(this.constraints);
+        async _createPeer() {
+            this.peer = await new RTCPeerConnection(this.constraints);
             this.peer.onicecandidate = e => {
                 if (e.candidate) {
                     console.log('отправляем ice кандидата терминалу')
+
                     const payload = {
                         event: 'ice-candidate',
                         candidate: e.candidate,
                     }
-                    this.sendMessage('message_to', payload)
+
+                    const data = {
+                        to: this.clientChannel,
+                        message_data: {
+                            event: 'ice-candidate',
+                            data: payload
+                        }
+                    }
+                    this.sendMessage('message_to', data)
                 }
             }
             this.peer.ontrack = e => {
+                console.log('-----------------------------')
+                console.log('отработал ontrack')
                 if (e) {
+                    console.log('загружаем видео в partner')
+                    console.log(e)
                     this.$refs.partnerVideo.srcObject = e.streams[0];
                 }
                 else {
@@ -241,7 +249,6 @@ export default {
                     data: payload
                 }
             }
-            console.log(data)
             this.sendMessage('message_to', data)
         }
     },

@@ -2,24 +2,13 @@
     <div class="test-call-page">
         <div class="test-call-page__video-wrapper">
             <video id="localVideo" ref="userVideo" autoplay class="test-call-page__video" muted playsinline></video>
-            <video id="remoteVideo" ref="partnerVideo" autoplay class="test-call-page__video" playsinline></video>
+            <video id="remoteVideo" ref="partnerVideo" autoplay class="test-call-page__video" muted></video>
         </div>
 
         <div>
             <uiBtn @click="pickUpThePhone">Ответить на звонок</uiBtn>
             <uiBtn @click="testClick">TestBtn</uiBtn>
         </div>
-
-        <!--        <div v-if="isBtnsPanelActive">-->
-        <!--            <button @click="callAnswer">Принять звонок</button>-->
-        <!--            <button @click="callAnswer">Отклонить звонок</button>-->
-        <!--        </div>-->
-
-
-        <!--        <div v-if="isCallStart">-->
-        <!--            <p>Идет звонок</p>-->
-        <!--            <button @click="callClose">Завершить звонок</button>-->
-        <!--        </div>-->
     </div>
 </template>
 
@@ -30,6 +19,7 @@ export default {
         return {
             socket: null,
             isSocketOpen: false,
+            lol: '',
 
             peer: null,
 
@@ -40,16 +30,24 @@ export default {
             callID: '',
             clientChannel: '',
             constraints: {
+                configuration: {
+                    offerToReceiveAudio: 1,
+                    offerToReceiveVideo: 1
+                },
                 iceServers: [
-                    { url: 'stun:stun1.l.google.com:19302' },
-                    { url: 'stun:stun2.l.google.com:19302' },
-                    { url: 'stun:stun3.l.google.com:19302' },
+                    {url: 'stun:stun1.l.google.com:19302'},
+                    {url: 'stun:stun2.l.google.com:19302'},
+                    {url: 'stun:stun3.l.google.com:19302'},
                     {
                         url: 'turn:coturn.sverstal.ru:3478',
                         username: 'tab1',
                         credential: '123456',
                     },
                 ],
+            },
+            offerOptions: {
+                offerToReceiveAudio: 1,
+                offerToReceiveVideo: 1
             },
             // callCenterId: '5f119d7ee6b5a61d04e7cba9'
         }
@@ -122,6 +120,7 @@ export default {
 
             if (isCallAnsweredEvent) {
                 console.info(`оператор снял трубку: id звонка ${info.call_id}`)
+                await this._mediaStream()
                 //шлем запрос к терминалу на открытие webRTC соединения
             }
 
@@ -134,16 +133,14 @@ export default {
                 const isOfferEvent = messageData.event === 'offer' //получение офера с терминала
 
 
-                console.info(`пришло сообщение от терминала`)
-
                 if (isIceCandidateEvent) {
-                    // console.info(`пришел евент ICE-CANDIDATE от терминала`)
                     await this._handleNewICECandidateMsg(data.candidate)
 
                 }
 
                 if (isOfferEvent) {
-                    console.info(`пришел евент OFFER от терминала`)
+                    // this.lol = data
+                    // console.log(6666)
                     await this._createAnswer(data)
 
                     // this._handleNewICECandidateMsg()
@@ -153,10 +150,9 @@ export default {
         },
 
         async _handleNewICECandidateMsg(incoming) {
-            const candidate = await new RTCIceCandidate(incoming);
-            console.log(candidate)
+            const candidate = await new RTCIceCandidate(incoming)
             this.peer.addIceCandidate(candidate)
-                .catch(e => console.log(e));
+                .catch(e => console.log(e))
         },
 
         async _mediaStream() {
@@ -164,65 +160,73 @@ export default {
 
             this.$refs.userVideo.srcObject = stream
             this.userStream = stream
+
+            await this._callUser()
         },
 
-        async _createAnswer(payload) {
-            await this._mediaStream()
-            await this._createPeer();
-            const desc = await new RTCSessionDescription(payload.sdp);
-            await this.peer.setRemoteDescription(desc)
-            this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream))
-            const answer = await this.peer.createAnswer()
-            await this.peer.setLocalDescription(answer)
-
-
-            const pay = {
-                sdp: this.peer.localDescription
-            }
-            const data = {
-                to: this.clientChannel,
-                message_data: {
-                    event: 'answer',
-                    data: pay
-                }
-            }
-            this.sendMessage('message_to', data)
+        async _callUser() {
+            await this._createPeer()
+            this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream));
         },
 
         async _createPeer() {
-            this.peer = await new RTCPeerConnection(this.constraints);
-            this.peer.onicecandidate = e => {
-                if (e.candidate) {
-                    console.log('отправляем ice кандидата терминалу')
+            this.peer = await new RTCPeerConnection(this.constraints)
 
-                    const payload = {
-                        event: 'ice-candidate',
-                        candidate: e.candidate,
-                    }
+            this.peer.onicecandidate = e => {
+                console.log('ONICECANDIDATE')
+                console.log(e.candidate)
+                if (e.candidate) {
 
                     const data = {
                         to: this.clientChannel,
                         message_data: {
                             event: 'ice-candidate',
-                            data: payload
+                            data: {
+                                event: 'ice-candidate',
+                                candidate: e.candidate,
+                            }
                         }
                     }
+
                     this.sendMessage('message_to', data)
                 }
             }
             this.peer.ontrack = e => {
-                console.log('-----------------------------')
                 console.log('отработал ontrack')
                 if (e) {
                     console.log('загружаем видео в partner')
-                    console.log(e)
-                    this.$refs.partnerVideo.srcObject = e.streams[0];
-                }
-                else {
-                    console.log('_handleTrackEvent не отработал, e пустой!!!')
+                    this.$refs.partnerVideo.srcObject = e.streams[0]
+                } else {
+                    console.log('ontrack не отработал, e пустой!!!')
                 }
             }
+            // this.peer.onnegotiationneeded = () => {
+            //     console.log(1234)
+            //     this._createAnswer(this.lol)
+            // }
         },
+
+        async _createAnswer(payload) {
+            console.log(payload)
+            // await this._mediaStream()
+            const desc = await new RTCSessionDescription(payload.sdp)
+            await this.peer.setRemoteDescription(desc)
+
+            const answer = await this.peer.createAnswer()
+            await this.peer.setLocalDescription(answer)
+            console.log(this.peer.localDescription)
+            const data = {
+                to: this.clientChannel,
+                message_data: {
+                    event: 'answer',
+                    data: {
+                        sdp: this.peer.localDescription
+                    }
+                }
+            }
+            this.sendMessage('message_to', data)
+        },
+
 
         pickUpThePhone() {
             const data = {
@@ -254,6 +258,7 @@ export default {
     },
 
     mounted() {
+        console.log(66)
         this.socketConnect()
     },
     beforeDestroy() {

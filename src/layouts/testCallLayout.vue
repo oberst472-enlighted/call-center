@@ -136,7 +136,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .test-call-page{
   &__video-wrapper{
     display: flex;

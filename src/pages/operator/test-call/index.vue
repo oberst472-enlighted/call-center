@@ -7,7 +7,6 @@
 
         <div>
             <uiBtn @click="pickUpThePhone">Ответить на звонок</uiBtn>
-            <uiBtn @click="testClick">TestBtn</uiBtn>
         </div>
     </div>
 </template>
@@ -120,8 +119,7 @@ export default {
 
             if (isCallAnsweredEvent) {
                 console.info(`оператор снял трубку: id звонка ${info.call_id}`)
-                await this._mediaStream()
-                //шлем запрос к терминалу на открытие webRTC соединения
+                // await this._mediaStream()
             }
 
             if (isMessageEvent) {
@@ -139,11 +137,7 @@ export default {
                 }
 
                 if (isOfferEvent) {
-                    // this.lol = data
-                    // console.log(6666)
                     await this._createAnswer(data)
-
-                    // this._handleNewICECandidateMsg()
                 }
 
             }
@@ -160,11 +154,13 @@ export default {
 
             this.$refs.userVideo.srcObject = stream
             this.userStream = stream
+            console.log(this.userStream)
 
             await this._callUser()
         },
 
         async _callUser() {
+            console.log(111)
             await this._createPeer()
             this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream));
         },
@@ -192,7 +188,7 @@ export default {
                 }
             }
             this.peer.ontrack = e => {
-                console.log('отработал ontrack')
+                console.log('ОТРАБОТАЛ ONTRACK!!!!!')
                 if (e) {
                     console.log('загружаем видео в partner')
                     this.$refs.partnerVideo.srcObject = e.streams[0]
@@ -207,14 +203,18 @@ export default {
         },
 
         async _createAnswer(payload) {
+            await this._mediaStream()
             console.log(payload)
-            // await this._mediaStream()
             const desc = await new RTCSessionDescription(payload.sdp)
+            console.log(desc)
             await this.peer.setRemoteDescription(desc)
 
-            const answer = await this.peer.createAnswer()
+            // this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream));
+
+            // await this._mediaStream()
+
+            const answer = await this.peer.createAnswer(this.offerOptions)
             await this.peer.setLocalDescription(answer)
-            console.log(this.peer.localDescription)
             const data = {
                 to: this.clientChannel,
                 message_data: {
@@ -241,20 +241,6 @@ export default {
             }
             this.socket.send(this.getStringFromJson(payload))
         },
-        testClick() {
-            const payload = {
-                // caller: socketRef.current.id,
-                sdp: 'answer!!!'
-            }
-            const data = {
-                to: this.clientChannel,
-                message_data: {
-                    event: 'answer',
-                    data: payload
-                }
-            }
-            this.sendMessage('message_to', data)
-        }
     },
 
     mounted() {
@@ -271,6 +257,7 @@ export default {
 .test-call-page {
     width: 100%;
     outline: 1px solid red;
+    height: 300px;
 
     &__video-wrapper {
         display: flex;

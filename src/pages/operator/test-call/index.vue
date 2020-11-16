@@ -29,10 +29,6 @@ export default {
             callID: '',
             clientChannel: '',
             constraints: {
-                configuration: {
-                    offerToReceiveAudio: 1,
-                    offerToReceiveVideo: 1
-                },
                 iceServers: [
                     {url: 'stun:stun1.l.google.com:19302'},
                     {url: 'stun:stun2.l.google.com:19302'},
@@ -45,8 +41,8 @@ export default {
                 ],
             },
             offerOptions: {
-                offerToReceiveAudio: 1,
-                offerToReceiveVideo: 1
+                offerToReceiveAudio: true,
+                offerToReceiveVideo: true
             },
             // callCenterId: '5f119d7ee6b5a61d04e7cba9'
         }
@@ -162,7 +158,7 @@ export default {
         async _callUser() {
             console.log(111)
             await this._createPeer()
-            this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream));
+            // this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream));
         },
 
         async _createPeer() {
@@ -208,6 +204,10 @@ export default {
             const desc = await new RTCSessionDescription(payload.sdp)
             console.log(desc)
             await this.peer.setRemoteDescription(desc)
+
+            console.log(this.userStream)
+
+            this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream))
 
             // this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream));
 

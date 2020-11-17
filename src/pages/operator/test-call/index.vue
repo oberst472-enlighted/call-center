@@ -49,7 +49,7 @@ export default {
     },
     methods: {
         socketConnect() {
-            const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6Im9wZXJhdG9yIiwiZXhwIjoxNjA1NTkyNzM1LCJlbWFpbCI6bnVsbCwib3JpZ19pYXQiOjE2MDU1MDYzMzV9.Oa4pgwi1mXp-OsBukEtNWkugsHjlCWXR3S_blmfoAzM'
+            const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6Im9wZXJhdG9yIiwiZXhwIjoxNjA1NzA3Njg5LCJlbWFpbCI6bnVsbCwib3JpZ19pYXQiOjE2MDU2MjEyODl9.1qA9GwIhsD30Otw3zRkxDHvmYr9IyidHdGC0GsZguxo'
             const callCenterId = 'Q2FsbENlbnRlcjox'
             const type = 'operator'
             const url = `wss://vc-dev.enlighted.ru/ws/call-center-channel/${callCenterId}/?type=${type}&token=${token}`
@@ -111,6 +111,7 @@ export default {
             if (isIncomingCallEvent) {
                 console.info(`идет запрос на звонок от терминала, id звонка: ${info.call_id}`)
                 this.callID = info.call_id
+                // await this._mediaStream()
             }
 
             if (isCallAnsweredEvent) {
@@ -128,7 +129,7 @@ export default {
 
 
                 if (isIceCandidateEvent) {
-                    await this._handleNewICECandidateMsg(data.candidate)
+                    this._handleNewICECandidateMsg(data.candidate)
 
                 }
 
@@ -139,10 +140,14 @@ export default {
             }
         },
 
-        async _handleNewICECandidateMsg(incoming) {
-            const candidate = await new RTCIceCandidate(incoming)
-            this.peer.addIceCandidate(candidate)
-                .catch(e => console.log(e))
+        _handleNewICECandidateMsg(incoming) {
+            const candidate = new RTCIceCandidate(incoming)
+            try {
+                this.peer.addIceCandidate(candidate)
+            } catch (e) {
+                console.log(candidate)
+                console.log(e)
+            }
         },
 
         async _mediaStream() {
@@ -155,9 +160,10 @@ export default {
             await this._callUser()
         },
 
+        // eslint-disable-next-line require-await
         async _callUser() {
             console.log(111)
-            await this._createPeer()
+            // await this._createPeer()
             // this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream));
         },
 
@@ -165,8 +171,6 @@ export default {
             this.peer = await new RTCPeerConnection(this.constraints)
 
             this.peer.onicecandidate = e => {
-                console.log('ONICECANDIDATE')
-                console.log(e.candidate)
                 if (e.candidate) {
 
                     const data = {
@@ -183,6 +187,7 @@ export default {
                     this.sendMessage('message_to', data)
                 }
             }
+
             this.peer.ontrack = e => {
                 console.log('ОТРАБОТАЛ ONTRACK!!!!!')
                 if (e) {
@@ -192,22 +197,34 @@ export default {
                     console.log('ontrack не отработал, e пустой!!!')
                 }
             }
-            // this.peer.onnegotiationneeded = () => {
-            //     console.log(1234)
-            //     this._createAnswer(this.lol)
-            // }
+
+            this.peer.onnegotiationneeded = e => {
+                console.log(e)
+            }
+
+            this.peer.onaddstream = e => {
+                console.log(e)
+                console.log('onaddstream')
+            }
+            // eslint-disable-next-line require-await
+
+
+            const stream = await navigator.mediaDevices.getUserMedia(this.options)
+
+            this.$refs.userVideo.srcObject = stream
+            this.userStream = stream
+
         },
 
         async _createAnswer(payload) {
-            await this._mediaStream()
-            console.log(payload)
+            await this._createPeer()
+            // await this._mediaStream()
             const desc = await new RTCSessionDescription(payload.sdp)
-            console.log(desc)
-            await this.peer.setRemoteDescription(desc)
-
-            console.log(this.userStream)
-
             this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream))
+            // this.peer.addTrack(this.userStream)
+
+            //передаем offer терминала в в webRTC с помощью setRemoteDescription
+            await this.peer.setRemoteDescription(desc)
 
             // this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream));
 

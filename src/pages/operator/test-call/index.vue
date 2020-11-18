@@ -49,7 +49,7 @@ export default {
     },
     methods: {
         socketConnect() {
-            const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6Im9wZXJhdG9yIiwiZXhwIjoxNjA1NzA3Njg5LCJlbWFpbCI6bnVsbCwib3JpZ19pYXQiOjE2MDU2MjEyODl9.1qA9GwIhsD30Otw3zRkxDHvmYr9IyidHdGC0GsZguxo'
+            const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6Im9wZXJhdG9yIiwiZXhwIjoxNjA1ODA1NDI2LCJlbWFpbCI6bnVsbCwib3JpZ19pYXQiOjE2MDU3MTkwMjZ9.FDqzr8RyIniVk2UAsJXyGfu-OaukZNDhj5zVYEwdmcM'
             const callCenterId = 'Q2FsbENlbnRlcjox'
             const type = 'operator'
             const url = `wss://vc-dev.enlighted.ru/ws/call-center-channel/${callCenterId}/?type=${type}&token=${token}`
@@ -88,7 +88,6 @@ export default {
         },
         socketClose() {
             console.error('сокет соединение закрыто')
-            this.socketRetryConnect()
         },
         getJsonFromString(payload) {
             return JSON.parse(payload)
@@ -202,10 +201,6 @@ export default {
                 console.log(e)
             }
 
-            this.peer.onaddstream = e => {
-                console.log(e)
-                console.log('onaddstream')
-            }
             // eslint-disable-next-line require-await
 
 

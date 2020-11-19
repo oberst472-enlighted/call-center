@@ -6,6 +6,11 @@
         </div>
 
         <div>
+            <div>{{ userStream }}</div>
+            <br>
+            <div>
+                {{ partnerStream }}
+            </div>
             <uiBtn @click="pickUpThePhone">Ответить на звонок</uiBtn>
         </div>
     </div>
@@ -13,21 +18,28 @@
 
 <script>
 
+import RecordRTC from 'recordrtc'
+import axios from 'axios'
+
 export default {
     data() {
         return {
+            recoder: null,
             socket: null,
             isSocketOpen: false,
-            lol: '',
 
             peer: null,
 
             userStream: '',
+            partnerStream: '',
 
             options: {audio: true, video: true},
 
             callID: '',
             clientChannel: '',
+            videoToken: '',
+            videoID: '',
+
             constraints: {
                 iceServers: [
                     {url: 'stun:stun1.l.google.com:19302'},
@@ -108,18 +120,22 @@ export default {
             const eventName = payload.event
 
             const isIncomingCallEvent = eventName === 'incoming_call' //идет запрос на звонок от терминала
-            const isEndCallByEvent = eventName === 'end_call_by' //терминал заершил звонок
+            const isEndCallByEvent = eventName === 'end_call_by' //терминал завершил звонок
             const isCallAnsweredEvent = eventName === 'call_answered' //оператор поднял трубку
             const isMessageEvent = eventName === 'message' // пришло сообщение от терминала
 
 
             if (isIncomingCallEvent) {
                 this.log('isEndCallByEvent', `Идет запрос на звонок от терминала, id звонка: ${info.call_id}`)
+                this.log('isEndCallByEvent', info)
                 this.callID = info.call_id
+                this.videoToken = info['video_token']
+                this.videoID = info['video_id']
             }
 
             if (isEndCallByEvent) {
                 this.log('isEndCallByEvent', 'Терминал завершил звонок')
+                this.stopCall()
             }
 
 
@@ -155,23 +171,6 @@ export default {
             }
         },
 
-        async _mediaStream() {
-            const stream = await navigator.mediaDevices.getUserMedia(this.options)
-
-            this.$refs.userVideo.srcObject = stream
-            this.userStream = stream
-            console.log(this.userStream)
-
-            await this._callUser()
-        },
-
-        // eslint-disable-next-line require-await
-        async _callUser() {
-            console.log(111)
-            // await this._createPeer()
-            // this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream));
-        },
-
         async _createPeer() {
             this.peer = await new RTCPeerConnection(this.constraints)
 
@@ -196,6 +195,7 @@ export default {
             this.peer.ontrack = e => {
                 if (e) {
                     this.$refs.partnerVideo.srcObject = e.streams[0]
+                    this.partnerStream = e.streams[0]
                     this.log('ontrack', 'Монтирование видео партнера', 'lightgreen')
                 } else {
                     this.log('ontrack', e, 'red')
@@ -207,21 +207,16 @@ export default {
 
             this.$refs.userVideo.srcObject = stream
             this.userStream = stream
+            console.log(this.userStream)
         },
 
         async _createAnswer(payload) {
             await this._createPeer()
-            // await this._mediaStream()
             const desc = await new RTCSessionDescription(payload.sdp)
             this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream))
-            // this.peer.addTrack(this.userStream)
 
             //передаем offer терминала в в webRTC с помощью setRemoteDescription
             await this.peer.setRemoteDescription(desc)
-
-            // this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream));
-
-            // await this._mediaStream()
 
             const answer = await this.peer.createAnswer(this.offerOptions)
             await this.peer.setLocalDescription(answer)
@@ -251,6 +246,66 @@ export default {
             }
             this.socket.send(this.getStringFromJson(payload))
         },
+
+        stopCall() {
+            this.stopRecord()
+        },
+
+        startRecord() {
+            this.recorder = RecordRTC([this.userStream, this.partnerStream], {
+                type: 'video',
+                checkForInactiveTracks: true,
+                timeSlice: 1000,
+                // ondataavailable(blob) {
+                //     console.log('has data');
+                // },
+                // onStateChange(state) {
+                //     console.log(state)
+                // },
+            })
+            this.recorder.startRecording()
+        },
+        stopRecord() {
+
+            if (this.recorder) {
+                this.recorder.stopRecording(() => {
+                    const blob = this.recorder.getBlob()
+                    console.log(blob)
+                    const data = new FormData()
+
+                    data.append('video_file', blob, 'long.webm')
+
+                    console.log(data)
+                    console.log(`Authorization: token ${this.videoToken}`)
+                        const lol = `/videos/${this.videoID}/`
+                    axios.patch(lol, data, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            Authorization: `token ${this.videoToken}`
+                        },
+                    }).then(result => {
+                        console.log(result)
+                    })
+                        .catch(e => {
+                            console.log(e)
+                        })
+
+                    this.recorder.destroy()
+                    this.recorder = null
+                })
+            } else {
+                console.log('recorder not found')
+            }
+
+
+        },
+    },
+    watch: {
+        partnerStream() {
+            if (this.userStream) {
+                this.startRecord()
+            }
+        }
     },
 
     mounted() {

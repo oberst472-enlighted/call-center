@@ -20,7 +20,7 @@
             </section>
         </main>
 
-        <div class="layout-default__call-video" v-if="true">
+        <div class="layout-default__call-video" v-if="isCallAnswered">
             <SectionCallVideo/>
         </div>
     </div>
@@ -77,57 +77,17 @@ export default {
         }
     },
     computed: {
-        ...mapState('socket', ['isIncomingCall'])
+        ...mapState('socket', ['isIncomingCall', 'isCallAnswered'])
     },
     methods: {
 
-        ...mapActions('socket', ['incomingCall']),
+        ...mapActions('socket', ['incomingCall', 'socketConnect']),
         ...mapMutations('socket', ['TOGGLE_INCOMING_CALL']),
         getJsonFromString(payload) {
             return JSON.parse(payload)
         },
         getStringFromJson(payload) {
             return JSON.stringify(payload)
-        },
-        _socketConnect() {
-            const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6Im9wZXJhdG9yIiwiZXhwIjoxNjA1ODA1NDI2LCJlbWFpbCI6bnVsbCwib3JpZ19pYXQiOjE2MDU3MTkwMjZ9.FDqzr8RyIniVk2UAsJXyGfu-OaukZNDhj5zVYEwdmcM'
-            const callCenterId = 'Q2FsbENlbnRlcjox'
-            const type = 'operator'
-            const url = `wss://vc-dev.enlighted.ru/ws/call-center-channel/${callCenterId}/?type=${type}&token=${token}`
-
-
-            this.socket = new WebSocket(url)
-
-            this.socket.addEventListener('open', this._socketOpen)
-            this.socket.addEventListener('error', this._socketError)
-            this.socket.addEventListener('message', this._socketMessage)
-            this.socket.addEventListener('close', this._socketClose)
-        },
-        _socketRetryConnect() {
-            customLog('socketRetryConnect', 'Повторная попытка подключения к сокету')
-            setTimeout(() => {
-                this._socketConnect()
-            }, this.socketRetryConnectTime)
-        },
-        _socketDisconnect() {
-            if (this.socket) {
-                this.socket.close(1000)
-                this.isSocketOpen = false
-            }
-        },
-        _socketOpen() {
-            customLog('socketOpen', 'Cокет соединение открыто')
-            this.isSocketOpen = true
-        },
-        _socketError() {
-            customLog('_socketError', 'Ошибка сокет соединения', 'red')
-            this._socketRetryConnect()
-        },
-        _socketMessage(data) {
-            this._messageProcessing(data)
-        },
-        _socketClose() {
-            customLog('socketClose', 'Cокет соединение закрыто', 'red')
         },
 
         async _messageProcessing(data) {
@@ -343,7 +303,8 @@ export default {
             }
         },
         created() {
-            this._socketConnect()
+        this.socketConnect()
+            // this._socketConnect()
         }
 }
 

@@ -18,7 +18,7 @@
             </span>
 
             <span class="block-call-window-small__btn-box">
-                <LocalCallWindowSmallBtn @click="pickUpThePhone" call/>
+                <LocalCallWindowSmallBtn @click="$emit('click')"/>
             </span>
         </div>
 
@@ -39,11 +39,6 @@ export default {
         isIncomingCall: {
             type: Boolean,
             default: false
-        }
-    },
-    methods: {
-        pickUpThePhone() {
-            console.log('pickup')
         }
     }
 }

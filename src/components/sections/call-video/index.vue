@@ -4,7 +4,7 @@
         <div class="viewport" :class="{'call-active': true}">
             <video
                 id="remoteVideo"
-                ref="remoteVideo"
+                ref="partnerVideo"
                 autoplay
                 v-if="true"
             />
@@ -22,6 +22,7 @@
             </div>
             <div class="viewport-call" v-show="true">
                 <video
+                    ref="userVideo"
                     class="viewport-call-admin"
                     id="localVideo"
                     autoplay muted
@@ -112,12 +113,10 @@
 </template>
 
 <script>
-import socket from '@/utils/socket'
 import apiRequest from '@/utils/apiRequest'
-export default {
-    props: {
+import {mapState} from 'vuex'
 
-    },
+export default {
     data() {
         return {
             status: null,
@@ -128,6 +127,7 @@ export default {
     },
 
     computed: {
+        ...mapState('socket', ['userStream', 'partnerStream']),
         message: {
             get: function() {
                 return this.$store.state.callLogic.messageText
@@ -254,6 +254,18 @@ export default {
                 clearInterval(this.interval)
                 this.$store.commit('callLogic/cleanCallTime')
 
+            }
+        },
+        userStream: {
+            immediate: true,
+            handler(val) {
+                this.$refs.userVideo.srcObject = val
+            }
+        },
+        partnerStream: {
+            immediate: true,
+            handler(val) {
+                this.$refs.partnerVideo.srcObject = val
             }
         }
     }

@@ -8,7 +8,7 @@
 
         <div class="page-home__call">
             <SectionBox>
-                <BlockCallWindowSmall :is-incoming-call="isIncomingCall"/>
+                <BlockCallWindowSmall :is-incoming-call="isIncomingCall" @click="pickUpThePhone"/>
             </SectionBox>
         </div>
 
@@ -54,7 +54,7 @@ export default {
         ...mapGetters('middleware', ['isAdmin', 'isAuth'])
     },
     methods: {
-        ...mapActions('socket', ['socketConnect'])
+        ...mapActions('socket', ['socketConnect', 'pickUpThePhone'])
     },
     mounted() {
         // this.socketConnect()

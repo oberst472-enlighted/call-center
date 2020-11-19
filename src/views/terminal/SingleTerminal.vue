@@ -1,32 +1,33 @@
 <template>
-  <div id="SingleTerminal" v-if="terminal && terminal !== 'not found'">
-    <div class="header">
-      <div class="header-text">Терминал # {{terminal.term.id}}</div>
-    </div>
-    <div class="body">
-      <div class="body-left">
-        <div class="body-left-name">{{terminal.term.title}}</div>
-<!--        <div class="body-left-terminal">терминал # {{terminal.term.id}}</div>-->
-        <div class="body-left-text">{{terminal.title}}</div>
-        <div
-                :style="!terminal.online ? 'background-color: #fceff2; color: #f3738c': ''"
-                class="body-left-status"
-        >
-          {{ terminal.online? 'Онлайн': 'Не доступен'}}
+    <div id="SingleTerminal" v-if="terminal && terminal !== 'not found'">
+        <div class="header">
+            <div class="header-text">Терминал # {{ terminal.term.id }}</div>
         </div>
-      </div>
-      <div class="body-right" v-if="terminal.picture">
-        <img :src="`https://calls-dev.enlighted.ru${terminal.picture}`" alt="">
-      </div>
+        <div class="body">
+            <div class="body-left">
+                <div class="body-left-name">{{ terminal.term.title }}</div>
+                <!--        <div class="body-left-terminal">терминал # {{terminal.term.id}}</div>-->
+                <div class="body-left-text">{{ terminal.title }}</div>
+                <div
+                    :style="!terminal.online ? 'background-color: #fceff2; color: #f3738c': ''"
+                    class="body-left-status"
+                >
+                    {{ terminal.online? 'Онлайн': 'Не доступен' }}
+                </div>
+            </div>
+            <div class="body-right" v-if="terminal.picture">
+                <img :src="`https://calls-dev.enlighted.ru${terminal.picture}`" alt="">
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
-  import forward from "../../components/ui/forward";
-  import apiRequest from "../../utils/apiRequest";
+  import forward from '@/components/ui/forward';
+  import apiRequest from '../../utils/apiRequest';
   export default {
-    name: "SingleTerminal",
+    name: 'SingleTerminal',
+      // eslint-disable-next-line vue/no-unused-components
     components: { forward },
     data() {
       return {
@@ -45,7 +46,7 @@
     },
     async created() {
       try {
-        this.terminal = (await apiRequest.get( `/api/devices/${this.$route.params.id}`)).data
+        this.terminal = (await apiRequest.get(`/api/devices/${this.$route.params.id}`)).data
       } catch (e) {
         this.$router.back()
       }

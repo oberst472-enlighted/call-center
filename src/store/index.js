@@ -9,6 +9,7 @@ import alerts from './modules/alerts';
 import users from './modules/users';
 import stat from './modules/stat';
 import calls from './modules/calls';
+import socket from './modules/socket';
 
 Vue.use(Vuex);
 
@@ -214,6 +215,7 @@ export default new Vuex.Store({
         alerts,
         users,
         stat,
-        calls
+        calls,
+        socket
     }
 });

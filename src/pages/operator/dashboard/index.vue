@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
 import SectionBox from '@/components/sections/box'
 import BlockCallWindowSmall from '@/components/blocks/call-window-small'
 export default {
@@ -51,6 +51,12 @@ export default {
     },
     computed: {
         ...mapGetters('middleware', ['isAdmin', 'isAuth'])
+    },
+    methods: {
+        ...mapActions('socket', ['socketConnect'])
+    },
+    mounted() {
+        // this.socketConnect()
     }
 }
 </script>

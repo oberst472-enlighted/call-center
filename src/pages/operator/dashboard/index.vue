@@ -8,7 +8,7 @@
 
         <div class="page-home__call">
             <SectionBox>
-                <BlockCallWindowSmall/>
+                <BlockCallWindowSmall :is-incoming-call="isIncomingCall"/>
             </SectionBox>
         </div>
 
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from 'vuex'
+import {mapState, mapActions, mapGetters} from 'vuex'
 import SectionBox from '@/components/sections/box'
 import BlockCallWindowSmall from '@/components/blocks/call-window-small'
 export default {
@@ -50,6 +50,7 @@ export default {
         BlockCallWindowSmall
     },
     computed: {
+        ...mapState('socket', ['isIncomingCall']),
         ...mapGetters('middleware', ['isAdmin', 'isAuth'])
     },
     methods: {

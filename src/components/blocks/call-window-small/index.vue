@@ -1,32 +1,29 @@
 <template>
     <div class="block-call-window-small">
-        <div
-            v-if="true"
-            class="empty-call block-call-window-small__passive"
-        >
-            Ожидание <br> звонка
+        <div v-if="isIncomingCall" class="active-call block-call-window-small__active">
+            <span class="block-call-window-small__item block-call-window-small__text">
+                Новый звонок <span>russ</span>
+            </span>
+
+            <span class="block-call-window-small__item block-call-window-small__name">
+                Иван Иванович Николаев
+            </span>
+
+            <span class="block-call-window-small__item block-call-window-small__terminal">
+                терминал # <span>1288</span>
+            </span>
+
+            <span class="block-call-window-small__item block-call-window-small__desc">
+                Короткое описание
+            </span>
+
+            <span class="block-call-window-small__btn-box">
+                <LocalCallWindowSmallBtn @click="pickUpThePhone" call/>
+            </span>
         </div>
 
-        <div v-else class="active-call block-call-window-small__active">
-            <div class="block-call-window-small__item block-call-window-small__text">
-                Новый звонок <span>russ</span>
-            </div>
-
-            <div class="block-call-window-small__item block-call-window-small__name">
-                Иван Иванович Николаев
-            </div>
-
-            <div class="block-call-window-small__item block-call-window-small__terminal">
-                терминал # <span>1288</span>
-            </div>
-
-            <div class="block-call-window-small__item block-call-window-small__desc">
-                Короткое описание
-            </div>
-
-            <div class="block-call-window-small__btn-box">
-                <LocalCallWindowSmallBtn @click="pickUpThePhone" call/>
-            </div>
+        <div v-else class="empty-call block-call-window-small__passive">
+            Ожидание <br> звонка
         </div>
     </div>
 </template>
@@ -39,11 +36,14 @@ export default {
         LocalCallWindowSmallBtn
     },
     props: {
-        // answer: Function,
+        isIncomingCall: {
+            type: Boolean,
+            default: false
+        }
     },
     methods: {
         pickUpThePhone() {
-            console.log(7)
+            console.log('pickup')
         }
     }
 }

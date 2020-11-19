@@ -48,6 +48,12 @@ export default {
         }
     },
     methods: {
+        log(title = 'console group title', text = '', color = 'aqua') {
+            console.group(`%c ${title}`, `font-size: 13px; color: ${color}; border: 1px solid ${color}`);
+            console.info(text);
+            console.log('');
+            console.groupEnd();
+        },
         socketConnect() {
             const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6Im9wZXJhdG9yIiwiZXhwIjoxNjA1ODA1NDI2LCJlbWFpbCI6bnVsbCwib3JpZ19pYXQiOjE2MDU3MTkwMjZ9.FDqzr8RyIniVk2UAsJXyGfu-OaukZNDhj5zVYEwdmcM'
             const callCenterId = 'Q2FsbENlbnRlcjox'
@@ -75,7 +81,7 @@ export default {
             }
         },
         socketOpen() {
-            console.info('сокет соединение открыто')
+            this.log('socketOpen', 'Cокет соединение открыто')
             this.isSocketOpen = true
         },
         socketError() {
@@ -83,11 +89,10 @@ export default {
             this.socketRetryConnect()
         },
         socketMessage(data) {
-            // console.info('---получены данные по сокет соединению')
             this.messageProcessing(data)
         },
         socketClose() {
-            console.error('сокет соединение закрыто')
+            this.log('socketClose', 'Cокет соединение закрыто', 'red')
         },
         getJsonFromString(payload) {
             return JSON.parse(payload)
@@ -103,19 +108,23 @@ export default {
             const eventName = payload.event
 
             const isIncomingCallEvent = eventName === 'incoming_call' //идет запрос на звонок от терминала
+            const isEndCallByEvent = eventName === 'end_call_by' //терминал заершил звонок
             const isCallAnsweredEvent = eventName === 'call_answered' //оператор поднял трубку
             const isMessageEvent = eventName === 'message' // пришло сообщение от терминала
 
 
             if (isIncomingCallEvent) {
-                console.info(`идет запрос на звонок от терминала, id звонка: ${info.call_id}`)
+                this.log('isEndCallByEvent', `Идет запрос на звонок от терминала, id звонка: ${info.call_id}`)
                 this.callID = info.call_id
-                // await this._mediaStream()
             }
 
+            if (isEndCallByEvent) {
+                this.log('isEndCallByEvent', 'Терминал завершил звонок')
+            }
+
+
             if (isCallAnsweredEvent) {
-                console.info(`оператор снял трубку: id звонка ${info.call_id}`)
-                // await this._mediaStream()
+                this.log('isCallAnsweredEvent', `Оператор снял трубку: id звонка ${info.call_id}`)
             }
 
             if (isMessageEvent) {
@@ -126,16 +135,13 @@ export default {
                 const isIceCandidateEvent = messageData.event === 'ice-candidate'
                 const isOfferEvent = messageData.event === 'offer' //получение офера с терминала
 
-
                 if (isIceCandidateEvent) {
                     this._handleNewICECandidateMsg(data.candidate)
-
                 }
 
                 if (isOfferEvent) {
                     await this._createAnswer(data)
                 }
-
             }
         },
 
@@ -144,8 +150,8 @@ export default {
             try {
                 this.peer.addIceCandidate(candidate)
             } catch (e) {
-                console.log(candidate)
-                console.log(e)
+                this.log('_handleNewICECandidateMsg-1', candidate, 'red')
+                this.log('_handleNewICECandidateMsg-2', e, 'red')
             }
         },
 
@@ -188,27 +194,19 @@ export default {
             }
 
             this.peer.ontrack = e => {
-                console.log('ОТРАБОТАЛ ONTRACK!!!!!')
                 if (e) {
-                    console.log('загружаем видео в partner')
                     this.$refs.partnerVideo.srcObject = e.streams[0]
+                    this.log('ontrack', 'Монтирование видео партнера', 'lightgreen')
                 } else {
-                    console.log('ontrack не отработал, e пустой!!!')
+                    this.log('ontrack', e, 'red')
                 }
             }
-
-            this.peer.onnegotiationneeded = e => {
-                console.log(e)
-            }
-
             // eslint-disable-next-line require-await
-
 
             const stream = await navigator.mediaDevices.getUserMedia(this.options)
 
             this.$refs.userVideo.srcObject = stream
             this.userStream = stream
-
         },
 
         async _createAnswer(payload) {
@@ -256,7 +254,6 @@ export default {
     },
 
     mounted() {
-        console.log(66)
         this.socketConnect()
     },
     beforeDestroy() {

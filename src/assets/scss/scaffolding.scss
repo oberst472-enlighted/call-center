@@ -30,26 +30,7 @@ hr{
 
 
 //Animation for call
-@keyframes animate
-{
-    0%
-    {
-        transform: scale(1);
-        background-color: #ffffff;
-        opacity: 0.5;
-    }
-    50%
-    {
-        background-color: #ffffff;
 
-    }
-    100%
-    {
-        transform: scale(4);
-        background-color: #ffffff;
-        opacity: 0;
-    }
-}
 
 //Scrollbar basic change
 ::-webkit-scrollbar {

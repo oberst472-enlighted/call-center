@@ -5,13 +5,12 @@ deploy:
   stage: build
   only:
     refs:
-      - develop
+      - develop-2.0
   script:
-        - npm install
         - npm install
         - npm run build
         - mv dist/ $CI_COMMIT_REF_SLUG
         - zip -r $CI_COMMIT_REF_SLUG.zip $CI_COMMIT_REF_SLUG/
-        - scp $CI_COMMIT_REF_SLUG.zip dashboard@calls-dev.enlighted.ru:/var/www/call/dashboard/ && rm -rf $CI_COMMIT_REF_SLUG.zip
-        - ssh dashboard@calls-dev.enlighted.ru "cd /var/www/call/dashboard/ && rm -rf $CI_COMMIT_REF_SLUG && unzip $CI_COMMIT_REF_SLUG.zip && rm -rf $CI_COMMIT_REF_SLUG.zip"
-#      - sh /dashboard/gitlab-runner/tg.sh "<b>RZD Call-Manager</b> обновлен"
+        - scp $CI_COMMIT_REF_SLUG.zip calls@vc-dev.enlighted.ru:/var/www/front/ && rm -rf $CI_COMMIT_REF_SLUG.zip
+        - ssh calls@vc-dev.enlighted.ru "cd /var/www/front/ && rm -rf $CI_COMMIT_REF_SLUG && unzip $CI_COMMIT_REF_SLUG.zip && rm -rf $CI_COMMIT_REF_SLUG.zip"
+        - sh etc/tg.sh "<b>Video Calls</b> (dev) - frontend обновлен"

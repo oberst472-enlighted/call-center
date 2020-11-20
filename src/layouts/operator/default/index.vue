@@ -39,41 +39,8 @@ export default {
     },
     data() {
         return {
-            socket: null,
-            socketRetryConnectTime: 5000, //повторно подключение при разрыве соединения,
             audio: new Audio('/assets/call-melody.mp3'),
-
             recoder: null,
-            isSocketOpen: false,
-
-            peer: null,
-
-            userStream: '',
-            partnerStream: '',
-
-            options: {audio: true, video: true},
-
-            callID: '',
-            clientChannel: '',
-            videoToken: '',
-            videoID: '',
-
-            constraints: {
-                iceServers: [
-                    {url: 'stun:stun1.l.google.com:19302'},
-                    {url: 'stun:stun2.l.google.com:19302'},
-                    {url: 'stun:stun3.l.google.com:19302'},
-                    {
-                        url: 'turn:coturn.sverstal.ru:3478',
-                        username: 'tab1',
-                        credential: '123456',
-                    },
-                ],
-            },
-            offerOptions: {
-                offerToReceiveAudio: true,
-                offerToReceiveVideo: true
-            },
         }
     },
     computed: {
@@ -82,145 +49,7 @@ export default {
     methods: {
 
         ...mapActions('socket', ['incomingCall', 'socketConnect']),
-        ...mapMutations('socket', ['TOGGLE_INCOMING_CALL']),
-        getJsonFromString(payload) {
-            return JSON.parse(payload)
-        },
-        getStringFromJson(payload) {
-            return JSON.stringify(payload)
-        },
 
-        async _messageProcessing(data) {
-            const payload = this.getJsonFromString(data.data)
-
-            const info = payload.data
-            const eventName = payload.event
-
-            const isIncomingCallEvent = eventName === 'incoming_call' //идет запрос на звонок от терминала
-            const isEndCallByEvent = eventName === 'end_call_by' //терминал завершил звонок
-            const isCallAnsweredEvent = eventName === 'call_answered' //оператор поднял трубку
-            const isMessageEvent = eventName === 'message' // пришло сообщение от терминала
-
-
-            if (isIncomingCallEvent) {
-                customLog('isIncomingCallEvent', `Входящий звонок, id звонка: ${info.call_id}`)
-                this.incomingCall(info)
-                this.TOGGLE_INCOMING_CALL()
-            }
-
-            if (isEndCallByEvent) {
-                customLog('isEndCallByEvent', 'Терминал завершил звонок')
-                // this.stopCall()
-            }
-
-
-            if (isCallAnsweredEvent) {
-                customLog('isIncomingCallEvent', `Оператор снял трубку: id звонка ${info.call_id}`)
-            }
-
-            if (isMessageEvent) {
-                this.clientChannel = info.from
-                const messageData = info.message_data
-                const data = messageData.data
-
-                const isIceCandidateEvent = messageData.event === 'ice-candidate'
-                const isOfferEvent = messageData.event === 'offer' //получение офера с терминала
-
-                if (isIceCandidateEvent) {
-                    this._handleNewICECandidateMsg(data.candidate)
-                }
-
-                if (isOfferEvent) {
-                    await this._createAnswer(data)
-                }
-            }
-        },
-
-        _handleNewICECandidateMsg(incoming) {
-            const candidate = new RTCIceCandidate(incoming)
-            try {
-                this.peer.addIceCandidate(candidate)
-            } catch (e) {
-                this.log('_handleNewICECandidateMsg-1', candidate, 'red')
-                this.log('_handleNewICECandidateMsg-2', e, 'red')
-            }
-        },
-
-        async _createPeer() {
-            this.peer = await new RTCPeerConnection(this.constraints)
-
-            this.peer.onicecandidate = e => {
-                if (e.candidate) {
-
-                    const data = {
-                        to: this.clientChannel,
-                        message_data: {
-                            event: 'ice-candidate',
-                            data: {
-                                event: 'ice-candidate',
-                                candidate: e.candidate,
-                            }
-                        }
-                    }
-
-                    this.sendMessage('message_to', data)
-                }
-            }
-
-            this.peer.ontrack = e => {
-                if (e) {
-                    this.$refs.partnerVideo.srcObject = e.streams[0]
-                    this.partnerStream = e.streams[0]
-                    this.log('ontrack', 'Монтирование видео партнера', 'lightgreen')
-                } else {
-                    this.log('ontrack', e, 'red')
-                }
-            }
-            // eslint-disable-next-line require-await
-
-            const stream = await navigator.mediaDevices.getUserMedia(this.options)
-
-            this.$refs.userVideo.srcObject = stream
-            this.userStream = stream
-            console.log(this.userStream)
-        },
-
-        async _createAnswer(payload) {
-            await this._createPeer()
-            const desc = await new RTCSessionDescription(payload.sdp)
-            this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream))
-
-            //передаем offer терминала в в webRTC с помощью setRemoteDescription
-            await this.peer.setRemoteDescription(desc)
-
-            const answer = await this.peer.createAnswer(this.offerOptions)
-            await this.peer.setLocalDescription(answer)
-            const data = {
-                to: this.clientChannel,
-                message_data: {
-                    event: 'answer',
-                    data: {
-                        sdp: this.peer.localDescription
-                    }
-                }
-            }
-            this.sendMessage('message_to', data)
-        },
-
-
-        pickUpThePhone() {
-            const data = {
-                call_id: this.callID
-            }
-            this.sendMessage('picked_up', data)
-        },
-        sendMessage(eventName, data) {
-            const payload = {
-                event: eventName,
-                data
-            }
-            this.socket.send(this.getStringFromJson(payload))
-        },
 
         stopCall() {
             this.stopRecord()
@@ -279,32 +108,33 @@ export default {
             const promise = this.audio.play()
             if (promise !== undefined) {
                 promise.then(() => {
-                    customLog('startAudio', 'Звук звонка работает')
+                    customLog('startAudio', 'Браузер разрешил воспроизведение звука')
                 }).catch(error => {
-                    customLog('startAudio', 'Звук звонка не работает', 'red')
+                    customLog('startAudio', 'Браузер запретил воспроизведение звука', 'red')
                     customLog('startAudio', error, 'red')
                 });
             }
+        },
+        stopAudio() {
+            this.audio.pause()
+            this.audio.currentTime = 0
         },
     },
         watch: {
             isIncomingCall: {
                 immediate: true,
                 handler(val) {
-                    if (val) {
-                        this.startAudio()
-                    }
+                    val ? this.startAudio() : this.audio.pause()
                 }
             },
-            partnerStream() {
-                if (this.userStream) {
-                    this.startRecord()
-                }
-            }
+            // partnerStream() {
+            //     if (this.userStream) {
+            //         this.startRecord()
+            //     }
+            // }
         },
         created() {
         this.socketConnect()
-            // this._socketConnect()
         }
 }
 
@@ -350,8 +180,10 @@ export default {
         position: fixed;
         top: 0;
         left: 0;
-        background-color: red;
         z-index: 10;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
     }
 
     &__main {

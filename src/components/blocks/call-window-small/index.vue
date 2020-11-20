@@ -1,6 +1,6 @@
 <template>
     <div class="block-call-window-small">
-        <div v-if="isIncomingCall" class="active-call block-call-window-small__active">
+        <div v-if="isIncomingCall || isDisablePassiveBox" class="active-call block-call-window-small__active">
             <span class="block-call-window-small__item block-call-window-small__text">
                 Новый звонок <span>russ</span>
             </span>
@@ -17,8 +17,22 @@
                 Короткое описание
             </span>
 
-            <span class="block-call-window-small__btn-box">
+            <span class="block-call-window-small__btn-box" v-if="!isDisableBtnsBox">
                 <LocalCallWindowSmallBtn @click="$emit('click')"/>
+            </span>
+
+            <span class="block-call-window-small__options-box" v-if="isBlockOptionsActive">
+                <template v-if="true">
+                    <LocalCallWindowOptions
+                        @stop-call="$emit('stop-call')"
+                        @toggle-micro="$emit('toggle-micro', $event)"
+                        @toggle-camera="$emit('toggle-camera', $event)"
+                    />
+                </template>
+
+                <template v-else>
+                    <LocalCallWindowEnd/>
+                </template>
             </span>
         </div>
 
@@ -30,16 +44,34 @@
 
 <script>
 import LocalCallWindowSmallBtn from './call-window-small-btn'
+import LocalCallWindowOptions from './call-window-small-options'
+import LocalCallWindowEnd from './call-window-end'
 
 export default {
     components: {
-        LocalCallWindowSmallBtn
+        LocalCallWindowSmallBtn,
+        LocalCallWindowOptions,
+        LocalCallWindowEnd
     },
     props: {
+        isBlockOptionsActive: {
+            type: Boolean,
+            default: false
+        },
+        isDisablePassiveBox: {
+            type: Boolean,
+            default: false
+        },
+        isDisableBtnsBox: {
+            type: Boolean,
+            default: false
+        },
         isIncomingCall: {
             type: Boolean,
             default: false
         }
+    },
+    methods: {
     }
 }
 </script>
@@ -47,6 +79,7 @@ export default {
 <style lang='scss'>
 .block-call-window-small {
     display: flex;
+    width: 100%;
     height: 100%;
     color: #ffffff;
     background-color: #4c3b60;
@@ -92,6 +125,10 @@ export default {
         font-weight: 700;
     }
 
+    &__desc {
+        margin-bottom: 15px;
+    }
+
     &__terminal {
         margin-top: 2px;
         line-height: 15px;
@@ -102,6 +139,9 @@ export default {
         height: 52px;
         margin-top: 24px;
         border-radius: 50%;
+    }
+    &__options-box {
+        margin-top: auto;
     }
 }
 </style>

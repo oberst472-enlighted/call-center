@@ -8,7 +8,10 @@
 
         <div class="page-home__call">
             <SectionBox>
-                <BlockCallWindowSmall :is-incoming-call="isIncomingCall" @click="pickUpThePhone"/>
+                <BlockCallWindowSmall
+                    :is-incoming-call="isIncomingCall"
+                    @click="pickUpThePhone"
+                />
             </SectionBox>
         </div>
 

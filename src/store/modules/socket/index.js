@@ -35,13 +35,14 @@ export default {
 
         isCallMelodyActive: false,
         isIncomingCall: false, //идет вызов от терминала
-        isCallAnswered: false, //оператор снял трубку, начался разговор
+        isCallAnswered: false, //оператор снял трубку, начался разговор,
+        isCallOver: false, //звонок окончен
+        whoStoppedTheCall: 'user', //кто завершил звонок (user / partner)
 
 
         socket: null,
         isSocketOpen: false,
         socketRetryConnectTime: 5000,
-
 
         peer: null,
         userStream: null,
@@ -49,7 +50,7 @@ export default {
     },
     getters: {},
     mutations: {
-        GET_SOCKET(state, payload) {
+        SET_SOCKET(state, payload) {
             state.socket = payload
         },
         TOGGLE_INCOMING_CALL(state, payload = true) {
@@ -64,39 +65,45 @@ export default {
         TOGGLE_IS_SOCKET_OPEN(state, payload = true) {
             state.isSocketOpen = payload
         },
-        GET_VIDEO_TOKEN(state, payload) {
+        SET_VIDEO_TOKEN(state, payload) {
             state.identifiersCroup.videoToken = payload
         },
-        GET_VIDEO_ID(state, payload) {
+        SET_VIDEO_ID(state, payload) {
             state.identifiersCroup.videoToken = payload
         },
-        GET_CALL_ID(state, payload) {
+        SET_CALL_ID(state, payload) {
             state.identifiersCroup.callID = payload
         },
-        GET_CLIENT_CHANNEL(state, payload) {
+        SET_CLIENT_CHANNEL(state, payload) {
             state.clientChannel = payload
         },
-        GET_USER_STREAM(state, payload) {
+        SET_USER_STREAM(state, payload) {
             state.userStream = payload
         },
-        GET_PARTNER_STREAM(state, payload) {
+        SET_PARTNER_STREAM(state, payload) {
             state.partnerStream = payload
         },
-        GET_PEER_CONNECTION(state, payload) {
+        SET_PEER_CONNECTION(state, payload) {
             state.peer = payload
-        }
+        },
+        SET_CALL_OVER(state, payload = true) {
+            state.isCallOver = payload
+        },
+        SET_WHO_STOPPED_THE_CALL(state, payload = 'user') {
+            state.whoStoppedTheCall = payload
+        },
 
     },
     actions: {
         socketConnect({commit, dispatch}) {
-            const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6Im9wZXJhdG9yIiwiZXhwIjoxNjA1ODU5NTM3LCJlbWFpbCI6bnVsbCwib3JpZ19pYXQiOjE2MDU3NzMxMzd9.3dJl_2dJhNE2dooDwsd46TpXjHMTDRQq4Owm8X_HxYY'
+            const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6Im9wZXJhdG9yIiwiZXhwIjoxNjA1OTMxOTk2LCJlbWFpbCI6bnVsbCwib3JpZ19pYXQiOjE2MDU4NDU1OTZ9.zLqIv9W7QrcUNgwIplC25PhdgnV83jRqIrFSM1k7VaM'
             const callCenterId = 'Q2FsbENlbnRlcjox'
             const type = 'operator'
             const url = `wss://vc-dev.enlighted.ru/ws/call-center-channel/${callCenterId}/?type=${type}&token=${token}`
 
 
             const socket = new WebSocket(url)
-            commit('GET_SOCKET', socket)
+            commit('SET_SOCKET', socket)
 
             socket.addEventListener('open', () => {
                 dispatch('socketOpen')
@@ -146,30 +153,32 @@ export default {
 
 
             if (isIncomingCallEvent) {
-                console.log(66)
                 customLog('isIncomingCallEvent', `Входящий звонок, id звонка: ${info.call_id}`)
 
                 commit('TOGGLE_INCOMING_CALL')
                 console.log(info)
-                commit('GET_VIDEO_TOKEN', info['video_token'])
-                commit('GET_VIDEO_ID', info['video_id'])
-                commit('GET_CALL_ID', info['call_id'])
+                commit('SET_VIDEO_TOKEN', info['video_token'])
+                commit('SET_VIDEO_ID', info['video_id'])
+                commit('SET_CALL_ID', info['call_id'])
 
             }
 
             if (isEndCallByEvent) {
+                commit('SET_CALL_OVER')
+                commit('SET_WHO_STOPPED_THE_CALL', 'partner')
+
                 customLog('isEndCallByEvent', 'Терминал завершил звонок')
-                // this.stopCall()
             }
 
 
             if (isCallAnsweredEvent) {
                 commit('TOGGLE_CALL_ANSWERED')
+                commit('TOGGLE_INCOMING_CALL', false)
                 customLog('isIncomingCallEvent', `Оператор снял трубку: id звонка ${info.call_id}`)
             }
 
             if (isMessageEvent) {
-                commit('GET_CLIENT_CHANNEL', info.from)
+                commit('SET_CLIENT_CHANNEL', info.from)
 
                 const messageData = info.message_data
                 const data = messageData.data
@@ -199,7 +208,7 @@ export default {
 
             const peer = await new RTCPeerConnection(state.options.constraints)
 
-            commit('GET_PEER_CONNECTION', peer)
+            commit('SET_PEER_CONNECTION', peer)
 
             state.peer.onicecandidate = e => {
                 if (e.candidate) {
@@ -221,7 +230,7 @@ export default {
 
             state.peer.ontrack = e => {
                 if (e) {
-                    commit('GET_PARTNER_STREAM', e.streams[0])
+                    commit('SET_PARTNER_STREAM', e.streams[0])
                     customLog('ontrack', 'sМонтирование видео партнера')
                 } else {
                     customLog('ontrack', e, 'red')
@@ -231,7 +240,7 @@ export default {
 
             const stream = await navigator.mediaDevices.getUserMedia(state.options.mediaOptions)
 
-            commit('GET_USER_STREAM', stream)
+            commit('SET_USER_STREAM', stream)
 
         },
         async createAnswer({state, dispatch}, payload) {
@@ -260,6 +269,16 @@ export default {
                 call_id: state.identifiersCroup.callID
             }
             dispatch('sendMessage', {eventName: 'picked_up', data})
+        },
+
+        stStopCall({state, commit, dispatch}) {
+            const data = {
+                call_id: state.identifiersCroup.callID
+            }
+            dispatch('sendMessage', {eventName: 'end_call', data})
+            commit('SET_CALL_OVER')
+
+            customLog('stStopCall', 'Оператор завершил звонок')
         },
         sendMessage({state}, {eventName, data}) {
             const payload = {

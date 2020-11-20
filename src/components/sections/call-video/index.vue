@@ -5,6 +5,7 @@
                 <video
                     ref="userVideo"
                     autoplay
+                    muted
                 />
             </div>
 
@@ -106,6 +107,8 @@ export default {
             this.stStopCall()
         },
         _toggleMicro(payload) {
+            console.log(this.$refs.partnerVideo.muted)
+            this.$refs.partnerVideo.muted = payload
             console.log(payload)
         },
         _toggleCamera(payload) {
@@ -218,12 +221,14 @@ export default {
             immediate: true,
             handler(val) {
                 this.$refs.userVideo.srcObject = val
+                console.log(this.$refs.userVideo.srcObject)
             }
         },
         partnerStream: {
             immediate: true,
             handler(val) {
                 this.$refs.partnerVideo.srcObject = val
+                console.log(this.$refs.userVideo.srcObject)
             }
         }
     }

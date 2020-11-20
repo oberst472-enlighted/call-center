@@ -231,7 +231,7 @@ export default {
             state.peer.ontrack = e => {
                 if (e) {
                     commit('SET_PARTNER_STREAM', e.streams[0])
-                    customLog('ontrack', 'sМонтирование видео партнера')
+                    customLog('ontrack', 'Монтирование видео партнера')
                 } else {
                     customLog('ontrack', e, 'red')
                 }

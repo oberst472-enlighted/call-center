@@ -7,15 +7,23 @@ export default {
         options: {
             constraints: {
                 iceServers: [
-                    {url: 'stun:stun1.l.google.com:19302'},
-                    {url: 'stun:stun2.l.google.com:19302'},
-                    {url: 'stun:stun3.l.google.com:19302'},
+                    { url: 'stun:vc-dev.enlighted.ru:3478' },
                     {
-                        url: 'turn:coturn.sverstal.ru:3478',
+                        url: 'turn:vc-dev.enlighted.ru:3478',
                         username: 'tab1',
                         credential: '123456',
                     },
                 ],
+                // iceServers: [
+                //     {url: 'stun:stun1.l.google.com:19302'},
+                //     {url: 'stun:stun2.l.google.com:19302'},
+                //     {url: 'stun:stun3.l.google.com:19302'},
+                //     {
+                //         url: 'turn:coturn.sverstal.ru:3478',
+                //         username: 'tab1',
+                //         credential: '123456',
+                //     },
+                // ],
             },
             offerOptions: {
                 offerToReceiveAudio: true,

@@ -5,4 +5,4 @@ CHAT_ID="-263138756"
 MESSAGE=$1
 URL="https://api.telegram.org/bot$TOKEN/sendMessage"
 
-curl -s -X POST $URL -d chat_id=$CHAT_ID -d -d parse_mode=html text="$MESSAGE"
+curl -s -X POST $URL -d chat_id=$CHAT_ID -d parse_mode=html text="$MESSAGE"

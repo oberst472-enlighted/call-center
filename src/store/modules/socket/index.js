@@ -7,9 +7,12 @@ export default {
         options: {
             constraints: {
                 iceServers: [
-                    { url: 'stun:vc-dev.enlighted.ru:3478' },
+                    { urls: 'stun:stun.l.google.com' },
+                    { urls: 'stun:stun1.l.google.com' },
+                    { urls: 'stun:stun2.l.google.com' },
+                    { urls: 'stun:stun3.l.google.com' },
                     {
-                        url: 'turn:vc-dev.enlighted.ru:3478',
+                        urls: 'turn:vc-dev.enlighted.ru:3478',
                         username: 'tab1',
                         credential: '123456',
                     },
@@ -104,7 +107,8 @@ export default {
     },
     actions: {
         socketConnect({commit, dispatch}) {
-            const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6Im9wZXJhdG9yIiwiZXhwIjoxNjA1OTMxOTk2LCJlbWFpbCI6bnVsbCwib3JpZ19pYXQiOjE2MDU4NDU1OTZ9.zLqIv9W7QrcUNgwIplC25PhdgnV83jRqIrFSM1k7VaM'
+            const token = localStorage.getItem('token') || sessionStorage.getItem('token')
+            console.log(token)
             const callCenterId = 'Q2FsbENlbnRlcjox'
             const type = 'operator'
             const url = `wss://vc-dev.enlighted.ru/ws/call-center-channel/${callCenterId}/?type=${type}&token=${token}`

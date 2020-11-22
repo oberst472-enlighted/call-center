@@ -23,8 +23,9 @@ export default {
                     {urls: 'stun:stun2.l.google.com:19302'},
                     {urls: 'stun:stun3.l.google.com:19302'},
                     {urls: 'stun:stun4.l.google.com:19302'},
+                    { urls: 'stun:vc-dev.enlighted.ru:3478' },
                     {
-                        urls: 'turn:coturn.sverstal.ru:3478',
+                        urls: 'turn:vc-dev.enlighted.ru:3478',
                         username: 'tab1',
                         credential: '123456',
                     },
@@ -201,7 +202,7 @@ export default {
                 const isOfferEvent = messageData.event === 'offer' //получение офера с терминала
 
                 if (isIceCandidateEvent) {
-                    dispatch('handleNewICECandidateMsg', data.candidate)
+                    // dispatch('handleNewICECandidateMsg', data.candidate)
                 }
 
                 if (isOfferEvent) {

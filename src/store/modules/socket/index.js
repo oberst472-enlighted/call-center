@@ -143,7 +143,6 @@ export default {
             }, state.socketRetryConnectTime)
         },
         socketMessage({commit, dispatch}, payload) {
-            console.log(payload)
             const info = getJsonFromString(payload.data).data
             const eventName = getJsonFromString(payload.data).event
 
@@ -188,7 +187,7 @@ export default {
                 const isOfferEvent = messageData.event === 'offer' //получение офера с терминала
 
                 if (isIceCandidateEvent) {
-                    // dispatch('handleNewICECandidateMsg', data.candidate)
+                    dispatch('handleNewICECandidateMsg', data.candidate)
                 }
 
                 if (isOfferEvent) {

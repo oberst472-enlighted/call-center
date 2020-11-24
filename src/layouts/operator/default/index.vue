@@ -20,7 +20,10 @@
             </section>
         </main>
 
-        <div class="layout-default__call-video" v-if="isCallAnswered">
+        <!--        <div class="layout-default__call-video" v-if="isCallAnswered">-->
+        <!--            <SectionCallVideo/>-->
+        <!--        </div>-->
+        <div class="layout-default__call-video" v-if="true">
             <SectionCallVideo/>
         </div>
     </div>

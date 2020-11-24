@@ -290,19 +290,22 @@ export default {
         },
         reset() {
             this.peer.close()
+            this.peer.onicecandidate = null
+            this.peer.ontrack = null
+            // this.userStream.stop()
             this.isCallBtnDisabled = false
             this.peer = null
             this.$refs.usVid.srcObject = null
             this.$refs.ptVid.srcObject = null
 
-            this.userStream = null
+            // this.userStream = null
 
             this.clientChannel = ''
             this.callID = ''
             this.componentKey++
             // setTimeout(() => {
             //     this.userStream = navigator.mediaDevices.getUserMedia(this.options)
-            //   }, 8000);
+            //   }, 500);
         }
     },
 

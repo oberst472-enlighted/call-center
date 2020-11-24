@@ -9,17 +9,12 @@
                 />
             </div>
 
-
             <div class="section-call-video__partner-video" v-if="!isCallOver">
                 <video
                     ref="partnerVideo"
                     autoplay
                 />
             </div>
-
-
-
-
 
             <div class="section-call-video__stop" v-if="isCallOver">
                 <LocalCallVideoStop/>
@@ -32,11 +27,11 @@
                     is-block-options-active
                     is-disable-passive-box
                     is-disable-btns-box
-                    @stop-call="stStopCall()"
+                    @stop-call="stStopCall"
                     @toggle-micro="_toggleMicro"
                     @toggle-camera="_toggleCamera"
                 />
-            </div>
+            </div>§
 
             <div class="section-call-video__aside-info">
                 <LocalCallVideoInfo/>
@@ -51,7 +46,6 @@
 </template>
 
 <script>
-import apiRequest from '@/utils/apiRequest'
 import {mapState, mapActions} from 'vuex'
 import LocalCallVideoStop from './call-video-stop'
 import LocalCallVideoInfo from './call-video-info'

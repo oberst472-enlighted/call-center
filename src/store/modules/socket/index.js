@@ -63,6 +63,20 @@ export default {
         TOGGLE_IS_SOCKET_OPEN(state, payload = true) {
             state.isSocketOpen = payload
         },
+        TOGGLE_CAMERA(state, payload = true) {
+            state.userStream.getTracks().forEach(item => {
+                if (item.kind === 'video') {
+                    item.enabled = payload
+                }
+            })
+        },
+        TOGGLE_AUDIO(state, payload = true) {
+            state.userStream.getTracks().forEach(item => {
+                if (item.kind === 'audio') {
+                    item.enabled = payload
+                }
+            })
+        },
         SET_VIDEO_TOKEN(state, payload) {
             state.identifiersCroup.videoToken = payload
         },

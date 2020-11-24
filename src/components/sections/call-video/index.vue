@@ -1,22 +1,35 @@
 <template>
     <section class="section-call-video">
         <div class="section-call-video__main">
-            <div class="section-call-video__client-video" v-if="!isCallOver">
+            <div v-if="!isCallOver" class="section-call-video__client-video">
                 <video
                     ref="userVideo"
                     autoplay
                     muted
                 />
+
+                <transition-group class="section-call-video__icons-box" name="icons" tag="div">
+                    <IconCameraOff
+                        v-if="isCameraDisable"
+                        key="camera"
+                        class="section-call-video__icon"
+                    />
+                    <IconMicroOff
+                        v-if="isAudioDisable"
+                        key="audio"
+                        class="section-call-video__icon section-call-video__icon-micro"
+                    />
+                </transition-group>
             </div>
 
-            <div class="section-call-video__partner-video" v-if="!isCallOver">
+            <div v-if="!isCallOver" class="section-call-video__partner-video">
                 <video
                     ref="partnerVideo"
                     autoplay
                 />
             </div>
 
-            <div class="section-call-video__stop" v-if="isCallOver">
+            <div v-if="isCallOver" class="section-call-video__stop">
                 <LocalCallVideoStop/>
             </div>
         </div>
@@ -25,13 +38,13 @@
             <div class="section-call-video__aside-head">
                 <BlockCallWindowSmall
                     is-block-options-active
-                    is-disable-passive-box
                     is-disable-btns-box
+                    is-disable-passive-box
                     @stop-call="stStopCall"
-                    @toggle-micro="_toggleMicro"
+                    @toggle-micro="_toggleAudio"
                     @toggle-camera="_toggleCamera"
                 />
-            </div>§
+            </div>
 
             <div class="section-call-video__aside-info">
                 <LocalCallVideoInfo/>
@@ -46,7 +59,7 @@
 </template>
 
 <script>
-import {mapState, mapActions} from 'vuex'
+import {mapActions, mapMutations, mapState} from 'vuex'
 import LocalCallVideoStop from './call-video-stop'
 import LocalCallVideoInfo from './call-video-info'
 import LocalCallVideoChat from './call-video-chat'
@@ -63,6 +76,8 @@ export default {
     },
     data() {
         return {
+            isAudioDisable: false,
+            isCameraDisable: false,
             recoder: null,
             status: null,
             isVideoOn: true,
@@ -94,19 +109,17 @@ export default {
             let seconds = Math.floor(time - minutes * 60)
             return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2)
         },
-        isActiveWorkShift() {
-            return this.$store.state.isActiveWorkShift
-        },
     },
     methods: {
+        ...mapMutations('socket', ['TOGGLE_AUDIO', 'TOGGLE_CAMERA']),
         ...mapActions('socket', ['stStopCall']),
-        _toggleMicro(payload) {
-            console.log(this.$refs.partnerVideo.muted)
-            this.$refs.partnerVideo.muted = payload
-            console.log(payload)
+        _toggleAudio(payload) {
+            this.isAudioDisable = !payload
+            this.TOGGLE_AUDIO(payload)
         },
         _toggleCamera(payload) {
-            console.log(payload)
+            this.isCameraDisable = !payload
+            this.TOGGLE_CAMERA(payload)
         },
 
         getTime() {
@@ -116,55 +129,7 @@ export default {
             const seconds = `${date.getSeconds()}`.length === 1 ? `0${date.getSeconds()}` : `${date.getSeconds()}`
             return `${hours}:${minutes}:${seconds}`
         },
-        // СБРОСИТЬ ТРУБКУ
-        stopAudio() {
-            this.isSoundOn = false
 
-            let audio = this.localStream.getTracks().forEach(item => {
-                if (item.kind === 'audio') {
-                    item.enabled = !item.enabled
-                }
-            })
-            console.log(audio)
-
-            // audio.muted = true
-            // audio.stop()
-        },
-        stopVideo() {
-            this.isVideoOn = false
-            let video = this.localStream.getTracks().forEach(item => {
-                if (item.kind === 'video') {
-                    item.enabled = !item.enabled
-                }
-            })
-            console.log(video)
-
-            // video.stop()
-        },
-        continueAudio() {
-            this.isSoundOn = true
-
-            let audio = this.localStream.getTracks().forEach(item => {
-                if (item.kind === 'audio') {
-                    item.enabled = !item.enabled
-                }
-            })
-            console.log(audio)
-            // audio.muted = false
-
-            // audio.play()
-        },
-        continueVideo() {
-            this.isVideoOn = true
-            let video = this.localStream.getTracks().forEach(item => {
-                if (item.kind === 'video') {
-                    item.enabled = !item.enabled
-                }
-            })
-            console.log(video)
-
-            // video.play()
-        },
 
         startRecord() {
             this.recorder = RecordRTC([this.userStream, this.partnerStream], {
@@ -226,13 +191,6 @@ export default {
 
             }
         },
-        // userStream: {
-        //     immediate: true,
-        //     handler(val) {
-        //         this.$refs.userVideo.srcObject = val
-        //         console.log(this.$refs.userVideo.srcObject)
-        //     }
-        // },
         partnerStream: {
             immediate: true,
             handler(val) {
@@ -246,7 +204,6 @@ export default {
         },
 
         isCallOver() {
-            console.log(66)
             this.stopRecord()
         }
     }
@@ -255,72 +212,116 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.icons-enter, .icons-leave-to {
+    opacity: 0;
+}
+
+.icons-leave-active {
+    position: absolute;
+}
+
 .section-call-video {
-    width: 100%;
-    height: 100%;
     display: grid;
     grid-template-columns: [main] 1fr [aside] 280px;
+    width: 100%;
+    height: 100%;
+
     &__main {
+        position: relative;
+        display: flex;
         background-color: #2e2e2e;
-        grid-column: main;
         background-image: url('/assets/images/map.webp');
         background-repeat: no-repeat;
         background-size: cover;
-        position: relative;
-        display: flex;
+        grid-column: main;
     }
+
     &__aside {
-        grid-column: aside;
         background-color: #fff;
+        grid-column: aside;
     }
 
     &__client-video {
         position: absolute;
-        width: 240px;
-        height: 160px;
-        background-color: $color--primary;
         top: $gutter;
         right: $gutter;
-        border-radius: 8px;
-        overflow: hidden;
         z-index: 2;
+        width: 240px;
+        height: 160px;
+        border-radius: 8px;
+        background-color: $color--primary;
+        overflow: hidden;
+
         video {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+    }
+
+    &__icons-box {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        box-sizing: border-box;
+        display: grid;
+        grid-gap: 15px;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        padding: 10px;
+        color: #fff !important;
+        opacity: 0.05;
+        grid-auto-flow: column;
+    }
+
+    &__icon {
+        left: 50%;
+        width: 80px !important;
+        height: 80px !important;
+        transition: all 0.3s;
+
+        &-micro {
+            width: 70px !important;
+            height: 70px !important;
         }
     }
 
     &__partner-video {
         position: absolute;
-        left: 0;
         top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
+
         video {
+            z-index: 1;
             display: block;
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: 1;
         }
     }
 
     &__stop {
-        margin: auto;
         top: 50%;
+        margin: auto;
     }
 
     &__aside-head {
-        border-bottom-left-radius: 8px;
-        border-bottom-right-radius: 8px;
-        overflow: hidden;
-        min-height: 175px;
         display: flex;
+        min-height: 175px;
+        border-bottom-right-radius: 8px;
+        border-bottom-left-radius: 8px;
+        overflow: hidden;
     }
+
     &__aside-info {
         padding: 15px 15px 0 15px;
     }
+
     &__aside-chat {
         padding: 15px 20px 0 20px;
     }

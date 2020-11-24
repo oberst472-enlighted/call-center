@@ -1,11 +1,13 @@
 <template>
-    <div class="page-home">
-        <video id="localVideo" ref="usVid" autoplay class="page-home__video page-home__video-client" muted playsinline></video>
+    <div class="page-terminal">
+        <div class="wrap">
+            <video id="localVideo" ref="usVid" autoplay class="page-terminal__video page-terminal__video-client" muted playsinline></video>
 
-        <video id="remoteVideo" ref="ptVid" autoplay class="page-home__video page-home__video-partner" playsinline></video>
-        <div class="page-home__btn-box">
-            <UiBtn class="page-home__btn" @click="callRequest">Позвонить</UiBtn>
-            <UiBtn class="page-home__btn" theme="negative" @click="stopCall">Завершить вызов</UiBtn>
+            <video id="remoteVideo" ref="ptVid" autoplay class="page-terminal__video page-terminal__video-partner" playsinline></video>
+            <div class="page-terminal__btn-box">
+                <UiBtn class="page-terminal__btn" @click="callRequest">Позвонить</UiBtn>
+                <UiBtn class="page-terminal__btn" theme="negative" @click="stopCall">Завершить вызов</UiBtn>
+            </div>
         </div>
     </div>
 </template>
@@ -42,7 +44,7 @@ export default {
                     //     username: 'tab1',
                     //     credential: '123456',
                     // },
-                    { urls: 'stun:vc-dev.enlighted.ru:3478' },
+                    {urls: 'stun:vc-dev.enlighted.ru:3478'},
                     {
                         urls: 'turn:vc-dev.enlighted.ru:3478',
                         username: 'tab1',
@@ -262,8 +264,6 @@ export default {
     async mounted() {
         this.socketConnect()
         this.userStream = await navigator.mediaDevices.getUserMedia(this.options)
-        console.log(333)
-        console.log(this.userStream)
     },
     beforeDestroy() {
         this.socketDisconnect()
@@ -272,29 +272,37 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.page-home {
+.page-terminal {
     box-sizing: border-box;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-gap: 30px;
-    justify-content: center;
-    align-items: center;
     width: 100%;
+    height: 100vh;
     padding: 30px;
-    border-radius: 15px;
-    background-color: #fff;
-    grid-template-rows: 210px 100px;
-    grid-template-areas:
+    background-color: #000;
+    display: flex;
+    align-items: center;
+
+    .wrap {
+        padding: 30px;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 800px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 30px;
+        justify-content: center;
+        align-items: center;
+        grid-template-rows: 210px 100px;
+        grid-template-areas:
         'video-client video-partner'
         'btn btn';
-
+    }
 
     &__video {
         display: flex;
         width: 100%;
         height: 100%;
         border-radius: 15px;
-        background-color: #e3dbdb;
+        background-color: rgba(#e3dbdb, 0.4);
         overflow: hidden;
 
         &-client {
@@ -313,9 +321,9 @@ export default {
     }
 
     &__btn {
-        justify-self: center;
         width: 142px !important;
         margin: 0 15px;
+        justify-self: center;
     }
 }
 </style>

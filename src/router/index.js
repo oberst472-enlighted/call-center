@@ -95,6 +95,7 @@ export default new VueRouter({
         {
             path: '/terminal',
             component: require('@/layouts/terminal/').default,
+            name: 'terminal',
         },
         // {
         //     path: '',

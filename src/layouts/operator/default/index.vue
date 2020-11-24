@@ -48,7 +48,7 @@ export default {
     },
     methods: {
 
-        ...mapActions('socket', ['incomingCall', 'socketConnect']),
+        ...mapActions('socket', ['incomingCall', 'socketConnect', 'getMedia']),
 
 
         stopCall() {
@@ -135,7 +135,10 @@ export default {
         },
         created() {
         this.socketConnect()
-        }
+        },
+    mounted() {
+        this.getMedia()
+    }
 }
 
 </script>

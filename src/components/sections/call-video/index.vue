@@ -217,16 +217,17 @@ export default {
 
             }
         },
-        userStream: {
-            immediate: true,
-            handler(val) {
-                this.$refs.userVideo.srcObject = val
-                console.log(this.$refs.userVideo.srcObject)
-            }
-        },
+        // userStream: {
+        //     immediate: true,
+        //     handler(val) {
+        //         this.$refs.userVideo.srcObject = val
+        //         console.log(this.$refs.userVideo.srcObject)
+        //     }
+        // },
         partnerStream: {
             immediate: true,
             handler(val) {
+                this.$refs.userVideo.srcObject = this.userStream
                 this.$refs.partnerVideo.srcObject = val
                 console.log(this.$refs.userVideo.srcObject)
             }

@@ -1,77 +1,61 @@
 <template>
-    <div class="test-call-page">
-        <div class="test-call-page__video-wrapper">
-            <video id="localVideo" ref="userVideo" autoplay class="test-call-page__video" muted playsinline></video>
-            <video id="remoteVideo" ref="partnerVideo" autoplay class="test-call-page__video" muted></video>
-        </div>
+    <div class="page-home">
+        <video id="localVideo" ref="userVideo" autoplay class="page-home__video page-home__video-client" muted playsinline></video>
 
-        <div>
-            <div>{{ userStream }}</div>
-            <br>
-            <div>
-                {{ partnerStream }}
-            </div>
-            <uiBtn @click="pickUpThePhone">Ответить на звонок</uiBtn>
+        <video id="remoteVideo" ref="partnerVideo" autoplay class="page-home__video page-home__video-partner" playsinline></video>
+        <div class="page-home__btn-box">
+            <UiBtn class="page-home__btn" @click="callRequest">Позвонить</UiBtn>
+            <UiBtn class="page-home__btn" theme="negative" @click="stopCall">Завершить вызов</UiBtn>
         </div>
     </div>
 </template>
 
 <script>
 
-import RecordRTC from 'recordrtc'
-import axios from 'axios'
+import {customLog} from '@/utils/console-group'
 
 export default {
     data() {
         return {
-            recoder: null,
             socket: null,
             isSocketOpen: false,
+            peer: '',
+            otherUser: '',
+            userStream: null,
 
-            peer: null,
-
-            userStream: '',
-            partnerStream: '',
+            clientChannel: '',
+            callID: '',
 
             options: {audio: true, video: true},
-
-            callID: '',
-            clientChannel: '',
-            videoToken: '',
-            videoID: '',
-
+            offerOptions: {
+                offerToReceiveAudio: true,
+                offerToReceiveVideo: true
+            },
             constraints: {
                 iceServers: [
-                    {url: 'stun:stun1.l.google.com:19302'},
-                    {url: 'stun:stun2.l.google.com:19302'},
-                    {url: 'stun:stun3.l.google.com:19302'},
+                    // { url: 'stun:stun1.l.google.com:19302' },
+                    // { url: 'stun:stun2.l.google.com:19302' },
+                    // { url: 'stun:stun3.l.google.com:19302' },
+                    // {
+                    //     url: 'turn:coturn.sverstal.ru:3478',
+                    //     username: 'tab1',
+                    //     credential: '123456',
+                    // },
+                    { urls: 'stun:vc-dev.enlighted.ru:3478' },
                     {
-                        url: 'turn:coturn.sverstal.ru:3478',
+                        urls: 'turn:vc-dev.enlighted.ru:3478',
                         username: 'tab1',
                         credential: '123456',
                     },
                 ],
             },
-            offerOptions: {
-                offerToReceiveAudio: true,
-                offerToReceiveVideo: true
-            },
-            // callCenterId: '5f119d7ee6b5a61d04e7cba9'
         }
     },
     methods: {
-        log(title = 'console group title', text = '', color = 'aqua') {
-            console.group(`%c ${title}`, `font-size: 13px; color: ${color}; border: 1px solid ${color}`);
-            console.info(text);
-            console.log('');
-            console.groupEnd();
-        },
         socketConnect() {
-            const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6Im9wZXJhdG9yIiwiZXhwIjoxNjA1ODA1NDI2LCJlbWFpbCI6bnVsbCwib3JpZ19pYXQiOjE2MDU3MTkwMjZ9.FDqzr8RyIniVk2UAsJXyGfu-OaukZNDhj5zVYEwdmcM'
             const callCenterId = 'Q2FsbENlbnRlcjox'
-            const type = 'operator'
-            const url = `wss://vc-dev.enlighted.ru/ws/call-center-channel/${callCenterId}/?type=${type}&token=${token}`
-
+            const type = 'device'
+            const url = `wss://vc-dev.enlighted.ru/ws/call-center-channel/${callCenterId}/?type=${type}`
 
             this.socket = new WebSocket(url)
 
@@ -80,164 +64,37 @@ export default {
             this.socket.addEventListener('message', this.socketMessage)
             this.socket.addEventListener('close', this.socketClose)
         },
-        socketRetryConnect() {
-            console.info('повторная попытка подключения к сокету')
+        socketRetryConnect() { //повторная попытка подключения к сокет серверу
             setTimeout(() => {
                 this.socketConnect()
             }, 5000)
         },
         socketDisconnect() {
-            if (this.socket) {
+            if (this.socket || this.isSocketOpen) {
                 this.socket.close(1000)
                 this.isSocketOpen = false
             }
         },
         socketOpen() {
-            this.log('socketOpen', 'Cокет соединение открыто')
             this.isSocketOpen = true
+            customLog('socketOpen', 'Cокет соединение для Т открыто', 'lightgreen')
         },
         socketError() {
-            console.error('ошибка сокет соединения')
+            customLog('socketOpen', 'Ошибка сокет соединения Т', 'red')
             this.socketRetryConnect()
         },
         socketMessage(data) {
             this.messageProcessing(data)
         },
         socketClose() {
-            this.log('socketClose', 'Cокет соединение закрыто', 'red')
+            customLog('socketClose', 'Сокет соединение закрыто Т')
+            this.socketRetryConnect()
         },
         getJsonFromString(payload) {
             return JSON.parse(payload)
         },
         getStringFromJson(payload) {
             return JSON.stringify(payload)
-        },
-
-        async messageProcessing(data) {
-            const payload = this.getJsonFromString(data.data)
-
-            const info = payload.data
-            const eventName = payload.event
-
-            const isIncomingCallEvent = eventName === 'incoming_call' //идет запрос на звонок от терминала
-            const isEndCallByEvent = eventName === 'end_call_by' //терминал завершил звонок
-            const isCallAnsweredEvent = eventName === 'call_answered' //оператор поднял трубку
-            const isMessageEvent = eventName === 'message' // пришло сообщение от терминала
-
-
-            if (isIncomingCallEvent) {
-                this.log('isEndCallByEvent', `Идет запрос на звонок от терминала, id звонка: ${info.call_id}`)
-                this.log('isEndCallByEvent', info)
-                this.callID = info.call_id
-                this.videoToken = info['video_token']
-                this.videoID = info['video_id']
-            }
-
-            if (isEndCallByEvent) {
-                this.log('isEndCallByEvent', 'Терминал завершил звонок')
-                this.stopCall()
-            }
-
-
-            if (isCallAnsweredEvent) {
-                this.log('isCallAnsweredEvent', `Оператор снял трубку: id звонка ${info.call_id}`)
-            }
-
-            if (isMessageEvent) {
-                this.clientChannel = info.from
-                const messageData = info.message_data
-                const data = messageData.data
-
-                const isIceCandidateEvent = messageData.event === 'ice-candidate'
-                const isOfferEvent = messageData.event === 'offer' //получение офера с терминала
-
-                if (isIceCandidateEvent) {
-                    this._handleNewICECandidateMsg(data.candidate)
-                }
-
-                if (isOfferEvent) {
-                    await this._createAnswer(data)
-                }
-            }
-        },
-
-        _handleNewICECandidateMsg(incoming) {
-            const candidate = new RTCIceCandidate(incoming)
-            try {
-                this.peer.addIceCandidate(candidate)
-            } catch (e) {
-                this.log('_handleNewICECandidateMsg-1', candidate, 'red')
-                this.log('_handleNewICECandidateMsg-2', e, 'red')
-            }
-        },
-
-        async _createPeer() {
-            this.peer = await new RTCPeerConnection(this.constraints)
-
-            this.peer.onicecandidate = e => {
-                if (e.candidate) {
-
-                    const data = {
-                        to: this.clientChannel,
-                        message_data: {
-                            event: 'ice-candidate',
-                            data: {
-                                event: 'ice-candidate',
-                                candidate: e.candidate,
-                            }
-                        }
-                    }
-
-                    this.sendMessage('message_to', data)
-                }
-            }
-
-            this.peer.ontrack = e => {
-                if (e) {
-                    this.$refs.partnerVideo.srcObject = e.streams[0]
-                    this.partnerStream = e.streams[0]
-                    this.log('ontrack', 'Монтирование видео партнера', 'lightgreen')
-                } else {
-                    this.log('ontrack', e, 'red')
-                }
-            }
-            // eslint-disable-next-line require-await
-
-            const stream = await navigator.mediaDevices.getUserMedia(this.options)
-
-            this.$refs.userVideo.srcObject = stream
-            this.userStream = stream
-            console.log(this.userStream)
-        },
-
-        async _createAnswer(payload) {
-            await this._createPeer()
-            const desc = await new RTCSessionDescription(payload.sdp)
-            this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream))
-
-            //передаем offer терминала в в webRTC с помощью setRemoteDescription
-            await this.peer.setRemoteDescription(desc)
-
-            const answer = await this.peer.createAnswer(this.offerOptions)
-            await this.peer.setLocalDescription(answer)
-            const data = {
-                to: this.clientChannel,
-                message_data: {
-                    event: 'answer',
-                    data: {
-                        sdp: this.peer.localDescription
-                    }
-                }
-            }
-            this.sendMessage('message_to', data)
-        },
-
-
-        pickUpThePhone() {
-            const data = {
-                call_id: this.callID
-            }
-            this.sendMessage('picked_up', data)
         },
         sendMessage(eventName, data) {
             const payload = {
@@ -247,69 +104,173 @@ export default {
             this.socket.send(this.getStringFromJson(payload))
         },
 
-        stopCall() {
-            this.stopRecord()
+        async messageProcessing(data) {
+            const payload = this.getJsonFromString(data.data)
+
+            const info = payload.data
+            const eventName = payload.event
+
+            const isOperatorAnsweredTheCall = eventName === 'operator_answered_the_call' //оператор ответил на звонок
+            const isEndCallByEvent = eventName === 'end_call_by' //оператор завершил звонок
+            const isMessageEvent = eventName === 'message' // пришло сообщение от терминала
+
+
+            if (isOperatorAnsweredTheCall) {
+                this.clientChannel = info['client_channel']
+                this.callID = info['call_id']
+
+                customLog('isOperatorAnsweredTheCall', 'Оператор ответил на звонок Т')
+
+                await this.sendRequestToOpenWebRTC()
+            }
+
+            if (isEndCallByEvent) {
+                customLog('isEndCallByEvent', 'Оператор завершил звонок Т')
+            }
+
+            if (isMessageEvent) {
+                this.clientChannel = info.from
+                const messageData = info.message_data
+                const data = messageData.data
+
+                const isIceCandidateEvent = messageData.event === 'ice-candidate'
+                const isAnswerEvent = messageData.event === 'answer' //получение answer с терминала
+
+                if (isIceCandidateEvent) {
+                    await this._handleNewICECandidateMsg(data.candidate)
+                }
+
+                if (isAnswerEvent) {
+                    customLog('isAnswerEvent', 'Пришел евент answer от терминала Т')
+                    const desc = new RTCSessionDescription(data.sdp)
+                    try {
+                        //передаем answer от оператора d webRTC
+                        await this.peer.setRemoteDescription(desc)
+                    } catch (e) {
+                        customLog('isAnswerEvent', e, 'red')
+                    }
+                }
+            }
+
         },
 
-        startRecord() {
-            this.recorder = RecordRTC([this.userStream, this.partnerStream], {
-                type: 'video',
-                checkForInactiveTracks: true,
-                timeSlice: 1000,
-                // ondataavailable(blob) {
-                //     console.log('has data');
-                // },
-                // onStateChange(state) {
-                //     console.log(state)
-                // },
-            })
-            this.recorder.startRecording()
+        async sendRequestToOpenWebRTC() {
+            await this._callUser()
         },
-        stopRecord() {
 
-            if (this.recorder) {
-                this.recorder.stopRecording(() => {
-                    const blob = this.recorder.getBlob()
-                    console.log(blob)
-                    const data = new FormData()
 
-                    data.append('video_file', blob, 'long.webm')
+        // async _mediaStream() {
+        //     this.userStream = await navigator.mediaDevices.getUserMedia(this.options)
+        //
+        //     // обернуть в try и catch если пользователь запретит доступ к камере
+        //     // this.$refs.userVideo.srcObject = stream
+        //     // this.userStream = stream
+        //
+        //     // await this._callUser()
+        // },
 
-                    console.log(data)
-                    console.log(`Authorization: token ${this.videoToken}`)
-                        const lol = `/videos/${this.videoID}/`
-                    axios.patch(lol, data, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                            Authorization: `token ${this.videoToken}`
-                        },
-                    }).then(result => {
-                        console.log(result)
-                    })
-                        .catch(e => {
-                            console.log(e)
-                        })
+        async _callUser() {
+            this.$refs.userVideo.srcObject = this.userStream
+            await this._createPeer()
+        },
 
-                    this.recorder.destroy()
-                    this.recorder = null
-                })
+        async _createPeer() {
+            this.peer = await new RTCPeerConnection(this.constraints)
+            this.userStream.getTracks().forEach(track => this.peer.addTrack(track, this.userStream))
+
+            this.peer.onicecandidate = e => {
+                customLog('onicecandidate1', 'ice кандидат пришел', 'yellow Т')
+                customLog('onicecandidate2', e, 'yellow')
+                if (e.candidate) {
+
+                    const payload = {
+                        event: 'ice-candidate',
+                        candidate: e.candidate,
+                    }
+
+                    const data = {
+                        to: this.clientChannel,
+                        message_data: {
+                            event: 'ice-candidate',
+                            data: payload
+                        }
+                    }
+
+                    this.sendMessage('message_to', data)
+                }
+            }
+
+            this.peer.ontrack = e => {
+                console.log(e)
+                if (e) {
+                    this.$refs.partnerVideo.srcObject = e.streams[0]
+                    customLog('ontrack', 'Монтирование видео партнера Т', 'lightgreen')
+                    console.log(e.streams[0])
+                    console.log(666)
+                    console.log(this.$refs.partnerVideo.srcObject)
+                } else {
+                    customLog('ontrack', 'Видео партнера не смонтировано Т', 'lightgreen')
+                }
+            }
+
+            this.peer.onnegotiationneeded = this._createOffer(3)
+        },
+
+        async _handleNewICECandidateMsg(incoming) {
+            const candidate = new RTCIceCandidate(incoming)
+            try {
+                await this.peer.addIceCandidate(candidate)
+            } catch (e) {
+                customLog('Ошибка добавления кандидата Т', e, 'red')
+            }
+        },
+
+        callRequest() {
+            if (this.isSocketOpen) {
+                const data = {
+                    event: 'call_request'
+                }
+                this.sendMessage('call_request', data)
             } else {
-                console.log('recorder not found')
+                alert('Произошел системный сбой, перезагрузите страницу!')
             }
-
-
         },
-    },
-    watch: {
-        partnerStream() {
-            if (this.userStream) {
-                this.startRecord()
+
+        stopCall() {
+            const data = {
+                call_id: this.callID
             }
+            this.sendMessage('end_call', data)
+        },
+
+        async _createOffer() {
+            try {
+                const offer = await this.peer.createOffer(this.offerOptions)
+                await this.peer.setLocalDescription(offer)
+
+                const payload = {
+                    target: this.clientChannel,
+                    sdp: this.peer.localDescription
+                }
+                const data = {
+                    to: this.clientChannel,
+                    message_data: {
+                        event: 'offer',
+                        data: payload
+                    }
+                }
+                this.sendMessage('message_to', data)
+            } catch (e) {
+                customLog('_createOffer', e, 'red')
+            }
+
         }
     },
 
-    mounted() {
+
+    async mounted() {
         this.socketConnect()
+        this.userStream = await navigator.mediaDevices.getUserMedia(this.options)
     },
     beforeDestroy() {
         this.socketDisconnect()
@@ -317,49 +278,54 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.test-call-page {
+<style lang="scss" scoped>
+.page-home {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 30px;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    outline: 1px solid red;
-    height: 300px;
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 30px;
+    border-radius: 15px;
+    background-color: #fff;
+    grid-template-rows: 210px 100px;
+    grid-template-areas:
+        'video-client video-partner'
+        'btn btn';
 
-    &__video-wrapper {
-        display: flex;
-        justify-content: space-between;
-        width: 100%;
-        max-width: 100%;
-        margin-bottom: 30px;
-
-    }
 
     &__video {
-        width: calc(50% - 15px);
-        height: 300px;
-        outline: 1px solid red
+        display: flex;
+        width: 100%;
+        height: 100%;
+        border-radius: 15px;
+        background-color: #e3dbdb;
+        overflow: hidden;
 
-    }
-
-    &__call-btn {
-        display: block;
-        margin: 10px auto;
-        padding: 5px;
-        font-size: 20px;
-    }
-
-    &__callcenter {
-        height: 40px;
-        margin: 0 auto;
-        margin-top: 10px;
-        padding: 5px;
-        font-size: 13px;
-
-        &-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            width: 100%;
+        &-client {
+            grid-area: video-client;
         }
+
+        &-partner {
+            grid-area: video-partner;
+        }
+    }
+
+    &__btn-box {
+        display: grid;
+        grid-gap: 30px;
+        justify-content: center;
+        grid-auto-flow: column;
+        grid-area: btn;
+        align-items: flex-start;
+    }
+
+    &__btn {
+        justify-self: center;
     }
 }
 </style>

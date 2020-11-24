@@ -252,7 +252,6 @@ export default {
             const stream = await navigator.mediaDevices.getUserMedia(state.options.mediaOptions)
 
             commit('SET_USER_STREAM', stream)
-            console.log(77)
 
         },
         async createAnswer({state, dispatch}, payload) {

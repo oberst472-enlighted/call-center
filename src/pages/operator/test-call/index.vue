@@ -287,8 +287,6 @@ export default {
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-width: 800px;
-    margin: 30px auto;
     padding: 30px;
     border-radius: 15px;
     background-color: #fff;
@@ -316,16 +314,15 @@ export default {
     }
 
     &__btn-box {
-        display: grid;
-        grid-gap: 30px;
+        display: flex;
         justify-content: center;
-        grid-auto-flow: column;
         grid-area: btn;
-        align-items: flex-start;
     }
 
     &__btn {
         justify-self: center;
+        width: 142px !important;
+        margin: 0 15px;
     }
 }
 </style>

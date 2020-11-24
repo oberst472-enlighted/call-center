@@ -13,7 +13,6 @@ import SectionBg from '@/components/sections/bg'
 import emptyLayout from './layouts/emptyLayout'
 import mainLayout from '@/layouts/admin/main/'
 import callLayout from './layouts/callLayout'
-import testCallLayout from './layouts/testCallLayout'
 import {mapState} from 'vuex'
 
 export default {
@@ -28,8 +27,7 @@ export default {
         SectionBg,
         emptyLayout,
         mainLayout,
-        callLayout,
-        testCallLayout
+        callLayout
     },
     computed: {
         ...mapState(['isBgActive']),

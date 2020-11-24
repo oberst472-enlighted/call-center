@@ -46,27 +46,7 @@ export default new VueRouter({
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
                     }
-                },
-                {
-                    path: '/test-call',
-                    name: 'test-call',
-                    components: {
-                        default: require('@/pages/operator/test-call').default,
-                        header: require('@/components/sections/header-operator/').default,
-                        aside: require('@/components/sections/aside/').default,
-                    }
-                    // components: {
-                    //     default: require('@/layouts/testCallLayout').default,
-                    // }
                 }
-                // },
-                // {
-                //     path: '/reset-password',
-                //     name: 'resetPassword',
-                //     components: {
-                //         default: require('@/pages/reset-password').default
-                //     }
-                // }
             ]
         },
         {
@@ -82,14 +62,6 @@ export default new VueRouter({
                         aside: require('@/components/sections/aside/').default,
                     }
                 }
-                // },
-                // {
-                //     path: '/reset-password',
-                //     name: 'resetPassword',
-                //     components: {
-                //         default: require('@/pages/reset-password').default
-                //     }
-                // }
             ]
         },
         {

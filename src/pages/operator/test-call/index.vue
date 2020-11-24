@@ -1,8 +1,8 @@
 <template>
     <div class="page-home">
-        <video id="localVideo" ref="userVideo" autoplay class="page-home__video page-home__video-client" muted playsinline></video>
+        <video id="localVideo" ref="usVid" autoplay class="page-home__video page-home__video-client" muted playsinline></video>
 
-        <video id="remoteVideo" ref="partnerVideo" autoplay class="page-home__video page-home__video-partner" playsinline></video>
+        <video id="remoteVideo" ref="ptVid" autoplay class="page-home__video page-home__video-partner" playsinline></video>
         <div class="page-home__btn-box">
             <UiBtn class="page-home__btn" @click="callRequest">Позвонить</UiBtn>
             <UiBtn class="page-home__btn" theme="negative" @click="stopCall">Завершить вызов</UiBtn>
@@ -163,7 +163,7 @@ export default {
         },
 
         async _callUser() {
-            this.$refs.userVideo.srcObject = this.userStream
+            this.$refs.usVid.srcObject = this.userStream
             await this._createPeer()
         },
 
@@ -196,9 +196,9 @@ export default {
             this.peer.ontrack = e => {
                 console.log(e)
                 if (e) {
-                    this.$refs.partnerVideo.srcObject = e.streams[0]
+                    this.$refs.ptVid.srcObject = e.streams[0]
                     customLog('ontrack', 'Монтирование видео партнера Т', 'lightgreen')
-                    console.log(this.$refs.partnerVideo.srcObject)
+                    console.log(this.$refs.ptVid.srcObject)
                 } else {
                     customLog('ontrack', 'Видео партнера не смонтировано Т', 'lightgreen')
                 }

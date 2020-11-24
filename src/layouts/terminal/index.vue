@@ -304,6 +304,7 @@ export default {
         border-radius: 15px;
         background-color: rgba(#e3dbdb, 0.4);
         overflow: hidden;
+        object-fit: cover;
 
         &-client {
             grid-area: video-client;

@@ -57,6 +57,8 @@ import LocalCallVideoStop from './call-video-stop'
 import LocalCallVideoInfo from './call-video-info'
 import LocalCallVideoChat from './call-video-chat'
 import BlockCallWindowSmall from '@/components/blocks/call-window-small'
+import RecordRTC from 'recordrtc'
+import axios from 'axios'
 
 export default {
     components: {
@@ -67,6 +69,7 @@ export default {
     },
     data() {
         return {
+            recoder: null,
             status: null,
             isVideoOn: true,
             isSoundOn: true,
@@ -203,6 +206,55 @@ export default {
             this.localStream = stream
             this.sendMessage('got user media')
         },
+
+        startRecord() {
+            this.recorder = RecordRTC([this.userStream, this.partnerStream], {
+                type: 'video',
+                checkForInactiveTracks: true,
+                timeSlice: 1000,
+                // ondataavailable(blob) {
+                //     console.log('has data');
+                // },
+                // onStateChange(state) {
+                //     console.log(state)
+                // },
+            })
+            this.recorder.startRecording()
+        },
+        stopRecord() {
+
+            if (this.recorder) {
+                this.recorder.stopRecording(() => {
+                    const blob = this.recorder.getBlob()
+                    console.log(blob)
+                    const data = new FormData()
+
+                    data.append('video_file', blob, 'long.webm')
+
+                    console.log(data)
+                    console.log(`Authorization: token ${this.videoToken}`)
+                    const lol = `/videos/${this.videoID}/`
+                    axios.patch(lol, data, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            Authorization: `token ${this.videoToken}`
+                        },
+                    }).then(result => {
+                        console.log(result)
+                    })
+                        .catch(e => {
+                            console.log(e)
+                        })
+
+                    this.recorder.destroy()
+                    this.recorder = null
+                })
+            } else {
+                console.log('recorder not found')
+            }
+
+
+        },
     },
     watch: {
         getCallStatus(val) {
@@ -231,6 +283,10 @@ export default {
                 this.$refs.partnerVideo.srcObject = val
                 console.log(this.$refs.userVideo.srcObject)
             }
+        },
+
+        isCallOver() {
+            console.log(66)
         }
     }
 

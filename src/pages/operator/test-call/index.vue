@@ -17,6 +17,7 @@ import {customLog} from '@/utils/console-group'
 export default {
     data() {
         return {
+            disableRetryConnection: false,
             socket: null,
             isSocketOpen: false,
             peer: '',
@@ -73,11 +74,14 @@ export default {
             if (this.socket || this.isSocketOpen) {
                 this.socket.close(1000)
                 this.isSocketOpen = false
+                this.disableRetryConnection = true
             }
         },
         socketOpen() {
-            this.isSocketOpen = true
-            customLog('socketOpen', 'Cокет соединение для Т открыто', 'lightgreen')
+            if (!this.disableRetryConnection) {
+                this.isSocketOpen = true
+                customLog('socketOpen', 'Cокет соединение для Т открыто', 'lightgreen')
+            }
         },
         socketError() {
             customLog('socketOpen', 'Ошибка сокет соединения Т', 'red')
@@ -158,17 +162,6 @@ export default {
             await this._callUser()
         },
 
-
-        // async _mediaStream() {
-        //     this.userStream = await navigator.mediaDevices.getUserMedia(this.options)
-        //
-        //     // обернуть в try и catch если пользователь запретит доступ к камере
-        //     // this.$refs.userVideo.srcObject = stream
-        //     // this.userStream = stream
-        //
-        //     // await this._callUser()
-        // },
-
         async _callUser() {
             this.$refs.userVideo.srcObject = this.userStream
             await this._createPeer()
@@ -205,15 +198,13 @@ export default {
                 if (e) {
                     this.$refs.partnerVideo.srcObject = e.streams[0]
                     customLog('ontrack', 'Монтирование видео партнера Т', 'lightgreen')
-                    console.log(e.streams[0])
-                    console.log(666)
                     console.log(this.$refs.partnerVideo.srcObject)
                 } else {
                     customLog('ontrack', 'Видео партнера не смонтировано Т', 'lightgreen')
                 }
             }
 
-            this.peer.onnegotiationneeded = this._createOffer(3)
+            this.peer.onnegotiationneeded = this._createOffer()
         },
 
         async _handleNewICECandidateMsg(incoming) {

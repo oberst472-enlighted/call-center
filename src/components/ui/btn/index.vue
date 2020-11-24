@@ -189,9 +189,9 @@
             }
 
             &--disabled {
-                background-color: #F4F4F4;
-                color: #8E959C;
+                opacity: 0.5;
                 pointer-events: none;
+                color: #8E959C;
             }
 
             &--loading {

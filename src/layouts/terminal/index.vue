@@ -1,14 +1,31 @@
 <template>
     <div class="page-terminal">
-        <div class="wrap">
+        <component :is="`div`" :key="componentKey" class="wrap">
             <video id="localVideo" ref="usVid" autoplay class="page-terminal__video page-terminal__video-client" muted playsinline></video>
 
             <video id="remoteVideo" ref="ptVid" autoplay class="page-terminal__video page-terminal__video-partner" playsinline></video>
             <div class="page-terminal__btn-box">
-                <UiBtn class="page-terminal__btn" @click="callRequest">Позвонить</UiBtn>
-                <UiBtn class="page-terminal__btn" theme="negative" @click="stopCall">Завершить вызов</UiBtn>
+                <transition name="fadeB" mode="out-in">
+                    <UiBtn
+                        class="page-terminal__btn"
+                        @click="callRequest"
+                        v-if="!isCallBtnDisabled"
+                        key="btn-1"
+                    >
+                        Позвонить
+                    </UiBtn>
+                    <UiBtn
+                        v-else
+                        class="page-terminal__btn"
+                        theme="negative"
+                        @click="stopCall"
+                        key="btn-2"
+                    >
+                        Завершить вызов
+                    </UiBtn>
+                </transition>
             </div>
-        </div>
+        </component>
     </div>
 </template>
 
@@ -19,11 +36,12 @@ import {customLog} from '@/utils/console-group'
 export default {
     data() {
         return {
+            componentKey: 1,
+            isCallBtnDisabled: false,
             disableRetryConnection: false,
             socket: null,
             isSocketOpen: false,
-            peer: '',
-            otherUser: '',
+            peer: null,
             userStream: null,
 
             clientChannel: '',
@@ -36,14 +54,6 @@ export default {
             },
             constraints: {
                 iceServers: [
-                    // { url: 'stun:stun1.l.google.com:19302' },
-                    // { url: 'stun:stun2.l.google.com:19302' },
-                    // { url: 'stun:stun3.l.google.com:19302' },
-                    // {
-                    //     url: 'turn:coturn.sverstal.ru:3478',
-                    //     username: 'tab1',
-                    //     credential: '123456',
-                    // },
                     {urls: 'stun:vc-dev.enlighted.ru:3478'},
                     {
                         urls: 'turn:vc-dev.enlighted.ru:3478',
@@ -132,6 +142,7 @@ export default {
 
             if (isEndCallByEvent) {
                 customLog('isEndCallByEvent', 'Оператор завершил звонок Т')
+                this.reset()
             }
 
             if (isMessageEvent) {
@@ -206,6 +217,23 @@ export default {
                 }
             }
 
+            this.peer.addEventListener('connectionstatechange', () => {
+                switch (this.peer.connectionState) {
+                    case 'connected':
+                        customLog('connectionstatechange', this.peer.connectionState, 'rebeccapurple')
+                        break;
+                    case 'disconnected':
+                    case 'failed':
+                        customLog('connectionstatechange', this.peer.connectionState, 'rebeccapurple')
+                        this.reset()
+                        break;
+                    case 'closed':
+                        customLog('connectionstatechange', this.peer.connectionState, 'rebeccapurple')
+                        break;
+                }
+            })
+
+
             this.peer.onnegotiationneeded = this._createOffer()
         },
 
@@ -223,6 +251,7 @@ export default {
                 const data = {
                     event: 'call_request'
                 }
+                this.isCallBtnDisabled = true
                 this.sendMessage('call_request', data)
             } else {
                 alert('Произошел системный сбой, перезагрузите страницу!')
@@ -234,6 +263,7 @@ export default {
                 call_id: this.callID
             }
             this.sendMessage('end_call', data)
+            this.reset()
         },
 
         async _createOffer() {
@@ -257,6 +287,22 @@ export default {
                 customLog('_createOffer', e, 'red')
             }
 
+        },
+        reset() {
+            this.peer.close()
+            this.isCallBtnDisabled = false
+            this.peer = null
+            this.$refs.usVid.srcObject = null
+            this.$refs.ptVid.srcObject = null
+
+            this.userStream = null
+
+            this.clientChannel = ''
+            this.callID = ''
+            this.componentKey++
+            // setTimeout(() => {
+            //     this.userStream = navigator.mediaDevices.getUserMedia(this.options)
+            //   }, 8000);
         }
     },
 
@@ -272,6 +318,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.fadeB-enter-active, .fadeB-leave-active {
+    transition: opacity 0.3s;
+}
+.fadeB-enter, .fadeB-leave-to {
+    opacity: 0;
+}
 .page-terminal {
     box-sizing: border-box;
     width: 100%;
@@ -302,9 +354,9 @@ export default {
         width: 100%;
         height: 100%;
         border-radius: 15px;
-        background-color: rgba(#e3dbdb, 0.4);
         overflow: hidden;
         object-fit: cover;
+        background: repeating-linear-gradient(-45deg, rgba(#e3dbdb, 0.3), rgba(#e3dbdb, 0.3) 25px, rgba(#e3dbdb, 0) 25px, rgba(#e3dbdb, 0) 50px) fixed;
 
         &-client {
             grid-area: video-client;
@@ -322,9 +374,6 @@ export default {
     }
 
     &__btn {
-        width: 142px !important;
-        margin: 0 15px;
-        justify-self: center;
     }
 }
 </style>

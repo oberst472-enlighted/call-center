@@ -59,4 +59,6 @@ export async function apiGetCalls() {
     return response
 }
 
+apiGetCalls()
+
 

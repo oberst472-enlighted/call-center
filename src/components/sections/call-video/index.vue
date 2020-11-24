@@ -106,9 +106,6 @@ export default {
     },
     methods: {
         ...mapActions('socket', ['stStopCall']),
-        _stopCall() {
-            this.stStopCall()
-        },
         _toggleMicro(payload) {
             console.log(this.$refs.partnerVideo.muted)
             this.$refs.partnerVideo.muted = payload
@@ -118,40 +115,14 @@ export default {
             console.log(payload)
         },
 
-        onReturnToWorkClick() {
-            this.closeModal()
-            this.$store.dispatch('updateWorkingShiftStats')
+        getTime() {
+            const date = new Date()
+            const hours = `${date.getHours()}`.length === 1 ? `0${date.getHours()}` : `${date.getHours()}`
+            const minutes = `${date.getMinutes()}`.length === 1 ? `0${date.getMinutes()}` : `${date.getMinutes()}`
+            const seconds = `${date.getSeconds()}`.length === 1 ? `0${date.getSeconds()}` : `${date.getSeconds()}`
+            return `${hours}:${minutes}:${seconds}`
         },
         // СБРОСИТЬ ТРУБКУ
-        hangup() {
-            let date = new Date()
-            this.terminatedBy = 'ОПЕРАТОРОМ'
-
-            let hours = `${date.getHours()}`.length === 1 ? `0${date.getHours()}` : `${date.getHours()}`
-            let minutes = `${date.getMinutes()}`.length === 1 ? `0${date.getMinutes()}` : `${date.getMinutes()}`
-            let seconds = `${date.getSeconds()}`.length === 1 ? `0${date.getSeconds()}` : `${date.getSeconds()}`
-
-            this.$store.commit('callLogic/setEndTime', `${hours}:${minutes}:${seconds}`)
-
-            this.stop()
-            this.socket.emit('bye')
-            this.socket.emit('change_status', 'UNAVALIABLE')
-        },
-        async closeModal() {
-            console.log('WAITING')
-            this.$store.commit('callLogic/cleanCallTime')
-
-            console.log(this.$store.state.callLogic.messageText)
-            let resp = await apiRequest.post(`/api/calls/${this.callObjectId}/comment/`, {
-                comment: this.$store.state.callLogic.messageText
-            })
-            console.log(resp)
-
-            this.$store.commit('callLogic/setMessage', '')
-
-            this.socket.emit('change_status', 'WAITING')
-            this.$store.commit('callLogic/closeCallPage')
-        },
         stopAudio() {
             this.isSoundOn = false
 
@@ -199,12 +170,6 @@ export default {
             console.log(video)
 
             // video.play()
-        },
-        gotStream(stream) {
-            this.local = document.getElementById('localVideo')
-            this.local.srcObject = stream
-            this.localStream = stream
-            this.sendMessage('got user media')
         },
 
         startRecord() {
@@ -281,7 +246,7 @@ export default {
                 this.$refs.partnerVideo.srcObject = val
                 console.log(this.$refs.userVideo.srcObject)
                 if (val) {
-                    this.startRecord()
+                    // this.startRecord()
                 }
             }
         },

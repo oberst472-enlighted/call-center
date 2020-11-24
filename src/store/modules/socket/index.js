@@ -6,16 +6,6 @@ export default {
     state: {
         options: {
             constraints: {
-                // iceServers: [
-                //     { url: 'stun:stun1.l.google.com:19302' },
-                //     { url: 'stun:stun2.l.google.com:19302' },
-                //     { url: 'stun:stun3.l.google.com:19302' },
-                //     {
-                //         url: 'turn:coturn.sverstal.ru:3478',
-                //         username: 'tab1',
-                //         credential: '123456',
-                //     },
-                // ],
                 iceServers: [
                     { urls: 'stun:vc-dev.enlighted.ru:3478' },
                     {
@@ -164,7 +154,6 @@ export default {
                 customLog('isIncomingCallEvent', `Входящий звонок, id звонка: ${info.call_id}`)
 
                 commit('TOGGLE_INCOMING_CALL')
-                console.log(info)
                 commit('SET_VIDEO_TOKEN', info['video_token'])
                 commit('SET_VIDEO_ID', info['video_id'])
                 commit('SET_CALL_ID', info['call_id'])
@@ -173,6 +162,7 @@ export default {
 
             if (isEndCallByEvent) {
                 commit('SET_CALL_OVER')
+                dispatch('closePeerConnection')
                 commit('SET_WHO_STOPPED_THE_CALL', 'partner')
 
                 customLog('isEndCallByEvent', 'Терминал завершил звонок')
@@ -211,6 +201,14 @@ export default {
                 customLog('handleNewICECandidateMsg', candidate, 'red')
                 customLog('handleNewICECandidateMsg', e, 'red')
             }
+        },
+
+        closePeerConnection({state, commit}) {
+            state.peer.close()
+            commit('SET_PEER_CONNECTION', null)
+            commit('SET_USER_STREAM', null)
+            commit('SET_PARTNER_STREAM', null)
+
         },
         async createPeer({state, commit, dispatch}) {
 

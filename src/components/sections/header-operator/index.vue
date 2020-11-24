@@ -35,7 +35,7 @@
         <div class="section-header__user-box">
             <!--            <LocalHeaderOperatorUSer/>-->
             <UiBtn :to="{name: 'test-call'}" v-if="$route.name !== 'test-call'">
-                Тестовая страница со звонками
+                ЭМУЛЯТОР ТЕРМИНАЛА
             </UiBtn>
             <UiBtn :to="{name: 'home-operator'}" v-else theme="negative">
                 Вернуться назад

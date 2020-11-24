@@ -77,7 +77,7 @@ export default {
             state.identifiersCroup.videoToken = payload
         },
         SET_VIDEO_ID(state, payload) {
-            state.identifiersCroup.videoToken = payload
+            state.identifiersCroup.videoID = payload
         },
         SET_CALL_ID(state, payload) {
             state.identifiersCroup.callID = payload

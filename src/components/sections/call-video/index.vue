@@ -78,7 +78,7 @@ export default {
     },
 
     computed: {
-        ...mapState('socket', ['userStream', 'partnerStream', 'isCallOver']),
+        ...mapState('socket', ['userStream', 'partnerStream', 'isCallOver', 'identifiersCroup']),
         message: {
             get: function() {
                 return this.$store.state.callLogic.messageText
@@ -230,14 +230,12 @@ export default {
                     const data = new FormData()
 
                     data.append('video_file', blob, 'long.webm')
-
-                    console.log(data)
-                    console.log(`Authorization: token ${this.videoToken}`)
-                    const lol = `/videos/${this.videoID}/`
+                    console.log(this.identifiersCroup)
+                    const lol = `api/v1/videos/${this.identifiersCroup.videoID}`
                     axios.patch(lol, data, {
                         headers: {
                             'Content-Type': 'multipart/form-data',
-                            Authorization: `token ${this.videoToken}`
+                            Authorization: `token ${this.identifiersCroup.videoToken}`
                         },
                     }).then(result => {
                         console.log(result)
@@ -282,11 +280,15 @@ export default {
                 this.$refs.userVideo.srcObject = this.userStream
                 this.$refs.partnerVideo.srcObject = val
                 console.log(this.$refs.userVideo.srcObject)
+                if (val) {
+                    this.startRecord()
+                }
             }
         },
 
         isCallOver() {
             console.log(66)
+            this.stopRecord()
         }
     }
 

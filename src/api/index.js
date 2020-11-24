@@ -47,10 +47,16 @@ export async function ApiCallsOperator(id) {
   return axiosUrl('get', url, body, token)
 }
 
-// получить звонки админа
+// получить звонки
 export async function apiGetCalls() {
-  const url = `api/v1/api/calls/`
-  const body = null
-  return axiosUrl('get', url, body, token)
+    const options = {
+        method: 'get',
+        url: `api/v1/calls`,
+        body: null,
+        token
+    }
+    const response = await axiosUrl(options)
+    return response
 }
+
 

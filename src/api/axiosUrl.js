@@ -7,7 +7,7 @@ export default async function({method, url, body, token}) {
                 method,
                 url,
                 headers: {
-                    'x-access-token': token
+                    Authorization: `JWT ${token}`
                 }
             })
         } catch (error) {
@@ -21,7 +21,7 @@ export default async function({method, url, body, token}) {
                 method,
                 url,
                 headers: {
-                    'x-access-token': token
+                    Authorization: `JWT ${token}`
                 },
                 data: body
             })

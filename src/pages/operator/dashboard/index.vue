@@ -16,7 +16,7 @@
         </div>
 
         <div class="page-home__terminals">
-            <SectionBox>
+            <SectionBox gutters>
                 Ожидание терминалов
             </SectionBox>
         </div>
@@ -25,18 +25,6 @@
             <SectionBox scroll>
                 <div class="content">
                     история звонков
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!
-                    <!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
-                    <!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
-                    <!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
-                    <!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
-                    <!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
-                    <!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
-                    <!--                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!-->
                 </div>
             </SectionBox>
         </div>

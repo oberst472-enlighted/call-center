@@ -1,5 +1,5 @@
 <template>
-    <div>user</div>
+    <div>user info</div>
     <!--    <div>-->
     <!--        <div-->
     <!--            v-if="false"-->

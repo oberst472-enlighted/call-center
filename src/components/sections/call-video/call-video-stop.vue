@@ -52,8 +52,17 @@ export default {
         color: #ffffff;
         font-weight: 700;
         border-radius: 34px;
-        background-color: #f04265;
+        background-color: $color--negative;
         cursor: pointer;
+        transition-duration: 0.3s;
+        transition-property: transform;
+        user-select: none;
+        &:hover {
+            transform: scale(0.95);
+        }
+        &:active {
+            background-color: darken($color--negative, 10%);
+        }
     }
     &__time {
         color: #ffffff;

@@ -19,10 +19,11 @@
                 </div>
             </section>
         </main>
-
-        <div class="layout-default__call-video" v-if="isCallAnswered">
-            <SectionCallVideo/>
-        </div>
+        <transition name="fade">
+            <div class="layout-default__call-video" v-if="isCallAnswered">
+                <SectionCallVideo/>
+            </div>
+        </transition>
         <!--        <div class="layout-default__call-video" v-if="true">-->
         <!--            <SectionCallVideo/>-->
         <!--        </div>-->

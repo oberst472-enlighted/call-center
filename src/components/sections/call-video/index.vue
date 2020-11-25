@@ -1,53 +1,59 @@
 <template>
     <section class="section-call-video">
         <div class="section-call-video__main">
-            <div v-if="!isCallOver" class="section-call-video__client-video">
-                <video
-                    ref="userVideo"
-                    autoplay
-                    muted
-                />
+            <transition name="fade">
+                <div v-if="!isCallOver" class="section-call-video__client-video">
 
-                <transition-group class="section-call-video__icons-box" name="icons" tag="div">
-                    <IconCameraOff
-                        v-if="isCameraDisable"
-                        key="camera"
-                        class="section-call-video__icon"
+                    <video
+                        ref="userVideo"
+                        autoplay
+                        muted
                     />
-                    <IconMicroOff
-                        v-if="isAudioDisable"
-                        key="audio"
-                        class="section-call-video__icon section-call-video__icon-micro"
+
+                    <transition-group class="section-call-video__icons-box" name="icons" tag="div">
+                        <IconCameraOff
+                            v-if="isCameraDisable"
+                            key="camera"
+                            class="section-call-video__icon"
+                        />
+                        <IconMicroOff
+                            v-if="isAudioDisable"
+                            key="audio"
+                            class="section-call-video__icon section-call-video__icon-micro"
+                        />
+                    </transition-group>
+                </div>
+            </transition>
+
+            <transition name="fade" mode="out-in">
+                <div v-if="!isCallOver" class="section-call-video__partner-video" key="video">
+                    <video
+                        ref="partnerVideo"
+                        autoplay
                     />
-                </transition-group>
-            </div>
+                </div>
 
-            <div v-if="!isCallOver" class="section-call-video__partner-video">
-                <video
-                    ref="partnerVideo"
-                    autoplay
-                />
-            </div>
-
-            <div v-if="isCallOver" class="section-call-video__stop">
-                <LocalCallVideoStop/>
-            </div>
+                <div v-else class="section-call-video__stop" key="stop">
+                    <LocalCallVideoStop @click="closeSectionCallVideo"/>
+                </div>
+            </transition>
         </div>
 
         <div class="section-call-video__aside">
             <div class="section-call-video__aside-head">
                 <BlockCallWindowSmall
                     is-block-options-active
+                    :is-block-options-disable="isBlockOptionsDisable"
                     is-disable-btns-box
                     is-disable-passive-box
-                    @stop-call="stStopCall"
+                    @stop-call="stopCall"
                     @toggle-micro="_toggleAudio"
                     @toggle-camera="_toggleCamera"
                 />
             </div>
 
             <div class="section-call-video__aside-info">
-                <LocalCallVideoInfo @click="TOGGLE_CALL_ANSWERED(false)"/>
+                <LocalCallVideoInfo/>
             </div>
 
 
@@ -82,7 +88,8 @@ export default {
             status: null,
             isVideoOn: true,
             isSoundOn: true,
-            terminatedBy: ''
+            terminatedBy: '',
+            isBlockOptionsDisable: false
         }
     },
 
@@ -111,7 +118,7 @@ export default {
         },
     },
     methods: {
-        ...mapMutations('socket', ['TOGGLE_AUDIO', 'TOGGLE_CAMERA', 'TOGGLE_CALL_ANSWERED']),
+        ...mapMutations('socket', ['TOGGLE_AUDIO', 'TOGGLE_CAMERA', 'TOGGLE_CALL_ANSWERED', 'TOGGLE_CALL_OVER']),
         ...mapActions('socket', ['stStopCall']),
         _toggleAudio(payload) {
             this.isAudioDisable = !payload
@@ -177,26 +184,23 @@ export default {
 
 
         },
+
+        stopCall() {
+            this.stStopCall()
+            this.isBlockOptionsDisable = true
+        },
+        closeSectionCallVideo() {
+            this.TOGGLE_CALL_ANSWERED(false)
+            this.TOGGLE_CALL_OVER(false)
+        }
     },
     watch: {
-        getCallStatus(val) {
-            console.error(val)
-            if (val) {
-                this.interval = setInterval(() => {
-                    this.$store.commit('callLogic/incrementCallTime')
-                }, 1000)
-            } else {
-                clearInterval(this.interval)
-                this.$store.commit('callLogic/cleanCallTime')
 
-            }
-        },
         partnerStream: {
             immediate: true,
             handler(val) {
                 this.$refs.userVideo.srcObject = this.userStream
                 this.$refs.partnerVideo.srcObject = val
-                console.log(this.$refs.userVideo.srcObject)
                 if (val) {
                     // this.startRecord()
                 }
@@ -249,7 +253,6 @@ export default {
         width: 240px;
         height: 160px;
         border-radius: 8px;
-        background-color: $color--primary;
         overflow: hidden;
 
         video {
@@ -312,10 +315,11 @@ export default {
 
     &__aside-head {
         display: flex;
-        min-height: 175px;
+        min-height: 160px;
         border-bottom-right-radius: 8px;
         border-bottom-left-radius: 8px;
         overflow: hidden;
+        background-color: #4c3b60;
     }
 
     &__aside-info {

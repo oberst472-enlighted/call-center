@@ -17,5 +17,8 @@ export default {}
     background-repeat: no-repeat;
     background-position: left center;
     padding-left: 30px;
+    height: 52px;
+    display: inline-flex;
+    align-items: center;
 }
 </style>

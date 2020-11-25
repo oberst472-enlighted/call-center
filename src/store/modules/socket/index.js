@@ -98,7 +98,7 @@ export default {
         SET_PEER_CONNECTION(state, payload) {
             state.peer = payload
         },
-        SET_CALL_OVER(state, payload = true) {
+        TOGGLE_CALL_OVER(state, payload = true) {
             state.isCallOver = payload
         },
         SET_WHO_STOPPED_THE_CALL(state, payload = 'user') {
@@ -175,7 +175,7 @@ export default {
             }
 
             if (isEndCallByEvent) {
-                commit('SET_CALL_OVER')
+                commit('TOGGLE_CALL_OVER')
                 dispatch('closePeerConnection')
                 commit('SET_WHO_STOPPED_THE_CALL', 'partner')
 
@@ -217,11 +217,19 @@ export default {
             }
         },
 
-        closePeerConnection({state, commit}) {
+        closePeerConnection({state, commit, dispatch}) {
             state.peer.close()
+            state.userStream.getTracks().forEach(track => {
+                console.log(track)
+                track.stop()
+            })
+            state.peer = null
             commit('SET_PEER_CONNECTION', null)
             commit('SET_USER_STREAM', null)
             commit('SET_PARTNER_STREAM', null)
+            setTimeout(() => {
+                dispatch('getMedia')
+              }, 500);
 
 
         },
@@ -245,7 +253,7 @@ export default {
                         }
                     }
 
-                    dispatch('sendMessage', {eventName: 'message_to', data})
+                    dispatch('stSendMessage', {eventName: 'message_to', data})
                 }
             }
 
@@ -286,25 +294,26 @@ export default {
                     }
                 }
             }
-            dispatch('sendMessage', {eventName: 'message_to', data})
+            dispatch('stSendMessage', {eventName: 'message_to', data})
         },
         pickUpThePhone({state, dispatch}) {
             const data = {
                 call_id: state.identifiersCroup.callID
             }
-            dispatch('sendMessage', {eventName: 'picked_up', data})
+            dispatch('stSendMessage', {eventName: 'picked_up', data})
         },
 
         stStopCall({state, commit, dispatch}) {
             const data = {
                 call_id: state.identifiersCroup.callID
             }
-            dispatch('sendMessage', {eventName: 'end_call', data})
-            commit('SET_CALL_OVER')
+            dispatch('stSendMessage', {eventName: 'end_call', data})
 
+            commit('TOGGLE_CALL_OVER')
+            dispatch('closePeerConnection')
             customLog('stStopCall', 'Оператор завершил звонок')
         },
-        sendMessage({state}, {eventName, data}) {
+        stSendMessage({state}, {eventName, data}) {
             const payload = {
                 event: eventName,
                 data

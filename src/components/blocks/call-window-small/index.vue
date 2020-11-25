@@ -21,18 +21,21 @@
                 <LocalCallWindowSmallBtn @click="$emit('click')"/>
             </span>
 
-            <span class="block-call-window-small__options-box" v-if="isBlockOptionsActive">
-                <template v-if="true">
+            <span
+                class="block-call-window-small__options-box"
+                v-if="isBlockOptionsActive"
+            >
+                <transition name="fade" mode="out-in">
                     <LocalCallWindowOptions
+                        v-if="!isBlockOptionsDisable"
                         @stop-call="$emit('stop-call')"
                         @toggle-micro="$emit('toggle-micro', $event)"
                         @toggle-camera="$emit('toggle-camera', $event)"
+                        key="options"
                     />
-                </template>
 
-                <template v-else>
-                    <LocalCallWindowEnd/>
-                </template>
+                    <LocalCallWindowEnd v-else key="end"/>
+                </transition>
             </span>
         </div>
 
@@ -58,6 +61,10 @@ export default {
             type: Boolean,
             default: false
         },
+        isBlockOptionsDisable: {
+            type: Boolean,
+            default: false
+        },
         isDisablePassiveBox: {
             type: Boolean,
             default: false
@@ -71,8 +78,6 @@ export default {
             default: false
         }
     },
-    methods: {
-    }
 }
 </script>
 
@@ -142,6 +147,11 @@ export default {
     }
     &__options-box {
         margin-top: auto;
+        transition-duration: 0.3s;
+        &--disable {
+            pointer-events: none;
+            opacity: 0.3;
+        }
     }
 }
 </style>

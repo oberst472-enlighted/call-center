@@ -4,7 +4,7 @@
             <span>Звонок завершен</span>
             <span>{{ role }}</span>
         </div>
-        <div class="block-stop__btn">
+        <div class="block-stop__btn" @click="$emit('click')">
             Продолжить работу
         </div>
         <div class="block-stop__time">

@@ -47,7 +47,7 @@
             </div>
 
             <div class="section-call-video__aside-info">
-                <LocalCallVideoInfo/>
+                <LocalCallVideoInfo @click="TOGGLE_CALL_ANSWERED(false)"/>
             </div>
 
 
@@ -111,7 +111,7 @@ export default {
         },
     },
     methods: {
-        ...mapMutations('socket', ['TOGGLE_AUDIO', 'TOGGLE_CAMERA']),
+        ...mapMutations('socket', ['TOGGLE_AUDIO', 'TOGGLE_CAMERA', 'TOGGLE_CALL_ANSWERED']),
         ...mapActions('socket', ['stStopCall']),
         _toggleAudio(payload) {
             this.isAudioDisable = !payload
@@ -273,7 +273,7 @@ export default {
         height: 100%;
         padding: 10px;
         color: #fff !important;
-        opacity: 0.05;
+        opacity: 0.3;
         grid-auto-flow: column;
     }
 

@@ -176,7 +176,6 @@ export default {
 
             if (isEndCallByEvent) {
                 commit('SET_CALL_OVER')
-                commit('TOGGLE_CALL_ANSWERED', false)
                 dispatch('closePeerConnection')
                 commit('SET_WHO_STOPPED_THE_CALL', 'partner')
 

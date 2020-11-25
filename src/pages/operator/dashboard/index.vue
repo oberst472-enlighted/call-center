@@ -22,10 +22,14 @@
         </div>
 
         <div class="page-home__calls-history">
-            <SectionBox scroll>
-                <div class="content">
-                    история звонков
-                </div>
+            <SectionBox
+                gutters
+                scroll
+                head
+                title="История звонков"
+                subtitle="Последние"
+            >
+                Lorem ipsum dolor sit amet, consectetur adipisicing.
             </SectionBox>
         </div>
     </section>

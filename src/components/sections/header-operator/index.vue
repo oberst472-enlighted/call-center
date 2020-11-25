@@ -33,13 +33,7 @@
         </transition>
 
         <div class="section-header__user-box">
-            <!--            <LocalHeaderOperatorUSer/>-->
-            <UiBtn :to="{name: 'terminal'}" v-if="$route.name !== 'terminal'">
-                ЭМУЛЯТОР ТЕРМИНАЛА
-            </UiBtn>
-            <UiBtn :to="{name: 'home-operator'}" v-else theme="negative">
-                Вернуться назад
-            </UiBtn>
+            <LocalHeaderOperatorUSer/>
         </div>
     </div>
 </template>

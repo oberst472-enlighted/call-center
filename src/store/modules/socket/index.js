@@ -223,6 +223,7 @@ export default {
             commit('SET_USER_STREAM', null)
             commit('SET_PARTNER_STREAM', null)
 
+
         },
         async createPeer({state, commit, dispatch}) {
 

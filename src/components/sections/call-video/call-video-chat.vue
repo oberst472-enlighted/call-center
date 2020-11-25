@@ -2,7 +2,7 @@
     <div class="block-chat">
         <div class="block-chat__title">Комментарий оператора</div>
         <label class="block-chat__box">
-            <textarea class="block-chat__inp"/>
+            <textarea class="block-chat__inp" @input="$emit('input', $event.target.value)"/>
             <span class="block-chat__text">сохранено</span>
         </label>
     </div>

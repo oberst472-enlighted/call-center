@@ -66,7 +66,7 @@ export default {
         flex-direction: column;
         min-height: 65px;
         padding: 15px;
-        border-bottom: 1px solid #efeff4;
+        padding-bottom: 0;
         background-color: #ffffff;
     }
 
@@ -84,6 +84,9 @@ export default {
     &__body {
         //height: 100%;
         flex-grow: 1;
+        display: flex;
+        width: 100%;
+        flex-direction: column;
     }
 
     &__content {

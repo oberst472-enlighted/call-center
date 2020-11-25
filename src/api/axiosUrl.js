@@ -30,4 +30,19 @@ export default async function({method, url, body, token}) {
             return false
         }
     }
+    if (method.toUpperCase() === 'PATCH') {
+        try {
+            return await axios({
+                method,
+                url,
+                headers: {
+                    Authorization: `JWT ${token}`
+                },
+                data: body
+            })
+        } catch (error) {
+            console.error(error)
+            return false
+        }
+    }
 }

@@ -47,8 +47,8 @@ export async function ApiCallsOperator(id) {
   return axiosUrl('get', url, body, token)
 }
 
-// получить звонки
-export async function apiGetCalls() {
+// получить звонки оператора за смену
+export async function apiGetAllCallsPerWorkShift() {
     const options = {
         method: 'get',
         url: `api/v1/calls`,
@@ -59,6 +59,18 @@ export async function apiGetCalls() {
     return response
 }
 
-apiGetCalls()
+// отправить комментарий к звонку
+export async function apiSendACommentToTheCall({callID, info}) {
+    console.log(66)
+    const options = {
+        method: 'patch',
+        url: ` api/v1/calls/${callID}/`,
+        body: info,
+        token
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+
 
 

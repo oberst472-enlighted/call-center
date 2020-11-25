@@ -29,27 +29,48 @@
                 title="История звонков"
                 subtitle="Последние"
             >
-                Lorem ipsum dolor sit amet, consectetur adipisicing.
+                <BlockCallShortstoryItem class="page-home__calls-history__item" v-for="item in calls" :key="item.id" :info="item"/>
             </SectionBox>
         </div>
     </section>
 </template>
 
 <script>
+import store from '@/store'
 import {mapState, mapActions, mapGetters} from 'vuex'
 import SectionBox from '@/components/sections/box'
 import BlockCallWindowSmall from '@/components/blocks/call-window-small'
+import BlockCallShortstoryItem from '@/components/blocks/call-shortstory-item'
 export default {
     components: {
         SectionBox,
-        BlockCallWindowSmall
+        BlockCallWindowSmall,
+        BlockCallShortstoryItem
     },
     computed: {
         ...mapState('socket', ['isIncomingCall']),
+        ...mapState('calls', ['calls']),
         ...mapGetters('middleware', ['isAdmin', 'isAuth'])
     },
     methods: {
         ...mapActions('socket', ['socketConnect', 'pickUpThePhone'])
+    },
+    async beforeRouteEnter(to, from, next) {
+        // store.dispatch('toggleLoading')
+        const response = await Promise.all([
+            store.dispatch('calls/stGetAllCallsPerWorkShift'),
+            // store.dispatch('tasks/stGetTasksTypes'),
+            // store.dispatch('users/stAllUsers', ['contractor'])
+        ])
+        const isSuccess = response.every(item => item)
+        if (isSuccess) {
+           next()
+
+        } else {
+            next(false)
+            // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
+        }
+        // store.dispatch('toggleLoading', false)
     },
     mounted() {
         // this.socketConnect()
@@ -84,6 +105,9 @@ export default {
         grid-area: history;
         height: auto;
         align-self: auto;
+        &__item {
+            border-top: 1px solid #efeff4;
+        }
         //align-self: start;
 
     }

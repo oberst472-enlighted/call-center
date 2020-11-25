@@ -58,7 +58,7 @@
 
 
             <div class="section-call-video__aside-chat">
-                <LocalCallVideoChat/>
+                <LocalCallVideoChat @input="sendComment"/>
             </div>
         </div>
     </section>
@@ -94,7 +94,7 @@ export default {
     },
 
     computed: {
-        ...mapState('socket', ['userStream', 'partnerStream', 'isCallOver', 'identifiersCroup']),
+        ...mapState('socket', ['userStream', 'partnerStream', 'isCallOver', 'identifiersCroup', 'identifiersCroup']),
         message: {
             get: function() {
                 return this.$store.state.callLogic.messageText
@@ -120,6 +120,19 @@ export default {
     methods: {
         ...mapMutations('socket', ['TOGGLE_AUDIO', 'TOGGLE_CAMERA', 'TOGGLE_CALL_ANSWERED', 'TOGGLE_CALL_OVER']),
         ...mapActions('socket', ['stStopCall']),
+        ...mapActions('calls', ['stSendACommentToTheCall']),
+        async sendComment(payload) {
+            let info = {
+                callID: this.identifiersCroup.callID,
+                info: {
+                    comment: payload
+                }
+            }
+            const isSuccess = this.stSendACommentToTheCall(info)
+            if (isSuccess) {
+
+            }
+        },
         _toggleAudio(payload) {
             this.isAudioDisable = !payload
             this.TOGGLE_AUDIO(payload)
@@ -202,7 +215,7 @@ export default {
                 this.$refs.userVideo.srcObject = this.userStream
                 this.$refs.partnerVideo.srcObject = val
                 if (val) {
-                    // this.startRecord()
+                    this.startRecord()
                 }
             }
         },

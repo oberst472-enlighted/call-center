@@ -1,40 +1,40 @@
 <template>
-  <div class="call_in_history">
-    <hr>
-    <div class="call" @click="$router.push(`/call-list/${data.id}`)">
-      <div class="call-left">
-        <div class="call-left-date">{{dateCall}}  <span>{{startTime}} - {{data.endTime ? endTime : ''}}</span></div>
-        <div class="call-left-name" v-if="data.device">{{data.device.term.title}}</div>
-<!--        <div class="call-left-terminal" v-if="data.device">терминал #{{data.device.term.id}}</div>-->
-        <div class="call-left-text" v-if="data.device">{{data.device.title}}</div>
-      </div>
-      <div class="call-right">
-        <div class="call-right-status" v-if="data.status === 'SUCCESS'">Решено</div>
-        <div class="call-right-status" v-else-if="data.status === 'NO_ANSWER'" style="background-color: rgb(252, 239, 242); color: rgb(243, 115, 140);">Не принят</div>
-        <div class="call-right-status" v-else-if="data.status === 'FAIL'" style="background-color: rgb(252, 239, 242); color: rgb(243, 115, 140);">Не решено</div>
-        <img v-if="chatStatus === 'show'" src="../../../assets/icons/Write.svg" alt="">
-      </div>
-    </div>
-    <div
+    <div class="call_in_history">
+        <hr>
+        <div class="call" @click="$router.push(`/call-list/${data.id}`)">
+            <div class="call-left">
+                <div class="call-left-date">{{ dateCall }}  <span>{{ startTime }} - {{ data.endTime ? endTime : '' }}</span></div>
+                <div class="call-left-name" v-if="data.device">{{ data.device.term.title }}</div>
+                <!--        <div class="call-left-terminal" v-if="data.device">терминал #{{data.device.term.id}}</div>-->
+                <div class="call-left-text" v-if="data.device">{{ data.device.title }}</div>
+            </div>
+            <div class="call-right">
+                <div class="call-right-status" v-if="data.status === 'SUCCESS'">Решено</div>
+                <div class="call-right-status" v-else-if="data.status === 'NO_ANSWER'" style="background-color: rgb(252, 239, 242); color: rgb(243, 115, 140);">Не принят</div>
+                <div class="call-right-status" v-else-if="data.status === 'FAIL'" style="background-color: rgb(252, 239, 242); color: rgb(243, 115, 140);">Не решено</div>
+                <img v-if="chatStatus === 'show'" src="../../../assets/icons/Write.svg" alt="">
+            </div>
+        </div>
+        <div
             class="operator"
             v-if="!userIsOperator && this.$route.name !== 'operator-page'"
-    >
-      <img
-              :src="data.operator.photo ? `https://calls-dev.enlighted.ru${data.operator.photo}` : require('../../../assets/images/user2.png')"
-              alt=""
-              class="operator-img"
-      >
-      <div class="operator-block">
-        <div class="operator-text">{{data.operator.firstName}} {{data.operator.lastName}}</div>
-        <div class="operator-text">оператор # {{data.operator.number}}</div>
-      </div>
+        >
+            <img
+                :src="data.operator.photo ? `https://calls-dev.enlighted.ru${data.operator.photo}` : require('../../../assets/images/user2.png')"
+                alt=""
+                class="operator-img"
+            >
+            <div class="operator-block">
+                <div class="operator-text">{{ data.operator.firstName }} {{ data.operator.lastName }}</div>
+                <div class="operator-text">оператор # {{ data.operator.number }}</div>
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script>
   export default {
-    name: "callInHistory",
+    name: 'callInHistory',
     props: {
       chatStatus: {
         type: String,

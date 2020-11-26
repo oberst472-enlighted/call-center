@@ -61,7 +61,6 @@ export async function apiGetAllCallsPerWorkShift() {
 
 // отправить комментарий к звонку
 export async function apiSendACommentToTheCall({callID, info}) {
-    console.log(66)
     const options = {
         method: 'patch',
         url: ` api/v1/calls/${callID}/`,

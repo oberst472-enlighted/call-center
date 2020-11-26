@@ -40,18 +40,6 @@ export default {
   methods: {
 
     ...mapActions('users', ['stGetUsers'])
-  },
-  created() {
-    console.log(this.$store)
-    // const lol = await this.stGetUsers()
-    // console.log(lol)
-    // try {
-    //   let users = (await apiRequest.get('/api/users/')).data
-    //   this.operators = users.filter(user => (user.userType === 'OPERATOR' || user.userType === 'operator'))
-    //   // console.log(this.operators)
-    //   // console.log(this.operators[0])
-    // } catch (e) {
-    // }
   }
 }
 </script>

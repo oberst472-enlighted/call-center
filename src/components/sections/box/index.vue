@@ -41,7 +41,8 @@ export default {
             return [
                 {
                     'section-box--gutters': this.gutters,
-                    'section-box--scroll': this.scroll
+                    'section-box--scroll': this.scroll,
+                    'section-box--head': this.head
                 }
             ]
         }
@@ -66,7 +67,6 @@ export default {
         flex-direction: column;
         min-height: 65px;
         padding: 15px;
-        padding-bottom: 0;
         background-color: #ffffff;
     }
 
@@ -108,6 +108,12 @@ export default {
     &--scroll {
         .section-box__content {
             overflow: auto;
+        }
+    }
+
+    &--head {
+        .section-box__body {
+            padding-top: 0;
         }
     }
 }

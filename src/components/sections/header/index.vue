@@ -2,7 +2,6 @@
     <div id="Header">
         <div class="nav">
             <div v-if="$store.state.userStatus === 'operator'" class="nav-left">
-                <forward v-if="$route.meta.gotForward"/>
                 <div
                     v-if="$store.state.isActiveWorkShift"
                     class="btn-toggler"
@@ -45,8 +44,8 @@
             <div v-else-if="$store.state.userStatus === 'admin'">
                 <forward v-if="$route.meta.gotForward"/>
                 <div v-else class="dash-nav-buttons">
-                    <div class="button" style="cursor: pointer" @click="$router.push('/create-operator')">Добавить
-                                                                                                          сотрудника
+                    <div class="button" style="cursor: pointer" @click="$router.push('/create-operator')">
+                        Добавить сотрудника
                     </div>
                     <!--          <div  style="cursor: pointer" class="button" @click="$router.push('/add-language')">Добавить язык</div>-->
                 </div>
@@ -76,7 +75,7 @@
                     :class="{active : $store.state.popup.popupActive === `user`}"
                     class="popup"
                 >
-                    <div class="popup-item" @click="logOut">Выйти</div>
+                    <div class="popup-item">Выйти</div>
                     <template v-if="userData">
                         <div v-if="userData.user.userType === 'OPERATOR'" class="popup-item" @click="onEditProfileClick">
                             Редактировать
@@ -89,76 +88,24 @@
 </template>
 
 <script>
-import forward from '@/components/ui/forward'
-import apiRequest from '@/utils/apiRequest'
-
+import {mapActions} from 'vuex'
 export default {
     name: 'Header',
     data() {
         return {
-            activeMod: 'online'
         }
     },
-    components: {forward},
     computed: {
-        userData() {
-            return this.$store.state.userData
-        },
-        formatTime() {
-            let pad = function (num, size) {
-                return ('000' + num).slice(size * -1)
-            }
-            let time = parseFloat(this.$store.state.totalTime).toFixed(3)
-            let hours = Math.floor(time / 60 / 60)
-            let minutes = Math.floor(time / 60) % 60
-            let seconds = Math.floor(time - minutes * 60)
-            return pad(hours, 2) + ':' + pad(minutes, 2) + ':' + pad(seconds, 2)
-        },
-        workStatus() {
-            return this.$store.state.workStatus
-        }
 
     },
     mounted() {
-        setInterval(() => {
-            this.timeNow = new Date()
-        }, 1000)
     },
     methods: {
-        toggleMode(type) {
-            this.$store.commit('toggleWorkingStatus', type)
-        },
+        ...mapActions('work-shift', ['stStartWorkShift']),
         async startSession() {
-            try {
-                if (!this.$store.state.isActiveWorkShift) {
-                    await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/start-session/`)
-                    this.$store.dispatch('startWorkShift')
-                }
-            } catch (e) {
-                console.log(e)
-            }
+            const isSuccess = await this.stStartWorkShift()
         },
         async closeSession() {
-            try {
-                if (this.$store.state.isActiveWorkShift) {
-                    await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/stop-session/`)
-                }
-            } catch (e) {
-            }
-            console.log(`Вы закончили работу. Проработано ${this.$store.state.totalTime} секунд. Или ${this.formatTime}`)
-            this.$store.dispatch('endWorkShift')
-        },
-        async logOut() {
-            try {
-                if (this.$store.state.isActiveWorkShift) {
-                    await apiRequest.patch(`/api/users/${localStorage.getItem('userId')}/stop-session/`)
-                }
-            } catch (e) {
-            }
-
-            this.$store.dispatch('endWorkShift')
-            this.$store.dispatch('logOut')
-            this.$router.push('/login')
         },
         onEditProfileClick() {
             this.$router.push('/profile')

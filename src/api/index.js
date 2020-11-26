@@ -83,3 +83,68 @@ export async function apiSendACommentToTheCall({callID, info}) {
 
 
 
+// старт смены
+export async function apiStartWorkShift() {
+    const options = {
+        method: 'patch',
+        url: `api/v1/sessions/start-session/`,
+        body: null,
+        token
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+
+// стоп смены
+export async function apiStopWorkShift() {
+    const options = {
+        method: 'patch',
+        url: `api/v1/sessions/stop-session/`,
+        body: null,
+        token
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+
+// инфо о текущей смене
+export async function apiGetCurrentSession() {
+    const options = {
+        method: 'get',
+        url: `api/v1/sessions/current-session/`,
+        body: null,
+        token
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+
+// начало перерыва
+export async function apiStartBreak() {
+    const options = {
+        method: 'patch',
+        url: `api/v1/sessions/start-break/`,
+        body: null,
+        token
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+
+// конец перерыва
+export async function apiStopBreak() {
+    const options = {
+        method: 'patch',
+        url: `api/v1/sessions/stop-break/`,
+        body: null,
+        token
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+
+
+
+
+
+

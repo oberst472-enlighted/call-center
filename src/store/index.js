@@ -10,6 +10,7 @@ import users from './modules/users';
 import stat from './modules/stat';
 import calls from './modules/calls';
 import socket from './modules/socket';
+import workShift from './modules/work-shift';
 
 Vue.use(Vuex);
 
@@ -216,6 +217,7 @@ export default new Vuex.Store({
         users,
         stat,
         calls,
-        socket
+        socket,
+        workShift
     }
 });

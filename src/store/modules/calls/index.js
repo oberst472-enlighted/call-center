@@ -39,6 +39,9 @@ export default {
         SET_CALLS_PER_SHIFT_NOT_PAGINATION(state, payload = true) {
             state.callsPerShift.isNotPagination = payload
         },
+        SET_PAGINATION_PAGE(state, payload = 1) {
+            payload !== 0 ? state.callsPerShift.filters.page ++ : state.callsPerShift.filters.page = 1
+        },
         TOGGLE_COMMENT_LOADING(state, payload = true) {
             state.isCommentLoading = payload
         },

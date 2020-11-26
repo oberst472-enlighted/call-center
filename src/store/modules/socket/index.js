@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {customLog} from '@/utils/console-group'
 import {getJsonFromString, getStringFromJson} from '@/utils/json'
 import dayjs from 'dayjs'
@@ -35,7 +36,7 @@ export default {
 
         startCallTime: '00:00:00', //12:32:14
         stopCallTime: '00:00:00', //12:34:43
-        allCallTime: '00:23:11', //общее время разговора
+        allCallTime: '00:00:00', //общее время разговора
 
         isCallMelodyActive: false,
         isIncomingCall: false, //идет вызов от терминала
@@ -51,7 +52,6 @@ export default {
         userStream: null,
         partnerStream: null,
     },
-    getters: {},
     mutations: {
         SET_SOCKET(state, payload) {
             state.socket = payload
@@ -124,7 +124,6 @@ export default {
     actions: {
         socketConnect({commit, dispatch}) {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token')
-            console.log(token)
             const callCenterId = 'Q2FsbENlbnRlcjox'
             const type = 'operator'
             const url = `wss://vc-dev.enlighted.ru/ws/call-center-channel/${callCenterId}/?type=${type}&token=${token}`
@@ -173,50 +172,41 @@ export default {
             const info = getJsonFromString(payload.data).data
             const eventName = getJsonFromString(payload.data).event
 
-            const isIncomingCallEvent = eventName === 'incoming_call' //идет запрос на звонок от терминала
-            const isEndCallByEvent = eventName === 'end_call_by' //терминал завершил звонок
-            const isCallAnsweredEvent = eventName === 'call_answered' //оператор поднял трубку
-            const isMessageEvent = eventName === 'message' // пришло сообщение от терминала
+            switch (eventName) {
+                case 'incoming_call'://идет запрос на звонок от терминала
 
+                    customLog('isIncomingCallEvent', `Входящий звонок, id звонка: ${info.call_id}`)
 
-            if (isIncomingCallEvent) {
-                customLog('isIncomingCallEvent', `Входящий звонок, id звонка: ${info.call_id}`)
+                    commit('TOGGLE_INCOMING_CALL')
+                    commit('SET_VIDEO_TOKEN', info['video_token'])
+                    commit('SET_VIDEO_ID', info['video_id'])
+                    commit('SET_CALL_ID', info['call_id'])
+                    break;
 
-                commit('TOGGLE_INCOMING_CALL')
-                commit('SET_VIDEO_TOKEN', info['video_token'])
-                commit('SET_VIDEO_ID', info['video_id'])
-                commit('SET_CALL_ID', info['call_id'])
+                case 'end_call_by'://терминал завершил звонок
+                        dispatch('closeCall', 'partner')
+                        customLog('isEndCallByEvent', 'Терминал завершил звонок')
+                        break;
 
-            }
+                case 'call_answered'://оператор поднял трубку
+                    commit('TOGGLE_CALL_ANSWERED')
+                    commit('TOGGLE_INCOMING_CALL', false)
+                    customLog('isIncomingCallEvent', `Оператор снял трубку: id звонка ${info.call_id}`)
+                    break;
 
-            if (isEndCallByEvent) {
-                dispatch('closeCall', 'partner')
-                customLog('isEndCallByEvent', 'Терминал завершил звонок')
-            }
+                case 'message':// пришло сообщение от терминала
+                    commit('SET_CLIENT_CHANNEL', info.from)
 
+                    const messageData = info.message_data
+                    const data = messageData.data
 
-            if (isCallAnsweredEvent) {
-                commit('TOGGLE_CALL_ANSWERED')
-                commit('TOGGLE_INCOMING_CALL', false)
-                customLog('isIncomingCallEvent', `Оператор снял трубку: id звонка ${info.call_id}`)
-            }
-
-            if (isMessageEvent) {
-                commit('SET_CLIENT_CHANNEL', info.from)
-
-                const messageData = info.message_data
-                const data = messageData.data
-
-                const isIceCandidateEvent = messageData.event === 'ice-candidate' //пришел ice-candidate от терминала
-                const isOfferEvent = messageData.event === 'offer' //получение офера с терминала
-
-                if (isIceCandidateEvent) {
-                    dispatch('handleNewICECandidateMsg', data.candidate)
-                }
-
-                if (isOfferEvent) {
-                    dispatch('createAnswer', data)
-                }
+                    if (messageData.event === 'ice-candidate') { //пришел ice-candidate от терминала
+                        dispatch('handleNewICECandidateMsg', data.candidate)
+                    }
+                    if (messageData.event === 'offer') {//получение офера с терминала
+                        dispatch('createAnswer', data)
+                    }
+                    break;
             }
         },
         handleNewICECandidateMsg({state}, payload) {

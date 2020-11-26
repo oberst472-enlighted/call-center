@@ -3,6 +3,7 @@
         <div class="section-header__back-box" v-if="false">
             <LocalHeaderBack/>
         </div>
+
         <transition name="fade" mode="out-in">
             <div class="section-header__options" v-if="isStartWorkShift" :key="'options'">
                 <div class="section-header__toggle-box" :class="{'section-header__toggle-box--disabled': isPauseLoading}">
@@ -15,7 +16,7 @@
                 </div>
 
                 <div class="section-header__btn-box">
-                    <UiBtn @click="stopSession"
+                    <UiBtn @click="_stopSession"
                            theme="negative"
                     >
                         Завершить смену
@@ -24,7 +25,7 @@
             </div>
 
             <div class="section-header__start-btn-box" v-else :key="'start'">
-                <UiBtn @click="startSession"
+                <UiBtn @click="_startSession"
                        theme="positive"
                 >
                     Начать смену
@@ -41,7 +42,7 @@
 <script>
 import LocalHeaderBack from './header-operator-back'
 import LocalHeaderOperatorUSer from './header-operator-user'
-import {mapState, mapActions} from 'vuex'
+import {mapState, mapMutations, mapActions} from 'vuex'
 import dayjs from 'dayjs'
 import {customLog} from '@/utils/console-group'
 
@@ -74,11 +75,13 @@ export default {
     },
     methods: {
         ...mapActions('workShift', ['stStartWorkShift', 'stStopWorkShift', 'stGetCurrentSession', 'stStartBreak', 'stStopBreak']),
+        ...mapMutations('workShift', ['TOGGLE_START_WORK_SHIFT']),
         _togglePauseSession(val) {
             this.isPauseLoading = true
             if (!val) {
                 const isSuccess = this.stStartBreak()
                 if (isSuccess) {
+                    this._saveStopBreakSessionToStorage()
                     customLog('_togglePauseSession', 'Начался перерыв')
                 } else {
                     customLog('_togglePauseSession', 'Перерыв не начался либо вы уже на перерыве', 'red')
@@ -86,6 +89,7 @@ export default {
             } else {
                 const isSuccess = this.stStopBreak()
                 if (isSuccess) {
+                    this._saveStartBreakSessionToStorage()
                     customLog('_togglePauseSession', 'Закончился перерыв')
                 } else {
                     customLog('_togglePauseSession', 'Перерыв не закончен или не начался')
@@ -93,7 +97,7 @@ export default {
             }
             this.isPauseLoading = false
         },
-        async startSession() {
+        async _startSession() {
             const isSuccess = await this.stStartWorkShift()
             if (isSuccess) {
                 this._saveSessionIDToStorage()
@@ -108,9 +112,8 @@ export default {
                 }
             }
         },
-        async stopSession() {
+        async _stopSession() {
             const isSuccess = await this.stStopWorkShift()
-            console.log(this.isSuccess)
             if (isSuccess) {
                 this._deleteSessionIDToStorage()
             }
@@ -118,23 +121,25 @@ export default {
                 console.log('Сессия не остановлена')
             }
         },
-        async closeSession() {
-        },
-        async logOut() {
-        },
         _saveSessionIDToStorage() {
             localStorage.setItem('workShiftID', this.workShiftID)
         },
         _deleteSessionIDToStorage() {
             localStorage.removeItem('workShiftID')
         },
-        onEditProfileClick() {
+        _saveStartBreakSessionToStorage() {
+            sessionStorage.removeItem('isStopBreak')
+            sessionStorage.setItem('isStartBreak', '1')
+        },
+        _saveStopBreakSessionToStorage() {
+            sessionStorage.removeItem('isStartBreak')
+            sessionStorage.setItem('isStopBreak', '1')
         }
     },
-    mounted() {
-        setInterval(() => {
-            this.timeNow = new Date()
-        }, 1000)
+    created() {
+        if (localStorage.getItem('workShiftID')) {
+            this.TOGGLE_START_WORK_SHIFT()
+        }
     }
 }
 </script>
@@ -173,134 +178,5 @@ export default {
         flex-shrink: 0;
     }
 
-}
-#Header {
-    width: 100%;
-    min-height: 83px;
-    padding: 25px 0;
-
-    .popup {
-        position: absolute;
-        top: 80%;
-        left: 50px;
-        z-index: 15;
-        display: block;
-        width: 0;
-        height: 0;
-        border-radius: 8px;
-        background-color: #ffffff;
-        box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);
-        overflow: hidden;
-        transition: height ease 0.5s;
-
-        &-item {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 33px;
-            font-size: 12px;
-            line-height: 14px;
-            color: #4c3b60;
-            font-weight: 400;
-            cursor: pointer;
-        }
-
-        &-item:hover {
-            background-color: #f4f3f7;
-        }
-    }
-
-    .popup.active {
-        z-index: 99;
-        width: 100px;
-        height: 66px;
-        transition: height ease 0.5s;
-    }
-
-    .nav {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        &-right {
-            position: relative;
-            cursor: pointer;
-        }
-
-        &-btn {
-            height: 33px;
-            padding: 0 15px;
-            font-size: 12px;
-            color: #ffffff;
-            font-weight: 400;
-            border: none;
-            border-radius: 8px;
-            outline: none;
-            background-color: inherit;
-            cursor: pointer;
-        }
-
-        &-left {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-    }
-
-    .user {
-        display: flex;
-
-        &-info {
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            flex-direction: column;
-        }
-
-        &-name {
-            font-size: 12px;
-            line-height: 12px;
-            font-weight: 700;
-        }
-
-        &-operator {
-            font-size: 12px;
-            line-height: 12px;
-            font-weight: 400;
-        }
-
-        &-avatar {
-            margin-left: 5px;
-        }
-    }
-
-    .close-session {
-        background-color: #f04265;
-    }
-
-    .dash-nav-buttons {
-        display: flex;
-        align-items: center;
-
-        .button {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 33px;
-            margin-right: 20px;
-            padding: 0 10px;
-            font-size: 12px;
-            color: #ffffff;
-            font-weight: 400;
-            border-radius: 8px;
-            background-color: #66538a;
-            cursor: pointer;
-
-            &:hover {
-                transform: scale(1.03);
-            }
-        }
-    }
 }
 </style>

@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import dayjs from 'dayjs'
+const ru = require('dayjs/locale/ru')
 export default {
     props: {
         info: {
@@ -23,15 +25,23 @@ export default {
     },
     computed: {
         dateCall() {
-            return this.info['start_time'].split('T')[0].split('-').reverse().join('.')
+            console.log(this.info['start_time'])
+            return dayjs(this.info['start_time'] * 1000).format('DD:MM:YYYY')
+            // return this.info['start_time'].split('T')[0].split('-').reverse().join('.')
         },
         startTime() {
-            return this.info['start_time'].split('T')[1].split('.')[0]
+            return this.info['start_time'] ?
+                dayjs(+this.info['start_time'] * 1000).locale(ru) :
+                '???'
+            // return this.info['start_time'].split('T')[1].split('.')[0]
         },
         endTime() {
             return this.info['end_time'] ?
-                this.info['end_time'].split('T')[1].split('.')[0] :
-                '?'
+                dayjs(this.info['end_time'] * 1000).format('hh:mm:ss') :
+                '???'
+            // return this.info['end_time'] ?
+            //     this.info['end_time'].split('T')[1].split('.')[0] :
+            //     '?'
         }
     }
 }

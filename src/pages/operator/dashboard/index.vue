@@ -44,7 +44,7 @@
 
 <script>
 import store from '@/store'
-import {mapState, mapActions, mapGetters} from 'vuex'
+import {mapState, mapMutations, mapActions, mapGetters} from 'vuex'
 import SectionBox from '@/components/sections/box'
 import BlockCallWindowSmall from '@/components/blocks/call-window-small'
 import BlockCallShortstoryItem from '@/components/blocks/call-shortstory-item'
@@ -62,7 +62,9 @@ export default {
     methods: {
         ...mapActions('socket', ['socketConnect', 'pickUpThePhone']),
         ...mapActions('calls', ['stGetCallsPerWorkShift']),
+        ...mapMutations('calls', ['SET_PAGINATION_PAGE']),
         async downloadNextPageCalls() {
+            this.SET_PAGINATION_PAGE()
             const isSuccess = await this.stGetCallsPerWorkShift()
             console.log(isSuccess)
         }

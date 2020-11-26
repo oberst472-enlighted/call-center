@@ -56,7 +56,7 @@ export async function apiGetAllCallsPerWorkShift(params) {
             query += `&${key}=${params[key]}`
         }
     }
-    query+= `&page_size=${pageSize}`
+    query+= `&page_size=${pageSize}&ordering=-created`
     const url = `api/v1/calls/?${query.substring(1)}`
     const options = {
         method: 'get',

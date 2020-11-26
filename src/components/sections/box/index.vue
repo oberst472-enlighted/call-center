@@ -1,13 +1,29 @@
 <template>
     <div :class="classes" class="section-box">
-        <div class="section-box__content">
+        <div class="section-box__content" :class="`section-box__content-${id}`">
             <div v-if="head" class="section-box__head">
                 <span v-if="title" class="section-box__title">{{ title }}</span>
                 <span v-if="subtitle" class="section-box__subtitle">{{ subtitle }}</span>
             </div>
+
             <div class="section-box__body">
                 <slot/>
             </div>
+
+            <UiBtn
+                class="section-items__btn"
+                v-if="false"
+                @click="downloadNextPage"
+                :loading="isLoading"
+            >
+                Загрузить еще
+            </UiBtn>
+
+            <UiPreloader
+                class="section-box__preloader"
+                v-show="!isNotPagination && itemsLength > 11"
+                :class="`section-box-${id}`"
+            />
         </div>
     </div>
 </template>
@@ -34,6 +50,24 @@ export default {
         scroll: {
             type: Boolean,
             default: false
+        },
+        isNotPagination: {
+            type: Boolean,
+            default: false
+        },
+        isLoading: {
+            type: Boolean,
+            default: false
+        },
+        itemsLength: {
+            type: Number,
+            default: 0
+        }
+    },
+    data() {
+        return {
+            id: '',
+            isOnce: false,
         }
     },
     computed: {
@@ -46,6 +80,48 @@ export default {
                 }
             ]
         }
+    },
+    methods: {
+        downloadNextPage() {
+            if (!this.isNotPagination) {
+                this.$emit('download-next-page')
+                this.isOnce = true
+            }
+        },
+        visible(target) {
+            const targetPosition = {
+                    top: window.pageYOffset + target.getBoundingClientRect().top,
+                    bottom: window.pageYOffset + target.getBoundingClientRect().bottom
+                },
+                windowPosition = {
+                    top: window.pageYOffset,
+                    bottom: window.pageYOffset + document.documentElement.clientHeight
+                }
+
+            if (targetPosition.bottom > windowPosition.top && targetPosition.top < windowPosition.bottom) {
+                if (!this.isOnce) {
+                    this.downloadNextPage()
+                    this.isOnce = true
+                }
+            } else {
+                if (this.isOnce) {
+                    this.isOnce = false
+                }
+            }
+        }
+    },
+    created() {
+        // eslint-disable-next-line no-bitwise
+        this.id = `ref-${(~~(Math.random()*1e8)).toString(16)}`;
+    },
+    mounted() {
+        const scrollEl = document.querySelector(`.section-box__content-${this.id}`)
+        const el = document.querySelector(`.section-box-${this.id}`)
+        scrollEl.addEventListener('scroll', () => {
+            this.visible(el);
+        });
+
+        this.visible(el);
     }
 }
 </script>
@@ -97,6 +173,10 @@ export default {
         overflow: hidden;
         display: flex;
         flex-direction: column;
+    }
+    &__preloader {
+        margin: 0 auto;
+        bottom: 15px;
     }
 
     &--gutters {

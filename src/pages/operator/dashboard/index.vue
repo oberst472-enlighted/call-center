@@ -28,8 +28,15 @@
                 head
                 title="История звонков"
                 subtitle="Последние"
+                @download-next-page="downloadNextPageCalls"
+                :items-length="callsPerShift.calls.length"
             >
-                <BlockCallShortstoryItem class="page-home__calls-history__item" v-for="item in calls" :key="item.id" :info="item"/>
+                <BlockCallShortstoryItem
+                    class="page-home__calls-history__item"
+                    v-for="item in callsPerShift.calls"
+                    :key="item.id"
+                    :info="item"
+                />
             </SectionBox>
         </div>
     </section>
@@ -49,16 +56,21 @@ export default {
     },
     computed: {
         ...mapState('socket', ['isIncomingCall']),
-        ...mapState('calls', ['calls']),
+        ...mapState('calls', ['callsPerShift']),
         ...mapGetters('middleware', ['isAdmin', 'isAuth'])
     },
     methods: {
-        ...mapActions('socket', ['socketConnect', 'pickUpThePhone'])
+        ...mapActions('socket', ['socketConnect', 'pickUpThePhone']),
+        ...mapActions('calls', ['stGetCallsPerWorkShift']),
+        async downloadNextPageCalls() {
+            const isSuccess = await this.stGetCallsPerWorkShift()
+            console.log(isSuccess)
+        }
     },
     async beforeRouteEnter(to, from, next) {
         // store.dispatch('toggleLoading')
         const response = await Promise.all([
-            store.dispatch('calls/stGetAllCallsPerWorkShift'),
+            store.dispatch('calls/stGetCallsPerWorkShift'),
             // store.dispatch('tasks/stGetTasksTypes'),
             // store.dispatch('users/stAllUsers', ['contractor'])
         ])

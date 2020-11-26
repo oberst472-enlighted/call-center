@@ -1,6 +1,7 @@
 import axiosUrl from './axiosUrl'
 import token from './token'
 
+const pageSize = 12
 
 //авторизация
 export async function apiLogin(form) {
@@ -48,11 +49,19 @@ export async function ApiCallsOperator(id) {
 }
 
 // получить звонки оператора за смену
-export async function apiGetAllCallsPerWorkShift() {
+export async function apiGetAllCallsPerWorkShift(params) {
+    let query = ''
+    if (params) {
+        for (let key in params) {
+            query += `&${key}=${params[key]}`
+        }
+    }
+    query+= `&page_size=${pageSize}`
+    const url = `api/v1/calls/?${query.substring(1)}`
     const options = {
         method: 'get',
-        url: `api/v1/calls`,
         body: null,
+        url,
         token
     }
     const response = await axiosUrl(options)
@@ -70,6 +79,7 @@ export async function apiSendACommentToTheCall({callID, info}) {
     const response = await axiosUrl(options)
     return response
 }
+
 
 
 

@@ -73,7 +73,8 @@ export default {
         // store.dispatch('toggleLoading', false)
     },
     mounted() {
-        // this.socketConnect()
+        // const date1 = dayjs().format()
+        // console.log(date1)
     }
 }
 </script>
@@ -84,7 +85,7 @@ export default {
     width: 100%;
     display: grid;
     grid-template-columns: minmax(300px, 1fr) 300px;
-    grid-template-rows: minmax(175px, auto) minmax(400px, calc(100vh - 319px));
+    grid-template-rows: minmax(187px, auto) minmax(400px, calc(100vh - 319px));
     grid-gap: $gutter;
     grid-template-areas:
         'stat call'

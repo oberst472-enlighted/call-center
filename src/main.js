@@ -5,6 +5,9 @@ import store from './store'
 import VueCookies from 'vue-cookies'
 import VueMask from 'v-mask'
 import VueMeta from 'vue-meta'
+import 'dayjs/locale/ru'
+import dayjs from 'dayjs'
+dayjs().locale('ru')
 import VueFilterDateFormat from 'vue-filter-date-format';
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';

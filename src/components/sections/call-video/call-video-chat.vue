@@ -1,6 +1,7 @@
 <template>
-    <div class="block-chat">
+    <div :class="{'block-chat--success-save-comment': isSuccess}" class="block-chat">
         <div class="block-chat__title">Комментарий оператора</div>
+
         <label class="block-chat__box">
             <textarea class="block-chat__inp" @input="$emit('input', $event.target.value)"/>
             <span class="block-chat__text">сохранено</span>
@@ -9,7 +10,14 @@
 </template>
 
 <script>
-export default {}
+export default {
+    props: {
+        isSuccess: {
+            type: Boolean,
+            default: false
+        }
+    }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -34,6 +42,8 @@ export default {}
     }
 
     &__inp {
+        position: relative;
+        z-index: 2;
         width: 100%;
         height: 100%;
         min-height: 296px;
@@ -42,19 +52,30 @@ export default {}
         border-radius: 8px;
         outline: none;
         resize: none;
-        position: relative;
-        z-index: 2;
+        transition-duration: 0.3s;
     }
 
     &__text {
         position: absolute;
         bottom: 10px;
         left: 10px;
+        z-index: 3;
         font-size: 10px;
         color: #c8bfd4;
         font-weight: 500;
-        z-index: 3;
         user-select: none;
+        transition-duration: 0.3s;
+    }
+
+    &--success-save-comment {
+        .block-chat__inp {
+            border-color: rgba($color--positive, 0.05);
+            background-color: rgba($color--positive, 0.05);
+        }
+
+        .block-chat__text {
+            color: $color--positive !important;
+        }
     }
 }
 </style>

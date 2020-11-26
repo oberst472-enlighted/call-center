@@ -2,29 +2,52 @@
     <div class="block-info">
         <h3 class="block-info__title">Продолжительность звонка</h3>
 
-        <div v-if="false" class="block-info__stopwatch">
-            <UiStopWatch/>
-        </div>
+        <div class="block-info__time-box">
+            <transition mode="out-in" name="fade">
+                <div
+                    v-if="isCallAnswered && !isCallOver"
+                    key="time"
+                    class="block-info__stopwatch">
+                    <UiStopWatch
+                        :start-watch="isCallAnswered"
+                        :stop-watch="isCallOver"
+                    />
+                </div>
 
-        <div v-else class="block-info__time-box">
-            <div class="block-info__date">21.11.2020</div>
-            <div class="block-info__time">
-                10:32:12 - 10:33:31
-            </div>
+                <div v-else
+                     key="date"
+                     class="block-info__date"
+                >
+                    <span class="block-info__date-date">{{ dateToday }}</span>
+                    <span class="block-info__date-time">{{ startCallTime }}</span>
+                    <span class="block-info__date-sep">-</span>
+                    <span class="block-info__date-time">{{ stopCallTime }}</span>
+                </div>
+            </transition>
         </div>
     </div>
 </template>
 
 <script>
-export default {}
+import {mapState} from 'vuex'
+import dayjs from 'dayjs'
+
+export default {
+    computed: {
+        ...mapState('socket', ['isCallAnswered', 'isCallOver', 'startCallTime', 'stopCallTime']),
+        dateToday() {
+            return dayjs().format('DD:MM:YYYY')
+        }
+    }
+}
 </script>
 
 <style lang="scss" scoped>
 .block-info {
-    width: 100%;
     display: flex;
     align-items: center;
     flex-direction: column;
+    width: 100%;
 
     &__title {
         font-size: 11px;
@@ -42,10 +65,33 @@ export default {}
     }
 
     &__date {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
         font-size: 13px;
+
+        &-sep {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 2px;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        &-date {
+            width: 100%;
+            font-size: 13px;
+            line-height: 1;
+        }
+
+        &-time {
+            margin-top: 2px;
+            font-size: 18px;
+            color: #4C3B60;
+        }
     }
 
-    &__time {
+    &__tstopwatch {
         font-size: 18px;
     }
 }

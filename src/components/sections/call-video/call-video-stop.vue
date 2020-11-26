@@ -8,16 +8,17 @@
             Продолжить работу
         </div>
         <div class="block-stop__time">
-            <UiStopWatch/>
+            {{ allCallTime }}
         </div>
     </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import {mapState} from 'vuex'
+
 export default {
     computed: {
-        ...mapState('socket', ['whoStoppedTheCall']),
+        ...mapState('socket', ['whoStoppedTheCall', 'allCallTime']),
         role() {
             return this.whoStoppedTheCall === 'user' ? 'Оператором' : ' Клиентом'
         }
@@ -31,14 +32,16 @@ export default {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+
     &__text {
-        text-transform: uppercase;
-        font-size: 18px;
         display: flex;
         flex-direction: column;
-        text-align: center;
+        font-size: 18px;
         color: #ffffff;
+        text-align: center;
+        text-transform: uppercase;
     }
+
     &__btn {
         display: flex;
         justify-content: center;
@@ -54,20 +57,27 @@ export default {
         border-radius: 34px;
         background-color: $color--negative;
         cursor: pointer;
+        user-select: none;
         transition-duration: 0.3s;
         transition-property: transform;
-        user-select: none;
+
         &:hover {
             transform: scale(0.95);
         }
+
         &:active {
             background-color: darken($color--negative, 10%);
         }
     }
+
     &__time {
+        font-size: 20px;
+        line-height: 1;
         color: #ffffff;
+        font-weight: $font-weight--light;
     }
 }
+
 .section-call-video__stop {
     display: flex;
     justify-content: center;

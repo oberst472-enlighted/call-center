@@ -1,5 +1,7 @@
 import {customLog} from '@/utils/console-group'
 import {getJsonFromString, getStringFromJson} from '@/utils/json'
+import dayjs from 'dayjs'
+import {convertHMSToSeconds, convertSecondsToHMS} from '@/utils/convertDateTime'
 
 export default {
     namespaced: true,
@@ -31,12 +33,15 @@ export default {
         },
         clientChannel: '',
 
+        startCallTime: '00:00:00', //12:32:14
+        stopCallTime: '00:00:00', //12:34:43
+        allCallTime: '00:23:11', //общее время разговора
+
         isCallMelodyActive: false,
         isIncomingCall: false, //идет вызов от терминала
         isCallAnswered: false, //оператор снял трубку, начался разговор,
         isCallOver: false, //звонок окончен
         whoStoppedTheCall: 'user', //кто завершил звонок (user / partner)
-
 
         socket: null,
         isSocketOpen: false,
@@ -104,6 +109,16 @@ export default {
         SET_WHO_STOPPED_THE_CALL(state, payload = 'user') {
             state.whoStoppedTheCall = payload
         },
+        SET_START_TIME(state, payload) {
+            state.startCallTime = payload
+        },
+        SET_STOP_TIME(state, payload) {
+            state.stopCallTime = payload
+        },
+        SET_ALL_TIME(state, payload) {
+            state.allCallTime = payload
+            console.log(state.allCallTime)
+        }
 
     },
     actions: {
@@ -175,10 +190,7 @@ export default {
             }
 
             if (isEndCallByEvent) {
-                commit('TOGGLE_CALL_OVER')
-                dispatch('closePeerConnection')
-                commit('SET_WHO_STOPPED_THE_CALL', 'partner')
-
+                dispatch('closeCall', 'partner')
                 customLog('isEndCallByEvent', 'Терминал завершил звонок')
             }
 
@@ -217,7 +229,7 @@ export default {
             }
         },
 
-        closePeerConnection({state, commit, dispatch}) {
+        stClosePeerConnection({state, commit, dispatch}) {
             state.peer.close()
             state.userStream.getTracks().forEach(track => {
                 console.log(track)
@@ -296,22 +308,31 @@ export default {
             }
             dispatch('stSendMessage', {eventName: 'message_to', data})
         },
-        pickUpThePhone({state, dispatch}) {
+        pickUpThePhone({state, commit, dispatch}) {
             const data = {
                 call_id: state.identifiersCroup.callID
             }
             dispatch('stSendMessage', {eventName: 'picked_up', data})
+            commit('SET_START_TIME', dayjs().format('hh:mm:ss'))
         },
 
-        stStopCall({state, commit, dispatch}) {
+        stStopCall({state, dispatch}) {
             const data = {
                 call_id: state.identifiersCroup.callID
             }
             dispatch('stSendMessage', {eventName: 'end_call', data})
+            dispatch('closeCall', 'user')
+            customLog('stStopCall', 'Оператор завершил звонок')
+        },
+        closeCall({state, commit, dispatch}, role) {
+            commit('SET_STOP_TIME', dayjs().format('hh:mm:ss'))
+
+            const time = convertSecondsToHMS(convertHMSToSeconds(state.stopCallTime) - convertHMSToSeconds(state.startCallTime))
+            commit('SET_ALL_TIME', time)
 
             commit('TOGGLE_CALL_OVER')
-            dispatch('closePeerConnection')
-            customLog('stStopCall', 'Оператор завершил звонок')
+            commit('SET_WHO_STOPPED_THE_CALL', role)
+            dispatch('stClosePeerConnection')
         },
         stSendMessage({state}, {eventName, data}) {
             const payload = {

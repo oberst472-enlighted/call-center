@@ -3,19 +3,23 @@
         <div class="section-call-video__main">
             <transition name="fade">
                 <div v-if="!isCallOver" class="section-call-video__client-video">
-
                     <video
                         ref="userVideo"
                         autoplay
                         muted
                     />
 
-                    <transition-group class="section-call-video__icons-box" name="icons" tag="div">
+                    <transition-group
+                        class="section-call-video__icons-box"
+                        name="icons"
+                        tag="div"
+                    >
                         <IconCameraOff
                             v-if="isCameraDisable"
                             key="camera"
                             class="section-call-video__icon"
                         />
+
                         <IconMicroOff
                             v-if="isAudioDisable"
                             key="audio"
@@ -25,15 +29,19 @@
                 </div>
             </transition>
 
-            <transition name="fade" mode="out-in">
-                <div v-if="!isCallOver" class="section-call-video__partner-video" key="video">
+            <transition mode="out-in" name="fade">
+                <div
+                    v-if="!isCallOver"
+                    key="video"
+                    class="section-call-video__partner-video"
+                >
                     <video
                         ref="partnerVideo"
                         autoplay
                     />
                 </div>
 
-                <div v-else class="section-call-video__stop" key="stop">
+                <div v-else key="stop" class="section-call-video__stop">
                     <LocalCallVideoStop @click="closeSectionCallVideo"/>
                 </div>
             </transition>
@@ -42,8 +50,8 @@
         <div class="section-call-video__aside">
             <div class="section-call-video__aside-head">
                 <BlockCallWindowSmall
+                    :is-block-options-disable="isCallOver"
                     is-block-options-active
-                    :is-block-options-disable="isBlockOptionsDisable"
                     is-disable-btns-box
                     is-disable-passive-box
                     @stop-call="stopCall"
@@ -58,7 +66,10 @@
 
 
             <div class="section-call-video__aside-chat">
-                <LocalCallVideoChat @input="sendComment"/>
+                <LocalCallVideoChat
+                    :is-success="isSuccessSaveComment"
+                    @input="debounceSendComment"
+                />
             </div>
         </div>
     </section>
@@ -89,17 +100,21 @@ export default {
             isVideoOn: true,
             isSoundOn: true,
             terminatedBy: '',
-            isBlockOptionsDisable: false
+            isBlockOptionsDisable: false,
+
+            debounce: false,
+            isReady: true,
+            isSuccessSaveComment: false
         }
     },
 
     computed: {
         ...mapState('socket', ['userStream', 'partnerStream', 'isCallOver', 'identifiersCroup', 'identifiersCroup']),
         message: {
-            get: function() {
+            get: function () {
                 return this.$store.state.callLogic.messageText
             },
-            set: function(newValue) {
+            set: function (newValue) {
                 this.$store.commit('callLogic/setMessage', newValue)
             }
         },
@@ -107,7 +122,7 @@ export default {
             return +this.$store.state.callLogic.callTime
         },
         formatTime() {
-            let pad = function(num, size) {
+            let pad = function (num, size) {
                 return ('000' + num).slice(size * -1)
             }
             let time = parseFloat(this.getCallTime).toFixed(3)
@@ -128,9 +143,26 @@ export default {
                     comment: payload
                 }
             }
-            const isSuccess = this.stSendACommentToTheCall(info)
+            const isSuccess = await this.stSendACommentToTheCall(info)
             if (isSuccess) {
-
+                console.log('коммент сохранен')
+                this.isSuccessSaveComment = true
+            }
+        },
+        debounceSendComment(payload) {
+            clearTimeout(this.debounce)
+            this.debounce = setTimeout(() => {
+                this.sendComment(payload)
+            }, 500)
+        },
+        throttle(payload) {
+            this.isSuccessSaveComment = false
+            if (this.isReady) {
+                this.isReady = false
+                setTimeout(() => {
+                    this.sendComment(payload)
+                    this.isReady = true
+                }, 2000)
             }
         },
         _toggleAudio(payload) {
@@ -208,7 +240,13 @@ export default {
         }
     },
     watch: {
-
+        isSuccessSaveComment(val) {
+            if (val) {
+                setTimeout(() => {
+                    this.isSuccessSaveComment = false
+                }, 1000)
+            }
+        },
         partnerStream: {
             immediate: true,
             handler(val) {
@@ -331,8 +369,8 @@ export default {
         min-height: 160px;
         border-bottom-right-radius: 8px;
         border-bottom-left-radius: 8px;
-        overflow: hidden;
         background-color: #4c3b60;
+        overflow: hidden;
     }
 
     &__aside-info {

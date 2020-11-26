@@ -67,24 +67,29 @@ export default {
             console.log(isSuccess)
         }
     },
-    async beforeRouteEnter(to, from, next) {
-        // store.dispatch('toggleLoading')
-        const response = await Promise.all([
+    // async beforeRouteEnter(to, from, next) {
+    //     // store.dispatch('toggleLoading')
+    //     const response = await Promise.all([
+    //         store.dispatch('calls/stGetCallsPerWorkShift'),
+    //         // store.dispatch('tasks/stGetTasksTypes'),
+    //         // store.dispatch('users/stAllUsers', ['contractor'])
+    //     ])
+    //     const isSuccess = response.every(item => item)
+    //     if (isSuccess) {
+    //        next()
+    //
+    //     } else {
+    //         next(false)
+    //         // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
+    //     }
+    //     // store.dispatch('toggleLoading', false)
+    // },
+   async mounted() {
+        await Promise.all([
             store.dispatch('calls/stGetCallsPerWorkShift'),
             // store.dispatch('tasks/stGetTasksTypes'),
             // store.dispatch('users/stAllUsers', ['contractor'])
         ])
-        const isSuccess = response.every(item => item)
-        if (isSuccess) {
-           next()
-
-        } else {
-            next(false)
-            // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
-        }
-        // store.dispatch('toggleLoading', false)
-    },
-    mounted() {
         // const date1 = dayjs().format()
         // console.log(date1)
     }

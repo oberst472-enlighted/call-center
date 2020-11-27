@@ -37,13 +37,11 @@
   import CallPage from "../components/layout/CallPage";
   import callWindow from "../components/layout/callWindow";
   import apiRequest from "../utils/apiRequest";
-  import socket from "../utils/socket";
 
 
   export default {
     name: "mainLayout",
     components: { Sidebar, Header, CallPage, callWindow },
-    mixins: [socket],
     data() {
       return {
         isChannelReady: true,

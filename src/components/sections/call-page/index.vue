@@ -113,7 +113,6 @@
 </template>
 
 <script>
-import socket from '@/utils/socket'
 import apiRequest from '@/utils/apiRequest'
 export default {
     props: {

@@ -2,81 +2,82 @@
     <article class="block-call-shortstory">
         <span class="block-call-shortstory__date">
             {{ dateCall }}
-            <span>{{ startTime }} - {{ endTime }}</span>
+            <span>{{ startTime }} - {{ stopTime }}</span>
         </span>
         <span class="block-call-shortstory__conclusion"><UiBadge>Решено</UiBadge></span>
         <span class="block-call-shortstory__title">
             <span class="block-call-shortstory__title__title">Длинное Название / номер терминала</span>
             <span class="block-call-shortstory__title__title__subtitle">Железнодорожный вокзал с очень длинным названием</span>
         </span>
-        <button class="block-call-shortstory__icon"><IconComment/></button>
+        <button class="block-call-shortstory__icon">
+            <IconComment/>
+        </button>
     </article>
 </template>
 
 <script>
-import dayjs from 'dayjs'
-const ru = require('dayjs/locale/ru')
+import {convertSecondsToDate, convertSecondsToTime} from '@/utils/convertDateTime'
+
 export default {
     props: {
         info: {
             type: Object,
-            default: () => {}
+            default: () => {
+            }
         },
     },
     computed: {
         dateCall() {
-            console.log(this.info['start_time'])
-            return dayjs(this.info['start_time'] * 1000).format('DD:MM:YYYY')
-            // return this.info['start_time'].split('T')[0].split('-').reverse().join('.')
+            return this.info['start_time'] ? convertSecondsToDate(this.info['start_time']) : '???'
         },
         startTime() {
-            return this.info['start_time'] ?
-                dayjs(+this.info['start_time'] * 1000).locale(ru) :
-                '???'
-            // return this.info['start_time'].split('T')[1].split('.')[0]
+            return this.info['start_time'] ? convertSecondsToTime(this.info['start_time']) : '???'
         },
-        endTime() {
-            return this.info['end_time'] ?
-                dayjs(this.info['end_time'] * 1000).format('hh:mm:ss') :
-                '???'
-            // return this.info['end_time'] ?
-            //     this.info['end_time'].split('T')[1].split('.')[0] :
-            //     '?'
+        stopTime() {
+            return this.info['stop_time'] ? convertSecondsToTime(this.info['stop_time']) : '???'
         }
     }
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .block-call-shortstory {
-    padding: 12px 0;
     display: grid;
     grid-template-columns: auto minmax(60px, 1fr);
     grid-gap: 5px;
+    padding: 12px 0;
+
     &__date {
         font-size: 11px;
+
         span {
             font-weight: $font-weight--bold;
         }
     }
+
     &__conclusion {
         margin-left: auto;
     }
+
     &__title {
         display: grid;
         grid-gap: 5px;
+
         &__title {
             font-size: 12px;
             font-weight: $font-weight--bold;
         }
+
         &__subtitle {
-            font-size: 10px;}
+            font-size: 10px;
+        }
     }
+
     &__icon {
         margin-left: auto;
-        background-color: transparent;
         border: 0;
         outline: none;
+        background-color: transparent;
     }
 }
 </style>

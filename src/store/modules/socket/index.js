@@ -10,7 +10,7 @@ export default {
         options: {
             constraints: {
                 iceServers: [
-                    { urls: 'stun:vc-dev.enlighted.ru:3478' },
+                    {urls: 'stun:vc-dev.enlighted.ru:3478'},
                     {
                         urls: 'turn:vc-dev.enlighted.ru:3478',
                         username: 'tab1',
@@ -51,8 +51,25 @@ export default {
         peer: null,
         userStream: null,
         partnerStream: null,
+
+        callQueue: [], //очередь звонков
+        audio: new Audio('/assets/call-melody.mp3'),
+
     },
     mutations: {
+        TOGGLE_CALL_SOUND(state, payload = true) {
+            const startAudio = () => {
+                const promise = state.audio.play()
+                if (promise !== undefined) {
+                    promise.then(() => {
+                        customLog('startAudio', 'Браузер разрешил воспроизведение звука')
+                    }).catch(error => {
+                        customLog('startAudio', 'Браузер запретил воспроизведение звука', 'red')
+                    })
+                }
+            }
+            payload ? startAudio() : state.audio.pause()
+        },
         SET_SOCKET(state, payload) {
             state.socket = payload
         },
@@ -117,7 +134,17 @@ export default {
         },
         SET_ALL_TIME(state, payload) {
             state.allCallTime = payload
-            console.log(state.allCallTime)
+        },
+        ADD_CALL_QUEUE_ITEM(state, payload) {
+            state.callQueue.push(payload)
+            console.log(state.callQueue)
+            console.log(payload)
+            customLog('ADD_CALL_QUEUE_ITEM', state.callQueue, 'red')
+        },
+        DELETE_CALL_QUEUE_ITEM(state, id) {
+            const index = state.callQueue.findIndex(item => item.call_id === id)
+            state.callQueue.splice(index, 1)
+            customLog('DELETE_CALL_QUEUE_ITEM', state.callQueue)
         }
 
     },
@@ -168,31 +195,41 @@ export default {
                 dispatch('socketConnect')
             }, state.socketRetryConnectTime)
         },
-        socketMessage({commit, dispatch}, payload) {
+        socketMessage({state, commit, dispatch}, payload) {
             const info = getJsonFromString(payload.data).data
             const eventName = getJsonFromString(payload.data).event
 
             switch (eventName) {
                 case 'incoming_call'://идет запрос на звонок от терминала
 
-                    customLog('isIncomingCallEvent', `Входящий звонок, id звонка: ${info.call_id}`)
-
+                    customLog('incoming_call', `Входящий звонок, id звонка: ${info.call_id}`)
+                    commit('ADD_CALL_QUEUE_ITEM', info)
+                    if (Boolean(state.callQueue.length)) {
+                        commit('TOGGLE_CALL_SOUND')
+                    }
                     commit('TOGGLE_INCOMING_CALL')
-                    commit('SET_VIDEO_TOKEN', info['video_token'])
-                    commit('SET_VIDEO_ID', info['video_id'])
-                    commit('SET_CALL_ID', info['call_id'])
-                    break;
+                    break
 
                 case 'end_call_by'://терминал завершил звонок
-                        dispatch('closeCall', 'partner')
-                        customLog('isEndCallByEvent', 'Терминал завершил звонок')
-                        break;
+                    dispatch('closeCall', 'partner')
+                    customLog('end_call_by', 'Терминал завершил звонок')
+                    break
 
                 case 'call_answered'://оператор поднял трубку
                     commit('TOGGLE_CALL_ANSWERED')
+
                     commit('TOGGLE_INCOMING_CALL', false)
-                    customLog('isIncomingCallEvent', `Оператор снял трубку: id звонка ${info.call_id}`)
-                    break;
+                    commit('DELETE_CALL_QUEUE_ITEM', info.call_id)
+                    // if(Boolean(!state.callQueue.length)) {
+                    //     state.
+                    // }
+                    customLog('call_answered', `Оператор снял трубку: id звонка ${info.call_id}`)
+                    break
+
+                case 'call_cancel'://обрыв соединения со стороны терминала
+                    dispatch('closeCall', 'partner')
+                    customLog('call_answered', `Внезапный обрыв соединения!! ${info.call_id}`)
+                    break
 
                 case 'message':// пришло сообщение от терминала
                     commit('SET_CLIENT_CHANNEL', info.from)
@@ -206,7 +243,7 @@ export default {
                     if (messageData.event === 'offer') {//получение офера с терминала
                         dispatch('createAnswer', data)
                     }
-                    break;
+                    break
             }
         },
         handleNewICECandidateMsg({state}, payload) {
@@ -222,7 +259,6 @@ export default {
         stClosePeerConnection({state, commit, dispatch}) {
             state.peer.close()
             state.userStream.getTracks().forEach(track => {
-                console.log(track)
                 track.stop()
             })
             state.peer = null
@@ -231,7 +267,10 @@ export default {
             commit('SET_PARTNER_STREAM', null)
             setTimeout(() => {
                 dispatch('getMedia')
-              }, 500);
+            }, 500)
+            if(state.callQueue.length) {
+                commit('TOGGLE_CALL_SOUND')
+            }
 
 
         },
@@ -299,6 +338,11 @@ export default {
             dispatch('stSendMessage', {eventName: 'message_to', data})
         },
         pickUpThePhone({state, commit, dispatch}) {
+            const info = state.callQueue[0]
+            commit('SET_VIDEO_TOKEN', info['video_token'])
+            commit('SET_VIDEO_ID', info['video_id'])
+            commit('SET_CALL_ID', info['call_id'])
+            commit('TOGGLE_CALL_SOUND', false)
             const data = {
                 call_id: state.identifiersCroup.callID
             }
@@ -321,9 +365,10 @@ export default {
             commit('SET_ALL_TIME', time)
 
             commit('TOGGLE_CALL_OVER')
+            commit('DELETE_CALL_QUEUE_ITEM', state.identifiersCroup.callID)
             commit('SET_WHO_STOPPED_THE_CALL', role)
             dispatch('stClosePeerConnection')
-        },
+         },
         stSendMessage({state}, {eventName, data}) {
             const payload = {
                 event: eventName,

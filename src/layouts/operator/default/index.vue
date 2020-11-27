@@ -124,19 +124,19 @@ export default {
             this.audio.currentTime = 0
         },
     },
-        watch: {
-            isIncomingCall: {
-                immediate: true,
-                handler(val) {
-                    val ? this.startAudio() : this.audio.pause()
-                }
-            },
-            // partnerStream() {
-            //     if (this.userStream) {
-            //         this.startRecord()
-            //     }
-            // }
-        },
+        // watch: {
+        //     isIncomingCall: {
+        //         immediate: true,
+        //         handler(val) {
+        //             val ? this.startAudio() : this.audio.pause()
+        //         }
+        //     },
+        //     // partnerStream() {
+        //     //     if (this.userStream) {
+        //     //         this.startRecord()
+        //     //     }
+        //     // }
+        // },
         created() {
         this.socketConnect()
         },

@@ -28,7 +28,6 @@ import SectionCallPage from '@/components/sections/call-page'
 import BlockCallWindow from '@/components/layout/callWindow'
 
 import apiRequest from '@/utils/apiRequest'
-import socket from '@/utils/socket'
 
 
 export default {
@@ -38,7 +37,6 @@ export default {
         SectionCallPage,
         BlockCallWindow
     },
-    mixins: [socket],
     data() {
         return {
             isChannelReady: true,

@@ -203,6 +203,7 @@ export default {
                     customLog('incoming_call', `Входящий звонок, id звонка: ${info.call_id}`)
                     commit('ADD_CALL_QUEUE_ITEM', info)
                     if (Boolean(state.callQueue.length)) {
+                        console.log(77)
                         commit('TOGGLE_CALL_SOUND')
                     }
                     commit('TOGGLE_INCOMING_CALL')
@@ -260,8 +261,13 @@ export default {
             setTimeout(() => {
                 dispatch('getMedia')
             }, 500)
-            if(state.callQueue.length) {
+            if (state.callQueue.length) {
                 commit('TOGGLE_CALL_SOUND')
+                commit('TOGGLE_INCOMING_CALL')
+            }
+            else {
+                commit('TOGGLE_CALL_SOUND', false)
+                commit('TOGGLE_INCOMING_CALL', false)
             }
 
 
@@ -330,26 +336,33 @@ export default {
             dispatch('stSendMessage', {eventName: 'message_to', data})
         },
 
-        operatorPickedUpThePhone({commit}, info) {
+        operatorPickedUpThePhone({state, commit}, info) {
             commit('DELETE_CALL_QUEUE_ITEM', info.call_id)
-            if (Boolean(state.callQueue.length)) {
-                commit('TOGGLE_CALL_SOUND')
-                commit('TOGGLE_CALL_ANSWERED', false)
-            }
-            else {
-                commit('TOGGLE_CALL_SOUND', false)
-                commit('TOGGLE_CALL_ANSWERED')
-            }
-            // const userInfo = getJsonFromString(localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo'))
-            // const userId = userInfo.id
-            // if (userId === info.user_id) {
-            //     commit('TOGGLE_CALL_ANSWERED')
-            //     commit('TOGGLE_INCOMING_CALL', false)
+            // if (Boolean(state.callQueue.length)) {
+            //     console.log(888)
+            //     commit('TOGGLE_CALL_SOUND')
+            //     commit('TOGGLE_CALL_ANSWERED', false)
             // }
             // else {
-            //
+            //     console.log(999)
+            //     commit('TOGGLE_CALL_SOUND', false)
+            //     commit('TOGGLE_CALL_ANSWERED')
             // }
-            customLog('id', id, 'green')
+            const userInfo = getJsonFromString(localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo'))
+            const userId = userInfo.id
+            if (userId === info.user_id) {
+                commit('TOGGLE_CALL_SOUND', false)
+                commit('TOGGLE_CALL_ANSWERED')
+            } else {
+                if (Boolean(state.callQueue.length)) {
+                    commit('TOGGLE_CALL_SOUND')
+                    commit('TOGGLE_CALL_ANSWERED', false)
+                } else {
+                    commit('TOGGLE_CALL_SOUND', false)
+                    commit('TOGGLE_INCOMING_CALL', false)
+
+                }
+            }
         },
         pickUpThePhone({state, commit, dispatch}) {
             const info = state.callQueue[0]
@@ -382,7 +395,7 @@ export default {
             commit('DELETE_CALL_QUEUE_ITEM', state.identifiersCroup.callID)
             commit('SET_WHO_STOPPED_THE_CALL', role)
             dispatch('stClosePeerConnection')
-         },
+        },
         stSendMessage({state}, {eventName, data}) {
             const payload = {
                 event: eventName,

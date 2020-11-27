@@ -168,7 +168,7 @@ export async function apiGetDevices(params) {
 export async function apiGetStat() {
     const options = {
         method: 'get',
-        url: `api/v1/stat/`,
+        url: `api/v1/sessions/current-stat`,
         body: null,
         token
     }
@@ -176,7 +176,6 @@ export async function apiGetStat() {
     return response
 }
 
-apiGetStat()
 
 
 

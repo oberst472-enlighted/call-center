@@ -50,7 +50,16 @@ export default new VueRouter({
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
                     }
-                }
+                },
+                {
+                    path: '/detail-call-info/:id',
+                    name: 'call-fullstory',
+                    components: {
+                        default: require('@/pages/operator/call-fullstory').default,
+                        header: require('@/components/sections/header-operator/').default,
+                        aside: require('@/components/sections/aside/').default,
+                    }
+                },
             ]
         },
         {

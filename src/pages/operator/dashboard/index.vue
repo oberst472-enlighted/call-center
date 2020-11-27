@@ -1,9 +1,7 @@
 <template>
     <section class="page-home">
         <div class="page-home__stat">
-            <SectionBox gutters>
-                stat
-            </SectionBox>
+            <BlockStat :info="stat"/>
         </div>
 
         <div class="page-home__call">
@@ -50,6 +48,7 @@
 import store from '@/store'
 import {mapState, mapMutations, mapActions, mapGetters} from 'vuex'
 import BlockTerminals from '@/components/blocks/terminals'
+import BlockStat from '@/components/blocks/stat'
 import SectionBox from '@/components/sections/box'
 import BlockCallWindowSmall from '@/components/blocks/call-window-small'
 import BlockCallShortstoryItem from '@/components/blocks/call-shortstory-item'
@@ -57,6 +56,7 @@ export default {
     components: {
         SectionBox,
         BlockTerminals,
+        BlockStat,
         BlockCallWindowSmall,
         BlockCallShortstoryItem
     },
@@ -64,6 +64,7 @@ export default {
         ...mapState('socket', ['isIncomingCall']),
         ...mapState('calls', ['callsPerShift']),
         ...mapState('terminals', ['items', 'isNotDevicesPagination']),
+        ...mapState('stat', ['stat']),
         ...mapGetters('middleware', ['isAdmin', 'isAuth'])
     },
     methods: {
@@ -81,10 +82,8 @@ export default {
             console.log(isSuccess)
         },
         async downloadNextPageTerminals() {
-            console.log(114)
             this.SET_DEVICES_PAGINATION_PAGE()
             const isSuccess = await this.stGetDevices()
-            console.log(isSuccess)
         }
     },
     // async beforeRouteEnter(to, from, next) {
@@ -108,6 +107,7 @@ export default {
         await Promise.all([
             store.dispatch('calls/stGetCallsPerWorkShift'),
             store.dispatch('terminals/stGetDevices'),
+            store.dispatch('stat/stGetStat'),
             // store.dispatch('tasks/stGetTasksTypes'),
             // store.dispatch('users/stAllUsers', ['contractor'])
         ])

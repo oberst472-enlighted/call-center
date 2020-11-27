@@ -48,7 +48,6 @@ export default {
                     response.statusText === 'OK'
                 ) {
                     commit('SET_DEVICES', response.data.results);
-                    console.log(response.data.next)
                     response.data.next ? commit('SET_DEVICES_NOT_PAGINATION', false) : commit('SET_DEVICES_NOT_PAGINATION')
                     isSuccess = true
                 } else {

@@ -137,9 +137,7 @@ export default {
         },
         ADD_CALL_QUEUE_ITEM(state, payload) {
             state.callQueue.push(payload)
-            console.log(state.callQueue)
-            console.log(payload)
-            customLog('ADD_CALL_QUEUE_ITEM', state.callQueue, 'red')
+            customLog('ADD_CALL_QUEUE_ITEM', 'Звонок добавлен в очередь', 'red')
         },
         DELETE_CALL_QUEUE_ITEM(state, id) {
             const index = state.callQueue.findIndex(item => item.call_id === id)
@@ -216,14 +214,8 @@ export default {
                     break
 
                 case 'call_answered'://оператор поднял трубку
-                    commit('TOGGLE_CALL_ANSWERED')
-
-                    commit('TOGGLE_INCOMING_CALL', false)
-                    commit('DELETE_CALL_QUEUE_ITEM', info.call_id)
-                    // if(Boolean(!state.callQueue.length)) {
-                    //     state.
-                    // }
                     customLog('call_answered', `Оператор снял трубку: id звонка ${info.call_id}`)
+                    dispatch('operatorPickedUpThePhone', info)
                     break
 
                 case 'call_cancel'://обрыв соединения со стороны терминала
@@ -336,6 +328,28 @@ export default {
                 }
             }
             dispatch('stSendMessage', {eventName: 'message_to', data})
+        },
+
+        operatorPickedUpThePhone({commit}, info) {
+            commit('DELETE_CALL_QUEUE_ITEM', info.call_id)
+            if (Boolean(state.callQueue.length)) {
+                commit('TOGGLE_CALL_SOUND')
+                commit('TOGGLE_CALL_ANSWERED', false)
+            }
+            else {
+                commit('TOGGLE_CALL_SOUND', false)
+                commit('TOGGLE_CALL_ANSWERED')
+            }
+            // const userInfo = getJsonFromString(localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo'))
+            // const userId = userInfo.id
+            // if (userId === info.user_id) {
+            //     commit('TOGGLE_CALL_ANSWERED')
+            //     commit('TOGGLE_INCOMING_CALL', false)
+            // }
+            // else {
+            //
+            // }
+            customLog('id', id, 'green')
         },
         pickUpThePhone({state, commit, dispatch}) {
             const info = state.callQueue[0]

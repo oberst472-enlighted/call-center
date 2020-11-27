@@ -15,6 +15,10 @@ export default new VueRouter({
         //     name: 'main'
         // },
         {
+            path: '/',
+            redirect: ('/login')
+        },
+        {
             path: '',
             component: require('@/layouts/login/').default,
             children: [

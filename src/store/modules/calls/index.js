@@ -53,7 +53,6 @@ export default {
             let isSuccess = false
             try {
                 const response = await apiGetAllCallsPerWorkShift(state.callsPerShift.filters)
-                console.log(response)
                 if (
                     Boolean(response) &&
                     response.status < 300 &&
@@ -79,12 +78,10 @@ export default {
         },
 
         async stSendACommentToTheCall({commit}, {callID, info}) {
-            console.log(61)
             commit('TOGGLE_COMMENT_LOADING')
             let isSuccess = false
             try {
                 const response = await apiSendACommentToTheCall({callID, info})
-                console.log(response)
                 isSuccess = Boolean(response) &&
                     response.status < 300 &&
                     response.statusText === 'OK';

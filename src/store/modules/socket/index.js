@@ -213,7 +213,6 @@ export default {
                     customLog('incoming_call', `Входящий звонок, id звонка: ${info.call_id}`)
                     commit('ADD_CALL_QUEUE_ITEM', info)
                     if (Boolean(state.callQueue.length)) {
-                        console.log(77)
                         commit('TOGGLE_CALL_SOUND')
                     }
                     commit('TOGGLE_INCOMING_CALL')

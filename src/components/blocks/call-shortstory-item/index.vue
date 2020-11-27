@@ -6,8 +6,8 @@
         </span>
         <span class="block-call-shortstory__conclusion"><UiBadge>Решено</UiBadge></span>
         <span class="block-call-shortstory__title">
-            <span class="block-call-shortstory__title__title">Длинное Название / номер терминала</span>
-            <span class="block-call-shortstory__title__title__subtitle">Железнодорожный вокзал с очень длинным названием</span>
+            <span class="block-call-shortstory__title__title">Нерминал N-13</span>
+            <span class="block-call-shortstory__title__title__subtitle">Балтийский вокзал</span>
         </span>
         <button class="block-call-shortstory__icon">
             <IconComment/>

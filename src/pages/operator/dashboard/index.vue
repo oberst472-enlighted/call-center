@@ -16,9 +16,12 @@
         </div>
 
         <div class="page-home__terminals">
-            <SectionBox gutters>
-                Ожидание терминалов
-            </SectionBox>
+            <BlockTerminals
+                :info="items"
+                @download-next-page="downloadNextPageTerminals"
+                :items-length="items.length"
+                :is-not-pagination="isNotDevicesPagination"
+            />
         </div>
 
         <div class="page-home__calls-history">
@@ -30,6 +33,7 @@
                 subtitle="Последние"
                 @download-next-page="downloadNextPageCalls"
                 :items-length="callsPerShift.calls.length"
+                :is-not-pagination="callsPerShift.isNotPagination"
             >
                 <BlockCallShortstoryItem
                     class="page-home__calls-history__item"
@@ -45,27 +49,41 @@
 <script>
 import store from '@/store'
 import {mapState, mapMutations, mapActions, mapGetters} from 'vuex'
+import BlockTerminals from '@/components/blocks/terminals'
 import SectionBox from '@/components/sections/box'
 import BlockCallWindowSmall from '@/components/blocks/call-window-small'
 import BlockCallShortstoryItem from '@/components/blocks/call-shortstory-item'
 export default {
     components: {
         SectionBox,
+        BlockTerminals,
         BlockCallWindowSmall,
         BlockCallShortstoryItem
     },
     computed: {
         ...mapState('socket', ['isIncomingCall']),
         ...mapState('calls', ['callsPerShift']),
+        ...mapState('terminals', ['items', 'isNotDevicesPagination']),
         ...mapGetters('middleware', ['isAdmin', 'isAuth'])
     },
     methods: {
         ...mapActions('socket', ['socketConnect', 'pickUpThePhone']),
+
         ...mapActions('calls', ['stGetCallsPerWorkShift']),
         ...mapMutations('calls', ['SET_PAGINATION_PAGE']),
+
+        ...mapActions('terminals', ['stGetDevices']),
+        ...mapMutations('terminals', ['SET_DEVICES_PAGINATION_PAGE']),
+
         async downloadNextPageCalls() {
             this.SET_PAGINATION_PAGE()
             const isSuccess = await this.stGetCallsPerWorkShift()
+            console.log(isSuccess)
+        },
+        async downloadNextPageTerminals() {
+            console.log(114)
+            this.SET_DEVICES_PAGINATION_PAGE()
+            const isSuccess = await this.stGetDevices()
             console.log(isSuccess)
         }
     },
@@ -89,6 +107,7 @@ export default {
    async mounted() {
         await Promise.all([
             store.dispatch('calls/stGetCallsPerWorkShift'),
+            store.dispatch('terminals/stGetDevices'),
             // store.dispatch('tasks/stGetTasksTypes'),
             // store.dispatch('users/stAllUsers', ['contractor'])
         ])

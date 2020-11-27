@@ -35,11 +35,11 @@ export async function apiGetUserById(form) {
 }
 
 //получить статистику
-export async function apiGetStat(id) {
-  const url = `api/v1/api/callcenters/${id}/stat/`
-  const body = null
-  return axiosUrl('get', url, body, token)
-}
+// export async function apiGetStat(id) {
+//   const url = `api/v1/api/callcenters/${id}/stat/`
+//   const body = null
+//   return axiosUrl('get', url, body, token)
+// }
 
 //
 export async function ApiCallsOperator(id) {
@@ -142,6 +142,41 @@ export async function apiStopBreak() {
     const response = await axiosUrl(options)
     return response
 }
+
+//получить терминалы
+export async function apiGetDevices(params) {
+    const pageSize = 36
+    let query = ''
+    if (params) {
+        for (let key in params) {
+            query += `&${key}=${params[key]}`
+        }
+    }
+    query+= `&page_size=${pageSize}&ordering=-created`
+    const url = `api/v1/devices/?${query.substring(1)}`
+    const options = {
+        method: 'get',
+        body: null,
+        url,
+        token
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+
+// получить статистику
+export async function apiGetStat() {
+    const options = {
+        method: 'get',
+        url: `api/v1/stat/`,
+        body: null,
+        token
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+
+apiGetStat()
 
 
 

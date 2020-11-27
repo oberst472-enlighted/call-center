@@ -198,7 +198,6 @@ export default {
             let resp = await apiRequest.post(`/api/calls/${this.callObjectId}/comment/`, {
                 comment: this.$store.state.callLogic.messageText
             })
-            console.log(resp)
 
             this.$store.commit('callLogic/setMessage', '')
 

@@ -206,7 +206,6 @@ export default {
                     const data = new FormData()
 
                     data.append('video_file', blob, 'long.webm')
-                    console.log(this.identifiersCroup)
                     const lol = `api/v1/videos/${this.identifiersCroup.videoID}`
                     axios.patch(lol, data, {
                         headers: {

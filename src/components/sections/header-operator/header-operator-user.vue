@@ -1,5 +1,5 @@
 <template>
-    <div>user info</div>
+    <div><UiBtn :to="{name: 'login'}">Выйти</UiBtn></div>
     <!--    <div>-->
     <!--        <div-->
     <!--            v-if="false"-->

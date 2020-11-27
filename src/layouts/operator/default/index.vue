@@ -48,11 +48,10 @@ export default {
         }
     },
     computed: {
-        ...mapState('socket', ['isIncomingCall', 'isCallAnswered'])
+        ...mapState('socket', ['isIncomingCall', 'isCallAnswered']),
     },
     methods: {
-
-        ...mapActions('socket', ['incomingCall', 'socketConnect', 'getMedia']),
+        ...mapActions('socket', ['incomingCall', 'socketConnect', 'getMedia', 'stBreak']),
 
 
         stopCall() {
@@ -138,10 +137,15 @@ export default {
         //     // }
         // },
         created() {
+        if (sessionStorage.getItem('isStopBreak')) {
+            console.log(66)
+            this.stBreak()
+        }
         this.socketConnect()
         },
     mounted() {
         this.getMedia()
+
     }
 }
 

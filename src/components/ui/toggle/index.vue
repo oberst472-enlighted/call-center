@@ -35,6 +35,11 @@ export default {
         isStarted(val) {
             this.$emit('click', val)
         }
+    },
+    created() {
+        if (sessionStorage.getItem('isStopBreak')) {
+            this.isStarted = false
+        }
     }
 }
 </script>

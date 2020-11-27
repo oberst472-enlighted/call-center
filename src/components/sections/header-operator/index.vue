@@ -75,6 +75,7 @@ export default {
     },
     methods: {
         ...mapActions('workShift', ['stStartWorkShift', 'stStopWorkShift', 'stGetCurrentSession', 'stStartBreak', 'stStopBreak']),
+        ...mapActions('socket', ['stBreak', 'stBreakDisable']),
         ...mapMutations('workShift', ['TOGGLE_START_WORK_SHIFT']),
         _togglePauseSession(val) {
             this.isPauseLoading = true
@@ -86,6 +87,8 @@ export default {
                 } else {
                     customLog('_togglePauseSession', 'Перерыв не начался либо вы уже на перерыве', 'red')
                 }
+                this.stBreak()
+
             } else {
                 const isSuccess = this.stStopBreak()
                 if (isSuccess) {
@@ -94,6 +97,7 @@ export default {
                 } else {
                     customLog('_togglePauseSession', 'Перерыв не закончен или не начался')
                 }
+                this.stBreakDisable()
             }
             this.isPauseLoading = false
         },

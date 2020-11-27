@@ -54,26 +54,36 @@ export default {
 
         callQueue: [], //очередь звонков
         audio: new Audio('/assets/call-melody.mp3'),
+        isBreak: false
 
     },
     mutations: {
+        TOGGLE_BREAK(state, payload = true) {
+            state.isBreak = payload
+        },
         TOGGLE_CALL_SOUND(state, payload = true) {
-            const startAudio = () => {
-                const promise = state.audio.play()
-                if (promise !== undefined) {
-                    promise.then(() => {
-                        customLog('startAudio', 'Браузер разрешил воспроизведение звука')
-                    }).catch(error => {
-                        customLog('startAudio', 'Браузер запретил воспроизведение звука', 'red')
-                    })
-                }
+            if (state.isBreak) {
+                state.audio.pause()
             }
-            payload ? startAudio() : state.audio.pause()
+            else {
+                const startAudio = () => {
+                    const promise = state.audio.play()
+                    if (promise !== undefined) {
+                        promise.then(() => {
+                            customLog('startAudio', 'Браузер разрешил воспроизведение звука')
+                        }).catch(error => {
+                            customLog('startAudio', 'Браузер запретил воспроизведение звука', 'red')
+                        })
+                    }
+                }
+                payload ? startAudio() : state.audio.pause()
+            }
         },
         SET_SOCKET(state, payload) {
             state.socket = payload
         },
         TOGGLE_INCOMING_CALL(state, payload = true) {
+            if (state.isBreak) return
             state.isIncomingCall = payload
         },
         TOGGLE_CALL_ANSWERED(state, payload = true) {
@@ -246,6 +256,19 @@ export default {
             } catch (e) {
                 customLog('handleNewICECandidateMsg', candidate, 'red')
                 customLog('handleNewICECandidateMsg', e, 'red')
+            }
+        },
+
+        stBreak({commit}) {
+            commit('TOGGLE_CALL_SOUND', false)
+            commit('TOGGLE_INCOMING_CALL', false)
+            commit('TOGGLE_BREAK')
+        },
+        stBreakDisable({state, commit}) {
+            commit('TOGGLE_BREAK', false)
+            if (Boolean(state.callQueue.length)) {
+                commit('TOGGLE_CALL_SOUND')
+                commit('TOGGLE_INCOMING_CALL')
             }
         },
 

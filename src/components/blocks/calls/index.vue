@@ -1,38 +1,36 @@
 <template>
     <SectionBox
-        class="block-terminal"
+        class="block-calls"
         gutters
         scroll
         head
-        :title="title"
-        :subtitle="subtitle"
+        title="История звонков"
+        subtitle="Последние"
         @download-next-page="$emit('download-next-page')"
         :items-length="info.length"
         :is-not-pagination="isNotPagination"
     >
-        <div class="block-terminal__box">
-            <BlockShortstoryItem class="block-terminal__item" v-for="item in info" :key="item.id" :info="item"/>
+        <div class="block-calls__box">
+            <BlockShortstoryItem
+                class="block-calls__item"
+                v-for="item in info"
+                :key="item.id"
+                :info="item"
+                :to="{name: 'call-fullstory', params: {id: item.id}}"
+            />
         </div>
     </SectionBox>
 </template>
 
 <script>
 import SectionBox from '@/components/sections/box'
-import BlockShortstoryItem from '@/components/blocks/terminal-shortstory-item'
+import BlockShortstoryItem from '@/components/blocks/call-shortstory-item'
 export default {
     components: {
         SectionBox,
         BlockShortstoryItem
     },
     props: {
-        title: {
-            type: String,
-            default: 'Доступность терминалов',
-        },
-        subtitle: {
-            type: String,
-            default: 'Доступные вам терминалы',
-        },
         info: {
             type: Array,
             default: () => []
@@ -46,14 +44,20 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.block-terminal {
+.block-calls {
     &__box {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-gap: 20px;
+        grid-column-gap: 20px;
     }
     &__item {
+        border: 0;
+        background-color: transparent;
+        cursor: pointer;
         border-top: 1px solid #efeff4;
+    }
+    /deep/ .block-call-shortstory__icon {
+        display: none;
     }
 }
 </style>

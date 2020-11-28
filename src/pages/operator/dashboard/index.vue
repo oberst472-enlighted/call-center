@@ -8,7 +8,7 @@
             <SectionBox>
                 <BlockCallWindowSmall
                     :is-incoming-call="isIncomingCall"
-                    @click="pickUpThePhone"
+                    @click="stClickTheCallBtn"
                 />
             </SectionBox>
         </div>
@@ -18,7 +18,7 @@
                 :info="items"
                 @download-next-page="downloadNextPageTerminals"
                 :items-length="items.length"
-                :is-not-pagination="isNotDevicesPagination"
+                :is-not-pagination="true"
             />
         </div>
 
@@ -31,13 +31,14 @@
                 subtitle="Последние"
                 @download-next-page="downloadNextPageCalls"
                 :items-length="callsPerShift.calls.length"
-                :is-not-pagination="callsPerShift.isNotPagination"
+                :is-not-pagination="true"
             >
                 <BlockCallShortstoryItem
                     class="page-home__calls-history__item"
                     v-for="item in callsPerShift.calls"
                     :key="item.id"
                     :info="item"
+                    :to="{name: 'call-fullstory', params: {id: item.id}}"
                 />
             </SectionBox>
         </div>
@@ -61,14 +62,15 @@ export default {
         BlockCallShortstoryItem
     },
     computed: {
-        ...mapState('socket', ['isIncomingCall']),
-        ...mapState('calls', ['callsPerShift']),
+        ...mapState('webrtc/webrtcCalls', ['isIncomingCall']),
+        ...mapState('calls', ['callsPerShift', 'callQueue']),
         ...mapState('terminals', ['items', 'isNotDevicesPagination']),
         ...mapState('stat', ['stat']),
+        ...mapState('sessions', ['isSessionBreak']),
         ...mapGetters('middleware', ['isAdmin', 'isAuth'])
     },
     methods: {
-        ...mapActions('socket', ['socketConnect', 'pickUpThePhone']),
+        ...mapActions('webrtc/webrtcCalls', ['stClickTheCallBtn']),
 
         ...mapActions('calls', ['stGetCallsPerWorkShift']),
         ...mapMutations('calls', ['SET_PAGINATION_PAGE']),
@@ -113,7 +115,23 @@ export default {
         ])
         // const date1 = dayjs().format()
         // console.log(date1)
-    }
+    },
+    async beforeRouteEnter(to, from, next) {
+            store.dispatch('stat/stGetStat')
+            const response = await Promise.all([
+            store.dispatch('calls/stGetCallsPerWorkShift'),
+            store.dispatch('terminals/stGetDevices'),
+        ])
+        const isSuccess = response.every(item => item)
+        if (isSuccess) {
+            next()
+
+        } else {
+            next(false)
+            // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
+        }
+        // store.dispatch('toggleLoading', false)
+    },
 }
 </script>
 
@@ -135,6 +153,9 @@ export default {
     &__call {
         grid-area: call;
         display: flex;
+        /deep/ .section-box {
+            background-color: #4c3b60;
+        }
     }
     &__terminals {
         grid-area: terminals;

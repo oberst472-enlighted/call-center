@@ -19,11 +19,8 @@
                 </div>
             </section>
         </main>
-        <transition name="fade">
-            <div class="layout-default__call-video" v-if="isCallAnswered">
-                <SectionCallVideo/>
-            </div>
-        </transition>
+
+        <BlockCallSound v-if="isSoundCallActive && !isCallAnswered && isSessionActive && !isSessionBreak"/>
         <!--        <div class="layout-default__call-video" v-if="true">-->
         <!--            <SectionCallVideo/>-->
         <!--        </div>-->
@@ -31,122 +28,53 @@
 </template>
 
 <script>
-import {customLog} from '@/utils/console-group'
-import {mapState, mapMutations, mapActions} from 'vuex'
-import SectionCallVideo from '@/components/sections/call-video'
-import RecordRTC from 'recordrtc'
-import axios from 'axios'
+import store from '@/store'
+import {mapActions, mapMutations, mapState} from 'vuex'
+import BlockCallSound from '@/components/blocks/call-sound'
 
 export default {
     components: {
-        SectionCallVideo
+        BlockCallSound
     },
     data() {
         return {
-            audio: new Audio('/assets/call-melody.mp3'),
             recoder: null,
         }
     },
     computed: {
-        ...mapState('socket', ['isIncomingCall', 'isCallAnswered']),
+        ...mapState('webrtc/webrtcCalls', ['isSoundCallActive', 'isIncomingCall', 'isCallAnswered', 'isVideoSectionActive', 'callQueue']),
+        ...mapState('sessions', ['isSessionActive', 'isSessionBreak']),
     },
     methods: {
-        ...mapActions('socket', ['incomingCall', 'socketConnect', 'getMedia', 'stBreak']),
+        ...mapMutations('webrtc/webrtcCalls', ['TOGGLE_INCOMING_CALL', 'TOGGLE_CALL_SOUND']),
 
-
-        stopCall() {
-            this.stopRecord()
-        },
-
-        startRecord() {
-            this.recorder = RecordRTC([this.userStream, this.partnerStream], {
-                type: 'video',
-                checkForInactiveTracks: true,
-                timeSlice: 1000,
-                // ondataavailable(blob) {
-                //     console.log('has data');
-                // },
-                // onStateChange(state) {
-                //     console.log(state)
-                // },
-            })
-            this.recorder.startRecording()
-        },
-        stopRecord() {
-
-            if (this.recorder) {
-                this.recorder.stopRecording(() => {
-                    const blob = this.recorder.getBlob()
-                    console.log(blob)
-                    const data = new FormData()
-
-                    data.append('video_file', blob, 'long.webm')
-
-                    console.log(data)
-                    console.log(`Authorization: token ${this.videoToken}`)
-                    const lol = `/videos/${this.videoID}/`
-                    axios.patch(lol, data, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                            Authorization: `token ${this.videoToken}`
-                        },
-                    }).then(result => {
-                        console.log(result)
-                    })
-                        .catch(e => {
-                            console.log(e)
-                        })
-
-                    this.recorder.destroy()
-                    this.recorder = null
-                })
-            } else {
-                console.log('recorder not found')
-            }
-
-
-        },
-
-        startAudio() {
-            const promise = this.audio.play()
-            if (promise !== undefined) {
-                promise.then(() => {
-                    customLog('startAudio', 'Браузер разрешил воспроизведение звука')
-                }).catch(error => {
-                    customLog('startAudio', 'Браузер запретил воспроизведение звука', 'red')
-                    customLog('startAudio', error, 'red')
-                });
-            }
-        },
-        stopAudio() {
-            this.audio.pause()
-            this.audio.currentTime = 0
-        },
     },
-        // watch: {
-        //     isIncomingCall: {
-        //         immediate: true,
-        //         handler(val) {
-        //             val ? this.startAudio() : this.audio.pause()
-        //         }
-        //     },
-        //     // partnerStream() {
-        //     //     if (this.userStream) {
-        //     //         this.startRecord()
-        //     //     }
-        //     // }
-        // },
-        created() {
-        if (sessionStorage.getItem('isStopBreak')) {
-            console.log(66)
-            this.stBreak()
-        }
-        this.socketConnect()
-        },
-    mounted() {
-        this.getMedia()
 
-    }
+    created() {
+        if (Boolean(this.callQueue.length)) {
+            this.TOGGLE_INCOMING_CALL()
+            this.TOGGLE_CALL_SOUND()
+        }
+        else {
+            this.TOGGLE_INCOMING_CALL(false)
+            this.TOGGLE_CALL_SOUND(false)
+        }
+    },
+    async beforeRouteEnter(to, from, next) {
+        // store.dispatch('toggleLoading')
+        await Promise.all([
+            store.dispatch('sessions/stGetCurrentSessionInfo'),
+        ])
+        next()
+        // const isSuccess = response.every(item => item)
+        // if (isSuccess) {
+        //    next()
+        // } else {
+        //     next(false)
+        //     // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
+        // }
+        // store.dispatch('toggleLoading', false)
+    },
 }
 
 </script>
@@ -163,12 +91,12 @@ export default {
     }
 
     &__body {
+        display: flex;
+        flex-direction: column;
         flex-grow: 1;
         height: 100vh;
         max-height: 100vh;
         overflow: auto;
-        display: flex;
-        flex-direction: column;
 
 
     }
@@ -198,8 +126,8 @@ export default {
     }
 
     &__main {
-        flex-grow: 1;
         display: flex;
+        flex-grow: 1;
     }
 
     &--aside-active {

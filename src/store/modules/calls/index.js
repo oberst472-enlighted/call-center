@@ -19,6 +19,9 @@ export default {
     getters: {
     },
     mutations: {
+        SET_SESSIONS_NO_PAGINATION(state, payload) {
+            state.callsPerShift.calls = payload
+        },
         TOGGLE_CALLS_PER_SHIFT_LOADING(state, payload = true) {
             state.callsPerShift.isLoading = payload
         },
@@ -45,6 +48,17 @@ export default {
         TOGGLE_COMMENT_LOADING(state, payload = true) {
             state.isCommentLoading = payload
         },
+        // RESET_CALLS_STATE(state) {
+        //     state.callsPerShift.callsPerShift = []
+        //     state.callsPerShift.isLoading = []
+        //     state.callsPerShift.filters = []
+        //     state.callsPerShift.page = []
+        //     state.isNotPagination = false
+        //     state.calls = []
+        //
+        //     state.isCallsLoading = true
+        //     state.isCommentLoading = false
+        // }
 
     },
     actions: {
@@ -58,9 +72,10 @@ export default {
                     response.status < 300 &&
                     response.statusText === 'OK'
                 ) {
-                    commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION', false)
-                    commit('SET_CALLS_PER_SHIFT', response.data.results);
-                    response.data.next ? commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION', false) : commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION')
+                    commit('SET_SESSIONS_NO_PAGINATION', response.data.results)
+                    // commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION', false)
+                    // commit('SET_CALLS_PER_SHIFT', response.data.results);
+                    // response.data.next ? commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION', false) : commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION')
                     isSuccess = true
                 } else {
                     isSuccess = false

@@ -1,18 +1,18 @@
 <template>
-    <article class="block-call-shortstory">
+    <component :is="tag" :to="to" class="block-call-shortstory">
         <span class="block-call-shortstory__date">
             {{ dateCall }}
             <span>{{ startTime }} - {{ stopTime }}</span>
         </span>
         <span class="block-call-shortstory__conclusion"><UiBadge>Решено</UiBadge></span>
         <span class="block-call-shortstory__title">
-            <span class="block-call-shortstory__title__title">Нерминал N-13</span>
+            <span class="block-call-shortstory__title__title">Терминал N-13</span>
             <span class="block-call-shortstory__title__title__subtitle">Балтийский вокзал</span>
         </span>
         <button class="block-call-shortstory__icon">
             <IconComment/>
         </button>
-    </article>
+    </component>
 </template>
 
 <script>
@@ -25,8 +25,15 @@ export default {
             default: () => {
             }
         },
+        to: {
+            type: Object,
+            default: null
+        },
     },
     computed: {
+        tag() {
+            return this.to ? 'router-link' : 'button'
+        },
         dateCall() {
             return this.info['start_time'] ? convertSecondsToDate(this.info['start_time']) : '???'
         },
@@ -46,6 +53,15 @@ export default {
     grid-template-columns: auto minmax(60px, 1fr);
     grid-gap: 5px;
     padding: 12px 0;
+    text-decoration: none;
+    color: $color--primary;
+    transition-duration: 0.3s;
+    &:hover {
+        opacity: 0.7;
+    }
+    &:active {
+        opacity: 0.5;
+    }
 
     &__date {
         font-size: 11px;
@@ -62,6 +78,7 @@ export default {
     &__title {
         display: grid;
         grid-gap: 5px;
+        text-align: left;
 
         &__title {
             font-size: 12px;

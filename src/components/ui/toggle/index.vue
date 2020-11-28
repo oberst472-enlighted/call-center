@@ -5,42 +5,43 @@
     >
         <button
             class="ui-toggle__item ui-toggle__item-start"
-            @click="isStarted = true">
+            @click="sendValue(false)">
             Онлайн
         </button>
         <button
             class="ui-toggle__item ui-toggle__item-stop"
-            @click="isStarted = false">
+            @click="sendValue(true)">
             Перерыв
         </button>
     </div>
 </template>
 
 <script>
+import {mapState} from 'vuex'
 export default {
+    props: {
+        defaultValue: {
+            type: Boolean,
+            default: true
+        },
+    },
     data() {
         return {
-            isStarted: true
         }
     },
     computed: {
+        ...mapState('sessions', ['isSessionBreak']),
         classes() {
             return [
-                {'ui-toggle--start': this.isStarted},
-                {'ui-toggle--stop': !this.isStarted},
+                {'ui-toggle--is-break': this.defaultValue},
             ]
         }
     },
-    watch: {
-        isStarted(val) {
-            this.$emit('click', val)
-        }
+    methods: {
+        sendValue(val) {
+          this.$emit('click', val)
+      }
     },
-    created() {
-        if (sessionStorage.getItem('isStopBreak')) {
-            this.isStarted = false
-        }
-    }
 }
 </script>
 
@@ -53,6 +54,7 @@ export default {
     border-radius: 8px;
     overflow: hidden;
     cursor: pointer;
+    //border: 1px solid #3e58fe;
 
     &:before {
         content: '';
@@ -61,9 +63,12 @@ export default {
         width: 50%;
         height: 100%;
         transition-duration: 0.2s;
+        background-color: #3e58fe;
+        left: 0;
     }
 
     &__item {
+
         position: relative;
         z-index: 2;
         flex-shrink: 0;
@@ -73,35 +78,58 @@ export default {
         background-color: transparent;
         cursor: pointer;
         user-select: none;
+        border: 0;
+        color: #ffffff;
 
         &-start {
-            color: #3e58fe;
+            color: #ffffff;
             border: 1px solid #3e58fe;
             border-right: none;
             border-top-left-radius: 9px;
             border-bottom-left-radius: 9px;
             box-shadow: 0 0;
-
+            pointer-events: none;
         }
 
         &-stop {
-            color: #4fd161;
             border: 1px solid #4fd161;
             border-left: none;
             border-top-right-radius: 9px;
             border-bottom-right-radius: 9px;
+            color: #4fd161;
+            pointer-events: auto;
         }
     }
 
-    &--start {
+    &--is-break {
+        //&:before {
+        //    left: 0;
+        //    background-color: #3e58fe;
+        //}
+        //
+        //.ui-toggle__item-start {
+        //    color: #ffffff;
+        //}
         &:before {
-            left: 0;
-            background-color: #3e58fe;
+            left: 50%;
+            background-color: #4fd161;
         }
 
         .ui-toggle__item-start {
-            color: #ffffff;
+            color: #3e58fe;
+            pointer-events: auto;
         }
+
+        .ui-toggle__item-stop {
+            color: #ffffff;
+            pointer-events: none;
+        }
+
+        //.ui-toggle__item {
+        //    color: #ffffff;
+        //    //border: 0
+        //    border: 1px solid ;
+        //}
     }
 
     &--stop {

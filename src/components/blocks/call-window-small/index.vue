@@ -1,47 +1,56 @@
 <template>
     <div class="block-call-window-small">
-        <div v-if="isIncomingCall || isDisablePassiveBox" class="active-call block-call-window-small__active">
-            <span class="block-call-window-small__item block-call-window-small__text">
-                Новый звонок <span>russ</span>
-            </span>
+        <transition name="fade" mode="out-in">
+            <div class="block-call-window-small__box" v-if="isHideShow" key="main">
+                <div v-if="isIncomingCall || isDisablePassiveBox" class="active-call block-call-window-small__active">
+                    <span class="block-call-window-small__item block-call-window-small__text">
+                        Новый звонок <span>russ</span>
+                    </span>
 
-            <span class="block-call-window-small__item block-call-window-small__name">
-                Иван Иванович Николаев
-            </span>
+                    <span class="block-call-window-small__item block-call-window-small__name">
+                        Иван Иванович Николаев
+                    </span>
 
-            <span class="block-call-window-small__item block-call-window-small__terminal">
-                терминал # <span>1288</span>
-            </span>
+                    <span class="block-call-window-small__item block-call-window-small__terminal">
+                        терминал # <span>1288</span>
+                    </span>
 
-            <span class="block-call-window-small__item block-call-window-small__desc">
-                Короткое описание
-            </span>
+                    <span class="block-call-window-small__item block-call-window-small__desc">
+                        Короткое описание
+                    </span>
 
-            <span class="block-call-window-small__btn-box" v-if="!isDisableBtnsBox">
-                <LocalCallWindowSmallBtn @click="$emit('click')"/>
-            </span>
+                    <span class="block-call-window-small__btn-box" v-if="!isDisableBtnsBox">
+                        <LocalCallWindowSmallBtn @click="$emit('click')"/>
+                    </span>
 
-            <span
-                class="block-call-window-small__options-box"
-                v-if="isBlockOptionsActive"
-            >
-                <transition name="fade" mode="out-in">
-                    <LocalCallWindowOptions
-                        v-if="!isBlockOptionsDisable"
-                        @stop-call="$emit('stop-call')"
-                        @toggle-micro="$emit('toggle-micro', $event)"
-                        @toggle-camera="$emit('toggle-camera', $event)"
-                        key="options"
-                    />
+                    <span
+                        class="block-call-window-small__options-box"
+                        v-if="isBlockOptionsActive"
+                    >
+                        <transition name="fade" mode="out-in">
+                            <LocalCallWindowOptions
+                                v-if="!isBlockOptionsDisable"
+                                @stop-call="$emit('stop-call')"
+                                @toggle-micro="$emit('toggle-micro', $event)"
+                                @toggle-camera="$emit('toggle-camera', $event)"
+                                key="options"
+                            />
 
-                    <LocalCallWindowEnd v-else key="end"/>
-                </transition>
-            </span>
-        </div>
+                            <LocalCallWindowEnd v-else key="end"/>
+                        </transition>
+                    </span>
+                </div>
 
-        <div v-else class="empty-call block-call-window-small__passive">
-            Ожидание <br> звонка
-        </div>
+                <div v-else class="empty-call block-call-window-small__passive">
+                    Ожидание <br> звонка
+                </div>
+            </div>
+            <div class="block-call-window-small__box" key="plays" v-else>
+                <div class="empty-call block-call-window-small__passive">
+                    Звонки <br> не принимаются
+                </div>
+            </div>
+        </transition>
     </div>
 </template>
 
@@ -49,7 +58,7 @@
 import LocalCallWindowSmallBtn from './call-window-small-btn'
 import LocalCallWindowOptions from './call-window-small-options'
 import LocalCallWindowEnd from './call-window-end'
-
+import {mapState} from 'vuex'
 export default {
     components: {
         LocalCallWindowSmallBtn,
@@ -78,6 +87,12 @@ export default {
             default: false
         }
     },
+    computed: {
+        ...mapState('sessions', ['isSessionActive', 'isSessionBreak']),
+        isHideShow() {
+            return this.isSessionActive && !this.isSessionBreak
+        }
+    }
 }
 </script>
 
@@ -86,8 +101,13 @@ export default {
     display: flex;
     width: 100%;
     height: 100%;
-    color: #ffffff;
-    background-color: #4c3b60;
+    &__box {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        color: #ffffff;
+        background-color: #4c3b60;
+    }
 
     &__passive {
         display: flex;

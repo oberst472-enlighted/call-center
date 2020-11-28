@@ -28,6 +28,9 @@ export default {
                 state.items = payload
             }
         },
+        SET_DEVICES_NO_PAGINATION(state, payload) {
+            state.items = payload
+        },
         SET_DEVICES_NOT_PAGINATION(state, payload = true) {
             state.isNotDevicesPagination = payload
         },
@@ -47,8 +50,9 @@ export default {
                     response.status < 300 &&
                     response.statusText === 'OK'
                 ) {
-                    commit('SET_DEVICES', response.data.results);
-                    response.data.next ? commit('SET_DEVICES_NOT_PAGINATION', false) : commit('SET_DEVICES_NOT_PAGINATION')
+                    commit('SET_DEVICES_NO_PAGINATION', response.data.results)
+                    // commit('SET_DEVICES', response.data.results);
+                    // response.data.next ? commit('SET_DEVICES_NOT_PAGINATION', false) : commit('SET_DEVICES_NOT_PAGINATION')
                     isSuccess = true
                 } else {
                     isSuccess = false

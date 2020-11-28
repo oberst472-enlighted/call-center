@@ -3,7 +3,7 @@
         <div class="section-aside__top">
             <div
                 class="section-aside__logo-box"
-                @click="$router.push({name: 'home'})"
+                @click="$router.push({name: 'home-operator'})"
             >
                 <LocalAsideLogo/>
             </div>
@@ -13,6 +13,7 @@
                 :key="index"
                 :icon="item.icon"
                 :title="item.title"
+                :href="item.href"
             />
         </div>
 

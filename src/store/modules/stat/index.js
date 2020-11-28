@@ -22,9 +22,7 @@ export default {
             let isSuccess = false
             try {
                 const response = await apiGetStat()
-                console.log(response)
                 commit('SET_STAT', response.data);
-                console.log(response.data.next)
                 isSuccess = Boolean(response) &&
                     response.status < 300 &&
                     response.statusText === 'OK';

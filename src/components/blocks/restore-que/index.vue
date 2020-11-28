@@ -61,7 +61,6 @@ export default {
                     login: this.requestSelected.user.username,
                     password: this.newPassword
                 })
-                console.log(resp)
                 this.$store.commit('popup/cleanPopup')
                 this.requestsList = (await apiRequest.get('/api/users/recovery-requests/')).data
 

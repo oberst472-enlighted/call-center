@@ -52,7 +52,7 @@ export default new VueRouter({
                     }
                 },
                 {
-                    path: '/detail-call-info/:id',
+                    path: '/detail/:id',
                     name: 'call-fullstory',
                     components: {
                         default: require('@/pages/operator/call-fullstory').default,
@@ -60,6 +60,46 @@ export default new VueRouter({
                         aside: require('@/components/sections/aside/').default,
                     }
                 },
+                {
+                    path: '/calls/',
+                    name: 'calls',
+                    components: {
+                        default: require('@/pages/operator/calls').default,
+                        header: require('@/components/sections/header-operator/').default,
+                        aside: require('@/components/sections/aside/').default,
+                    }
+                },
+                {
+                    path: '/terminals/',
+                    name: 'terminals',
+                    components: {
+                        default: require('@/pages/operator/terminals').default,
+                        header: require('@/components/sections/header-operator/').default,
+                        aside: require('@/components/sections/aside/').default,
+                    }
+                },
+                {
+                    path: '/statistics/',
+                    name: 'statistics',
+                    components: {
+                        default: require('@/pages/operator/stat').default,
+                        header: require('@/components/sections/header-operator/').default,
+                        aside: require('@/components/sections/aside/').default,
+                    }
+                },
+            ]
+        },
+        {
+            path: '',
+            component: require('@/layouts/operator/call-video/').default,
+            children: [
+                {
+                    path: '/call/:id',
+                    name: 'call-video',
+                    components: {
+                        default: require('@/pages/operator/call-video').default,
+                    }
+                }
             ]
         },
         {

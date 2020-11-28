@@ -1,7 +1,7 @@
 import axiosUrl from './axiosUrl'
 import token from './token'
 
-const pageSize = 12
+const pageSize = 100
 
 //авторизация
 export async function apiLogin(form) {
@@ -50,6 +50,7 @@ export async function ApiCallsOperator(id) {
 
 // получить звонки оператора за смену
 export async function apiGetAllCallsPerWorkShift(params) {
+    // const pageSize = 36
     let query = ''
     if (params) {
         for (let key in params) {
@@ -84,7 +85,7 @@ export async function apiSendACommentToTheCall({callID, info}) {
 
 
 // старт смены
-export async function apiStartWorkShift() {
+export async function apiStartSession() {
     const options = {
         method: 'patch',
         url: `api/v1/sessions/start-session/`,
@@ -96,7 +97,7 @@ export async function apiStartWorkShift() {
 }
 
 // стоп смены
-export async function apiStopWorkShift() {
+export async function apiStopSession() {
     const options = {
         method: 'patch',
         url: `api/v1/sessions/stop-session/`,
@@ -108,7 +109,7 @@ export async function apiStopWorkShift() {
 }
 
 // инфо о текущей смене
-export async function apiGetCurrentSession() {
+export async function apiGetCurrentSessionInfo() {
     const options = {
         method: 'get',
         url: `api/v1/sessions/current-session/`,
@@ -120,7 +121,7 @@ export async function apiGetCurrentSession() {
 }
 
 // начало перерыва
-export async function apiStartBreak() {
+export async function apiStartSessionBreak() {
     const options = {
         method: 'patch',
         url: `api/v1/sessions/start-break/`,
@@ -132,7 +133,7 @@ export async function apiStartBreak() {
 }
 
 // конец перерыва
-export async function apiStopBreak() {
+export async function apiStopSessionBreak() {
     const options = {
         method: 'patch',
         url: `api/v1/sessions/stop-break/`,
@@ -145,7 +146,7 @@ export async function apiStopBreak() {
 
 //получить терминалы
 export async function apiGetDevices(params) {
-    const pageSize = 36
+    // const pageSize = 36
     let query = ''
     if (params) {
         for (let key in params) {
@@ -176,6 +177,18 @@ export async function apiGetStat() {
     return response
 }
 
+export async function lol() {
+    const options = {
+        method: 'get',
+        url: `api/v1/api/v1/calls/statQ2FsbDoyMDI0/`,
+        body: null,
+        token
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+
+// lol()
 
 
 

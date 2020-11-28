@@ -5,14 +5,17 @@
         </div>
 
         <transition name="fade" mode="out-in">
-            <div class="section-header__options" v-if="isStartWorkShift" :key="'options'">
+            <div class="section-header__options" v-if="isSessionActive" :key="'options'">
                 <div class="section-header__toggle-box" :class="{'section-header__toggle-box--disabled': isPauseLoading}">
-                    <UiToggle @click="_togglePauseSession"/>
+                    <UiToggle
+                        @click="_togglePauseSession"
+                        :default-value="isSessionBreak"
+                    />
                 </div>
 
                 <div class="section-header__timer-box">
-                    <UiStopWatch :start-watch="isStartWorkShift"
-                                 :stop-watch="!isStartWorkShift"/>
+                    <UiStopWatch :start-watch="isSessionActive"
+                                 :stop-watch="!isSessionActive"/>
                 </div>
 
                 <div class="section-header__btn-box">
@@ -43,7 +46,6 @@
 import LocalHeaderBack from './header-operator-back'
 import LocalHeaderOperatorUSer from './header-operator-user'
 import {mapState, mapMutations, mapActions} from 'vuex'
-import dayjs from 'dayjs'
 import {customLog} from '@/utils/console-group'
 
 export default {
@@ -58,92 +60,69 @@ export default {
         }
     },
     computed: {
-        ...mapState('workShift', ['isStartWorkShift', 'startWorkShiftTime', 'workShiftID']),
-        tim() {
-            console.log(this.startWorkShiftTime)
-            console.log('--')
-            console.log(dayjs(this.startWorkShiftTime).format('hh:mm:ss'))
-            return 1
-        },
-        userData() {
-            return this.$store.state.userData
-        },
-        workStatus() {
-            return this.$store.state.workStatus
-        }
-
+        ...mapState('sessions', ['isSessionActive', 'isSessionBreak', 'startSessionTime', 'sessionId']),
     },
     methods: {
-        ...mapActions('workShift', ['stStartWorkShift', 'stStopWorkShift', 'stGetCurrentSession', 'stStartBreak', 'stStopBreak']),
-        ...mapActions('socket', ['stBreak', 'stBreakDisable']),
-        ...mapMutations('workShift', ['TOGGLE_START_WORK_SHIFT']),
+        ...mapActions('sessions', ['stStartSession', 'stStopSession', 'stStartSessionBreak', 'stStopSessionBreak']),
+        ...mapMutations('sessions', ['TOGGLE_SESSION_BREAK']),
         _togglePauseSession(val) {
             this.isPauseLoading = true
-            if (!val) {
-                const isSuccess = this.stStartBreak()
+            if (val) {
+                const isSuccess = this.stStartSessionBreak()
                 if (isSuccess) {
-                    this._saveStopBreakSessionToStorage()
                     customLog('_togglePauseSession', 'Начался перерыв')
                 } else {
                     customLog('_togglePauseSession', 'Перерыв не начался либо вы уже на перерыве', 'red')
                 }
-                this.stBreak()
 
             } else {
-                const isSuccess = this.stStopBreak()
+                const isSuccess = this.stStopSessionBreak()
                 if (isSuccess) {
-                    this._saveStartBreakSessionToStorage()
+                    // this._saveStartBreakSessionToStorage()
                     customLog('_togglePauseSession', 'Закончился перерыв')
                 } else {
                     customLog('_togglePauseSession', 'Перерыв не закончен или не начался')
                 }
-                this.stBreakDisable()
             }
             this.isPauseLoading = false
         },
         async _startSession() {
-            const isSuccess = await this.stStartWorkShift()
+            const isSuccess = await this.stStartSession()
             if (isSuccess) {
-                this._saveSessionIDToStorage()
+                console.log('Новая сессия открыта')
             } else {
-                const isSuccess = await this.stGetCurrentSession()
-                if (isSuccess) {
-                    this._saveSessionIDToStorage()
-                    console.log('получили сохраненную сессию')
-                }
-                else {
-                    console.log('нет сохраненной сессии')
-                }
+                console.log('Новая сессия не открыта')
             }
         },
         async _stopSession() {
-            const isSuccess = await this.stStopWorkShift()
+            const isSuccess = await this.stStopSession()
+            this.TOGGLE_SESSION_BREAK(false)
             if (isSuccess) {
-                this._deleteSessionIDToStorage()
+                console.log('Сессия закрыта')
             }
             else {
-                console.log('Сессия не остановлена')
+                console.log('Сессия не закрыта')
             }
         },
-        _saveSessionIDToStorage() {
-            localStorage.setItem('workShiftID', this.workShiftID)
-        },
-        _deleteSessionIDToStorage() {
-            localStorage.removeItem('workShiftID')
-        },
-        _saveStartBreakSessionToStorage() {
-            sessionStorage.removeItem('isStopBreak')
-            sessionStorage.setItem('isStartBreak', '1')
-        },
-        _saveStopBreakSessionToStorage() {
-            sessionStorage.removeItem('isStartBreak')
-            sessionStorage.setItem('isStopBreak', '1')
-        }
+        // _saveSessionIDToStorage() {
+        //     localStorage.setItem('workShiftID', this.workShiftID)
+        // },
+        // _deleteSessionIDToStorage() {
+        //     localStorage.removeItem('workShiftID')
+        // },
+        // _saveStartBreakSessionToStorage() {
+        //     sessionStorage.removeItem('isStopBreak')
+        //     sessionStorage.setItem('isStartBreak', '1')
+        // },
+        // _saveStopBreakSessionToStorage() {
+        //     sessionStorage.removeItem('isStartBreak')
+        //     sessionStorage.setItem('isStopBreak', '1')
+        // }
     },
     created() {
-        if (localStorage.getItem('workShiftID')) {
-            this.TOGGLE_START_WORK_SHIFT()
-        }
+        // if (localStorage.getItem('workShiftID')) {
+        //     this.TOGGLE_START_WORK_SHIFT()
+        // }
     }
 }
 </script>

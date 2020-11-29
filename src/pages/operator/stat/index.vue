@@ -41,7 +41,7 @@
 
 
                     <div class="page-stat__inp page-stat__inp-save-btn">
-                        <UiBtn>Выгрузить</UiBtn>
+                        <UiBtn @click="sendInfo">Выгрузить</UiBtn>
                     </div>
                 </div>
             </template>
@@ -89,6 +89,7 @@ export default {
         },
     },
     methods: {
+        ...mapActions('csv', ['stDownloadCsw']),
         openPeriod() {
             console.log(6)
             this.periodString = JSON.stringify(this.periodVal)
@@ -104,9 +105,13 @@ export default {
         changeStatus(payload) {
             this.statusVal = payload.code
         },
-        changeOperators(payload) {
+        changeOperator(payload) {
             this.statusVal = payload.code
         },
+        async sendInfo() {
+            const res = await this.stDownloadCsw(this.$route.params.id)
+            console.log(res)
+        }
     },
     // async beforeRouteEnter(to, from, next) {
     //     const response = await Promise.all([

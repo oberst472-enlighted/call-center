@@ -110,7 +110,7 @@ export default {
 
     computed: {
         ...mapState('webrtc/webrtcPeerConnection', ['userStream', 'partnerStream']),
-        ...mapState('webrtc/webrtcCalls', ['isCallOver', 'isCallAnswered', 'videoToken']),
+        ...mapState('webrtc/webrtcCalls', ['isCallOver', 'isCallAnswered', 'videoToken', 'videoID']),
     },
     methods: {
         ...mapMutations('webrtc/webrtcPeerConnection', ['TOGGLE_AUDIO', 'TOGGLE_CAMERA']),
@@ -188,7 +188,7 @@ export default {
                     const data = new FormData()
 
                     data.append('video_file', blob, 'long.webm')
-                    this.sendVideo({token: this.videoToken, id: this.$route.params.id, data})
+                    this.sendVideo({token: this.videoToken, id: this.videoID, data})
 
                     this.recorder.destroy()
                     this.recorder = null

@@ -12,6 +12,7 @@ import users from './modules/users';
 import stat from './modules/stat';
 import calls from './modules/calls';
 import formData from './modules/form-data';
+import csv from './modules/csv';
 import media from './modules/media';
 // import socket from './modules/socket';
 import webrtc from './modules/webrtc'
@@ -44,12 +45,7 @@ export default new Vuex.Store({
         sessions,
         terminals,
         formData,
-        media
+        media,
+        csv
     },
-    plugins: [
-        createPersistedState({
-            // storage: window.sessionStorage,
-            paths: ['login']
-        })
-    ]
 });

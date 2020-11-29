@@ -73,7 +73,7 @@ export default {
             return this.detailInfo.comment
         },
         video() {
-            return this.detailInfo.video
+            return this.detailInfo.video_file
         },
     },
     async beforeRouteEnter(to, from, next) {

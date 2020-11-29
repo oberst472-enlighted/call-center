@@ -217,6 +217,19 @@ export async function apiEditUserById(info) {
 }
 
 
+// csv
+export async function apiDownloadCsw() {
+    const options = {
+        method: 'get',
+        url: `/api/v1/report/?user`,
+        body: null,
+        token
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+
+
 
 
 

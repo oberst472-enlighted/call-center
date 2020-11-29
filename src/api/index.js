@@ -17,18 +17,24 @@ export async function apiLogin(form) {
 
 // получить юзеров
 export async function apiGetUsers() {
-  const url = `api/v1/api/users/`
-  const body = null
-  return axiosUrl('get', url, body, token)
+    const options = {
+        method: 'get',
+        url: `api/v1/users/`,
+        body: null,
+        token
+    }
+    const response = await axiosUrl(options)
+    return response
 }
 
 //получить юзера по id
 export async function apiGetUserById(id) {
+    console.log(id)
     const options = {
         method: 'get',
-        url: `api/v1/api/users/${id}`,
+        url: `api/v1/users/${id}`,
         body: null,
-        token: ''
+        token
     }
     const response = await axiosUrl(options)
     return response
@@ -193,6 +199,17 @@ export async function apiGetDetailTerminalInfoById(id) {
         method: 'get',
         url: `/api/v1/devices/${id}/`,
         body: null,
+        token
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+// получить инфу о терминале по id
+export async function apiEditUserById(info) {
+    const options = {
+        method: 'patch',
+        url: `/api/v1/users/${info.id}/`,
+        body: info.body,
         token
     }
     const response = await axiosUrl(options)

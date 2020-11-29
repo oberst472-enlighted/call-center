@@ -1,17 +1,11 @@
-import { apiGetUsers, ApiCallsOperator, apiGetUserById } from '@/api';
+import { apiGetUsers, ApiCallsOperator, apiGetUserById, apiEditUserById } from '@/api';
 
 export default {
     namespaced: true,
     state: {
         users: [],
-        callsOperator: null
-    },
-    getters: {
-        getUsersOperators(state) {
-            return state.users.filter(
-                user => user.userType.toLowerCase() === "operator"
-            );
-        }
+        callsOperator: null,
+        userInfo: null
     },
     mutations: {
         setUsers(state, payload) {
@@ -19,6 +13,9 @@ export default {
         },
         setCallsOperator(state, payload) {
             state.callsOperator = payload;
+        },
+        SET_USER_INFO(state, payload) {
+            state.userInfo = payload
         }
     },
     actions: {
@@ -27,17 +24,30 @@ export default {
             if (
                 Boolean(response) &&
                 response.status < 300 &&
-                response.statusText === "OK"
+                response.statusText === 'OK'
             ) {
-                commit("setUsers", response.data);
+                commit('setUsers', response.data);
                 return true;
             } else {
                 return false;
             }
         },
-        async stGetUserById(context, id) {
+        async stGetUserById({commit}, id) {
             const response = await apiGetUserById(id);
-            if (Boolean(response) && response.status < 300 && response.statusText === "OK") {
+            if (
+                Boolean(response) &&
+                response.status < 300 &&
+                response.statusText === 'OK'
+            ) {
+                commit('SET_USER_INFO', response.data);
+                return true;
+            } else {
+                return false;
+            }
+        },
+        async stEditUserById(context, info) {
+            const response = await apiEditUserById(info);
+            if (Boolean(response) && response.status < 300 && response.statusText === 'OK') {
                 return {isSuccess: true, response};
             } else {
                 return {isSuccess: false};
@@ -49,9 +59,9 @@ export default {
             if (
                 Boolean(response) &&
                 response.status < 300 &&
-                response.statusText === "OK"
+                response.statusText === 'OK'
             ) {
-                commit("setCallsOperator", response.data);
+                commit('setCallsOperator', response.data);
                 return true;
             } else {
                 return false;

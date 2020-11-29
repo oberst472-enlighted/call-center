@@ -27,7 +27,7 @@ export default {
             info: null
         }
     },
-    mounted() {
+    created() {
         const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
         this.info = getJsonFromString(info)
         console.log(getJsonFromString(info))

@@ -4,13 +4,39 @@
             <template #content>
                 <div class="page-stat__content">
                     <div class="page-stat__inp page-stat__inp-first-calendar">
-                        calendar
+                        <component
+                            :is="`div`"
+                            :key="periodKey"
+                        >
+                            <UiInputPeriod
+                                class="block-download-csv__select-period"
+                                :show-placeholder="Boolean(periodVal)"
+                                @show="openPeriod"
+                                @hidden="closePeriod"
+                                @input="periodVal = $event"
+                                placeholder="За все время"
+                            />
+                        </component>
                     </div>
                     <div class="page-stat__inp page-stat__inp-last-operators">
-                        operator-list
+                        <UiSelect
+                            class="block-download-csv__select"
+                            placeholder="Статус"
+                            :items="modifiedOperators"
+                            default-value="all"
+                            @input="changeOperator"
+                            shadow
+                        />
                     </div>
                     <div class="page-stat__inp page-stat__inp-statuses">
-                        status-list
+                        <UiSelect
+                            class="block-download-csv__select"
+                            placeholder="Статус"
+                            :items="modifiedStatuses"
+                            default-value="all"
+                            @input="changeStatus"
+                            shadow
+                        />
                     </div>
 
 
@@ -27,36 +53,60 @@
 import store from '@/store'
 import {mapState, mapActions} from 'vuex'
 import SectionBox from '@/components/sections/box'
-import {getJsonFromString} from '@/utils/json'
 export default {
     components: {
         SectionBox,
     },
     data() {
         return {
-            form: {
-                first_name: '',
-                last_name: '',
-                phone: '',
-                email: '',
-                new_password: '',
-                file: null,
-            },
-            empty: {
-                isFirstNameEmpty: false,
-                isLastNameEmpty: false,
-                isPhoneEmpty: false,
-            },
-            validation: {
-                isPhoneValid: false,
-                isEmailValid: false
-            },
+            periodVal: null,
+            periodString: '',
+            periodKey: 1,
+            statusVal: ''
 
         }
     },
     computed: {
+        modifiedStatuses() {
+            return [
+                {title: 'Оператор 1', code: '1', id: 'all'},
+                {title: 'Оператор 2', code: '2', id: 'all'},
+                {title: 'Оператор 3', code: '3', id: 'all'},
+            ]
+            // const stats = [...this.statuses]
+            // stats.unshift({title: 'Все статусы', code: '', id: 'all'})
+            // return stats
+        },
+        modifiedOperators() {
+            return [
+                {title: 'Принято', code: '1', id: 'all'},
+                {title: 'Не принято', code: '2', id: 'all'},
+                {title: 'Закрыто', code: '3', id: 'all'},
+            ]
+            // const stats = [...this.statuses]
+            // stats.unshift({title: 'Все статусы', code: '', id: 'all'})
+            // return stats
+        },
     },
     methods: {
+        openPeriod() {
+            console.log(6)
+            this.periodString = JSON.stringify(this.periodVal)
+        },
+        closePeriod() {
+            console.log(5)
+            // if (Boolean(!this.periodVal.start) ||
+            //     Boolean(!this.periodVal.end)) {
+            //     this.periodVal = ''
+            //     this.periodKey += 1
+            // }
+        },
+        changeStatus(payload) {
+            this.statusVal = payload.code
+        },
+        changeOperators(payload) {
+            this.statusVal = payload.code
+        },
     },
     // async beforeRouteEnter(to, from, next) {
     //     const response = await Promise.all([
@@ -91,7 +141,7 @@ export default {
         'save-btn . .';
     }
     &__inp {
-        outline: 1px solid red;
+        //outline: 1px solid red;
         &-calendar {
             grid-area: calendar;
         }

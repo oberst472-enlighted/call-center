@@ -79,11 +79,12 @@
                 arrFiles.forEach(this.uploadFile)
                 // arrFiles.forEach(this.previewFile)
             },
-            async uploadFile(file) {
+             uploadFile(file) {
                 let formData = new FormData()
                 formData.append('file', file)
-                const response = await this.stDownloadMedia(formData)
-                this.galleryPreviews.push(response)
+                 console.log(formData)
+                // const response = await this.stDownloadMedia(formData)
+                 this.$emit('input', formData)
             },
              deleteFile(val) {
                 const index = this.galleryPreviews.findIndex(item => item.id === val.id)
@@ -98,10 +99,10 @@
             // }
         },
         watch: {
-            galleryPreviews(val) {
-                let arr = val.map(item => item.id)
-                this.$emit('input', arr)
-            }
+            // galleryPreviews(val) {
+            //         let arr = val.map(item => item.id)
+            //         this.$emit('input', arr)
+            // }
         },
         mounted() {
             if (this.defaultValue.length) {

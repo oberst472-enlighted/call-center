@@ -14,10 +14,15 @@ Vue.use(VueFilterDateFormat);
 Vue.use(VueMeta)
 Vue.use(VueMask)
 
+
 import 'normalize.css'
 import './assets/scss/main.scss'
 import '@/components/ui'
 import '@/components/icons'
+
+import VueCtkDateTimePicker from 'vue-ctk-date-time-picker';
+import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css';
+Vue.component('VueCtkDateTimePicker', VueCtkDateTimePicker);
 
 Vue.config.productionTip = false
 Vue.use(VueCookies)

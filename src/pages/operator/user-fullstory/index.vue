@@ -6,8 +6,8 @@
                     <div class="page-profile__inp page-profile__inp-first-name">
                         <UiInput
                             v-model="form.first_name"
-                            :value="form.first_name"
                             :is-empty="empty.isFirstNameEmpty"
+                            :value="form.first_name"
                         >
                             Имя <span class="negative">*</span>
                         </UiInput>
@@ -15,8 +15,8 @@
                     <div class="page-profile__inp page-profile__inp-last-name">
                         <UiInput
                             v-model="form.last_name"
-                            :value="form.last_name"
                             :is-empty="empty.isLastNameEmpty"
+                            :value="form.last_name"
                         >
                             Фамилия <span class="negative">*</span>
                         </UiInput>
@@ -36,12 +36,12 @@
                     <div class="page-profile__inp page-profile__inp-phone">
                         <UiInput
                             v-model="form.phone"
+                            :is-empty="empty.isPhoneEmpty"
                             :value="form.phone"
                             placeholder="89261234567"
                             validation-rule="^\d+$"
                             validation-text="Ошибка, только цифры!"
                             @isValid="validation.isPhoneValid = $event"
-                            :is-empty="empty.isPhoneEmpty"
                         >
                             Телефон <span class="negative">*</span>
                         </UiInput>
@@ -56,14 +56,15 @@
                     </div>
 
                     <div class="page-profile__inp page-profile__inp-file">
-                        <BlockDragFile
-                            :default-value="form.file"
-                            v-model="form.file"
-                        />
+                        <BlockDragFile>
+                            <!-- v-model="form.photo"-->
+                            <!--                            :default-value="form.photo"-->
+                            <!--                            />-->
+                        </blockdragfile>
                     </div>
 
                     <div class="page-profile__inp page-profile__inp-save-btn">
-                        <UiBtn>Сохранить</UiBtn>
+                        <UiBtn @click="sendInfo">Сохранить</UiBtn>
                     </div>
                 </div>
             </template>
@@ -73,11 +74,12 @@
 
 <script>
 import store from '@/store'
-import {mapState, mapActions} from 'vuex'
+import {mapActions, mapState} from 'vuex'
 import SectionBox from '@/components/sections/box'
 // import BlockFile from '@/components/blocks/file'
 import BlockDragFile from '@/components/blocks/drag-and-drop-file'
 import {getJsonFromString} from '@/utils/json'
+
 export default {
     components: {
         SectionBox,
@@ -92,7 +94,7 @@ export default {
                 phone: '',
                 email: '',
                 new_password: '',
-                file: null,
+                photo: null,
             },
             empty: {
                 isFirstNameEmpty: false,
@@ -111,16 +113,24 @@ export default {
         ...mapState('terminals', ['items', 'isNotDevicesPagination']),
         ...mapState('stat', ['stat']),
         ...mapState('sessions', ['isSessionBreak']),
+        ...mapState('users', ['userInfo']),
     },
     methods: {
         ...mapActions('webrtc/webrtcCalls', ['stClickTheCallBtn']),
+        ...mapActions('users', ['stEditUserById']),
+        async sendInfo() {
+            const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
+            const infoObj = getJsonFromString(info)
+            console.log(infoObj)
+            await this.stEditUserById({id: infoObj.id, body: this.form})
+        }
     },
     async beforeRouteEnter(to, from, next) {
         const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
         const infoObj = getJsonFromString(info)
         console.log(infoObj)
         const response = await Promise.all([
-            store.dispatch('users/stGetUserById', infoObj),
+            store.dispatch('users/stGetUserById', infoObj.id),
         ])
         const isSuccess = response.every(item => item)
         if (isSuccess) {
@@ -132,61 +142,69 @@ export default {
         // store.dispatch('toggleLoading', false)
     },
     created() {
-        const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
-        const infoObj = getJsonFromString(info)
-        this.form.first_name = infoObj.first_name
-        this.form.last_name = infoObj.last_name
-        this.form.email = infoObj.email
-        this.form.phone = infoObj.phone
+        // const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
+        // const infoObj = getJsonFromString(info)
+        this.form.first_name = this.userInfo.first_name
+        this.form.last_name = this.userInfo.last_name
+        this.form.email = this.userInfo.email
+        this.form.phone = this.userInfo.phone
 
-        console.log(infoObj)
-    }
+    },
+
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .page-profile {
-    padding-bottom: 30px;
-    width: 100%;
     display: flex;
+    width: 100%;
+    padding-bottom: 30px;
+
     &__content {
-        padding: 30px;
-        width: 100%;
         display: grid;
         grid-template-columns: 1fr 1fr minmax(420px, 1fr);
         grid-gap: 20px;
+        width: 100%;
+        padding: 30px;
         grid-auto-rows: minmax(60px, auto);
         grid-template-areas:
         'first-name last-name file'
         'email phone file'
         'new-pass . save-btn';
     }
+
     &__inp {
         &-first-name {
             grid-area: first-name;
         }
+
         &-last-name {
             grid-area: last-name;
         }
+
         &-email {
             grid-area: email;
         }
+
         &-phone {
             grid-area: phone;
         }
+
         &-new-pass {
-            grid-area: new-pass;
             margin-top: 60px;
+            grid-area: new-pass;
         }
+
         &-file {
-            grid-area: file;
-            height: 100%;
             display: flex;
+            height: 100%;
+            grid-area: file;
         }
+
         &-save-btn {
             align-self: end;
-            margin-left: auto;
             margin-top: 60px;
+            margin-left: auto;
             grid-area: save-btn;
         }
     }

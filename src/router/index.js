@@ -61,6 +61,15 @@ export default new VueRouter({
                     }
                 },
                 {
+                    path: '/detail/:id',
+                    name: 'terminal-fullstory',
+                    components: {
+                        default: require('@/pages/operator/terminal-fullstory').default,
+                        header: require('@/components/sections/header-operator/').default,
+                        aside: require('@/components/sections/aside/').default,
+                    }
+                },
+                {
                     path: '/calls/',
                     name: 'calls',
                     components: {
@@ -87,6 +96,15 @@ export default new VueRouter({
                         aside: require('@/components/sections/aside/').default,
                     }
                 },
+                {
+                    path: '/profile/',
+                    name: 'operator-profile',
+                    components: {
+                        default: require('@/pages/operator/user-fullstory').default,
+                        header: require('@/components/sections/header-operator/').default,
+                        aside: require('@/components/sections/aside/').default,
+                    }
+                },
             ]
         },
         {
@@ -95,7 +113,7 @@ export default new VueRouter({
             children: [
                 {
                     path: '/call/:id',
-                    name: 'call-video',
+                    name: 'call-form-data',
                     components: {
                         default: require('@/pages/operator/call-video').default,
                     }

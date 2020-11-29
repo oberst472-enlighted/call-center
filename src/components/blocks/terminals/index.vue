@@ -11,7 +11,13 @@
         :is-not-pagination="isNotPagination"
     >
         <div class="block-terminal__box">
-            <BlockShortstoryItem class="block-terminal__item" v-for="item in info" :key="item.id" :info="item"/>
+            <BlockShortstoryItem
+                class="block-terminal__item"
+                v-for="item in info"
+                :key="item.id"
+                :info="item"
+                :to="{name: 'terminal-fullstory', params: {id: item.id}}"
+            />
         </div>
     </SectionBox>
 </template>

@@ -3,13 +3,13 @@
         <SectionBox class="page-detail-info__box" content>
             <template #content>
                 <div class="page-detail-info__content">
-                    <h1 class="page-detail-info__title">Звонок #0201</h1>
+                    <h1 class="page-detail-info__title">Звонок {{ title }}</h1>
 
                     <div class="page-detail-info__date-box">
-                        <span class="page-detail-info__date">10:32:12</span>
-                        <span class="page-detail-info__time">10:33:31</span>
+                        <span class="page-detail-info__date">{{ date }}</span>
+                        <span class="page-detail-info__time">{{ startTime }}</span>
                         <span>-</span>
-                        <span class="page-detail-info__time">10:33:31</span>
+                        <span class="page-detail-info__time">{{ stopTime }}</span>
                     </div>
 
                     <div class="page-detail-info__name-box">
@@ -25,23 +25,20 @@
                         <UiBadge>Решено</UiBadge>
                     </div>
 
-                    <div class="page-detail-info__comment-box">
+                    <div class="page-detail-info__comment-box" v-if="comment">
                         <span class="page-detail-info__comment-title">Комментарий оператора</span>
                         <span class="page-detail-info__comment-name">
                             оператор # 0012 <br>Елена Авантюрова
                         </span>
                         <p class="page-detail-info__comment-text">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing
-                            elit. Accusantium commodi cumque deleniti deserunt
-                            dicta doloribus enim eveniet ipsa libero molestias nam
-                            obcaecati, quae ratione similique, suscipit totam ut
-                            veniam, voluptatum.
+                            {{ comment }}
                         </p>
                     </div>
                 </div>
                 <div class="page-detail-info__video">
                     <div class="page-detail-info__video__box">
-                        <video class="page-detail-info__video__video" controls preload src="https://vc-dev.enlighted.ru/media/long_kKd3Kh5.webm"></video>
+                        <video v-if="video" class="page-detail-info__video__video" controls preload :src="video"></video>
+                        <div class="page-detail-info__video__text" v-else>Видео <br>отсутствует</div>
                     </div>
                 </div>
             </template>
@@ -50,29 +47,54 @@
 </template>
 
 <script>
+import store from '@/store'
 import SectionBox from '@/components/sections/box'
-
+import {mapState} from 'vuex'
+import {convertSecondsToDate, convertSecondsToTime} from '@/utils/convertDateTime'
 export default {
     components: {
         SectionBox
     },
-    // async beforeRouteEnter(to, from, next) {
-    //     // store.dispatch('toggleLoading')
-    //     const response = await Promise.all([
-    //         store.dispatch('calls/stGetCallsPerWorkShift'),
-    //         // store.dispatch('tasks/stGetTasksTypes'),
-    //         // store.dispatch('users/stAllUsers', ['contractor'])
-    //     ])
-    //     const isSuccess = response.every(item => item)
-    //     if (isSuccess) {
-    //        next()
-    //
-    //     } else {
-    //         next(false)
-    //         // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
-    //     }
-    //     // store.dispatch('toggleLoading', false)
-    // },
+    computed: {
+        ...mapState('calls', ['detailInfo']),
+        title() {
+            return this.detailInfo.id
+        },
+        date() {
+            return convertSecondsToDate(this.detailInfo.create_time)
+        },
+        startTime() {
+            return convertSecondsToTime(this.detailInfo.start_time)
+        },
+        stopTime() {
+            return convertSecondsToTime(this.detailInfo.stop_time)
+        },
+        comment() {
+            return this.detailInfo.comment
+        },
+        video() {
+            return this.detailInfo.video
+        },
+    },
+    async beforeRouteEnter(to, from, next) {
+        console.log(from)
+        console.log(to)
+        // store.dispatch('toggleLoading')
+        const response = await Promise.all([
+            store.dispatch('calls/stGetDetailCallInfo', to.params.id),
+            // store.dispatch('tasks/stGetTasksTypes'),
+            // store.dispatch('users/stAllUsers', ['contractor'])
+        ])
+        const isSuccess = response.every(item => item)
+        if (isSuccess) {
+           next()
+
+        } else {
+            next(false)
+            // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
+        }
+        // store.dispatch('toggleLoading', false)
+    },
 }
 </script>
 
@@ -98,7 +120,7 @@ export default {
             height: 0;
             padding-bottom: 56%;
             border-radius: 9px;
-            background-color: $color--primary;
+            background-color: rgba($color--primary, 0.2);
             overflow: hidden;
 
             video {
@@ -110,6 +132,16 @@ export default {
                 outline: none;
                 object-fit: cover;
             }
+
+        }
+        &__text {
+            font-size: 14px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-transform: uppercase;
+            text-align: center;
         }
     }
 

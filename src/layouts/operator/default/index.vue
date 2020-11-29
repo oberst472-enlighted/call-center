@@ -21,7 +21,7 @@
         </main>
 
         <BlockCallSound v-if="isSoundCallActive && !isCallAnswered && isSessionActive && !isSessionBreak"/>
-        <!--        <div class="layout-default__call-video" v-if="true">-->
+        <!--        <div class="layout-default__call-form-data" v-if="true">-->
         <!--            <SectionCallVideo/>-->
         <!--        </div>-->
     </div>

@@ -11,6 +11,8 @@ import alerts from './modules/alerts';
 import users from './modules/users';
 import stat from './modules/stat';
 import calls from './modules/calls';
+import formData from './modules/form-data';
+import media from './modules/media';
 // import socket from './modules/socket';
 import webrtc from './modules/webrtc'
 import sessions from './modules/sessions';
@@ -40,7 +42,9 @@ export default new Vuex.Store({
         // socket,
         webrtc,
         sessions,
-        terminals
+        terminals,
+        formData,
+        media
     },
     plugins: [
         createPersistedState({

@@ -1,4 +1,4 @@
-import {apiGetAllCallsPerWorkShift, apiSendACommentToTheCall} from '@/api'
+import {apiGetAllCallsPerWorkShift, apiSendACommentToTheCall, apiGetDetailCallInfo} from '@/api'
 
 export default {
     namespaced: true,
@@ -12,6 +12,7 @@ export default {
             isNotPagination: false,
             calls: []
         },
+        detailInfo: [],
 
         isCallsLoading: true,
         isCommentLoading: false
@@ -48,18 +49,9 @@ export default {
         TOGGLE_COMMENT_LOADING(state, payload = true) {
             state.isCommentLoading = payload
         },
-        // RESET_CALLS_STATE(state) {
-        //     state.callsPerShift.callsPerShift = []
-        //     state.callsPerShift.isLoading = []
-        //     state.callsPerShift.filters = []
-        //     state.callsPerShift.page = []
-        //     state.isNotPagination = false
-        //     state.calls = []
-        //
-        //     state.isCallsLoading = true
-        //     state.isCommentLoading = false
-        // }
-
+        SET_DETAIL_INFO(state, payload) {
+            state.detailInfo = payload
+        },
     },
     actions: {
         async stGetCallsPerWorkShift({state, commit}) {
@@ -86,6 +78,33 @@ export default {
             }
             finally {
                 commit('TOGGLE_CALLS_PER_SHIFT_LOADING', false)
+                // eslint-disable-next-line no-unsafe-finally
+                return isSuccess
+
+            }
+        },
+
+        async stGetDetailCallInfo({commit}, id) {
+            let isSuccess = false
+            try {
+                const response = await apiGetDetailCallInfo(id)
+                if (
+                    Boolean(response) &&
+                    response.status < 300 &&
+                    response.statusText === 'OK'
+                ) {
+                    isSuccess = true
+
+                    commit('SET_DETAIL_INFO', response.data)
+                } else {
+                    isSuccess = false
+                }
+            } catch (e) {
+                console.error(e)
+                isSuccess = false
+            }
+            finally {
+                // commit('TOGGLE_CALLS_PER_SHIFT_LOADING', false)
                 // eslint-disable-next-line no-unsafe-finally
                 return isSuccess
 

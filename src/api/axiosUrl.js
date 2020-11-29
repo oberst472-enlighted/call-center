@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export default async function({method, url, body, token}) {
+export const axiosUrl = async function({method, url, body, token}) {
     if (method.toUpperCase() === 'GET') {
         try {
             return await axios({
@@ -45,4 +45,23 @@ export default async function({method, url, body, token}) {
             return false
         }
     }
+}
+
+
+export const axiosFormData = async function({method, url, body, token}) {
+    console.log(url)
+        try {
+            return await axios({
+                method,
+                url,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                        Authorization: `token ${token}`
+                },
+                data: body
+            })
+        } catch (error) {
+            console.error(error)
+            return false
+        }
 }

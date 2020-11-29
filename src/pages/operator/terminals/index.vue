@@ -82,6 +82,9 @@ export default {
     &__call {
         grid-area: call;
         display: flex;
+        /deep/ .section-box {
+            background-color: #4c3b60;
+        }
     }
     &__calls {
         grid-area: calls;

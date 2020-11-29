@@ -130,7 +130,7 @@ export default {
                 commit('SET_START_TIME', Date.now())
                 commit('TOGGLE_CALL_ANSWERED')
                 commit('TOGGLE_IS_OPERATOR_BUSY')
-                router.push({name: 'call-video', params: {id: info.call_id}})
+                router.push({name: 'call-form-data', params: {id: info.call_id}})
             } else {
                 if (!Boolean(state.callQueue.length)) {
                     commit('TOGGLE_CALL_SOUND', false)

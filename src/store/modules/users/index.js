@@ -1,4 +1,4 @@
-import { apiGetUsers, ApiCallsOperator, apiGetUserById } from "@/api";
+import { apiGetUsers, ApiCallsOperator, apiGetUserById } from '@/api';
 
 export default {
     namespaced: true,

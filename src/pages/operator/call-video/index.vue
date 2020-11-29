@@ -110,7 +110,7 @@ export default {
 
     computed: {
         ...mapState('webrtc/webrtcPeerConnection', ['userStream', 'partnerStream']),
-        ...mapState('webrtc/webrtcCalls', ['isCallOver', 'isCallAnswered']),
+        ...mapState('webrtc/webrtcCalls', ['isCallOver', 'isCallAnswered', 'videoToken']),
     },
     methods: {
         ...mapMutations('webrtc/webrtcPeerConnection', ['TOGGLE_AUDIO', 'TOGGLE_CAMERA']),
@@ -119,6 +119,7 @@ export default {
 
         ...mapActions('webrtc/webrtcCalls', ['stEndCall', 'stCloseVideoSection']),
         ...mapActions('calls', ['stSendACommentToTheCall']),
+        ...mapActions('formData', ['sendVideo']),
         async sendComment(payload) {
             let info = {
                 callID: this.$route.params.id,
@@ -181,23 +182,13 @@ export default {
 
             if (this.recorder) {
                 this.recorder.stopRecording(() => {
+
+
                     const blob = this.recorder.getBlob()
-                    console.log(blob)
                     const data = new FormData()
 
                     data.append('video_file', blob, 'long.webm')
-                    const lol = `api/v1/videos/${this.videoID}`
-                    axios.patch(lol, data, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                            Authorization: `token ${this.videoToken}`
-                        },
-                    }).then(result => {
-                        console.log(result)
-                    })
-                        .catch(e => {
-                            console.log(e)
-                        })
+                    this.sendVideo({token: this.videoToken, id: this.$route.params.id, data})
 
                     this.recorder.destroy()
                     this.recorder = null

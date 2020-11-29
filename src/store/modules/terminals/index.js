@@ -1,4 +1,4 @@
-import {apiGetDevices} from '@/api'
+import {apiGetDetailTerminalInfoById, apiGetDevices} from '@/api'
 
 export default {
     namespaced: true,
@@ -9,6 +9,7 @@ export default {
         },
         isNotDevicesPagination: false,
         isDevicesLoading: false,
+        detailTerminalInfo: null
     },
     mutations: {
         TOGGLE_DEVICES_LOADING(state, payload = true) {
@@ -37,6 +38,9 @@ export default {
         SET_DEVICES_PAGINATION_PAGE(state, payload = 1) {
             payload !== 0 ? state.filters.page ++ : state.filters.page = 1
         },
+        SET_TERMINAL_DETAIL_INFO(state, payload) {
+            state.detailTerminalInfo = payload
+        },
 
     },
     actions: {
@@ -63,6 +67,33 @@ export default {
             }
             finally {
                 commit('TOGGLE_DEVICES_LOADING', false)
+                // eslint-disable-next-line no-unsafe-finally
+                return isSuccess
+
+            }
+        },
+
+        async stGetDetailTerminalInfoById({commit}, id) {
+            let isSuccess = false
+            try {
+                const response = await apiGetDetailTerminalInfoById(id)
+                if (
+                    Boolean(response) &&
+                    response.status < 300 &&
+                    response.statusText === 'OK'
+                ) {
+                    isSuccess = true
+
+                    commit('SET_TERMINAL_DETAIL_INFO', response.data)
+                } else {
+                    isSuccess = false
+                }
+            } catch (e) {
+                console.error(e)
+                isSuccess = false
+            }
+            finally {
+                // commit('TOGGLE_CALLS_PER_SHIFT_LOADING', false)
                 // eslint-disable-next-line no-unsafe-finally
                 return isSuccess
 

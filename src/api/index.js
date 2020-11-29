@@ -1,4 +1,4 @@
-import axiosUrl from './axiosUrl'
+import {axiosUrl, axiosFormData} from './axiosUrl'
 import token from './token'
 
 const pageSize = 100
@@ -23,7 +23,7 @@ export async function apiGetUsers() {
 }
 
 //получить юзера по id
-export async function apiGetUserById(form) {
+export async function apiGetUserById(id) {
     const options = {
         method: 'get',
         url: `api/v1/api/users/${id}`,
@@ -58,7 +58,7 @@ export async function apiGetAllCallsPerWorkShift(params) {
         }
     }
     query+= `&page_size=${pageSize}&ordering=-created`
-    const url = `api/v1/calls/?${query.substring(1)}`
+    const url = `/api/v1/calls/?${query.substring(1)}`
     const options = {
         method: 'get',
         body: null,
@@ -73,7 +73,7 @@ export async function apiGetAllCallsPerWorkShift(params) {
 export async function apiSendACommentToTheCall({callID, info}) {
     const options = {
         method: 'patch',
-        url: ` api/v1/calls/${callID}/`,
+        url: ` /api/v1/calls/${callID}/`,
         body: info,
         token
     }
@@ -88,7 +88,7 @@ export async function apiSendACommentToTheCall({callID, info}) {
 export async function apiStartSession() {
     const options = {
         method: 'patch',
-        url: `api/v1/sessions/start-session/`,
+        url: `/api/v1/sessions/start-session/`,
         body: null,
         token
     }
@@ -100,7 +100,7 @@ export async function apiStartSession() {
 export async function apiStopSession() {
     const options = {
         method: 'patch',
-        url: `api/v1/sessions/stop-session/`,
+        url: `/api/v1/sessions/stop-session/`,
         body: null,
         token
     }
@@ -112,7 +112,7 @@ export async function apiStopSession() {
 export async function apiGetCurrentSessionInfo() {
     const options = {
         method: 'get',
-        url: `api/v1/sessions/current-session/`,
+        url: `/api/v1/sessions/current-session/`,
         body: null,
         token
     }
@@ -124,7 +124,7 @@ export async function apiGetCurrentSessionInfo() {
 export async function apiStartSessionBreak() {
     const options = {
         method: 'patch',
-        url: `api/v1/sessions/start-break/`,
+        url: `/api/v1/sessions/start-break/`,
         body: null,
         token
     }
@@ -136,7 +136,7 @@ export async function apiStartSessionBreak() {
 export async function apiStopSessionBreak() {
     const options = {
         method: 'patch',
-        url: `api/v1/sessions/stop-break/`,
+        url: `/api/v1/sessions/stop-break/`,
         body: null,
         token
     }
@@ -169,18 +169,29 @@ export async function apiGetDevices(params) {
 export async function apiGetStat() {
     const options = {
         method: 'get',
-        url: `api/v1/sessions/current-stat`,
+        url: `/api/v1/sessions/current-stat`,
         body: null,
         token
     }
     const response = await axiosUrl(options)
     return response
 }
-
-export async function lol() {
+// получить инфу о зволнке по id
+export async function apiGetDetailCallInfo(id) {
     const options = {
         method: 'get',
-        url: `api/v1/api/v1/calls/statQ2FsbDoyMDI0/`,
+        url: `/api/v1/calls/${id}/`,
+        body: null,
+        token
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+// получить инфу о терминале по id
+export async function apiGetDetailTerminalInfoById(id) {
+    const options = {
+        method: 'get',
+        url: `/api/v1/devices/${id}/`,
         body: null,
         token
     }
@@ -188,7 +199,38 @@ export async function lol() {
     return response
 }
 
-// lol()
+
+
+
+
+
+
+
+//загрузка видео
+export async function apiSendVideo(info) {
+    const options = {
+        method: 'patch',
+        url: `/api/v1/videos/${info.id}/`,
+        body: info.data,
+        token: info.token
+    }
+    const response = await axiosFormData(options)
+    return response
+}
+
+
+
+export const apiDownloadMedia = async function(formData) {
+    const response = await fetch(`${baseUrl}/api/v1/media/`, {
+        method: 'POST',
+        headers: {
+            Authorization: token()
+        },
+        body: formData
+    })
+    const data = await response.json()
+    return !response.ok || response.status > 300 ? false : data
+}
 
 
 

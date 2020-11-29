@@ -67,7 +67,7 @@ export default {
         font-size: 11px;
 
         span {
-            font-weight: $font-weight--bold;
+            font-weight: $font-weight--medium;
         }
     }
 
@@ -82,7 +82,7 @@ export default {
 
         &__title {
             font-size: 12px;
-            font-weight: $font-weight--bold;
+            font-weight: $font-weight--medium;
         }
 
         &__subtitle {

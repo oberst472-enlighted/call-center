@@ -37,21 +37,21 @@
         </transition>
 
         <div class="section-header__user-box">
-            <LocalHeaderOperatorUSer/>
+            <BlockUserShortstory/>
         </div>
     </div>
 </template>
 
 <script>
 import LocalHeaderBack from './header-operator-back'
-import LocalHeaderOperatorUSer from './header-operator-user'
+import BlockUserShortstory from '@/components/blocks/user-shortstory'
 import {mapState, mapMutations, mapActions} from 'vuex'
 import {customLog} from '@/utils/console-group'
 
 export default {
     components: {
         LocalHeaderBack,
-        LocalHeaderOperatorUSer
+        BlockUserShortstory
     },
     data() {
         return {

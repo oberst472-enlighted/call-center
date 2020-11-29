@@ -1714,7 +1714,7 @@
             numAudioTracks = this.localStreams[0].getAudioTracks().length;
             numVideoTracks = this.localStreams[0].getVideoTracks().length;
           }
-          // Determine number of call-sound and video tracks we need to send/recv.
+          // Determine number of call-sound and form-data tracks we need to send/recv.
           if (offerOptions) {
             // Reject Chrome legacy constraints.
             if (offerOptions.mandatory || offerOptions.optional) {

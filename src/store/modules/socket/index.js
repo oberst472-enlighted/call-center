@@ -24,7 +24,7 @@
 //             },
 //             mediaOptions: {
 //                 call-sound: true,
-//                 video: true
+//                 form-data: true
 //             }
 //         },
 //         identifiersCroup: {
@@ -96,7 +96,7 @@
 //         },
 //         TOGGLE_CAMERA(state, payload = true) {
 //             state.userStream.getTracks().forEach(item => {
-//                 if (item.kind === 'video') {
+//                 if (item.kind === 'form-data') {
 //                     item.enabled = payload
 //                 }
 //             })

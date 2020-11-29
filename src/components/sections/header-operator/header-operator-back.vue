@@ -17,7 +17,6 @@ export default {
     align-items: center;
     width: 25px;
     height: 25px;
-    margin-right: 10px;
     border-radius: 50%;
     cursor: pointer;
     transition: all ease .5s;

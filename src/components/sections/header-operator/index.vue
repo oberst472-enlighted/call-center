@@ -1,6 +1,6 @@
 <template>
     <div class="section-header">
-        <div class="section-header__back-box" v-if="false">
+        <div class="section-header__back-box" :class="{'section-header__back-box--active': this.$route.name !== 'home-operator'}">
             <LocalHeaderBack/>
         </div>
 
@@ -159,6 +159,14 @@ export default {
     &__user-box {
         margin-left: auto;
         flex-shrink: 0;
+    }
+    &__back-box {
+        width: 0;
+        overflow: hidden;
+        transition-duration: 0.3s;
+        &--active {
+            width: 50px;
+        }
     }
 
 }

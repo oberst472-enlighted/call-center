@@ -110,7 +110,7 @@ export default {
         },
         async sendInfo() {
             const res = await this.stDownloadCsw(this.$route.params.id)
-            console.log(res)
+            window.open(res.data.file)
         }
     },
     // async beforeRouteEnter(to, from, next) {

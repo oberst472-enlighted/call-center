@@ -221,7 +221,7 @@ export async function apiEditUserById(info) {
 export async function apiDownloadCsw() {
     const options = {
         method: 'get',
-        url: `/api/v1/report/?user`,
+        url: `/api/v1/report/`,
         body: null,
         token
     }

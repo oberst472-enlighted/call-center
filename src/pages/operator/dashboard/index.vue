@@ -64,7 +64,7 @@ export default {
     computed: {
         ...mapState('webrtc/webrtcCalls', ['isIncomingCall']),
         ...mapState('calls', ['callsPerShift', 'callQueue']),
-        ...mapState('terminals', ['items', 'isNotDevicesPagination']),
+        ...mapState('devices', ['items', 'isNotDevicesPagination']),
         ...mapState('stat', ['stat']),
         ...mapState('sessions', ['isSessionBreak']),
         ...mapGetters('middleware', ['isAdmin', 'isAuth'])
@@ -72,63 +72,47 @@ export default {
     methods: {
         ...mapActions('webrtc/webrtcCalls', ['stClickTheCallBtn']),
 
-        ...mapActions('calls', ['stGetCallsPerWorkShift']),
+        ...mapActions('calls', ['stGetAllCallsForTheCurrentSession']),
         ...mapMutations('calls', ['SET_PAGINATION_PAGE']),
+        ...mapMutations('alerts', ['ADD_ALERT']),
+        ...mapMutations(['TOGGLE_PROGRESS_ACTIVE']),
 
-        ...mapActions('terminals', ['stGetDevices']),
-        ...mapMutations('terminals', ['SET_DEVICES_PAGINATION_PAGE']),
+        ...mapActions('devices', ['stGetDevices']),
+        ...mapMutations('devices', ['SET_DEVICES_PAGINATION_PAGE']),
 
         async downloadNextPageCalls() {
             this.SET_PAGINATION_PAGE()
-            const isSuccess = await this.stGetCallsPerWorkShift()
+            const isSuccess = await this.stGetAllCallsForTheCurrentSession()
             console.log(isSuccess)
         },
         async downloadNextPageTerminals() {
             this.SET_DEVICES_PAGINATION_PAGE()
+            // eslint-disable-next-line no-unused-vars
             const isSuccess = await this.stGetDevices()
         }
     },
-    // async beforeRouteEnter(to, from, next) {
-    //     // store.dispatch('toggleLoading')
-    //     const response = await Promise.all([
-    //         store.dispatch('calls/stGetCallsPerWorkShift'),
-    //         // store.dispatch('tasks/stGetTasksTypes'),
-    //         // store.dispatch('users/stAllUsers', ['contractor'])
-    //     ])
-    //     const isSuccess = response.every(item => item)
-    //     if (isSuccess) {
-    //        next()
-    //
-    //     } else {
-    //         next(false)
-    //         // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
-    //     }
-    //     // store.dispatch('toggleLoading', false)
-    // },
-   async mounted() {
-        await Promise.all([
-            store.dispatch('calls/stGetCallsPerWorkShift'),
-            store.dispatch('terminals/stGetDevices'),
-            store.dispatch('stat/stGetStat'),
-            // store.dispatch('tasks/stGetTasksTypes'),
-            // store.dispatch('users/stAllUsers', ['contractor'])
-        ])
-        // const date1 = dayjs().format()
-        // console.log(date1)
-    },
     async beforeRouteEnter(to, from, next) {
+        if (!to.params.doNotLoadData) {
+            store.commit('TOGGLE_PROGRESS_ACTIVE')
+
             store.dispatch('stat/stGetStat')
             const response = await Promise.all([
-            store.dispatch('calls/stGetCallsPerWorkShift'),
-            store.dispatch('terminals/stGetDevices'),
-        ])
-        const isSuccess = response.every(item => item)
-        if (isSuccess) {
+                store.dispatch('calls/stGetAllCallsForTheCurrentSession'),
+                store.dispatch('devices/stGetDevices'),
+            ])
+            const isSuccess = response.every(item => item)
+            if (isSuccess) {
+                next()
+                store.commit('TOGGLE_PROGRESS_ACTIVE', false)
+            } else {
+                next(false)
+                store.commit('TOGGLE_PROGRESS_ACTIVE', false)
+                this.ADD_ALERT(['negative'])
+            }
+        }
+        else {
             next()
-
-        } else {
-            next(false)
-            // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
+            store.commit('TOGGLE_PROGRESS_ACTIVE', false)
         }
         // store.dispatch('toggleLoading', false)
     },

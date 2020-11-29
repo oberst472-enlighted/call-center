@@ -47,6 +47,7 @@ import LocalHeaderBack from './header-operator-back'
 import BlockUserShortstory from '@/components/blocks/user-shortstory'
 import {mapState, mapMutations, mapActions} from 'vuex'
 import {customLog} from '@/utils/console-group'
+import store from '@/store'
 
 export default {
     components: {
@@ -65,6 +66,7 @@ export default {
     methods: {
         ...mapActions('sessions', ['stStartSession', 'stStopSession', 'stStartSessionBreak', 'stStopSessionBreak']),
         ...mapMutations('sessions', ['TOGGLE_SESSION_BREAK']),
+        ...mapActions('stat', ['stGetStat']),
         _togglePauseSession(val) {
             this.isPauseLoading = true
             if (val) {
@@ -88,6 +90,7 @@ export default {
         },
         async _startSession() {
             const isSuccess = await this.stStartSession()
+                await this.stGetStat()
             if (isSuccess) {
                 console.log('Новая сессия открыта')
             } else {
@@ -156,11 +159,13 @@ export default {
         font-family: Segoe UI,Frutiger,Frutiger Linotype,Dejavu Sans,Helvetica Neue,Arial,sans-serif;
         /deep/ .ui-stopwatch__number {
             width: 12px !important;
+            color: $color--primary
         }
         /deep/ .ui-stopwatch__dot {
             width: auto !important;
             display: inline-flex;
             justify-content: center;
+            color: $color--primary
         }
     }
     &__btn-box {

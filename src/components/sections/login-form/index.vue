@@ -2,8 +2,8 @@
     <form class="section-login" @submit.prevent="send">
         <div class="section-login__header-box">
             <BlockFormHeader
-                title="Вход в колл-центр"
                 subtitle="Введите свои данные"
+                title="Вход в колл-центр"
             />
         </div>
 
@@ -61,7 +61,7 @@
 
 <script>
 import BlockFormHeader from '@/components/blocks/form-header'
-import {mapGetters, mapActions} from 'vuex'
+import {mapActions, mapMutations, mapGetters} from 'vuex'
 
 export default {
     components: {
@@ -87,15 +87,20 @@ export default {
         }
     },
     computed: {
-        ...mapGetters('middleware', ['isAdmin', 'isAuth', 'isOperator', 'isAdmin']),
+        ...mapGetters('middleware', ['isAdmin', 'isAuth', 'isOperator']),
         isFormFilled() {
             return Boolean(this.form.username && this.form.password)
         }
     },
     methods: {
+        ...mapMutations('alerts', ['ADD_ALERT']),
         ...mapActions('login', ['stLogin']),
         ...mapActions('users', ['stGetUserById']),
-        ...mapActions('alerts', ['showAlert']),
+        ...mapActions('calls', ['stGetAllCallsForTheCurrentSession']),
+        ...mapActions('devices', ['stGetDevices']),
+        ...mapActions('stat', ['stGetStat']),
+
+
         async send() {
             if (!this.isLoading) {
                 try {
@@ -111,16 +116,14 @@ export default {
 
                         } else {
                             this.isError = true
+                            this.isLoading = false
                         }
                     } else {
                         this.showEmptyErrors()
-                        console.error('Одно или несколько полей формы пусты')
+                        this.isLoading = false
                     }
                 } catch {
-                    this.showAlert(['negative', 'Возник системный сбой, перезагрузите страницу и повторите операцию!'])
-                    console.error('Системный сбой')
-                } finally {
-                    this.isLoading = false
+                    this.ADD_ALERT(['negative'])
                 }
             }
 
@@ -143,8 +146,7 @@ export default {
                 val ?
                     localStorage.setItem('userData', JSON.stringify(this.form)) :
                     localStorage.removeItem('userData')
-            }
-            else {
+            } else {
                 localStorage.removeItem('userData')
             }
         },
@@ -156,19 +158,41 @@ export default {
                 this.isPasswordEmpty = true
             }
         },
-        goToAdminPanel() {
+
+        async goToAdminPanel() {
             if (this.isAuth) {
                 if (this.isAdmin) {
                     this.$router.push({name: 'home-admin'})
+                } else if (this.isOperator) {
+                    const isSuccess = await this.loadInitialData()
+                    if (isSuccess) {
+                        this.isLoading = false
+                        this.$router.push({name: `home-operator`, params: {doNotLoadData: true}})
+                    } else {
+                        this.ADD_ALERT(['negative'])
+                    }
+
                 }
-                else if (this.isOperator) {
-                    this.$router.push({name: 'home-operator'})
-                }
+            } else {
+                this.ADD_ALERT(['negative'])
             }
-            else {
-                console.error('Системный сбой')
+        },
+
+        async loadInitialData() {
+            try {
+                await this.stGetStat()
+                const response = await Promise.all([
+                    this.stGetAllCallsForTheCurrentSession(),
+                    this.stGetDevices(),
+                ])
+                const isSuccess = response.every(item => item)
+                return isSuccess
+            } catch (e) {
+                return false
             }
         }
+
+
     },
     watch: {
         'form.username'(val) {

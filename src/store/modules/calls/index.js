@@ -54,7 +54,7 @@ export default {
         },
     },
     actions: {
-        async stGetCallsPerWorkShift({state, commit}) {
+        async stGetAllCallsForTheCurrentSession({state, commit}) {
             commit('TOGGLE_CALLS_PER_SHIFT_LOADING')
             let isSuccess = false
             try {

@@ -46,7 +46,7 @@ export default {
     },
     async beforeRouteEnter(to, from, next) {
         const response = await Promise.all([
-            store.dispatch('terminals/stGetDetailTerminalInfoById', to.params.id),
+            store.dispatch('devices/stGetDetailTerminalInfoById', to.params.id),
         ])
         const isSuccess = response.every(item => item)
         if (isSuccess) {

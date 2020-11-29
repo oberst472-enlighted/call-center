@@ -50,7 +50,7 @@ export default {
     },
     async beforeRouteEnter(to, from, next) {
         const response = await Promise.all([
-            store.dispatch('terminals/stGetDevices'),
+            store.dispatch('devices/stGetDevices'),
         ])
         const isSuccess = response.every(item => item)
         if (isSuccess) {

@@ -34,7 +34,7 @@ export default {
     &__count {
         width: 100%;
         margin-top: 10px;
-        font-size: 25px;
+        font-size: 18px;
         line-height: 1;
         color: #65528B;
         font-weight: 500;

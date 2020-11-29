@@ -47,19 +47,19 @@ export default {
     methods: {
         ...mapActions('webrtc/webrtcCalls', ['stClickTheCallBtn']),
 
-        ...mapActions('calls', ['stGetCallsPerWorkShift']),
+        ...mapActions('calls', ['stGetAllCallsForTheCurrentSession']),
         ...mapMutations('calls', ['SET_PAGINATION_PAGE']),
 
 
         async downloadNextPageCalls() {
             this.SET_PAGINATION_PAGE()
-            const isSuccess = await this.stGetCallsPerWorkShift()
+            const isSuccess = await this.stGetAllCallsForTheCurrentSession()
             console.log(isSuccess)
         },
     },
     async beforeRouteEnter(to, from, next) {
         const response = await Promise.all([
-            store.dispatch('calls/stGetCallsPerWorkShift')
+            store.dispatch('calls/stGetAllCallsForTheCurrentSession')
         ])
         const isSuccess = response.every(item => item)
         if (isSuccess) {

@@ -9,10 +9,10 @@
                 <img src="assets/images/user-placeholder.svg" alt="">
             </div>
         </div>
-        <div class="user-shortstory__options">
+        <div class="user-shortstory__options" tabindex="-1">
             <div class="user-shortstory__options-box">
                 <router-link :to="{name: 'operator-profile'}" class="user-shortstory__options-item">Редактировать</router-link>
-                <span class="user-shortstory__options-item">Выйти</span>
+                <span @click="$router.push('/')" class="user-shortstory__options-item">Выйти</span>
             </div>
         </div>
     </div>
@@ -63,6 +63,10 @@ export default {
         overflow: hidden;
         transition-duration: 0.3s;
         top: calc(100% + 10px);
+        outline: none;
+        &:focus {
+            height: 66px;
+        }
         &__box {
             display: flex;
             flex-direction: column;

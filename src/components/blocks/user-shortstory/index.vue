@@ -56,6 +56,8 @@ export default {
         border-radius: 8px;
         width: 120px;
         position: absolute;
+        z-index: 3;
+        box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);
         right: 0;
         height: 0;
         overflow: hidden;

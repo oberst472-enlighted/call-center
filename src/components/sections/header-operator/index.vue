@@ -152,6 +152,16 @@ export default {
     &__timer-box {
         margin-right: 18px;
         flex-shrink: 0;
+        font-size: 14px !important;
+        font-family: Segoe UI,Frutiger,Frutiger Linotype,Dejavu Sans,Helvetica Neue,Arial,sans-serif;
+        /deep/ .ui-stopwatch__number {
+            width: 12px !important;
+        }
+        /deep/ .ui-stopwatch__dot {
+            width: auto !important;
+            display: inline-flex;
+            justify-content: center;
+        }
     }
     &__btn-box {
         //min-width: 150px;

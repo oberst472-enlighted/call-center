@@ -36,7 +36,7 @@ export default {
         SectionBox
     },
     computed: {
-        ...mapState('terminals', ['detailTerminalInfo']),
+        ...mapState('devices', ['detailTerminalInfo']),
         title() {
             return this.detailTerminalInfo.id
         },

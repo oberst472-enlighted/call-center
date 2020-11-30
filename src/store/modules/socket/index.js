@@ -360,12 +360,10 @@
 //         operatorPickedUpThePhone({state, commit}, info) {
 //             commit('DELETE_CALL_QUEUE_ITEM', info.call_id)
 //             // if (Boolean(state.callQueue.length)) {
-//             //     console.log(888)
 //             //     commit('TOGGLE_CALL_SOUND')
 //             //     commit('TOGGLE_CALL_ANSWERED', false)
 //             // }
 //             // else {
-//             //     console.log(999)
 //             //     commit('TOGGLE_CALL_SOUND', false)
 //             //     commit('TOGGLE_CALL_ANSWERED')
 //             // }

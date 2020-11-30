@@ -77,8 +77,6 @@ export default {
         },
     },
     async beforeRouteEnter(to, from, next) {
-        console.log(from)
-        console.log(to)
         // store.dispatch('toggleLoading')
         const response = await Promise.all([
             store.dispatch('calls/stGetDetailCallInfo', to.params.id),

@@ -16,7 +16,7 @@ export default {
                     return item[1]
                 }
             }
-            state.alerts.push({ status: item[0], value: val, id: Date.now() })
+            state.alerts.push({ status: item[0], value: val(), id: Date.now() })
         },
         DELETE_ALERT(state) {
             state.alerts.splice(0, 1)

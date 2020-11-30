@@ -7,7 +7,18 @@
 </template>
 
 <script>
-export default {}
+import {mapActions} from 'vuex'
+export default {
+    methods: {
+        ...mapActions('webrtc/webrtcSockets', ['stSocketDisconnect']),
+        ...mapActions('webrtc/webrtcPeerConnection', ['stClosePeerConnection', 'getMedia'])
+    },
+    created() {
+        // this.stClosePeerConnection()
+        // this.stSocketDisconnect()
+        // this.getMedia()
+    }
+}
 </script>
 
 <style scoped lang="scss">

@@ -91,11 +91,9 @@ export default {
     methods: {
         ...mapActions('csv', ['stDownloadCsw']),
         openPeriod() {
-            console.log(6)
             this.periodString = JSON.stringify(this.periodVal)
         },
         closePeriod() {
-            console.log(5)
             // if (Boolean(!this.periodVal.start) ||
             //     Boolean(!this.periodVal.end)) {
             //     this.periodVal = ''

@@ -23,16 +23,18 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         isAsideActive: false,
-        isProgressActive: false
+        isProgressActive: false,
+        isConnected: false
     },
     mutations: {
         TOGGLE_ASIDE_ACTIVE(state, payload = true) {
             state.isAsideActive = payload;
         },
         TOGGLE_PROGRESS_ACTIVE(state, payload = true) {
-            console.log(payload)
-            console.log(44)
             state.isProgressActive = payload;
+        },
+        TOGGLE_IS_CONNECTED(state, payload = true) {
+            state.isConnected = payload;
         },
     },
     actions: {

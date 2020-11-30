@@ -1,23 +1,24 @@
 <template>
     <div id="app" class="app">
-        <!--        <transition name="fadelol">-->
-        <!--            <UiProgress class="app-progress" v-if="isProgressActive"/>-->
-        <!--        </transition>-->
+        <SectionMainLoading class="app-loading" v-if="isProgressActive"/>
 
 
         <SectionsAlerts/>
-
-        <router-view/>
+        <transition name="fade" mode="out-in">
+            <router-view/>
+        </transition>
     </div>
 </template>
 
 <script>
 import SectionsAlerts from '@/components/sections/alerts'
+import SectionMainLoading from '@/components/sections/main-loading'
 import {mapState, mapActions} from 'vuex'
 
 export default {
     components: {
-        SectionsAlerts
+        SectionsAlerts,
+        SectionMainLoading
     },
     data() {
         return {
@@ -42,18 +43,13 @@ export default {
 }
 </script>
 <style lang="scss">
-.fadelol-enter-active, .fadelol-leave-active {
-    transition: opacity 0.3s;
-}
-.fadelol-enter, .fadelol-leave-to {
-    opacity: 0;
-}
 #app {
     min-height: 100vh;
     display: flex;
 }
 .app {
-    &-progress {
+    &-loading {
+        z-index: 100;
         width: 100%;
         position: fixed;
         left: 0;

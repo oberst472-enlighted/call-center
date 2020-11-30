@@ -82,7 +82,6 @@
              uploadFile(file) {
                 let formData = new FormData()
                 formData.append('file', file)
-                 console.log(formData)
                 // const response = await this.stDownloadMedia(formData)
                  this.$emit('input', formData)
             },

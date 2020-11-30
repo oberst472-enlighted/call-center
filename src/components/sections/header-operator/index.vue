@@ -1,7 +1,7 @@
 <template>
     <div class="section-header">
         <div class="section-header__back-box" :class="{'section-header__back-box--active': this.$route.name !== 'home-operator'}">
-            <LocalHeaderBack/>
+            <UiBack/>
         </div>
 
         <transition name="fade" mode="out-in">
@@ -141,6 +141,10 @@ export default {
     &__options {
         display: flex;
         align-items: center;
+        transition-duration: 0.3s;
+    }
+    &__start-btn-box {
+        transition-duration: 0.3s;
     }
     &__toggle-box {
         max-width: 200px;
@@ -176,11 +180,17 @@ export default {
         flex-shrink: 0;
     }
     &__back-box {
-        width: 0;
+        width: 50px;
         overflow: hidden;
         transition-duration: 0.3s;
         &--active {
-            width: 50px;
+            opacity: 0;
+            & + .section-header__options {
+                transform: translateX(-50px);
+            }
+            & + .section-header__start-btn-box {
+                transform: translateX(-50px);
+            }
         }
     }
 

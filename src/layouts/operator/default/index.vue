@@ -15,7 +15,9 @@
 
             <section class="layout-default__main">
                 <div class="wrapper">
+                    <!--                    <transition name="layout-fade" mode="out-in">-->
                     <router-view/>
+                    <!--                    </transition>-->
                 </div>
             </section>
         </main>
@@ -51,7 +53,7 @@ export default {
     },
 
     created() {
-        if (Boolean(this.callQueue.length)) {
+        if (this.callQueue.length) {
             this.TOGGLE_INCOMING_CALL()
             this.TOGGLE_CALL_SOUND()
         }

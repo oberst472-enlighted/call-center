@@ -64,7 +64,7 @@
                     </div>
 
                     <div class="page-profile__inp page-profile__inp-save-btn">
-                        <UiBtn @click="sendInfo">Сохранить</UiBtn>
+                        <UiBtn @click="sendInfo" :loading="isLoading">Сохранить</UiBtn>
                     </div>
                 </div>
             </template>
@@ -74,7 +74,7 @@
 
 <script>
 import store from '@/store'
-import {mapActions, mapState} from 'vuex'
+import {mapActions, mapMutations, mapState} from 'vuex'
 import SectionBox from '@/components/sections/box'
 // import BlockFile from '@/components/blocks/file'
 import BlockDragFile from '@/components/blocks/drag-and-drop-file'
@@ -88,6 +88,7 @@ export default {
     },
     data() {
         return {
+            isLoading: false,
             form: {
                 first_name: '',
                 last_name: '',
@@ -118,17 +119,24 @@ export default {
     methods: {
         ...mapActions('webrtc/webrtcCalls', ['stClickTheCallBtn']),
         ...mapActions('users', ['stEditUserById']),
+        ...mapMutations('alerts', ['ADD_ALERT']),
         async sendInfo() {
+            this.isLoading = true
             const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
             const infoObj = getJsonFromString(info)
-            console.log(infoObj)
-            await this.stEditUserById({id: infoObj.id, body: this.form})
+            const isSuccess = await this.stEditUserById({id: infoObj.id, body: this.form})
+            if (isSuccess) {
+                this.ADD_ALERT(['positive', 'Данные успешно изменены'])
+            }
+            else {
+                this.ADD_ALERT(['negative'])
+            }
+            this.isLoading = false
         }
     },
     async beforeRouteEnter(to, from, next) {
         const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
         const infoObj = getJsonFromString(info)
-        console.log(infoObj)
         const response = await Promise.all([
             store.dispatch('users/stGetUserById', infoObj.id),
         ])

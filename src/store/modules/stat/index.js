@@ -19,7 +19,6 @@ export default {
     actions: {
         async stGetStat({commit}) {
             commit('TOGGLE_STAT_LOADING')
-            console.log(7)
             let isSuccess = false
             try {
                 const response = await apiGetStat()

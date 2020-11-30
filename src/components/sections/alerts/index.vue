@@ -8,8 +8,8 @@
                     v-for="item in alerts"
                     :key="item.id"
                 >
-                    <img class="ui-message__item-icon"
-                         src="./assets/images/success.svg" alt="">
+                    <img v-if="item.status === 'positive'" class="ui-message__item-icon" src="./assets/images/success.svg" alt="">
+                    <img v-else class="ui-message__item-icon" src="./assets/images/error.svg" alt="">
                     {{ item.value }}
                 </div>
             </transition-group>

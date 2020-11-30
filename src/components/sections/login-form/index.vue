@@ -112,8 +112,6 @@ export default {
                         if (response.isSuccess) {
                             this.saveInfoOnStorage(response.response.data)
 
-                            this.goToAdminPanel()
-
                         } else {
                             this.isError = true
                             this.isLoading = false
@@ -139,6 +137,10 @@ export default {
 
             storage.setItem('token', payload.token)
             storage.setItem('userInfo', JSON.stringify(payload.user))
+
+            setTimeout(() => {
+                this.goToAdminPanel()
+              }, 500);
 
         },
         toggleSaveLoginAndPasswordInStorage(val) {
@@ -166,11 +168,11 @@ export default {
                 } else if (this.isOperator) {
                     const isSuccess = await this.loadInitialData()
                     if (isSuccess) {
-                        this.isLoading = false
                         this.$router.push({name: `home-operator`, params: {doNotLoadData: true}})
                     } else {
                         this.ADD_ALERT(['negative'])
                     }
+                    this.isLoading = false
 
                 }
             } else {
@@ -181,8 +183,8 @@ export default {
         async loadInitialData() {
             try {
                 await this.stGetStat()
+                this.stGetAllCallsForTheCurrentSession()
                 const response = await Promise.all([
-                    this.stGetAllCallsForTheCurrentSession(),
                     this.stGetDevices(),
                 ])
                 const isSuccess = response.every(item => item)

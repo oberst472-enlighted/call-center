@@ -209,22 +209,32 @@ export default {
                 }, 1000)
             }
         },
-        partnerStream: {
-            immediate: true,
-            handler(val) {
-                // this.$refs.userVideo.srcObject = this.userStream
-                // this.$refs.partnerVideo.srcObject = val
-                if (val) {
-                    this.$refs.userVideo.srcObject = this.userStream
-                    this.$refs.partnerVideo.srcObject = val
-                    this.startRecord()
-                }
-            }
-        },
+        // partnerStream: {
+        //     immediate: true,
+        //     handler(val) {
+        //         console.log(this.userStream)
+        //         console.log(val)
+        //         setTimeout(() => {
+        //             this.$refs.userVideo.srcObject = this.userStream
+        //             this.$refs.partnerVideo.srcObject = val
+        //           }, 3000);
+        //         console.log(val)
+        //         // if (val) {
+        //         //     this.$refs.userVideo.srcObject = this.userStream
+        //         //     this.$refs.partnerVideo.srcObject = val
+        //         //     this.startRecord()
+        //         // }
+        //     }
+        // },
 
         isCallOver() {
             this.stopRecord()
         }
+    },
+    mounted() {
+        this.$refs.userVideo.srcObject = this.userStream
+        this.$refs.partnerVideo.srcObject = this.partnerStream
+        this.stopRecord()
     },
     created() {
         this.TOGGLE_CALL_OVER(false)

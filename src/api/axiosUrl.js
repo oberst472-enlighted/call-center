@@ -49,7 +49,6 @@ export const axiosUrl = async function({method, url, body, token}) {
 
 
 export const axiosFormData = async function({method, url, body, token}) {
-    console.log(url)
         try {
             return await axios({
                 method,

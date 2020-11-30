@@ -43,8 +43,10 @@ export default {
         ...mapState('calls', ['callsPerShift']),
         ...mapState('stat', ['stat']),
         ...mapState('sessions', ['isSessionBreak']),
+
     },
     methods: {
+        ...mapMutations(['TOGGLE_PROGRESS_ACTIVE']),
         ...mapActions('webrtc/webrtcCalls', ['stClickTheCallBtn']),
 
         ...mapActions('calls', ['stGetAllCallsForTheCurrentSession']),
@@ -54,10 +56,10 @@ export default {
         async downloadNextPageCalls() {
             this.SET_PAGINATION_PAGE()
             const isSuccess = await this.stGetAllCallsForTheCurrentSession()
-            console.log(isSuccess)
         },
     },
     async beforeRouteEnter(to, from, next) {
+        store.commit('TOGGLE_PROGRESS_ACTIVE')
         const response = await Promise.all([
             store.dispatch('calls/stGetAllCallsForTheCurrentSession')
         ])
@@ -69,6 +71,7 @@ export default {
             next(false)
             // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
         }
+        store.commit('TOGGLE_PROGRESS_ACTIVE', false)
         // store.dispatch('toggleLoading', false)
     },
 }

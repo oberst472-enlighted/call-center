@@ -27,7 +27,7 @@
 
 <script>
 import store from '@/store'
-import {mapState, mapActions} from 'vuex'
+import {mapState, mapActions, mapMutations} from 'vuex'
 import BlockTerminals from '@/components/blocks/terminals'
 import BlockStat from '@/components/blocks/stat'
 import SectionBox from '@/components/sections/box'
@@ -41,14 +41,16 @@ export default {
     },
     computed: {
         ...mapState('webrtc/webrtcCalls', ['isIncomingCall']),
-        ...mapState('terminals', ['items', 'isNotDevicesPagination']),
+        ...mapState('devices', ['items', 'isNotDevicesPagination']),
         ...mapState('stat', ['stat']),
         ...mapState('sessions', ['isSessionBreak']),
     },
     methods: {
         ...mapActions('webrtc/webrtcCalls', ['stClickTheCallBtn']),
+        ...mapMutations(['TOGGLE_PROGRESS_ACTIVE'])
     },
     async beforeRouteEnter(to, from, next) {
+        store.commit('TOGGLE_PROGRESS_ACTIVE')
         const response = await Promise.all([
             store.dispatch('devices/stGetDevices'),
         ])
@@ -59,6 +61,7 @@ export default {
             next(false)
             // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
         }
+        store.commit('TOGGLE_PROGRESS_ACTIVE', false)
         // store.dispatch('toggleLoading', false)
     }
 }

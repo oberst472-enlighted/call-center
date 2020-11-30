@@ -29,7 +29,6 @@ export async function apiGetUsers() {
 
 //получить юзера по id
 export async function apiGetUserById(id) {
-    console.log(id)
     const options = {
         method: 'get',
         url: `api/v1/users/${id}`,

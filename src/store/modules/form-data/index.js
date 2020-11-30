@@ -15,8 +15,6 @@ export default {
     },
     actions: {
         async sendVideo(context, info) {
-            console.log(77)
-            console.log(info)
             await apiSendVideo(info)
         },
     }

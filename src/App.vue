@@ -1,8 +1,8 @@
 <template>
     <div id="app" class="app">
-        <transition name="fadelol">
-            <UiProgress class="app-progress" v-if="isProgressActive"/>
-        </transition>
+        <!--        <transition name="fadelol">-->
+        <!--            <UiProgress class="app-progress" v-if="isProgressActive"/>-->
+        <!--        </transition>-->
 
 
         <SectionsAlerts/>

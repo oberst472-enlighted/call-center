@@ -15,15 +15,43 @@
 
             <section class="layout-default__main">
                 <div class="wrapper">
+                    <!--                    <transition name="layout-fade" mode="out-in">-->
                     <router-view/>
+                    <!--                    </transition>-->
                 </div>
             </section>
         </main>
+
+        <!--        <div class="layout-default__call-form-data" v-if="true">-->
+        <!--            <SectionCallVideo/>-->
+        <!--        </div>-->
     </div>
 </template>
 
 <script>
-export default {}
+import {mapActions, mapMutations, mapState} from 'vuex'
+import BlockCallSound from '@/components/blocks/call-sound'
+
+export default {
+    components: {
+        BlockCallSound
+    },
+    data() {
+        return {
+            recoder: null,
+        }
+    },
+    computed: {
+        ...mapState('webrtc/webrtcCalls', ['isSoundCallActive', 'isIncomingCall', 'isCallAnswered', 'isVideoSectionActive', 'callQueue']),
+        ...mapState('sessions', ['isSessionActive', 'isSessionBreak']),
+    },
+    methods: {
+        ...mapMutations('webrtc/webrtcCalls', ['TOGGLE_INCOMING_CALL', 'TOGGLE_CALL_SOUND']),
+
+    },
+
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -38,12 +66,12 @@ export default {}
     }
 
     &__body {
+        display: flex;
+        flex-direction: column;
         flex-grow: 1;
         height: 100vh;
         max-height: 100vh;
         overflow: auto;
-        display: flex;
-        flex-direction: column;
 
 
     }
@@ -60,13 +88,21 @@ export default {}
             display: flex;
             width: inherit;
         }
+    }
 
-
+    &__call-video {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
     }
 
     &__main {
-        flex-grow: 1;
         display: flex;
+        flex-grow: 1;
     }
 
     &--aside-active {

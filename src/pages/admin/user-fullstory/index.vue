@@ -1,0 +1,158 @@
+<template>
+    <section class="page-profile">
+        <SectionBox :is-not-pagination="true" content>
+            <template #content>
+                <div class="page-profile__content">
+
+                </div>
+            </template>
+        </SectionBox>
+    </section>
+</template>
+
+<script>
+import store from '@/store'
+import {mapActions, mapMutations, mapState} from 'vuex'
+import SectionBox from '@/components/sections/box'
+// import BlockFile from '@/components/blocks/file'
+import BlockDragFile from '@/components/blocks/drag-and-drop-file'
+import {getJsonFromString} from '@/utils/json'
+
+export default {
+    components: {
+        SectionBox,
+        // BlockFile
+    },
+    data() {
+        return {
+            isLoading: false,
+            form: {
+                first_name: '',
+                last_name: '',
+                phone: '',
+                email: '',
+                new_password: '',
+                photo: null,
+            },
+            empty: {
+                isFirstNameEmpty: false,
+                isLastNameEmpty: false,
+                isPhoneEmpty: false,
+            },
+            validation: {
+                isPhoneValid: false,
+                isEmailValid: false
+            },
+
+        }
+    },
+    computed: {
+        ...mapState('webrtc/webrtcCalls', ['isIncomingCall']),
+        ...mapState('terminals', ['items', 'isNotDevicesPagination']),
+        ...mapState('stat', ['stat']),
+        ...mapState('sessions', ['isSessionBreak']),
+        ...mapState('users', ['userInfo']),
+    },
+    methods: {
+        ...mapActions('webrtc/webrtcCalls', ['stClickTheCallBtn']),
+        ...mapActions('users', ['stEditUserById']),
+        ...mapMutations('alerts', ['ADD_ALERT']),
+        async sendInfo() {
+            this.isLoading = true
+            const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
+            const infoObj = getJsonFromString(info)
+            const isSuccess = await this.stEditUserById({id: infoObj.id, body: this.form})
+            if (isSuccess) {
+                this.ADD_ALERT(['positive', 'Данные успешно изменены'])
+            }
+            else {
+                this.ADD_ALERT(['negative'])
+            }
+            this.isLoading = false
+        }
+    },
+    async beforeRouteEnter(to, from, next) {
+        console.log(from)
+        const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
+        const response = await Promise.all([
+            store.dispatch('users/stGetUserById', to.params.id),
+        ])
+        const isSuccess = response.every(item => item)
+        if (isSuccess) {
+            next()
+        } else {
+            next(false)
+            // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
+        }
+        // store.dispatch('toggleLoading', false)
+    },
+    created() {
+        // const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
+        // const infoObj = getJsonFromString(info)
+        this.form.first_name = this.userInfo.first_name
+        this.form.last_name = this.userInfo.last_name
+        this.form.email = this.userInfo.email
+        this.form.phone = this.userInfo.phone
+
+    },
+
+}
+</script>
+
+<style lang="scss" scoped>
+.page-profile {
+    display: flex;
+    width: 100%;
+    padding-bottom: 30px;
+
+    &__content {
+        display: grid;
+        grid-template-columns: 1fr 1fr minmax(420px, 1fr);
+        grid-gap: 20px;
+        width: 100%;
+        padding: 30px;
+        grid-auto-rows: minmax(60px, auto);
+        grid-template-areas:
+        'first-name last-name file'
+        'email phone file'
+        'new-pass . save-btn';
+    }
+
+    &__inp {
+        &-first-name {
+            grid-area: first-name;
+        }
+
+        &-last-name {
+            grid-area: last-name;
+        }
+
+        &-email {
+            grid-area: email;
+        }
+
+        &-phone {
+            grid-area: phone;
+        }
+
+        &-new-pass {
+            margin-top: 60px;
+            grid-area: new-pass;
+        }
+
+        &-file {
+            display: flex;
+            height: 100%;
+            grid-area: file;
+        }
+
+        &-save-btn {
+            align-self: end;
+            margin-top: 60px;
+            margin-left: auto;
+            grid-area: save-btn;
+        }
+    }
+
+}
+</style>

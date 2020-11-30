@@ -2,31 +2,26 @@ export default [
     {
         title: 'Главная',
         icon: 'IconHome',
-        href: 'home'
+        href: 'home-admin'
     },
     {
         title: 'Звонки',
         icon: 'IconCall',
-        href: 'home'
-    },
-    {
-        title: 'Операторы',
-        icon: 'IconCall',
-        href: 'home'
+        href: 'calls-admin'
     },
     {
         title: 'Терминалы',
         icon: 'IconTerminals',
-        href: 'home'
+        href: 'terminals-admin'
     },
     {
         title: 'Операторы',
         icon: 'IconUsers',
-        href: 'home'
+        href: 'users-admin'
     },
     {
         title: 'Статистика',
         icon: 'IconStat',
-        href: 'home'
+        href: 'stat-admin'
     }
 ]

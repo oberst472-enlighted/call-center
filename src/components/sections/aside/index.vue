@@ -31,9 +31,10 @@
 
 <script>
 import linksOperator from './assets/links-operator'
+import linksAdmin from './assets/links-admin'
 import LocalAsideLogo from './aside-logo'
 import LocalAsideLinkItem from './aside-link-item'
-import {mapMutations, mapState} from 'vuex'
+import {mapMutations, mapState, mapGetters} from 'vuex'
 
 export default {
     components: {
@@ -43,39 +44,13 @@ export default {
     data() {
         return {
             isCollapsed: false,
-            // linksOperator: [
-            //     {
-            //         title: 'Главная',
-            //         icon: 'IconHome',
-            //         href: 'home'
-            //     },
-            //     {
-            //         title: 'Звонки',
-            //         icon: 'IconCall',
-            //         href: 'home'
-            //     },
-            //     {
-            //         title: 'Терминалы',
-            //         icon: 'IconTerminals',
-            //         href: 'home'
-            //     },
-            //     {
-            //         title: 'Операторы',
-            //         icon: 'IconUsers',
-            //         href: 'home'
-            //     },
-            //     {
-            //         title: 'Статистика',
-            //         icon: 'IconStat',
-            //         href: 'home'
-            //     }
-            // ]
         }
     },
     computed: {
+        ...mapGetters('middleware', ['isAdmin', 'isAuth']),
         ...mapState(['isAsideActive']),
         links() {
-            return linksOperator
+            return this.isAdmin ? linksAdmin : linksOperator
         }
     },
     methods: {

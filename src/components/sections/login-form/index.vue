@@ -95,10 +95,10 @@ export default {
     methods: {
         ...mapMutations('alerts', ['ADD_ALERT']),
         ...mapActions('login', ['stLogin']),
-        ...mapActions('users', ['stGetUserById']),
-        ...mapActions('calls', ['stGetAllCallsForTheCurrentSession']),
+        ...mapActions('users', ['stGetUserById', 'stGetUsers']),
+        ...mapActions('calls', ['stGetAllCallsForTheCurrentSession', 'stGetAllCalls']),
         ...mapActions('devices', ['stGetDevices']),
-        ...mapActions('stat', ['stGetStat']),
+        ...mapActions('stat', ['stGetAdminStat']),
 
 
         async send() {
@@ -111,9 +111,7 @@ export default {
                         const response = await this.stLogin(this.form)
                         if (response.isSuccess) {
                             this.saveInfoOnStorage(response.response.data)
-                            setTimeout(() => {
                                 this.goToAdminPanel()
-                              }, 1000);
 
                         } else {
                             this.isError = true
@@ -164,8 +162,15 @@ export default {
         async goToAdminPanel() {
             if (this.isAuth) {
                 if (this.isAdmin) {
-                    this.$router.push({name: 'home-admin'})
+                    const isSuccess = await this.loadInitialAdminData()
+                    if (isSuccess) {
+                        this.$router.push({name: `home-admin`, params: {doNotLoadData: true}})
+                    } else {
+                        this.ADD_ALERT(['negative'])
+                    }
+                    this.isLoading = false
                 } else if (this.isOperator) {
+                    console.log('isOperator')
                     const isSuccess = await this.loadInitialData()
                     if (isSuccess) {
                         this.$router.push({name: `home-operator`, params: {doNotLoadData: true}})
@@ -185,7 +190,23 @@ export default {
                 await this.stGetStat()
                 this.stGetAllCallsForTheCurrentSession()
                 const response = await Promise.all([
+                    await this.stGetDevices(),
+                ])
+                console.log(response)
+                const isSuccess = response.every(item => item)
+                return isSuccess
+            } catch (e) {
+                return false
+            }
+        },
+        async loadInitialAdminData() {
+            try {
+                this.stGetAllCallsForTheCurrentSession()
+                const response = await Promise.all([
+                    await this.stGetUsers(),
+                    this.stGetAdminStat(),
                     this.stGetDevices(),
+                    this.stGetAllCalls()
                 ])
                 const isSuccess = response.every(item => item)
                 return isSuccess

@@ -1,4 +1,4 @@
-import {apiGetAllCallsPerWorkShift, apiSendACommentToTheCall, apiGetDetailCallInfo} from '@/api'
+import {apiGetAllCallsPerWorkShift, apiSendACommentToTheCall, apiGetAllCalls, apiGetDetailCallInfo} from '@/api'
 
 export default {
     namespaced: true,
@@ -12,6 +12,7 @@ export default {
             isNotPagination: false,
             calls: []
         },
+        allCalls: [],
         detailInfo: [],
 
         isCallsLoading: true,
@@ -52,6 +53,9 @@ export default {
         SET_DETAIL_INFO(state, payload) {
             state.detailInfo = payload
         },
+        SET_ALL_CALLS(state, payload) {
+            state.allCalls = payload
+        },
     },
     actions: {
         async stGetAllCallsForTheCurrentSession({state, commit}) {
@@ -67,6 +71,33 @@ export default {
                     commit('SET_SESSIONS_NO_PAGINATION', response.data.results)
                     // commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION', false)
                     // commit('SET_CALLS_PER_SHIFT', response.data.results);
+                    // response.data.next ? commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION', false) : commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION')
+                    isSuccess = true
+                } else {
+                    isSuccess = false
+                }
+            } catch (e) {
+                console.error(e)
+                isSuccess = false
+            }
+            finally {
+                commit('TOGGLE_CALLS_PER_SHIFT_LOADING', false)
+                // eslint-disable-next-line no-unsafe-finally
+                return isSuccess
+
+            }
+        },
+        async stGetAllCalls({commit}) {
+            let isSuccess = false
+            try {
+                const response = await apiGetAllCalls()
+                if (
+                    Boolean(response) &&
+                    response.status < 300 &&
+                    response.statusText === 'OK'
+                ) {
+                    // commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION', false)
+                    commit('SET_ALL_CALLS', response.data.results);
                     // response.data.next ? commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION', false) : commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION')
                     isSuccess = true
                 } else {

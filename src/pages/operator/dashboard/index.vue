@@ -93,6 +93,7 @@ export default {
     },
     async beforeRouteEnter(to, from, next) {
         if (!to.params.doNotLoadData) {
+            console.log(6782)
             store.commit('TOGGLE_PROGRESS_ACTIVE')
 
             store.dispatch('stat/stGetStat')

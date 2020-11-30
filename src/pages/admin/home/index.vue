@@ -1,170 +1,85 @@
 <template>
-    <div id="DashBoard">
-        <div class="row">
-            <div class="col-left">
-                <BlockStatusAdminDashboard v-if="isStatusAdminDashboardActive"/>
-
-                <BlockStatusOperatorDashboard v-else-if="isOperator && $store.state.userData"/>
-
-                <div class="row" v-if="isAdmin">
-                    <div class="col">
-                        <BlockGraph/>
-                    </div>
-                    <div class="col" v-if="stat">
-                        <BlockRating :data="stat.callsHelpfulness"/>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <BlockAvailableTerminals/>
-                </div>
-
-                <div class="row" v-if="isAdmin">
-                    <BlockCallHistoryBig/>
-                </div>
-
-            </div>
-            <div class="col-right">
-                <BlockCallWindow
-                    v-if="isOperator"
-                    @click="answer"
-                />
-
-                <BlockUserSmall v-if="isBlockUserSmallActive"/>
-
-                <BlockCallHistorySmall
-                    v-else-if="isOperator && callsOperator"
-                    :data="callsOperator"
-                />
-
-                <BlockRestoreQue v-if="isAdmin"/>
-
-            </div>
+    <section class="page-home">
+        <div class="page-home__stat">
+            <SectionBox gutters>
+                stat
+            </SectionBox>
         </div>
-    </div>
+
+        <div class="page-home__call">
+            <SectionBox>
+                ожидание звонка
+            </SectionBox>
+        </div>
+
+        <div class="page-home__terminals">
+            <SectionBox>
+                админка
+            </SectionBox>
+        </div>
+
+        <div class="page-home__calls-history">
+            <SectionBox scroll>
+                <div class="content">
+                    история звонков
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A ad autem culpa doloremque eligendi est ex ipsum laborum laudantium nam numquam placeat quaerat rerum tempore tenetur ullam unde, ut veniam!
+                </div>
+            </SectionBox>
+        </div>
+    </section>
 </template>
 
 <script>
-import BlockStatusAdminDashboard from '@/components/blocks/status-admin-dashboard'
-import BlockCallWindow from '@/components/blocks/call-window'
-import BlockUserSmall from '@/components/blocks/user-small'
-import BlockGraph from '@/components/blocks/graph'
-import BlockAvailableTerminals from '@/components/blocks/available-terminals'
-import BlockCallHistoryBig from '@/components/blocks/call-history-big'
-import BlockCallHistorySmall from '@/components/blocks/call-history-small'
-import BlockRestoreQue from '@/components/blocks/restore-que'
-import BlockStatusOperatorDashboard from '@/components/blocks/status-operator-dashboard'
-
-import BlockRating from '@/components/blocks/rating'
-import {mapState, mapMutations} from 'vuex'
-import store from '@/store'
-
+import {mapGetters} from 'vuex'
+import SectionBox from '@/components/sections/box'
 export default {
     components: {
-        BlockCallWindow,
-        BlockStatusAdminDashboard,
-        BlockStatusOperatorDashboard,
-        BlockUserSmall,
-        BlockGraph,
-        BlockAvailableTerminals,
-        BlockCallHistoryBig,
-        BlockCallHistorySmall,
-        BlockRestoreQue,
-        BlockRating,
-    },
-    props: {
-        answer: Function,
-    },
-    metaInfo() {
-        return {
-            title: `Dashboard - Колл-центр ${localStorage.getItem('callCenterId') || sessionStorage.getItem('callCenterId')}`
-        }
-    },
-    data() {
-        return {
-            statisticsAdmin: null,
-            statisticsOperator: null,
-            graphData: [],
-            callsAdmin: null,
-        }
+        SectionBox
     },
     computed: {
-        ...mapState(['callsOperator', 'userStatus']),
-        ...mapState('stat', ['stat']),
-        ...mapMutations(['TOGGLE_BG_ACTIVE']),
-        isStatusAdminDashboardActive() {
-            return this.$store.state.userStatus === 'admin' && this.stat
-        },
-        isBlockUserSmallActive() {
-            return this.$store.state.userStatus === 'admin'
-        },
-        isAdmin() {
-            return this.userStatus === 'admin'
-        },
-        isOperator() {
-            return this.userStatus === 'operator'
-        }
-    },
-    async beforeRouteEnter(to, from, next) {
-        //если авторизован оператор
-        if(store.getters.getIsRoleOperator) {
-            const response = await Promise.all([
-                store.dispatch('users/stCallsOperator', store.getters.getUserId),
-            ])
-            if (response.every(item => item)) {
-                next()
-            } else {
-                next(false)
-                //выводим попап с ошибкой
-            }
-        }
-        //если авторизован админ
-        else {
-            this.TOGGLE_BG_ACTIVE()
-            const response = await Promise.all([
-                store.dispatch('users/stGetUsers'),
-                store.dispatch('stat/stGetStat', store.getters.getCallCenterId),
-                store.dispatch('calls/stGetCalls'),
-            ])
-            if (response.every(item => item)) {
-                this.TOGGLE_BG_ACTIVE(false)
-                next()
-            } else {
-                this.TOGGLE_BG_ACTIVE(false)
-                next(false)
-                //выводим попап с ошибкой
-            }
-        }
+        ...mapGetters('middleware', ['isAdmin', 'isAuth'])
     }
 }
 </script>
 
-<style lang='scss'>
-#DashBoard {
-    .row {
+<style scoped lang="scss">
+.page-home {
+    padding-bottom: 30px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(300px, 1fr) 300px;
+    grid-template-rows: 175px minmax(400px, calc(100vh - 319px));
+    grid-gap: $gutter;
+    grid-template-areas:
+        'stat call'
+        'terminals history';
+    &__stat {
+        grid-area: stat;
         display: flex;
-        padding-top: 20px;
+    }
+    &__call {
+        grid-area: call;
+        display: flex;
+    }
+    &__terminals {
+        grid-area: terminals;
+        display: flex;
+    }
+    &__calls-history {
+        grid-area: history;
+        height: auto;
+        align-self: auto;
+        //align-self: start;
 
-        .col-left {
-            width: 68%;
-            margin-right: 20px;
-        }
-
-        .col-right {
-            width: 300px;
-        }
-
-        .col {
-            width: 50%;
-
-            &:first-child {
-                margin-right: 10px;
-            }
-
-            &:last-child {
-                margin-left: 10px;
-            }
-        }
+    }
+    .content {
+        overflow: auto;
+        height: 100%;
+        padding: 15px;
     }
 }
 </style>

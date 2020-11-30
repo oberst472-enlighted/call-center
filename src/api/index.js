@@ -76,6 +76,30 @@ export async function apiGetAllCallsPerWorkShift(params) {
     return response
 }
 
+// получить звонки оператора за смену
+export async function apiGetAllCalls(params) {
+    const userToken = token()
+    // const pageSize = 36
+    let query = ''
+    if (params) {
+        for (let key in params) {
+            query += `&${key}=${params[key]}`
+        }
+    }
+    query+= `&page_size=${pageSize}`
+    const url = `/api/v1/calls/?${query.substring(1)}`
+    const options = {
+        method: 'get',
+        body: null,
+        url,
+        token: userToken
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+
+
+
 // отправить комментарий к звонку
 export async function apiSendACommentToTheCall({callID, info}) {
     const userToken = token()
@@ -179,12 +203,24 @@ export async function apiGetDevices(params) {
     return response
 }
 
-// получить статистику
+// получить статистику за сессию
 export async function apiGetStat() {
     const userToken = token()
     const options = {
         method: 'get',
         url: `/api/v1/sessions/current-stat`,
+        body: null,
+        token: userToken
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+// получить статистику
+export async function apiGetAdminStat() {
+    const userToken = token()
+    const options = {
+        method: 'get',
+        url: `/api/v1/statistics/`,
         body: null,
         token: userToken
     }

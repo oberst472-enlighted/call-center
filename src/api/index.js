@@ -1,5 +1,5 @@
 import {axiosUrl, axiosFormData} from './axiosUrl'
-import token from './token'
+import {token} from './token'
 
 const pageSize = 100
 
@@ -17,11 +17,12 @@ export async function apiLogin(form) {
 
 // получить юзеров
 export async function apiGetUsers() {
+    const userToken = token()
     const options = {
         method: 'get',
         url: `api/v1/users/`,
         body: null,
-        token
+        token: userToken
     }
     const response = await axiosUrl(options)
     return response
@@ -33,7 +34,7 @@ export async function apiGetUserById(id) {
         method: 'get',
         url: `api/v1/users/${id}`,
         body: null,
-        token
+        token: token()
     }
     const response = await axiosUrl(options)
     return response
@@ -55,6 +56,7 @@ export async function ApiCallsOperator(id) {
 
 // получить звонки оператора за смену
 export async function apiGetAllCallsPerWorkShift(params) {
+    const userToken = token()
     // const pageSize = 36
     let query = ''
     if (params) {
@@ -68,7 +70,7 @@ export async function apiGetAllCallsPerWorkShift(params) {
         method: 'get',
         body: null,
         url,
-        token
+        token: userToken
     }
     const response = await axiosUrl(options)
     return response
@@ -76,11 +78,12 @@ export async function apiGetAllCallsPerWorkShift(params) {
 
 // отправить комментарий к звонку
 export async function apiSendACommentToTheCall({callID, info}) {
+    const userToken = token()
     const options = {
         method: 'patch',
         url: ` /api/v1/calls/${callID}/`,
         body: info,
-        token
+        token: userToken
     }
     const response = await axiosUrl(options)
     return response
@@ -91,11 +94,12 @@ export async function apiSendACommentToTheCall({callID, info}) {
 
 // старт смены
 export async function apiStartSession() {
+    const userToken = token()
     const options = {
         method: 'patch',
         url: `/api/v1/sessions/start-session/`,
         body: null,
-        token
+        token: userToken
     }
     const response = await axiosUrl(options)
     return response
@@ -103,11 +107,12 @@ export async function apiStartSession() {
 
 // стоп смены
 export async function apiStopSession() {
+    const userToken = token()
     const options = {
         method: 'patch',
         url: `/api/v1/sessions/stop-session/`,
         body: null,
-        token
+        token: userToken
     }
     const response = await axiosUrl(options)
     return response
@@ -115,11 +120,12 @@ export async function apiStopSession() {
 
 // инфо о текущей смене
 export async function apiGetCurrentSessionInfo() {
+    const userToken = token()
     const options = {
         method: 'get',
         url: `/api/v1/sessions/current-session/`,
         body: null,
-        token
+        token: userToken()
     }
     const response = await axiosUrl(options)
     return response
@@ -127,11 +133,12 @@ export async function apiGetCurrentSessionInfo() {
 
 // начало перерыва
 export async function apiStartSessionBreak() {
+    const userToken = token()
     const options = {
         method: 'patch',
         url: `/api/v1/sessions/start-break/`,
         body: null,
-        token
+        token: userToken()
     }
     const response = await axiosUrl(options)
     return response
@@ -139,11 +146,12 @@ export async function apiStartSessionBreak() {
 
 // конец перерыва
 export async function apiStopSessionBreak() {
+    const userToken = token()
     const options = {
         method: 'patch',
         url: `/api/v1/sessions/stop-break/`,
         body: null,
-        token
+        token: userToken
     }
     const response = await axiosUrl(options)
     return response
@@ -151,6 +159,7 @@ export async function apiStopSessionBreak() {
 
 //получить терминалы
 export async function apiGetDevices(params) {
+    const userToken = token()
     // const pageSize = 36
     let query = ''
     if (params) {
@@ -164,7 +173,7 @@ export async function apiGetDevices(params) {
         method: 'get',
         body: null,
         url,
-        token
+        token: userToken
     }
     const response = await axiosUrl(options)
     return response
@@ -172,44 +181,48 @@ export async function apiGetDevices(params) {
 
 // получить статистику
 export async function apiGetStat() {
+    const userToken = token()
     const options = {
         method: 'get',
         url: `/api/v1/sessions/current-stat`,
         body: null,
-        token
+        token: userToken
     }
     const response = await axiosUrl(options)
     return response
 }
 // получить инфу о зволнке по id
 export async function apiGetDetailCallInfo(id) {
+    const userToken = token()
     const options = {
         method: 'get',
         url: `/api/v1/calls/${id}/`,
         body: null,
-        token
+        token: userToken
     }
     const response = await axiosUrl(options)
     return response
 }
 // получить инфу о терминале по id
 export async function apiGetDetailTerminalInfoById(id) {
+    const userToken = token()
     const options = {
         method: 'get',
         url: `/api/v1/devices/${id}/`,
         body: null,
-        token
+        token: userToken
     }
     const response = await axiosUrl(options)
     return response
 }
 // получить инфу о терминале по id
 export async function apiEditUserById(info) {
+    const userToken = token()
     const options = {
         method: 'patch',
         url: `/api/v1/users/${info.id}/`,
         body: info.body,
-        token
+        token: userToken
     }
     const response = await axiosUrl(options)
     return response
@@ -218,11 +231,12 @@ export async function apiEditUserById(info) {
 
 // csv
 export async function apiDownloadCsw() {
+    const userToken = token()
     const options = {
         method: 'get',
         url: `/api/v1/report/`,
         body: null,
-        token
+        token: userToken
     }
     const response = await axiosUrl(options)
     return response

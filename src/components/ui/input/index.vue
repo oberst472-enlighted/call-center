@@ -128,6 +128,7 @@ export default {
         flex-direction: column;
         width: 100%;
         user-select: none;
+        font-weight: 500;
     }
 
     &__text {

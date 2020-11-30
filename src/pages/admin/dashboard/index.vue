@@ -5,23 +5,7 @@
         </div>
 
         <div class="page-home__users">
-            <SectionBox
-                gutters
-                scroll
-                head
-                title="Сотрудники"
-                subtitle="Онлайн"
-                :items-length="callsPerShift.calls.length"
-                :is-not-pagination="true"
-            >
-                <BlockUserShortstoryItem
-                    class="page-home__users__item"
-                    v-for="item in users"
-                    :key="item.id"
-                    :info="item"
-                    :to="{name: 'user-fullstory-admin', params: {id: item.id}}"
-                />
-            </SectionBox>
+            <LocalDashboardUsers :items="users"/>
         </div>
 
         <div class="page-home__stat-call">
@@ -31,68 +15,39 @@
         </div>
 
         <div class="page-home__terminals">
-            <BlockTerminals
-                :info="items"
-                @download-next-page="downloadNextPageTerminals"
-                :items-length="items.length"
-                :is-not-pagination="true"
-            />
+            <LocalDashboardTerminals :items="items"/>
         </div>
 
         <div class="page-home__password-reset"></div>
 
         <div class="page-home__call-history">
-            <SectionBox
-                gutters
-                scroll
-                head
-                title="История звонков"
-                subtitle="Последние"
-                @download-next-page="downloadNextPageCalls"
-                :items-length="callsPerShift.calls.length"
-                :is-not-pagination="true"
-            >
-                <div class="lol">
-                    <BlockCallShortstoryItem
-                        class="page-home__calls-history__item"
-                        v-for="item in callsPerShift.calls"
-                        :key="item.id"
-                        :info="item"
-                        :to="{name: 'call-fullstory', params: {id: item.id}}"
-                    />
-                </div>
-            </SectionBox>
+            <LocalDashboardCalls :items="allCalls"/>
         </div>
     </section>
 </template>
 
 <script>
 import store from '@/store'
-import {mapState, mapMutations, mapActions, mapGetters} from 'vuex'
-import BlockTerminals from '@/components/blocks/terminals'
+import {mapState, mapMutations, mapActions} from 'vuex'
+import LocalDashboardUsers from './dashboard-users'
+import LocalDashboardTerminals from './dashboard-terminals'
+import LocalDashboardCalls from './dashboard-calls'
+
 import BlockStat from '@/components/blocks/stat'
-import BlockUserShortstoryItem from '@/components/blocks/user-shortstory-item'
-import SectionBox from '@/components/sections/box'
-import BlockCallShortstoryItem from '@/components/blocks/call-shortstory-item'
 export default {
     components: {
-        SectionBox,
-        BlockTerminals,
+        LocalDashboardUsers,
+        LocalDashboardTerminals,
+        LocalDashboardCalls,
         BlockStat,
-        BlockUserShortstoryItem,
-        BlockCallShortstoryItem
     },
     computed: {
-        ...mapState('webrtc/webrtcCalls', ['isIncomingCall']),
-        ...mapState('calls', ['callsPerShift', 'callQueue']),
+        ...mapState('calls', ['allCalls']),
         ...mapState('devices', ['items', 'isNotDevicesPagination']),
         ...mapState('stat', ['stat']),
         ...mapState('users', ['users']),
-        ...mapState('sessions', ['isSessionBreak']),
-        ...mapGetters('middleware', ['isAdmin', 'isAuth'])
     },
     methods: {
-        ...mapActions('webrtc/webrtcCalls', ['stClickTheCallBtn']),
 
         ...mapActions('calls', ['stGetAllCallsForTheCurrentSession']),
         ...mapMutations('calls', ['SET_PAGINATION_PAGE']),
@@ -201,14 +156,6 @@ export default {
         grid-area: call-history;
         height: auto;
         align-self: auto;
-        /deep/ .page-home__calls-history__item {
-            border-top: 1px solid #efeff4;
-        }
-        .lol {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-gap: 20px;
-        }
         //align-self: start;
 
     }

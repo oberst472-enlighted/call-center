@@ -1,4 +1,4 @@
-import { apiGetUsers, ApiCallsOperator, apiGetUserById, apiEditUserById } from '@/api';
+import { apiGetUsers, ApiCallsOperator, apiGetUserById, apiEditUserById, apiCreateUser} from '@/api';
 
 export default {
     namespaced: true,
@@ -51,6 +51,18 @@ export default {
                 return {isSuccess: true, response};
             } else {
                 return {isSuccess: false};
+            }
+        },
+        async stCreateUser(context, info) {
+            const response = await apiCreateUser(info);
+            if (
+                Boolean(response) &&
+                response.status < 300 &&
+                response.statusText === 'OK'
+            ) {
+                return true;
+            } else {
+                return false;
             }
         },
 

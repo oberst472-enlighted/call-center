@@ -3,8 +3,9 @@
         <!--        <div class="section-header__back-box" :class="{'section-header__back-box&#45;&#45;active': this.$route.name !== 'home-operator'}">-->
         <!--            <UiBack/>-->
         <!--        </div>-->
-
-        <UiBtn>Добавить сотрудника</UiBtn>
+        <transition name="fade">
+            <UiBtn v-if="$route.name !== 'add-new-operator' " :to="{name: 'add-new-operator'}">Добавить сотрудника</UiBtn>
+        </transition>
 
 
         <div class="section-header__user-box">

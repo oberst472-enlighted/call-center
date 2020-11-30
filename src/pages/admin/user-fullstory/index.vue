@@ -3,7 +3,42 @@
         <SectionBox :is-not-pagination="true" content>
             <template #content>
                 <div class="page-profile__content">
-
+                    <div class="page-profile__info">
+                        <div class="page-profile__title">Оператор #{{ userInfo.id }}</div>
+                        <div class="page-profile__img">
+                            <img src="/assets/images/user-placeholder.svg" alt="">
+                        </div>
+                        <div class="page-profile__cont">
+                            <UiBadge theme="positive" class="page-profile__status">Свободен</UiBadge>
+                            <div class="page-profile__name">{{ userInfo.first_name }}</div>
+                            <div class="page-profile__lastname">{{ userInfo.last_name }}</div>
+                            <div class="page-profile__text page-profile__lang">Русский</div>
+                            <div class="page-profile__text">{{ userInfo.email }}</div>
+                            <div class="page-profile__text">{{ userInfo.phone }}</div>
+                        </div>
+                    </div>
+                    <div class="page-profile__btns">
+                        <UiBtn class="page-profile__btn" theme="primary">Изменить</UiBtn>
+                        <UiBtn class="page-profile__btn" theme="negative">Блокировать оператора</UiBtn>
+                    </div>
+                    <div class="page-profile__calls">
+                        <SectionBox
+                            scroll
+                            head
+                            gutters
+                            title="История звонков"
+                            :subtitle="title"
+                            :is-not-pagination="true"
+                        >
+                            <BlockCallShortstoryItem
+                                class="page-home__calls-history__item"
+                                v-for="item in allCalls"
+                                :key="item.id"
+                                :info="item"
+                                :to="{name: 'call-fullstory', params: {id: item.id}}"
+                            />
+                        </SectionBox>
+                    </div>
                 </div>
             </template>
         </SectionBox>
@@ -12,70 +47,41 @@
 
 <script>
 import store from '@/store'
-import {mapActions, mapMutations, mapState} from 'vuex'
+import {mapState, mapMutations} from 'vuex'
 import SectionBox from '@/components/sections/box'
+import BlockCallShortstoryItem from '@/components/blocks/call-shortstory-item'
 // import BlockFile from '@/components/blocks/file'
-import BlockDragFile from '@/components/blocks/drag-and-drop-file'
-import {getJsonFromString} from '@/utils/json'
 
 export default {
     components: {
         SectionBox,
+        BlockCallShortstoryItem
         // BlockFile
     },
     data() {
         return {
             isLoading: false,
-            form: {
-                first_name: '',
-                last_name: '',
-                phone: '',
-                email: '',
-                new_password: '',
-                photo: null,
-            },
-            empty: {
-                isFirstNameEmpty: false,
-                isLastNameEmpty: false,
-                isPhoneEmpty: false,
-            },
-            validation: {
-                isPhoneValid: false,
-                isEmailValid: false
-            },
 
         }
     },
     computed: {
-        ...mapState('webrtc/webrtcCalls', ['isIncomingCall']),
-        ...mapState('terminals', ['items', 'isNotDevicesPagination']),
-        ...mapState('stat', ['stat']),
-        ...mapState('sessions', ['isSessionBreak']),
         ...mapState('users', ['userInfo']),
-    },
-    methods: {
-        ...mapActions('webrtc/webrtcCalls', ['stClickTheCallBtn']),
-        ...mapActions('users', ['stEditUserById']),
-        ...mapMutations('alerts', ['ADD_ALERT']),
-        async sendInfo() {
-            this.isLoading = true
-            const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
-            const infoObj = getJsonFromString(info)
-            const isSuccess = await this.stEditUserById({id: infoObj.id, body: this.form})
-            if (isSuccess) {
-                this.ADD_ALERT(['positive', 'Данные успешно изменены'])
-            }
-            else {
-                this.ADD_ALERT(['negative'])
-            }
-            this.isLoading = false
+        ...mapState('calls', ['callsPerShift', 'allCalls']),
+        title() {
+            return `Оператор #${this.userInfo.id}`
         }
     },
+    methods: {
+        ...mapMutations('alerts', ['ADD_ALERT']),
+    },
     async beforeRouteEnter(to, from, next) {
+        console.log(to)
         console.log(from)
-        const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
+        const id = to.params.id ? to.params.id : from.params.id
         const response = await Promise.all([
-            store.dispatch('users/stGetUserById', to.params.id),
+
+            store.dispatch('users/stGetUserById', id),
+            store.dispatch('calls/stGetAllCalls'),
         ])
         const isSuccess = response.every(item => item)
         if (isSuccess) {
@@ -87,12 +93,6 @@ export default {
         // store.dispatch('toggleLoading', false)
     },
     created() {
-        // const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
-        // const infoObj = getJsonFromString(info)
-        this.form.first_name = this.userInfo.first_name
-        this.form.last_name = this.userInfo.last_name
-        this.form.email = this.userInfo.email
-        this.form.phone = this.userInfo.phone
 
     },
 
@@ -104,55 +104,89 @@ export default {
     display: flex;
     width: 100%;
     padding-bottom: 30px;
+    height: calc(100vh - 84px);
 
     &__content {
         display: grid;
-        grid-template-columns: 1fr 1fr minmax(420px, 1fr);
+        grid-template-columns: 1fr 260px;
         grid-gap: 20px;
         width: 100%;
-        padding: 30px;
+        //padding: 30px;
+        height: 100%;
         grid-auto-rows: minmax(60px, auto);
         grid-template-areas:
-        'first-name last-name file'
-        'email phone file'
-        'new-pass . save-btn';
+        'info calls'
+        'btns calls'
     }
-
-    &__inp {
-        &-first-name {
-            grid-area: first-name;
-        }
-
-        &-last-name {
-            grid-area: last-name;
-        }
-
-        &-email {
-            grid-area: email;
-        }
-
-        &-phone {
-            grid-area: phone;
-        }
-
-        &-new-pass {
-            margin-top: 60px;
-            grid-area: new-pass;
-        }
-
-        &-file {
-            display: flex;
+    &__info {
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        padding-left: 30px;
+        padding-top: 30px;
+    }
+    &__title {
+        color: #685c7b;
+        font-size: 17px;
+        font-weight: 500;
+        display: flex;
+        width: 100%;
+        margin-bottom: 30px;
+    }
+    &__status {
+        display: block;
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    &__img {
+        width: 110px;
+        height: 110px;
+        overflow: hidden;
+        border-radius: 50%;
+        margin-right: 10px;
+        img {
+            width: 100%;
             height: 100%;
-            grid-area: file;
-        }
-
-        &-save-btn {
-            align-self: end;
-            margin-top: 60px;
-            margin-left: auto;
-            grid-area: save-btn;
+            display: block;
         }
     }
-
+    &__cont {}
+    &__name {
+        font-size: 19px;
+        font-weight: 700;
+        line-height: 23px;
+    }
+    &__lastname {
+        font-size: 19px;
+        font-weight: 700;
+        line-height: 23px;
+    }
+    &__lang {
+        margin-bottom: 20px;
+    }
+    &__text {
+        color: #4c3b60;
+        font-size: 15px;
+        font-weight: 400;
+    }
+    &__btns{
+        margin-top: auto;
+        grid-area: btns;
+        padding-left: 30px;
+        padding-bottom: 30px;
+    }
+    &__btn {
+        margin-right: 20px;
+    }
+    &__calls {
+        grid-area: calls;
+        border-left: 1px solid #efeff4;
+        .section-box {
+            box-shadow: none;
+        }
+        /deep/ .page-home__calls-history__item {
+            border-top: 1px solid #efeff4;
+        }
+    }
 }
 </style>

@@ -30,11 +30,25 @@ export async function apiGetUsers() {
 
 //получить юзера по id
 export async function apiGetUserById(id) {
+    const userToken = token()
     const options = {
         method: 'get',
         url: `api/v1/users/${id}`,
         body: null,
-        token: token()
+        token: userToken
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+
+//создать нового юзера
+export async function apiCreateUser(info) {
+    const userToken = token()
+    const options = {
+        method: 'post',
+        url: `api/v1/users/`,
+        body: info,
+        token: userToken
     }
     const response = await axiosUrl(options)
     return response
@@ -48,11 +62,7 @@ export async function apiGetUserById(id) {
 // }
 
 //
-export async function ApiCallsOperator(id) {
-  const url = `api/v1/api/users/${id}/calls/`
-  const body = null
-  return axiosUrl('get', url, body, token)
-}
+
 
 // получить звонки оператора за смену
 export async function apiGetAllCallsPerWorkShift(params) {
@@ -76,7 +86,7 @@ export async function apiGetAllCallsPerWorkShift(params) {
     return response
 }
 
-// получить звонки оператора за смену
+// получить все звонк оператора
 export async function apiGetAllCalls(params) {
     const userToken = token()
     // const pageSize = 36
@@ -98,6 +108,25 @@ export async function apiGetAllCalls(params) {
     return response
 }
 
+export async function apiGetAllCallsById(params) {
+    const userToken = token()
+    // const pageSize = 36
+    let query = ''
+    if (params) {
+        for (let key in params) {
+            query += `&${key}=${params[key]}`
+        }
+    }
+    const url = `/api/v1/calls/VXNlcjo0`
+    const options = {
+        method: 'get',
+        body: null,
+        url,
+        token: userToken
+    }
+    const response = await axiosUrl(options)
+    return response
+}
 
 
 // отправить комментарий к звонку
@@ -149,7 +178,7 @@ export async function apiGetCurrentSessionInfo() {
         method: 'get',
         url: `/api/v1/sessions/current-session/`,
         body: null,
-        token: userToken()
+        token: userToken
     }
     const response = await axiosUrl(options)
     return response
@@ -162,7 +191,7 @@ export async function apiStartSessionBreak() {
         method: 'patch',
         url: `/api/v1/sessions/start-break/`,
         body: null,
-        token: userToken()
+        token: userToken
     }
     const response = await axiosUrl(options)
     return response
@@ -227,7 +256,7 @@ export async function apiGetAdminStat() {
     const response = await axiosUrl(options)
     return response
 }
-// получить инфу о зволнке по id
+// получить инфу о звонке по id
 export async function apiGetDetailCallInfo(id) {
     const userToken = token()
     const options = {

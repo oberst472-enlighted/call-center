@@ -165,11 +165,29 @@ export default new VueRouter({
                     }
                 },
                 {
-                    path: '/operator/:id',
+                    path: '/operator-admin/:id',
                     name: 'user-fullstory-admin',
                     components: {
                         default: require('@/pages/admin/user-fullstory').default,
-                        header: require('@/components/sections/header-operator/').default,
+                        header: require('@/components/sections/header-admin/').default,
+                        aside: require('@/components/sections/aside/').default,
+                    }
+                },
+                {
+                    path: '/add-new-operator/',
+                    name: 'add-new-operator',
+                    components: {
+                        default: require('@/pages/admin/add-new-operator').default,
+                        header: require('@/components/sections/header-admin/').default,
+                        aside: require('@/components/sections/aside/').default,
+                    }
+                },
+                {
+                    path: '/detail/:id',
+                    name: 'terminal-fullstory-admin',
+                    components: {
+                        default: require('@/pages/operator/terminal-fullstory').default,
+                        header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     }
                 },

@@ -1,4 +1,4 @@
-import {apiGetAllCallsPerWorkShift, apiSendACommentToTheCall, apiGetAllCalls, apiGetDetailCallInfo} from '@/api'
+import {apiGetAllCallsPerWorkShift, apiGetAllCallsById, apiSendACommentToTheCall, apiGetAllCalls, apiGetDetailCallInfo} from '@/api'
 
 export default {
     namespaced: true,
@@ -91,6 +91,34 @@ export default {
             let isSuccess = false
             try {
                 const response = await apiGetAllCalls()
+                if (
+                    Boolean(response) &&
+                    response.status < 300 &&
+                    response.statusText === 'OK'
+                ) {
+                    // commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION', false)
+                    commit('SET_ALL_CALLS', response.data.results);
+                    // response.data.next ? commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION', false) : commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION')
+                    isSuccess = true
+                } else {
+                    isSuccess = false
+                }
+            } catch (e) {
+                console.error(e)
+                isSuccess = false
+            }
+            finally {
+                commit('TOGGLE_CALLS_PER_SHIFT_LOADING', false)
+                // eslint-disable-next-line no-unsafe-finally
+                return isSuccess
+
+            }
+        },
+
+        async stGetAllCallsById({commit}, id) {
+            let isSuccess = false
+            try {
+                const response = await apiGetAllCallsById()
                 if (
                     Boolean(response) &&
                     response.status < 300 &&

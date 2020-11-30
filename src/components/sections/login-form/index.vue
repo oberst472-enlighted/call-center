@@ -111,6 +111,9 @@ export default {
                         const response = await this.stLogin(this.form)
                         if (response.isSuccess) {
                             this.saveInfoOnStorage(response.response.data)
+                            setTimeout(() => {
+                                this.goToAdminPanel()
+                              }, 1000);
 
                         } else {
                             this.isError = true
@@ -138,9 +141,6 @@ export default {
             storage.setItem('token', payload.token)
             storage.setItem('userInfo', JSON.stringify(payload.user))
 
-            setTimeout(() => {
-                this.goToAdminPanel()
-              }, 500);
 
         },
         toggleSaveLoginAndPasswordInStorage(val) {

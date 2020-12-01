@@ -2,8 +2,13 @@
     <div :class="classes" class="section-box">
         <div v-if="!content" :class="`section-box__content-${id}`" class="section-box__content">
             <div v-if="head" class="section-box__head">
-                <span v-if="title" class="section-box__title">{{ title }}</span>
-                <span v-if="subtitle" class="section-box__subtitle">{{ subtitle }}</span>
+                <div class="section-box__head-text">
+                    <span v-if="title" class="section-box__title">{{ title }}</span>
+                    <span v-if="subtitle" class="section-box__subtitle">{{ subtitle }}</span>
+                </div>
+                <div class="section-box__head-btn">
+                    <slot name="head-btn"/>
+                </div>
             </div>
 
             <div class="section-box__body">
@@ -147,11 +152,29 @@
                 position: sticky;
                 top: 0;
                 display: flex;
-                justify-content: center;
-                flex-direction: column;
+                align-items: center;
                 min-height: 65px;
+                justify-content: space-between;
                 padding: 15px;
                 background-color: #ffffff;
+                &-text {
+                    display: flex;
+                    flex-direction: column;
+                }
+                &-btn {
+                    margin-left: 20px;
+                    /deep/ .ui-btn__item {
+                        background-color: #f4f3f7 !important;
+                        color: $color--primary;
+                        &:hover {
+                            background-color: darken(#f4f3f7, 20%) !important;
+                            color: white !important;
+                        }
+                        &:active {
+                            opacity: 0.7;
+                        }
+                    }
+                }
             }
 
             &__title {

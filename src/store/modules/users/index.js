@@ -16,6 +16,7 @@ export default {
         },
         SET_USER_INFO(state, payload) {
             state.userInfo = payload
+            console.log(payload)
         }
     },
     actions: {
@@ -45,12 +46,17 @@ export default {
                 return false;
             }
         },
-        async stEditUserById(context, info) {
+        async stEditUserById({commit}, info) {
             const response = await apiEditUserById(info);
-            if (Boolean(response) && response.status < 300 && response.statusText === 'OK') {
-                return {isSuccess: true, response};
+            if (
+                Boolean(response) &&
+                response.status < 300 &&
+                response.statusText === 'OK'
+            ) {
+                commit('SET_USER_INFO', response.data);
+                return true;
             } else {
-                return {isSuccess: false};
+                return false;
             }
         },
         async stCreateUser(context, info) {

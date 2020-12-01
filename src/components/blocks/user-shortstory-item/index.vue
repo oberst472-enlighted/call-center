@@ -1,7 +1,7 @@
 <template>
     <article :is="tag" :to="to" class="block-terminal-shortstory" :class="{hide: info.role === 'administrator'}">
         <div class="block-terminal-shortstory__title">
-            <div>{{ info.first_name ? info.first_name : 'Имя не задано'}}</div>
+            <div>{{ info.first_name ? info.first_name : 'Имя не задано' }}</div>
             <div>{{ info.last_name ? info.last_name : 'Фамилия не задана' }}</div>
         </div>
         <UiBadge :theme="theme">{{ status }}</UiBadge>

@@ -13,7 +13,7 @@
 <script>
 import SectionsAlerts from '@/components/sections/alerts'
 import SectionMainLoading from '@/components/sections/main-loading'
-import {mapState, mapActions} from 'vuex'
+import {mapState, mapGetters, mapActions} from 'vuex'
 
 export default {
     components: {
@@ -27,14 +27,15 @@ export default {
     },
     computed: {
         ...mapState('alerts', ['alerts']),
-        ...mapState(['isProgressActive'])
+        ...mapState(['isProgressActive']),
+        ...mapGetters('middleware', ['isAdmin'])
     },
     methods: {
         ...mapActions('webrtc/webrtcPeerConnection', ['getMedia']),
         ...mapActions('webrtc/webrtcSockets', ['stSocketConnect']),
     },
     created() {
-        if (!this.isOnce) {
+        if (!this.isOnce && !this.isAdmin) {
             this.isOnce = true
             this.getMedia()
             this.stSocketConnect()

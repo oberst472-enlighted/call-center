@@ -9,9 +9,11 @@
         </div>
 
         <div class="page-home__stat-call">
+            <LocalDashboardGraph/>
         </div>
 
         <div class="page-home__rating">
+            <LocalDashboardRating/>
         </div>
 
         <div class="page-home__terminals">
@@ -31,6 +33,8 @@ import store from '@/store'
 import {mapState, mapMutations, mapActions} from 'vuex'
 import LocalDashboardUsers from './dashboard-users'
 import LocalDashboardTerminals from './dashboard-terminals'
+import LocalDashboardRating from './dashboard-rating'
+import LocalDashboardGraph from './dashboard-graph'
 import LocalDashboardCalls from './dashboard-calls'
 
 import BlockStat from '@/components/blocks/stat'
@@ -38,7 +42,9 @@ export default {
     components: {
         LocalDashboardUsers,
         LocalDashboardTerminals,
+        LocalDashboardRating,
         LocalDashboardCalls,
+        LocalDashboardGraph,
         BlockStat,
     },
     computed: {
@@ -58,16 +64,6 @@ export default {
         ...mapActions('users', ['stGetUsers']),
         ...mapMutations('devices', ['SET_DEVICES_PAGINATION_PAGE']),
 
-        async downloadNextPageCalls() {
-            this.SET_PAGINATION_PAGE()
-            const isSuccess = await this.stGetAllCallsForTheCurrentSession()
-            console.log(isSuccess)
-        },
-        async downloadNextPageTerminals() {
-            this.SET_DEVICES_PAGINATION_PAGE()
-            // eslint-disable-next-line no-unused-vars
-            const isSuccess = await this.stGetDevices()
-        }
     },
     async beforeRouteEnter(to, from, next) {
         if (!to.params.doNotLoadData) {

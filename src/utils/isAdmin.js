@@ -1,2 +1,1 @@
-export default () => localStorage.getItem('role') === 'admin' ||
-        sessionStorage.getItem('token') === 'admin'
+export default () => localStorage.getItem('role') === 'administrator' || sessionStorage.getItem('token') === 'administrator'

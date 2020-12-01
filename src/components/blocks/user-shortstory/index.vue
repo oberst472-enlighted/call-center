@@ -2,17 +2,25 @@
     <div class="user-shortstory">
         <div class="user-shortstory__content" tabindex="-1">
             <div class="user-shortstory__info">
-                <span class="user-shortstory__first-name">{{ info.first_name }}</span>
-                <span class="user-shortstory__last-name">{{ info.last_name }}</span>
+                <span class="user-shortstory__first-name">{{ userInfo.first_name }}</span>
+                <span class="user-shortstory__last-name">{{ userInfo.last_name }}</span>
+                <div class="user-shortstory__role">{{ userInfo.role === 'administrator' ? 'администратор' : 'оператор' }}</div>
             </div>
             <div class="user-shortstory__img">
                 <img src="assets/images/user-placeholder.svg" alt="">
             </div>
         </div>
-        <div class="user-shortstory__options" tabindex="-1">
+        <div class="user-shortstory__options" tabindex="-1" v-if="isAdmin">
+            <div class="user-shortstory__options-box">
+                <router-link :to="{name: 'edit-info-admin'}" class="user-shortstory__options-item">Редактировать</router-link>
+                <span @click="$router.push({name: 'logout'})" class="user-shortstory__options-item">Выйти</span>
+            </div>
+        </div>
+
+        <div class="user-shortstory__options" tabindex="-1" v-else>
             <div class="user-shortstory__options-box">
                 <router-link :to="{name: 'operator-profile'}" class="user-shortstory__options-item">Редактировать</router-link>
-                <span @click="$router.push('/')" class="user-shortstory__options-item">Выйти</span>
+                <span @click="$router.push({name: 'logout'})" class="user-shortstory__options-item">Выйти</span>
             </div>
         </div>
     </div>
@@ -20,12 +28,17 @@
 
 <script>
 import {getJsonFromString} from '@/utils/json'
+import {mapState, mapGetters} from 'vuex'
 
 export default {
     data() {
         return {
             info: null
         }
+    },
+    computed: {
+        ...mapState('users', ['userInfo']),
+        ...mapGetters('middleware', ['isAdmin']),
     },
     created() {
         const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
@@ -94,6 +107,10 @@ export default {
     }
     &__first-name {
         margin-right: 5px;
+        font-weight: 700;
+    }
+    &__last-name {
+        font-weight: 700;
     }
 }
 </style>

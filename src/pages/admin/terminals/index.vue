@@ -1,12 +1,23 @@
 <template>
-    <section class="page-calls">
-        <div class="page-calls__calls">
-            <BlockTerminals
-                :info="items"
-                :items-length="items.length"
-                :is-not-pagination="true"
-            />
-        </div>
+    <section class="page-terminals">
+        <SectionBox
+            class="page-terminals__box"
+            gutters
+            scroll
+            head
+            title="Доступность терминалов"
+            subtitle="Доступные вам терминалы"
+        >
+            <div class="page-terminals__cont">
+                <BlockShortstoryItem
+                    class="page-terminals__item"
+                    v-for="item in items"
+                    :key="item.id"
+                    :info="item"
+                    :to="{name: 'terminal-fullstory-admin', params: {id: item.id}}"
+                />
+            </div>
+        </SectionBox>
     </section>
 </template>
 
@@ -14,9 +25,12 @@
 import store from '@/store'
 import {mapState, mapMutations, mapActions} from 'vuex'
 import BlockTerminals from '@/components/blocks/terminals'
+import SectionBox from '@/components/sections/box'
+import BlockShortstoryItem from '@/components/blocks/terminal-shortstory-item'
 export default {
     components: {
-        BlockTerminals,
+        SectionBox,
+        BlockShortstoryItem
     },
     computed: {
         ...mapState('devices', ['items']),
@@ -46,18 +60,37 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.page-calls {
-    padding-bottom: 30px;
+//.page-terminals {
+//    padding-bottom: 30px;
+//    width: 100%;
+//    display: grid;
+//    grid-template-columns: 1fr;
+//    grid-template-rows: minmax(300px, calc(100vh - 104px));
+//    grid-gap: $gutter;
+//    grid-template-areas:
+//        'calls';
+//    &__calls {
+//        grid-area: calls;
+//        display: flex;
+//    }
+//}
+.page-terminals {
     width: 100%;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: minmax(300px, calc(100vh - 104px));
-    grid-gap: $gutter;
-    grid-template-areas:
-        'calls';
-    &__calls {
-        grid-area: calls;
-        display: flex;
+    padding-bottom: 30px;
+    max-height: calc(100vh - 84px);
+
+    .page-terminals__box {
+        width: 100%;
+    }
+
+    &__cont {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        grid-gap: 20px;
+    }
+
+    &__item {
+        border-top: 1px solid #efeff4;
     }
 }
 </style>

@@ -191,6 +191,15 @@ export default new VueRouter({
                         aside: require('@/components/sections/aside/').default,
                     }
                 },
+                {
+                    path: '/edit-profile/',
+                    name: 'edit-info-admin',
+                    components: {
+                        default: require('@/pages/admin/edit-info-admin').default,
+                        header: require('@/components/sections/header-admin/').default,
+                        aside: require('@/components/sections/aside/').default,
+                    }
+                },
             ]
         },
     ]

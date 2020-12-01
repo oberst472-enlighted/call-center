@@ -280,7 +280,7 @@ export async function apiGetDetailTerminalInfoById(id) {
     const response = await axiosUrl(options)
     return response
 }
-// получить инфу о терминале по id
+// отредактировать юзера
 export async function apiEditUserById(info) {
     const userToken = token()
     const options = {

@@ -8,7 +8,7 @@
         :is-not-pagination="true"
     >
         <template #head-btn>
-            <UiBtn>Добавить</UiBtn>
+            <UiBtn :to="{name: 'add-new-operator'}">Добавить</UiBtn>
         </template>
 
         <BlockUserShortstoryItem

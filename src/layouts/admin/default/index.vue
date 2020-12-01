@@ -29,12 +29,11 @@
 </template>
 
 <script>
-import {mapActions, mapMutations, mapState} from 'vuex'
-import BlockCallSound from '@/components/blocks/call-sound'
+import {mapMutations} from 'vuex'
+import {getJsonFromString} from '@/utils/json'
 
 export default {
     components: {
-        BlockCallSound
     },
     data() {
         return {
@@ -42,13 +41,17 @@ export default {
         }
     },
     computed: {
-        ...mapState('webrtc/webrtcCalls', ['isSoundCallActive', 'isIncomingCall', 'isCallAnswered', 'isVideoSectionActive', 'callQueue']),
-        ...mapState('sessions', ['isSessionActive', 'isSessionBreak']),
     },
     methods: {
-        ...mapMutations('webrtc/webrtcCalls', ['TOGGLE_INCOMING_CALL', 'TOGGLE_CALL_SOUND']),
+        ...mapMutations('users', ['SET_USER_INFO']),
 
     },
+    created() {
+        const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
+        const infoObj = getJsonFromString(info)
+        console.log(infoObj)
+        this.SET_USER_INFO(infoObj)
+    }
 
 }
 

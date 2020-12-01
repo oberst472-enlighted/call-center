@@ -75,8 +75,6 @@ export default {
         ...mapMutations('alerts', ['ADD_ALERT']),
     },
     async beforeRouteEnter(to, from, next) {
-        console.log(to)
-        console.log(from)
         const id = to.params.id ? to.params.id : from.params.id
         const response = await Promise.all([
 

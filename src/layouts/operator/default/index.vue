@@ -64,18 +64,13 @@ export default {
     },
     async beforeRouteEnter(to, from, next) {
         // store.dispatch('toggleLoading')
+        this.getMedia()
+        store.dispatch('webrtc/webrtcPeerConnection', 'getMedia')
+        store.dispatch('webrtc/webrtcSockets', 'stSocketConnect')
         await Promise.all([
             store.dispatch('sessions/stGetCurrentSessionInfo'),
         ])
         next()
-        // const isSuccess = response.every(item => item)
-        // if (isSuccess) {
-        //    next()
-        // } else {
-        //     next(false)
-        //     // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
-        // }
-        // store.dispatch('toggleLoading', false)
     },
 }
 

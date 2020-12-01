@@ -29,9 +29,9 @@
 </template>
 
 <script>
-import {mapMutations} from 'vuex'
+import store from '@/store'
+import {mapState, mapMutations} from 'vuex'
 import {getJsonFromString} from '@/utils/json'
-
 export default {
     components: {
     },
@@ -41,17 +41,19 @@ export default {
         }
     },
     computed: {
+        ...mapState('users', ['mainUserInfo'])
     },
     methods: {
-        ...mapMutations('users', ['SET_USER_INFO']),
+        ...mapMutations('users', ['SET_MAIN_USER_INFO']),
 
     },
-    created() {
-        const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
-        const infoObj = getJsonFromString(info)
-        console.log(infoObj)
-        this.SET_USER_INFO(infoObj)
-    }
+    beforeRouteEnter(to, from, next) {
+        const info = localStorage.getItem('сс_main_user_info') || sessionStorage.getItem('сс_main_user_info')
+        if (info) {
+            store.commit('users/SET_MAIN_USER_INFO', getJsonFromString(info))
+        }
+        next()
+    },
 
 }
 

@@ -61,7 +61,7 @@
 
 <script>
 import BlockFormHeader from '@/components/blocks/form-header'
-import {mapActions, mapMutations, mapGetters} from 'vuex'
+import {mapActions, mapGetters, mapMutations} from 'vuex'
 
 export default {
     components: {
@@ -111,7 +111,7 @@ export default {
                         const response = await this.stLogin(this.form)
                         if (response.isSuccess) {
                             this.saveInfoOnStorage(response.response.data)
-                                this.goToAdminPanel()
+                            this.goToAdminPanel(response.response.data)
 
                         } else {
                             this.isError = true
@@ -121,7 +121,8 @@ export default {
                         this.showEmptyErrors()
                         this.isLoading = false
                     }
-                } catch {
+                } catch (e) {
+                    console.log(e)
                     this.ADD_ALERT(['negative'])
                 }
             }
@@ -131,13 +132,13 @@ export default {
             const storage = this.rememberMe ? localStorage : sessionStorage
 
             localStorage.removeItem('token')
-            localStorage.removeItem('userInfo')
+            localStorage.removeItem('сс_main_user_info')
 
             sessionStorage.removeItem('token')
-            sessionStorage.removeItem('userInfo')
+            sessionStorage.removeItem('сс_main_user_info')
 
             storage.setItem('token', payload.token)
-            storage.setItem('userInfo', JSON.stringify(payload.user))
+            storage.setItem('сс_main_user_info', JSON.stringify(payload.user))
 
 
         },
@@ -159,27 +160,26 @@ export default {
             }
         },
 
-        async goToAdminPanel() {
-            if (this.isAuth) {
-                if (this.isAdmin) {
-                    const isSuccess = await this.loadInitialAdminData()
-                    if (isSuccess) {
-                        this.$router.push({name: `home-admin`, params: {doNotLoadData: true}})
-                    } else {
-                        this.ADD_ALERT(['negative'])
-                    }
-                    this.isLoading = false
-                } else if (this.isOperator) {
-                    const isSuccess = await this.loadInitialData()
-                    if (isSuccess) {
-                        this.$router.push({name: `home-operator`, params: {doNotLoadData: true}})
-                    } else {
-                        this.ADD_ALERT(['negative'])
-                    }
-                    this.isLoading = false
-
+        async goToAdminPanel(payload) {
+            console.log(payload)
+            if (payload.user.role === 'administrator') {
+                const isSuccess = await this.loadInitialAdminData()
+                if (isSuccess) {
+                    this.$router.push({name: `home-admin`, params: {doNotLoadData: true}})
+                } else {
+                    this.ADD_ALERT(['negative'])
                 }
-            } else {
+                this.isLoading = false
+            } else if (payload.user.role === 'operator') {
+                const isSuccess = await this.loadInitialData()
+                if (isSuccess) {
+                    this.$router.push({name: `home-operator`, params: {doNotLoadData: true}})
+                } else {
+                    this.ADD_ALERT(['negative'])
+                }
+                this.isLoading = false
+            }
+            else {
                 this.isLoading = false
                 this.ADD_ALERT(['negative'])
             }

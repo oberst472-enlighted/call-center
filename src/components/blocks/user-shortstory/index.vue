@@ -2,9 +2,9 @@
     <div class="user-shortstory">
         <div class="user-shortstory__content" tabindex="-1">
             <div class="user-shortstory__info">
-                <span class="user-shortstory__first-name">{{ userInfo.first_name }}</span>
-                <span class="user-shortstory__last-name">{{ userInfo.last_name }}</span>
-                <div class="user-shortstory__role">{{ userInfo.role === 'administrator' ? 'администратор' : 'оператор' }}</div>
+                <span class="user-shortstory__first-name">{{ mainUserInfo.first_name }}</span>
+                <span class="user-shortstory__last-name">{{ mainUserInfo.last_name }}</span>
+                <div class="user-shortstory__role">{{ mainUserInfo.role === 'administrator' ? 'администратор' : 'оператор' }}</div>
             </div>
             <div class="user-shortstory__img">
                 <img src="assets/images/user-placeholder.svg" alt="">
@@ -27,23 +27,13 @@
 </template>
 
 <script>
-import {getJsonFromString} from '@/utils/json'
 import {mapState, mapGetters} from 'vuex'
 
 export default {
-    data() {
-        return {
-            info: null
-        }
-    },
     computed: {
-        ...mapState('users', ['userInfo']),
+        ...mapState('users', ['mainUserInfo']),
         ...mapGetters('middleware', ['isAdmin']),
     },
-    created() {
-        const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
-        this.info = getJsonFromString(info)
-    }
 }
 </script>
 

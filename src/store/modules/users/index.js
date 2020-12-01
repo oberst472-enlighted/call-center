@@ -4,8 +4,9 @@ export default {
     namespaced: true,
     state: {
         users: [],
+        mainUserInfo: null, //информация о админе/операторе
         callsOperator: null,
-        userInfo: null
+        userInfo: null //детальная инфа о разных пользователях
     },
     mutations: {
         setUsers(state, payload) {
@@ -16,7 +17,10 @@ export default {
         },
         SET_USER_INFO(state, payload) {
             state.userInfo = payload
-            console.log(payload)
+        },
+        SET_MAIN_USER_INFO(state, payload) {
+            state.mainUserInfo = payload
+            console.log('SET_MAIN_USER_INFO')
         }
     },
     actions: {

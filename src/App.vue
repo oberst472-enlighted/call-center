@@ -28,19 +28,19 @@ export default {
     computed: {
         ...mapState('alerts', ['alerts']),
         ...mapState(['isProgressActive']),
-        ...mapGetters('middleware', ['isAdmin'])
+        ...mapGetters('middleware', ['isAdmin']),
     },
     methods: {
         ...mapActions('webrtc/webrtcPeerConnection', ['getMedia']),
         ...mapActions('webrtc/webrtcSockets', ['stSocketConnect']),
     },
     created() {
-        if (!this.isOnce && !this.isAdmin) {
-            this.isOnce = true
-            this.getMedia()
-            this.stSocketConnect()
-        }
-    }
+        // if (!this.isOnce && !this.isAdmin) {
+        //     this.isOnce = true
+        //     this.getMedia()
+        //     this.stSocketConnect()
+        // }
+    },
 }
 </script>
 <style lang="scss">

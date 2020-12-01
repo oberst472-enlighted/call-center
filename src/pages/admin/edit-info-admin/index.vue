@@ -123,7 +123,6 @@ export default {
             const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
             const infoObj = getJsonFromString(info)
             const isSuccess = await this.stEditUserById({id: infoObj.id, body: this.form})
-            console.log(isSuccess)
             if (isSuccess) {
                 const data = localStorage.getItem('userData')
                 const storage = data ? localStorage : sessionStorage

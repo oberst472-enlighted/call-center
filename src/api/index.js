@@ -7,7 +7,7 @@ const pageSize = 100
 export async function apiLogin(form) {
     const options = {
         method: 'post',
-        url: `api/v1/auth/login/`,
+        url: `/api/v1/auth/login/`,
         body: form,
         token: ''
     }
@@ -20,7 +20,7 @@ export async function apiGetUsers() {
     const userToken = token()
     const options = {
         method: 'get',
-        url: `api/v1/users/`,
+        url: `/api/v1/users/`,
         body: null,
         token: userToken
     }
@@ -33,7 +33,7 @@ export async function apiGetUserById(id) {
     const userToken = token()
     const options = {
         method: 'get',
-        url: `api/v1/users/${id}`,
+        url: `/api/v1/users/${id}`,
         body: null,
         token: userToken
     }
@@ -46,7 +46,7 @@ export async function apiCreateUser(info) {
     const userToken = token()
     const options = {
         method: 'post',
-        url: `api/v1/users/`,
+        url: `/api/v1/users/`,
         body: info,
         token: userToken
     }
@@ -221,7 +221,7 @@ export async function apiGetDevices(params) {
         }
     }
     query+= `&page_size=${pageSize}&ordering=-created`
-    const url = `api/v1/devices/?${query.substring(1)}`
+    const url = `/api/v1/devices/?${query.substring(1)}`
     const options = {
         method: 'get',
         body: null,

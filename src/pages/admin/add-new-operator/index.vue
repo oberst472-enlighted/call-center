@@ -153,7 +153,6 @@ export default {
             const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
             const infoObj = getJsonFromString(info)
             this.form.call_center = infoObj.call_center
-            console.log(this.form)
             const isSuccess = await this.stCreateUser(this.form)
             if (isSuccess) {
                 this.ADD_ALERT(['positive', 'Данные успешно изменены'])

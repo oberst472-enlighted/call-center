@@ -98,7 +98,7 @@ export default {
         ...mapActions('users', ['stGetUserById', 'stGetUsers']),
         ...mapActions('calls', ['stGetAllCallsForTheCurrentSession', 'stGetAllCalls']),
         ...mapActions('devices', ['stGetDevices']),
-        ...mapActions('stat', ['stGetAdminStat']),
+        ...mapActions('stat', ['stGetStat', 'stGetAdminStat']),
 
 
         async send() {
@@ -170,7 +170,6 @@ export default {
                     }
                     this.isLoading = false
                 } else if (this.isOperator) {
-                    console.log('isOperator')
                     const isSuccess = await this.loadInitialData()
                     if (isSuccess) {
                         this.$router.push({name: `home-operator`, params: {doNotLoadData: true}})
@@ -192,7 +191,6 @@ export default {
                 const response = await Promise.all([
                     await this.stGetDevices(),
                 ])
-                console.log(response)
                 const isSuccess = response.every(item => item)
                 return isSuccess
             } catch (e) {

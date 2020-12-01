@@ -83,7 +83,6 @@ export default {
         async downloadNextPageCalls() {
             this.SET_PAGINATION_PAGE()
             const isSuccess = await this.stGetAllCallsForTheCurrentSession()
-            console.log(isSuccess)
         },
         async downloadNextPageTerminals() {
             this.SET_DEVICES_PAGINATION_PAGE()
@@ -93,7 +92,6 @@ export default {
     },
     async beforeRouteEnter(to, from, next) {
         if (!to.params.doNotLoadData) {
-            console.log(6782)
             store.commit('TOGGLE_PROGRESS_ACTIVE')
 
             store.dispatch('stat/stGetStat')

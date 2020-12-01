@@ -122,7 +122,6 @@ export default {
             this.isLoading = true
             const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
             const infoObj = getJsonFromString(info)
-            console.log(infoObj)
             const isSuccess = await this.stEditUserById({id: infoObj.id, body: this.form})
             console.log(isSuccess)
             if (isSuccess) {

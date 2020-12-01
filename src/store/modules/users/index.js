@@ -1,4 +1,5 @@
 import { apiGetUsers, ApiCallsOperator, apiGetUserById, apiEditUserById, apiCreateUser} from '@/api';
+import {getStringFromJson} from '@/utils/json'
 
 export default {
     namespaced: true,
@@ -20,7 +21,9 @@ export default {
         },
         SET_MAIN_USER_INFO(state, payload) {
             state.mainUserInfo = payload
-            console.log('SET_MAIN_USER_INFO')
+            const data = localStorage.getItem('userData')
+            const storage = data ? localStorage : sessionStorage
+            storage.setItem('сс_main_user_info', getStringFromJson(payload))
         }
     },
     actions: {
@@ -58,22 +61,15 @@ export default {
                 response.statusText === 'OK'
             ) {
                 commit('SET_USER_INFO', response.data);
-                return true;
+                return response.data;
             } else {
                 return false;
             }
         },
         async stCreateUser(context, info) {
             const response = await apiCreateUser(info);
-            if (
-                Boolean(response) &&
-                response.status < 300 &&
-                response.statusText === 'OK'
-            ) {
-                return true;
-            } else {
-                return false;
-            }
+            console.log(response)
+            return Boolean(response) && response.status < 300 && (response.statusText === 'OK' || response.statusText === 'Created');
         },
 
         async stCallsOperator({ commit }, id) {

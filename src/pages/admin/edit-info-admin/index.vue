@@ -73,7 +73,6 @@
 </template>
 
 <script>
-import store from '@/store'
 import {mapActions, mapMutations, mapState} from 'vuex'
 import SectionBox from '@/components/sections/box'
 // import BlockFile from '@/components/blocks/file'
@@ -112,54 +111,37 @@ export default {
     computed: {
         ...mapState('webrtc/webrtcCalls', ['isIncomingCall']),
         ...mapState('sessions', ['isSessionBreak']),
-        ...mapState('users', ['userInfo']),
+        ...mapState('users', ['mainUserInfo']),
     },
     methods: {
         ...mapActions('webrtc/webrtcCalls', ['stClickTheCallBtn']),
         ...mapActions('users', ['stEditUserById']),
         ...mapMutations('alerts', ['ADD_ALERT']),
+        ...mapMutations('users', ['SET_MAIN_USER_INFO']),
         async sendInfo() {
-            this.isLoading = true
-            const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
-            const infoObj = getJsonFromString(info)
-            const isSuccess = await this.stEditUserById({id: infoObj.id, body: this.form})
-            if (isSuccess) {
-                const data = localStorage.getItem('userData')
-                const storage = data ? localStorage : sessionStorage
-                console.log(this.userInfo)
-
-                storage.setItem('userInfo', getJsonFromString(this.userInfo))
-                this.ADD_ALERT(['positive', 'Данные успешно изменены'])
-            }
-            else {
+            try {
+                this.isLoading = true
+                const isSuccess = await this.stEditUserById({id: this.mainUserInfo.id, body: this.form})
+                if (isSuccess) {
+                    this.SET_MAIN_USER_INFO(isSuccess)
+                    this.ADD_ALERT(['positive', 'Данные успешно изменены'])
+                }
+                else {
+                    this.ADD_ALERT(['negative'])
+                }
+                this.isLoading = false
+            } catch (e) {
+                console.log(e)
+                this.isLoading = false
                 this.ADD_ALERT(['negative'])
             }
-            this.isLoading = false
         }
-    },
-    async beforeRouteEnter(to, from, next) {
-        const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
-        const infoObj = getJsonFromString(info)
-        const response = await Promise.all([
-            store.dispatch('users/stGetUserById', infoObj.id),
-        ])
-        const isSuccess = response.every(item => item)
-        if (isSuccess) {
-            next()
-        } else {
-            next(false)
-            // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
-        }
-        // store.dispatch('toggleLoading', false)
     },
     created() {
-        // const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
-        // const infoObj = getJsonFromString(info)
-        console.log(this.userInfo.first_name)
-        this.form.first_name = this.userInfo.first_name
-        this.form.last_name = this.userInfo.last_name
-        this.form.email = this.userInfo.email
-        this.form.phone = this.userInfo.phone
+        this.form.first_name = this.mainUserInfo.first_name
+        this.form.last_name = this.mainUserInfo.last_name
+        this.form.email = this.mainUserInfo.email
+        this.form.phone = this.mainUserInfo.phone
 
     },
 

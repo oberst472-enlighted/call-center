@@ -122,13 +122,11 @@ export default {
                 first_name: '',
                 last_name: '',
                 username: '',
-                languages: [],
+                // languages: [],
                 phone: '',
                 email: '',
                 password: '',
                 photo: null,
-                role: 'operator',
-                call_center: ''
             },
             empty: {
                 isFirstNameEmpty: false,
@@ -150,12 +148,10 @@ export default {
         ...mapMutations('alerts', ['ADD_ALERT']),
         async sendInfo() {
             this.isLoading = true
-            const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
-            const infoObj = getJsonFromString(info)
-            this.form.call_center = infoObj.call_center
             const isSuccess = await this.stCreateUser(this.form)
+            console.log(isSuccess)
             if (isSuccess) {
-                this.ADD_ALERT(['positive', 'Данные успешно изменены'])
+                this.ADD_ALERT(['positive', 'Оператор успешно создан'])
             }
             else {
                 this.ADD_ALERT(['negative'])
@@ -164,36 +160,12 @@ export default {
         }
     },
     watch: {
-      langs(val) {
-          let obj = []
-          val.forEach(item => obj.push({title: item}))
-          this.form.languages = obj
-      }
-    },
-    async beforeRouteEnter(to, from, next) {
-        const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
-        const infoObj = getJsonFromString(info)
-        const response = await Promise.all([
-            store.dispatch('users/stGetUserById', infoObj.id),
-        ])
-        const isSuccess = response.every(item => item)
-        if (isSuccess) {
-            next()
-        } else {
-            next(false)
-            // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
-        }
-        // store.dispatch('toggleLoading', false)
-    },
-    created() {
-        // // const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
-        // // const infoObj = getJsonFromString(info)
-        // this.form.first_name = this.userInfo.first_name
-        // this.form.last_name = this.userInfo.last_name
-        // this.form.email = this.userInfo.email
-        // this.form.phone = this.userInfo.phone
-
-    },
+      // langs(val) {
+      //     let obj = []
+      //     val.forEach(item => obj.push({title: item}))
+      //     this.form.languages = obj
+      // }
+    }
 
 }
 </script>

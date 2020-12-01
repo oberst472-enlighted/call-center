@@ -192,7 +192,7 @@ export default new VueRouter({
                     }
                 },
                 {
-                    path: '/edit-profile/',
+                    path: '/edit-profile-admin/',
                     name: 'edit-info-admin',
                     components: {
                         default: require('@/pages/admin/edit-info-admin').default,

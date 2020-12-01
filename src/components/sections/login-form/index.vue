@@ -165,7 +165,7 @@ export default {
             if (payload.user.role === 'administrator') {
                 const isSuccess = await this.loadInitialAdminData()
                 if (isSuccess) {
-                    this.$router.push({name: `home-admin`, params: {doNotLoadData: true}})
+                    this.$router.push({name: `home_admin`, params: {doNotLoadData: true}})
                 } else {
                     this.ADD_ALERT(['negative'])
                 }

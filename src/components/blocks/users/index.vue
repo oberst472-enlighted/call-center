@@ -16,7 +16,7 @@
                 v-for="item in info"
                 :key="item.id"
                 :info="item"
-                :to="{name: 'user-fullstory-admin', params: {id: item.id}}"
+                :to="{name: 'detail-operator_admin', params: {id: item.id}}"
             />
         </div>
     </SectionBox>
@@ -56,7 +56,7 @@ export default {
     &__box {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-gap: 20px;
+        grid-column-gap: 20px;
     }
     &__item {
         border-top: 1px solid #efeff4;

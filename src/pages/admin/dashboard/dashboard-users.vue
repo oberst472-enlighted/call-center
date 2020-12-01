@@ -7,7 +7,7 @@
         :is-not-pagination="true"
     >
         <template #head-btn>
-            <UiBtn :to="{name: 'add-new-operator'}">Добавить</UiBtn>
+            <UiBtn :to="{name: 'create-operator_admin'}">Добавить</UiBtn>
         </template>
 
         <BlockUserShortstoryItem
@@ -15,7 +15,7 @@
             v-for="item in items"
             :key="item.id"
             :info="item"
-            :to="{name: 'user-fullstory-admin', params: {id: item.id}}"
+            :to="{name: 'detail-operator_admin', params: {id: item.id}}"
         />
     </SectionBox>
 </template>

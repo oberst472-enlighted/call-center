@@ -86,7 +86,7 @@ export async function apiGetAllCallsPerWorkShift(params) {
     return response
 }
 
-// получить все звонк оператора
+// получить все звонки оператора
 export async function apiGetAllCalls(params) {
     const userToken = token()
     // const pageSize = 36
@@ -108,16 +108,19 @@ export async function apiGetAllCalls(params) {
     return response
 }
 
-export async function apiGetAllCallsById(params) {
+// получить все звонки оператора из под админа
+export async function apiGetAllCallsById({params, id}) {
     const userToken = token()
-    // const pageSize = 36
     let query = ''
     if (params) {
         for (let key in params) {
             query += `&${key}=${params[key]}`
         }
     }
-    const url = `/api/v1/calls/VXNlcjo0`
+    query += `&operator=${id}`
+    console.log(query)
+
+    const url = `/api/v1/calls/?${query.substring(1)}`
     const options = {
         method: 'get',
         body: null,

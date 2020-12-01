@@ -14,7 +14,7 @@
                 v-for="item in items"
                 :key="item.id"
                 :info="item"
-                :to="{name: 'call-fullstory', params: {id: item.id}}"
+                :to="{name: 'detail-call_admin', params: {id: item.id}}"
             />
         </div>
     </SectionBox>
@@ -46,7 +46,7 @@ export default {
     .page-home__call-history-cont {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-gap: 20px;
+        grid-column-gap: 20px;
     }
 }
 </style>

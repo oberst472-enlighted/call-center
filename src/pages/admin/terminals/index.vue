@@ -14,7 +14,7 @@
                     v-for="item in items"
                     :key="item.id"
                     :info="item"
-                    :to="{name: 'terminal-fullstory-admin', params: {id: item.id}}"
+                    :to="{name: 'detail-terminal_admin', params: {id: item.id}}"
                 />
             </div>
         </SectionBox>
@@ -24,7 +24,6 @@
 <script>
 import store from '@/store'
 import {mapState, mapMutations, mapActions} from 'vuex'
-import BlockTerminals from '@/components/blocks/terminals'
 import SectionBox from '@/components/sections/box'
 import BlockShortstoryItem from '@/components/blocks/terminal-shortstory-item'
 export default {
@@ -37,7 +36,6 @@ export default {
 
     },
     methods: {
-        ...mapMutations(['TOGGLE_PROGRESS_ACTIVE']),
         ...mapActions('devices', ['stGetDevices']),
     },
     async beforeRouteEnter(to, from, next) {
@@ -86,7 +84,7 @@ export default {
     &__cont {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
-        grid-gap: 20px;
+        grid-column-gap: 20px;
     }
 
     &__item {

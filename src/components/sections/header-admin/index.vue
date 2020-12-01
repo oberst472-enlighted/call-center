@@ -4,7 +4,7 @@
         <!--            <UiBack/>-->
         <!--        </div>-->
         <transition name="fade">
-            <UiBtn v-if="$route.name !== 'add-new-operator' " :to="{name: 'add-new-operator'}">Добавить сотрудника</UiBtn>
+            <UiBtn v-if="$route.name !== 'create-operator_admin' " :to="{name: 'create-operator_admin'}">Добавить сотрудника</UiBtn>
         </transition>
 
 

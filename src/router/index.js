@@ -120,8 +120,8 @@ export default new VueRouter({
             component: require('@/layouts/admin/default/').default,
             children: [
                 {
-                    path: '/home-admin',
-                    name: 'home-admin',
+                    path: 'admin/home',
+                    name: 'home_admin',
                     components: {
                         default: require('@/pages/admin/dashboard').default,
                         header: require('@/components/sections/header-admin/').default,
@@ -129,8 +129,8 @@ export default new VueRouter({
                     },
                 },
                 {
-                    path: '/calls-admin/',
-                    name: 'calls-admin',
+                    path: 'admin/calls/',
+                    name: 'calls_admin',
                     components: {
                         default: require('@/pages/admin/calls').default,
                         header: require('@/components/sections/header-admin/').default,
@@ -138,8 +138,8 @@ export default new VueRouter({
                     }
                 },
                 {
-                    path: '/terminals-admin/',
-                    name: 'terminals-admin',
+                    path: 'admin/terminals/',
+                    name: 'terminals_admin',
                     components: {
                         default: require('@/pages/admin/terminals').default,
                         header: require('@/components/sections/header-admin/').default,
@@ -147,8 +147,8 @@ export default new VueRouter({
                     }
                 },
                 {
-                    path: '/users-admin/',
-                    name: 'users-admin',
+                    path: 'admin/users/',
+                    name: 'users_admin',
                     components: {
                         default: require('@/pages/admin/users').default,
                         header: require('@/components/sections/header-admin/').default,
@@ -165,28 +165,10 @@ export default new VueRouter({
                     }
                 },
                 {
-                    path: '/operator-admin/:id',
-                    name: 'user-fullstory-admin',
+                    path: 'admin/create-operator/',
+                    name: 'create-operator_admin',
                     components: {
-                        default: require('@/pages/admin/user-fullstory').default,
-                        header: require('@/components/sections/header-admin/').default,
-                        aside: require('@/components/sections/aside/').default,
-                    }
-                },
-                {
-                    path: '/add-new-operator/',
-                    name: 'add-new-operator',
-                    components: {
-                        default: require('@/pages/admin/add-new-operator').default,
-                        header: require('@/components/sections/header-admin/').default,
-                        aside: require('@/components/sections/aside/').default,
-                    }
-                },
-                {
-                    path: '/detail/:id',
-                    name: 'terminal-fullstory-admin',
-                    components: {
-                        default: require('@/pages/operator/terminal-fullstory').default,
+                        default: require('@/pages/admin/create-operator').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     }
@@ -196,6 +178,42 @@ export default new VueRouter({
                     name: 'edit-info-admin',
                     components: {
                         default: require('@/pages/admin/edit-info-admin').default,
+                        header: require('@/components/sections/header-admin/').default,
+                        aside: require('@/components/sections/aside/').default,
+                    }
+                },
+                {
+                    path: 'admin/detail-call/:id',
+                    name: 'detail-call_admin',
+                    components: {
+                        default: require('@/pages/admin/detail-call').default,
+                        header: require('@/components/sections/header-admin/').default,
+                        aside: require('@/components/sections/aside/').default,
+                    }
+                },
+                // {
+                //     path: '/detail-call-admin/:id',
+                //     name: 'detail-terminal-admin',
+                //     components: {
+                //         default: require('@/pages/admin/detail-call').default,
+                //         header: require('@/components/sections/header-admin/').default,
+                //         aside: require('@/components/sections/aside/').default,
+                //     }
+                // },
+                {
+                    path: 'admin/detail-operator/:id',
+                    name: 'detail-operator_admin',
+                    components: {
+                        default: require('@/pages/admin/detail-operator').default,
+                        header: require('@/components/sections/header-admin/').default,
+                        aside: require('@/components/sections/aside/').default,
+                    }
+                },
+                {
+                    path: 'admin/detail-terminal/:id',
+                    name: 'detail-terminal_admin',
+                    components: {
+                        default: require('@/pages/admin/detail-terminal').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     }

@@ -2,7 +2,10 @@
     <article :is="tag" :to="to" class="block-terminal-shortstory">
         <UiBadge :theme="theme">{{ status }}</UiBadge>
         <span class="block-terminal-shortstory__title">
-            {{ info.title }}
+            {{ title }}
+        </span>
+        <span class="block-terminal-shortstory__railway-station">
+            {{ railWayStation }}
         </span>
     </article>
 </template>
@@ -30,6 +33,12 @@ export default {
         },
         theme() {
             return this.info.online ? 'positive' : 'negative'
+        },
+        title() {
+            return this.info.title ? this.info.title : 'Название терминала не задано'
+        },
+        railWayStation() {
+            return this.info.railway_station ? this.info.railway_station : 'Местоположение не указано'
         }
     }
 }
@@ -54,6 +63,8 @@ export default {
        color: #4e545b;
        font-size: 12px;
        line-height: 1.2;
+       font-weight: 500;
+       margin-bottom: 5px;
    }
 }
 </style>

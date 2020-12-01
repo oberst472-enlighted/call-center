@@ -32,7 +32,7 @@
 
 <script>
 import store from '@/store'
-import {mapState, mapMutations, mapActions} from 'vuex'
+import {mapActions, mapMutations, mapState} from 'vuex'
 import LocalDashboardUsers from './dashboard-users'
 import LocalDashboardTerminals from './dashboard-terminals'
 import LocalDashboardRating from './dashboard-rating'
@@ -41,6 +41,7 @@ import LocalDashboardResetPass from './dashboard-reset-pass'
 import LocalDashboardCalls from './dashboard-calls'
 
 import BlockStat from '@/components/blocks/stat'
+
 export default {
     components: {
         LocalDashboardUsers,
@@ -61,8 +62,8 @@ export default {
 
         ...mapActions('calls', ['stGetAllCallsForTheCurrentSession']),
         ...mapMutations('calls', ['SET_PAGINATION_PAGE']),
+
         ...mapMutations('alerts', ['ADD_ALERT']),
-        ...mapMutations(['TOGGLE_PROGRESS_ACTIVE']),
 
         ...mapActions('devices', ['stGetDevices']),
         ...mapActions('users', ['stGetUsers']),
@@ -71,7 +72,7 @@ export default {
     },
     async beforeRouteEnter(to, from, next) {
         if (!to.params.doNotLoadData) {
-            store.commit('TOGGLE_PROGRESS_ACTIVE')
+            store.commit('TOGGLE_PROGRESS_ACTIVE', false)
             const response = await Promise.all([
                 store.dispatch('stat/stGetAdminStat'),
                 store.dispatch('calls/stGetAllCalls'),
@@ -85,84 +86,83 @@ export default {
             } else {
                 next(false)
                 store.commit('TOGGLE_PROGRESS_ACTIVE', false)
-                this.ADD_ALERT(['negative'])
+                store.commit('alerts/ADD_ALERT', ['negative'])
             }
-        }
-        else {
+        } else {
             next()
             store.commit('TOGGLE_PROGRESS_ACTIVE', false)
         }
-        // store.dispatch('toggleLoading', false)
     },
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .page-home {
-    padding-bottom: 30px;
-    width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr 300px;
+    grid-gap: $gutter;
+    width: 100%;
+    padding-bottom: 30px;
     grid-template-rows:
-        minmax(175px, auto)
-        minmax(245px, auto)
+        minmax(227px, 210px)
+        minmax(227px, 210px)
         minmax(200px, 400px)
         minmax(200px, 400px);
-    grid-gap: $gutter;
     grid-template-areas:
         'stat stat users'
         'stat-call rating users'
         'terminals terminals password-reset'
         'call-history call-history call-history';
+
     &__stat {
-        grid-area: stat;
         display: flex;
+        grid-area: stat;
     }
 
     &__users {
-        grid-area: users;
         display: flex;
+        grid-area: users;
+
         /deep/ .page-home__users__item {
             border-top: 1px solid #efeff4;
         }
     }
 
     &__stat-call {
-        grid-area: stat-call;
         display: flex;
+        grid-area: stat-call;
     }
 
     &__rating {
-        grid-area: rating;
         display: flex;
+        grid-area: rating;
     }
 
     &__terminals {
-        grid-area: terminals;
         display: flex;
+        grid-area: terminals;
     }
 
     &__password-reset {
-        grid-area: password-reset;
-        height: auto;
         align-self: auto;
+        height: auto;
+        grid-area: password-reset;
+
         &__item {
             border-top: 1px solid #efeff4;
         }
-        //align-self: start;
-
     }
+
     &__call-history {
-        grid-area: call-history;
-        height: auto;
         align-self: auto;
-        //align-self: start;
-
+        height: auto;
+        grid-area: call-history;
     }
+
     .content {
-        overflow: auto;
         height: 100%;
         padding: 15px;
+        overflow: auto;
     }
 }
 </style>

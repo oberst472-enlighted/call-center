@@ -1,8 +1,8 @@
 <template>
     <component :is="tag" :to="to" class="block-call-shortstory">
         <span class="block-call-shortstory__date">
-            {{ dateCall }}
-            <span>{{ startTime }} - {{ stopTime }}</span>
+            <span>{{ dateCall ? dateCall : 'Дата звонка не известна' }}</span>
+            <span v-if="startTime && stopTime">{{ startTime }} - {{ stopTime }}</span>
         </span>
         <span class="block-call-shortstory__conclusion"><UiBadge>Решено</UiBadge></span>
         <span class="block-call-shortstory__title">
@@ -35,13 +35,13 @@ export default {
             return this.to ? 'router-link' : 'button'
         },
         dateCall() {
-            return this.info['start_time'] ? convertSecondsToDate(this.info['start_time']) : '???'
+            return this.info['start_time'] ? convertSecondsToDate(this.info['start_time']) : ''
         },
         startTime() {
-            return this.info['start_time'] ? convertSecondsToTime(this.info['start_time']) : '???'
+            return this.info['start_time'] ? convertSecondsToTime(this.info['start_time']) : ''
         },
         stopTime() {
-            return this.info['stop_time'] ? convertSecondsToTime(this.info['stop_time']) : '???'
+            return this.info['stop_time'] ? convertSecondsToTime(this.info['stop_time']) : ''
         }
     }
 }
@@ -67,6 +67,7 @@ export default {
         font-size: 11px;
 
         span {
+            margin-right: 3px;
             font-weight: $font-weight--medium;
         }
     }
@@ -79,6 +80,7 @@ export default {
         display: grid;
         grid-gap: 5px;
         text-align: left;
+        color: #4e545b;
 
         &__title {
             font-size: 12px;

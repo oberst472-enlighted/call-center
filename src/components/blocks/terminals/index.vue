@@ -56,7 +56,7 @@ export default {
     &__box {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-gap: 20px;
+        grid-column-gap: 20px;
     }
     &__item {
         border-top: 1px solid #efeff4;

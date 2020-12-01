@@ -1,29 +1,42 @@
 <template>
     <section class="page-calls">
-        <div class="page-calls__calls">
-            <BlockCalls
-                :info="allCalls"
-                :items-length="allCalls.length"
-                :is-not-pagination="true"
-            />
-        </div>
+        <SectionBox
+            class="page-calls__box"
+            gutters
+            scroll
+            head
+            title="История звонков"
+            subtitle="Последние"
+            :is-not-pagination="true"
+        >
+            <div class="page-calls__sub-box">
+                <BlockShortstoryItem
+                    class="page-calls__item"
+                    v-for="item in allCalls"
+                    :key="item.id"
+                    :info="item"
+                    :to="{name: 'detail-call_admin', params: {id: item.id}}"
+                />
+            </div>
+        </SectionBox>
     </section>
 </template>
 
 <script>
 import store from '@/store'
 import {mapState, mapMutations, mapActions} from 'vuex'
-import BlockCalls from '@/components/blocks/calls'
+import SectionBox from '@/components/sections/box'
+import BlockShortstoryItem from '@/components/blocks/call-shortstory-item'
 export default {
     components: {
-        BlockCalls,
+        SectionBox,
+        BlockShortstoryItem
     },
     computed: {
         ...mapState('calls', ['allCalls']),
 
     },
     methods: {
-        ...mapMutations(['TOGGLE_PROGRESS_ACTIVE']),
         ...mapActions('webrtc/webrtcCalls', ['stClickTheCallBtn']),
 
         ...mapActions('calls', ['stGetAllCallsForTheCurrentSession']),
@@ -52,15 +65,24 @@ export default {
 .page-calls {
     padding-bottom: 30px;
     width: 100%;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: minmax(300px, calc(100vh - 104px));
-    grid-gap: $gutter;
-    grid-template-areas:
-        'calls';
-    &__calls {
-        grid-area: calls;
-        display: flex;
+    height: calc(100vh - 84px);
+    &__box {
+
+    }
+    &__sub-box {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-column-gap: 20px;
+    }
+    &__item {
+        border: 0;
+        background-color: transparent;
+        cursor: pointer;
+        border-top: 1px solid #efeff4;
+
+    }
+    /deep/ .block-call-shortstory__icon {
+        display: none;
     }
 }
 </style>

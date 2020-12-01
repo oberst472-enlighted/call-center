@@ -12,6 +12,7 @@ export default {
             isNotPagination: false,
             calls: []
         },
+        allCallsUserById: [],
         allCalls: [],
         detailInfo: [],
 
@@ -52,6 +53,9 @@ export default {
         },
         SET_DETAIL_INFO(state, payload) {
             state.detailInfo = payload
+        },
+        SET_ALL_CALLS_USER_BY_ID(state, payload) {
+            state.allCallsUserById = payload
         },
         SET_ALL_CALLS(state, payload) {
             state.allCalls = payload
@@ -114,18 +118,19 @@ export default {
 
             }
         },
+        //все звонки конкретного пользователя
+        async stGetAllCallsByUserId({commit}, id) {
 
-        async stGetAllCallsById({commit}, id) {
             let isSuccess = false
             try {
-                const response = await apiGetAllCallsById()
+                const response = await apiGetAllCallsById({params: null, id: id})
                 if (
                     Boolean(response) &&
                     response.status < 300 &&
                     response.statusText === 'OK'
                 ) {
                     // commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION', false)
-                    commit('SET_ALL_CALLS', response.data.results);
+                    commit('SET_ALL_CALLS_USER_BY_ID', response.data.results);
                     // response.data.next ? commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION', false) : commit('SET_CALLS_PER_SHIFT_NOT_PAGINATION')
                     isSuccess = true
                 } else {

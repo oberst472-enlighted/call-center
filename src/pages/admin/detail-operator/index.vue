@@ -32,10 +32,10 @@
                         >
                             <BlockCallShortstoryItem
                                 class="page-home__calls-history__item"
-                                v-for="item in allCalls"
+                                v-for="item in allCallsUserById"
                                 :key="item.id"
                                 :info="item"
-                                :to="{name: 'call-fullstory', params: {id: item.id}}"
+                                :to="{name: 'detail-call_admin', params: {id: item.id}}"
                             />
                         </SectionBox>
                     </div>
@@ -66,26 +66,30 @@ export default {
     },
     computed: {
         ...mapState('users', ['userInfo']),
-        ...mapState('calls', ['callsPerShift', 'allCalls']),
+        ...mapState('calls', ['allCallsUserById']),
         title() {
             return `Оператор #${this.userInfo.id}`
         }
     },
     methods: {
-        ...mapMutations('alerts', ['ADD_ALERT']),
     },
     async beforeRouteEnter(to, from, next) {
+        store.commit('TOGGLE_PROGRESS_ACTIVE')
+
         const id = to.params.id ? to.params.id : from.params.id
         const response = await Promise.all([
-
             store.dispatch('users/stGetUserById', id),
-            store.dispatch('calls/stGetAllCalls'),
+            store.dispatch('calls/stGetAllCallsByUserId', id),
         ])
         const isSuccess = response.every(item => item)
         if (isSuccess) {
             next()
+            store.commit('TOGGLE_PROGRESS_ACTIVE', false)
+            console.log(store.state.isProgressActive)
         } else {
             next(false)
+            store.commit('TOGGLE_PROGRESS_ACTIVE', false)
+            store.commit('alerts/ADD_ALERT', ['negative'])
             // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
         }
         // store.dispatch('toggleLoading', false)

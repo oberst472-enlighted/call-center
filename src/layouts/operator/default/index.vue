@@ -64,6 +64,7 @@ export default {
     },
     async beforeRouteEnter(to, from, next) {
         // store.dispatch('toggleLoading')
+        console.log(6)
         this.getMedia()
         store.dispatch('webrtc/webrtcPeerConnection', 'getMedia')
         store.dispatch('webrtc/webrtcSockets', 'stSocketConnect')

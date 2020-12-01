@@ -4,7 +4,6 @@
         scroll
         head
         title="Сотрудники"
-        subtitle="Онлайн"
         :is-not-pagination="true"
     >
         <template #head-btn>

@@ -3,7 +3,6 @@
         <div class="page-calls__calls">
             <BlockCalls
                 :info="allCalls"
-                @download-next-page="downloadNextPageCalls"
                 :items-length="allCalls.length"
                 :is-not-pagination="true"
             />

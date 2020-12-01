@@ -20,7 +20,9 @@
             <LocalDashboardTerminals :items="items"/>
         </div>
 
-        <div class="page-home__password-reset"></div>
+        <div class="page-home__password-reset">
+            <LocalDashboardResetPass/>
+        </div>
 
         <div class="page-home__call-history">
             <LocalDashboardCalls :items="allCalls"/>
@@ -35,6 +37,7 @@ import LocalDashboardUsers from './dashboard-users'
 import LocalDashboardTerminals from './dashboard-terminals'
 import LocalDashboardRating from './dashboard-rating'
 import LocalDashboardGraph from './dashboard-graph'
+import LocalDashboardResetPass from './dashboard-reset-pass'
 import LocalDashboardCalls from './dashboard-calls'
 
 import BlockStat from '@/components/blocks/stat'
@@ -44,6 +47,7 @@ export default {
         LocalDashboardTerminals,
         LocalDashboardRating,
         LocalDashboardCalls,
+        LocalDashboardResetPass,
         LocalDashboardGraph,
         BlockStat,
     },

@@ -128,7 +128,8 @@ export default {
                 const data = localStorage.getItem('userData')
                 const storage = data ? localStorage : sessionStorage
                 console.log(this.userInfo)
-                storage.setItem('userinfo', this.userInfo)
+
+                storage.setItem('userInfo', getJsonFromString(this.userInfo))
                 this.ADD_ALERT(['positive', 'Данные успешно изменены'])
             }
             else {
@@ -152,7 +153,7 @@ export default {
         }
         // store.dispatch('toggleLoading', false)
     },
-    mounted() {
+    created() {
         // const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
         // const infoObj = getJsonFromString(info)
         console.log(this.userInfo.first_name)

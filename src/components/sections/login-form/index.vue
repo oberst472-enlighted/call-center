@@ -180,6 +180,7 @@ export default {
 
                 }
             } else {
+                this.isLoading = false
                 this.ADD_ALERT(['negative'])
             }
         },

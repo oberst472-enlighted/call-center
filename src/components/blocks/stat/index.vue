@@ -4,6 +4,7 @@
         gutters
         is-not-pagination
     >
+        <div class="block-stat__title">Оперативное состояние колл-центра</div>
         <transition name="fade" mode="out-in">
             <div class="block-stat__box" v-if="info" key="cont">
                 <LocalStatItem
@@ -53,7 +54,7 @@ export default {
     &__box {
         height: 100%;
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         grid-auto-flow: column;
         grid-gap: 50px;
     }
@@ -88,7 +89,15 @@ export default {
 .admin-stat {
     .block-stat {
         display: flex;
+        &__title {
+            width: 100%;
+            text-align: center;
+            color: #685c7b;
+            font-size: 17px;
+            font-weight: 700;
+        }
         &__box {
+
             grid-gap: 0 10px;
         }
         &__item {

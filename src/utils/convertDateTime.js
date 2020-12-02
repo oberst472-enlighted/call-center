@@ -20,6 +20,19 @@ export const convertSecondsToTime = (time, name = 's') => {
     return new Date(val).toLocaleTimeString('ru-RU')
 }
 
+//конвертировать время из секунд UTC в своем часовом поясе
+export const convertSecondsToTimeTimeZone = time => {
+    const timeZoneTime = new Date().getTimezoneOffset()
+    let sec = timeZoneTime * 60
+    let ms = (time - sec) * 1000
+    return new Date(ms).toLocaleTimeString()
+}
+
+export const convertSecondsUTCToSecondsMyZone = time => {
+    const timeZoneTime = new Date().getTimezoneOffset()
+    let sec = timeZoneTime * 60
+    return time - sec
+}
 // export const convertDateToSeconds = (time, name = 'ms') => {
 //     const val = name === 'ms' ? time : (time * 1000)
 //     return new Date(val).toLocaleDateString('ru-RU')

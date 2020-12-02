@@ -1,7 +1,7 @@
 <template>
     <section class="page-terminals">
         <div class="page-terminals__stat">
-            <BlockStat :info="stat"/>
+            <BlockStat :info="adminStat"/>
         </div>
 
         <div class="page-terminals__call">
@@ -42,7 +42,7 @@ export default {
     computed: {
         ...mapState('webrtc/webrtcCalls', ['isIncomingCall']),
         ...mapState('devices', ['items', 'isNotDevicesPagination']),
-        ...mapState('stat', ['stat']),
+        ...mapState('stat', ['adminStat']),
         ...mapState('sessions', ['isSessionBreak']),
     },
     methods: {

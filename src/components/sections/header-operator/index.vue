@@ -16,6 +16,7 @@
                 <div class="section-header__timer-box">
                     <UiStopWatch :start-watch="isSessionActive"
                                  :stop-watch="!isSessionActive"
+                                 :default-value="timeTimezone"
                     />
                 </div>
 
@@ -47,8 +48,7 @@
 import BlockUserShortstory from '@/components/blocks/user-shortstory'
 import {mapState, mapMutations, mapActions} from 'vuex'
 import {customLog} from '@/utils/console-group'
-import store from '@/store'
-import {convertSecondsToTime} from '@/utils/convertDateTime'
+import {convertSecondsToHMS, convertSecondsToTimeTimeZone, convertSecondsUTCToSecondsMyZone} from '@/utils/convertDateTime'
 
 export default {
     components: {
@@ -62,6 +62,13 @@ export default {
     },
     computed: {
         ...mapState('sessions', ['isSessionActive', 'isSessionBreak', 'startSessionTime', 'sessionId']),
+        timeTimezone() {
+            const secUtc = this.startSessionTime
+            const secMyZone = convertSecondsUTCToSecondsMyZone(secUtc)
+            console.log(new Date)
+            console.log(new Date(secMyZone * 1000))
+            return new Date(secMyZone * 1000)
+        }
     },
     methods: {
         ...mapActions('sessions', ['stStartSession', 'stStopSession', 'stStartSessionBreak', 'stStopSessionBreak']),
@@ -109,8 +116,22 @@ export default {
         },
     },
     created() {
-        // if (this.startSessionTime) {
-        // }
+        console.log(new Date())
+        // console.log(new Date(this.startSessionTime * 1000))
+        if (this.startSessionTime) {
+            const secUtc = this.startSessionTime
+            const secMyZone = convertSecondsUTCToSecondsMyZone(secUtc)
+
+            console.log(new Date(secMyZone * 1000))
+
+            const date = +new Date()
+
+            const m = date - (secMyZone * 1000)
+
+            const l = Math.floor(m / 1000)
+            console.log(convertSecondsToHMS(l))
+            // console.log(convertSecondsToTimeTimeZone(this.startSessionTime))
+        }
     }
 }
 </script>

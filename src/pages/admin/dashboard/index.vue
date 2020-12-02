@@ -104,13 +104,15 @@ export default {
     width: 100%;
     padding-bottom: 30px;
     grid-template-rows:
-        minmax(227px, 210px)
-        minmax(227px, 210px)
-        minmax(200px, 400px)
+        minmax(160px, 180px)
+        minmax(227px, 260px)
+        minmax(115px, 200px)
+        minmax(115px, 200px)
         minmax(200px, 400px);
     grid-template-areas:
         'stat stat users'
-        'stat-call rating users'
+        'stat-call stat-call users'
+        'terminals terminals rating'
         'terminals terminals password-reset'
         'call-history call-history call-history';
 

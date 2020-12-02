@@ -40,6 +40,7 @@ export default {
         align-items: center;
     }
     &-title {
+        user-select: none;
         text-align: left;
         font-size: 17px;
         color: $color--primary;

@@ -118,7 +118,7 @@ export async function apiGetAllCallsById({params, id}) {
             query += `&${key}=${params[key]}`
         }
     }
-    query += `&operator=${id}`
+    query += `&operator=${id}&ordering=-created`
 
     const url = `/api/v1/calls/?${query.substring(1)}`
     const options = {

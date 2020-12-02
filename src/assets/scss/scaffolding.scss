@@ -27,6 +27,12 @@ hr{
     background-color: #efeff4;
     width: 100%;
 }
+.negative {
+    color: $color--negative !important;
+}
+.positive {
+    color: $color--positive !important;
+}
 
 
 //Animation for call

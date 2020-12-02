@@ -29,7 +29,7 @@ export default {
     border-radius: 7px;
     font-size: 8px;
     font-weight: 700;
-    width: 70px;
+    min-width: 70px;
     padding: 2px 5px;
     &-theme {
         &--positive {

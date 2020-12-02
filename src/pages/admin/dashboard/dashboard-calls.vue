@@ -15,6 +15,7 @@
                 :key="item.id"
                 :info="item"
                 :to="{name: 'detail-call_admin', params: {id: item.id}}"
+                no-icon-message
             />
         </div>
     </SectionBox>

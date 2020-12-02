@@ -12,6 +12,7 @@
             <div class="page-calls__sub-box">
                 <BlockShortstoryItem
                     class="page-calls__item"
+                    no-icon-message
                     v-for="item in allCalls"
                     :key="item.id"
                     :info="item"
@@ -80,9 +81,6 @@ export default {
         cursor: pointer;
         border-top: 1px solid #efeff4;
 
-    }
-    /deep/ .block-call-shortstory__icon {
-        display: none;
     }
 }
 </style>

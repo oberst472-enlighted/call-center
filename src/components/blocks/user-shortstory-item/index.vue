@@ -1,10 +1,17 @@
 <template>
-    <article :is="tag" :to="to" class="block-terminal-shortstory" :class="{hide: info.role === 'administrator'}">
-        <div class="block-terminal-shortstory__title">
-            <div>{{ info.first_name ? info.first_name : 'Имя не задано' }}</div>
-            <div>{{ info.last_name ? info.last_name : 'Фамилия не задана' }}</div>
+    <article :is="tag" :class="{hide: info.role === 'administrator'}" :to="to" class="block-terminal-shortstory">
+        <div class="block-terminal-shortstory__info">
+            <div class="block-terminal-shortstory__id">Оператор #{{ info.id }}</div>
+            <div class="block-terminal-shortstory__title">
+                <div>{{ info.first_name ? info.first_name : 'Имя не задано' }}</div>
+                <div>{{ info.last_name ? info.last_name : 'Фамилия не задана' }}</div>
+            </div>
         </div>
-        <UiBadge :theme="theme">{{ status }}</UiBadge>
+
+        <div class="block-terminal-shortstory__icons">
+            <UiBadge :theme="theme" class="block-terminal-shortstory__status">{{ status }}</UiBadge>
+            <IconDots class="block-terminal-shortstory__icon"/>
+        </div>
     </article>
 </template>
 
@@ -40,24 +47,55 @@ export default {
 .hide {
     display: none !important;
 }
+
 .block-terminal-shortstory {
-    padding: 12px 0;
     display: inline-flex;
-    text-decoration: none;
-    color: $color--primary;
-    align-items: flex-start;
+    flex-wrap: wrap;
     justify-content: space-between;
+    padding: 12px 0;
+    color: $color--primary;
+    text-decoration: none;
+
     &:hover {
         opacity: 0.7;
     }
+
     &:active {
         opacity: 0.5;
     }
-   &__title {
-       margin-top: 5px;
-       color: #4e545b;
-       font-size: 12px;
-       line-height: 1.2;
-   }
+
+    &__info {
+        flex-shrink: 0;
+    }
+
+    &__icons {
+        display: inline-flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        color: #f4f3f7;
+    }
+
+    &__status {
+        flex-shrink: 0;
+    }
+
+    &__icon {
+        display: inline-flex;
+        width: 20px !important;
+        height: 5px;
+        margin-left: auto;
+    }
+
+    &__id {
+    }
+
+    &__title {
+        width: 100%;
+        margin-top: 5px;
+        font-size: 12px;
+        line-height: 1.2;
+        color: #4C3B60;
+        font-weight: 500;
+    }
 }
 </style>

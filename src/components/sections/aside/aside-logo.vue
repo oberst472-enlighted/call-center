@@ -12,6 +12,7 @@ export default {}
 
 <style lang="scss" scoped>
 .section-aside__logo {
+    user-select: none;
     display: flex;
     align-items: center;
     width: 100%;

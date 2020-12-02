@@ -1,7 +1,7 @@
 <template>
     <section class="page-home">
         <div class="page-home__stat">
-            <BlockStat :info="stat"/>
+            <BlockStat :info="adminStat" class="admin-stat"/>
         </div>
 
         <div class="page-home__users">
@@ -55,7 +55,7 @@ export default {
     computed: {
         ...mapState('calls', ['allCalls']),
         ...mapState('devices', ['items', 'isNotDevicesPagination']),
-        ...mapState('stat', ['stat']),
+        ...mapState('stat', ['adminStat']),
         ...mapState('users', ['users']),
     },
     methods: {

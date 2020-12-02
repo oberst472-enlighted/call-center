@@ -46,6 +46,7 @@ export default {
     transition-delay: 0.3s;
     transition-property: border-radius, background-color;
     &:hover {
+        transition-delay: 0s;
         background-color: rgba($color--primary, 0.1);
     }
     &:active {

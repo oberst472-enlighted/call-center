@@ -68,6 +68,7 @@ export async function apiCreateUser(info) {
 export async function apiGetAllCallsPerWorkShift(params) {
     const userToken = token()
     // const pageSize = 36
+    const pageSize = 1000
     let query = ''
     if (params) {
         for (let key in params) {
@@ -89,7 +90,7 @@ export async function apiGetAllCallsPerWorkShift(params) {
 // получить все звонки оператора
 export async function apiGetAllCalls(params) {
     const userToken = token()
-    // const pageSize = 36
+    const pageSize = 1000
     let query = ''
     if (params) {
         for (let key in params) {

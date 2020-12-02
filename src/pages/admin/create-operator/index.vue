@@ -126,7 +126,7 @@ export default {
                 phone: '',
                 email: '',
                 password: '',
-                photo: null,
+                // photo: null,
             },
             empty: {
                 isFirstNameEmpty: false,

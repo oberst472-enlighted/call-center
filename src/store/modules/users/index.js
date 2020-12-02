@@ -1,4 +1,4 @@
-import { apiGetUsers, ApiCallsOperator, apiGetUserById, apiEditUserById, apiCreateUser} from '@/api';
+import { apiGetUsers, apiGetUserById, apiEditUserById, apiCreateUser} from '@/api';
 import {getStringFromJson} from '@/utils/json'
 
 export default {
@@ -70,19 +70,5 @@ export default {
             const response = await apiCreateUser(info);
             return Boolean(response) && response.status < 300 && (response.statusText === 'OK' || response.statusText === 'Created');
         },
-
-        async stCallsOperator({ commit }, id) {
-            const response = await ApiCallsOperator(id);
-            if (
-                Boolean(response) &&
-                response.status < 300 &&
-                response.statusText === 'OK'
-            ) {
-                commit('setCallsOperator', response.data);
-                return true;
-            } else {
-                return false;
-            }
-        }
     }
 };

@@ -237,6 +237,9 @@ router.beforeEach((to, from, next) => {
     if (from.name === 'login' || from.name === 'call-form-data') {
         store.commit('SET_BACK_BTN_ACTIVE', false)
     }
+    else {
+        store.commit('SET_BACK_BTN_ACTIVE')
+    }
     next()
 })
 

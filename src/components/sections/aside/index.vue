@@ -2,8 +2,8 @@
     <div :class="{'section-aside--active' : isAsideActive}" class="section-aside">
         <div class="section-aside__top">
             <div
-                class="section-aside__logo-box"
                 :class="{'section-aside__logo-box--disabled': $route.name === 'home_operator' || $route.name === 'home_admin'}"
+                class="section-aside__logo-box"
                 @click="goToHomePage"
             >
                 <LocalAsideLogo/>
@@ -12,16 +12,16 @@
             <LocalAsideLinkItem
                 v-for="(item, index) in links"
                 :key="index"
+                :href="item.href"
                 :icon="item.icon"
                 :title="item.title"
-                :href="item.href"
             />
         </div>
 
         <button
+            :title="isAsideActive ? 'Свернуть' : 'Развернуть'"
             class="section-aside__toggle-state-btn"
             @click="TOGGLE_ASIDE_ACTIVE(!isAsideActive)"
-            :title="isAsideActive ? 'Свернуть' : 'Развернуть'"
         >
             <span class="section-aside__toggle-state-icon-box">
                 <IconSettings/>
@@ -35,7 +35,7 @@ import linksOperator from './assets/links-operator'
 import linksAdmin from './assets/links-admin'
 import LocalAsideLogo from './aside-logo'
 import LocalAsideLinkItem from './aside-link-item'
-import {mapMutations, mapState, mapGetters} from 'vuex'
+import {mapGetters, mapMutations, mapState} from 'vuex'
 
 export default {
     components: {
@@ -64,6 +64,11 @@ export default {
 </script>
 
 <style lang='scss'>
+.router-link-active {
+    background-color: rgba($color--primary, 0.1);
+    pointer-events: none;
+}
+
 .section-aside {
     box-sizing: border-box;
     display: flex;
@@ -89,27 +94,30 @@ export default {
         max-width: 100%;
         margin-bottom: $gutter + 10px;
         cursor: pointer;
+
         &--disabled {
-            pointer-events: none;
             cursor: auto;
+            pointer-events: none;
         }
     }
 
     &__toggle-state-btn {
         width: 36px;
-        padding: 10px;
-        cursor: pointer;
-        border: 0;
-        outline: 0;
-        color: $color--primary;
-        margin-left: auto;
         margin-right: auto;
+        margin-left: auto;
+        padding: 10px;
+        color: $color--primary;
+        border: 0;
         border-radius: 50%;
+        outline: 0;
         background-color: transparent;
+        cursor: pointer;
         transition: background-color 0.3s ease;
+
         &:hover {
             background-color: rgba($color--primary, 0.1);
         }
+
         &:active {
             opacity: 0.7;
         }
@@ -117,17 +125,21 @@ export default {
 
     &--active {
         width: 200px;
+
         /deep/ .section-aside__link {
             border-radius: 10px;
             transition-delay: 0s;
+
             &-text {
                 opacity: 1;
             }
 
         }
+
         /deep/ .section-aside__logo-icon {
             left: 0;
         }
+
         /deep/ .section-aside__logo-text {
             opacity: 1;
         }

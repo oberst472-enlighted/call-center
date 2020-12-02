@@ -9,7 +9,7 @@
                 <LocalStatItem
                     class="block-stat__item"
                     :class="`block-stat__item-${index}`"
-                    v-for="(item, name, index) in info"
+                    v-for="(item, name, index) in modifiedInfo"
                     :key="index"
                     :info="item"
                 />
@@ -37,6 +37,13 @@ export default {
             default: false
         }
     },
+    computed: {
+        modifiedInfo() {
+            const newObj = {...this.info}
+            delete newObj.success
+            return newObj
+        }
+    }
 }
 </script>
 
@@ -76,5 +83,24 @@ export default {
             }
         }
     }
+}
+
+.admin-stat {
+    .block-stat {
+        display: flex;
+        &__box {
+            grid-gap: 0 10px;
+        }
+        &__item {
+            /deep/ .block-stat-item__title {
+                width: 80%;
+                font-size: 10px;
+            }
+            /deep/ .block-stat-item__count {
+                font-size: 15px;
+            }
+        }
+    }
+
 }
 </style>

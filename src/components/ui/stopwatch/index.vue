@@ -59,7 +59,7 @@ export default {
                 this.stoppedDuration += (new Date() - this.timeStopped)
             }
 
-            this.started = setInterval(this.clockRunning, 10)
+            this.started = setInterval(this.clockRunning, 1000)
             this.running = true
         },
 

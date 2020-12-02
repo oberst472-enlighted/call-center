@@ -67,7 +67,8 @@ export default {
             const secMyZone = convertSecondsUTCToSecondsMyZone(secUtc)
             console.log(new Date)
             console.log(new Date(secMyZone * 1000))
-            return new Date(secMyZone * 1000)
+            return secMyZone * 1000
+            // return new Date(secMyZone * 1000)
         }
     },
     methods: {

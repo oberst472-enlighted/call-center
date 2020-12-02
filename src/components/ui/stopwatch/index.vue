@@ -32,9 +32,6 @@ export default {
             type: Boolean,
             default: false
         },
-        defaultValue: {
-            default: ''
-        }
     },
     data() {
         return {
@@ -79,8 +76,7 @@ export default {
         },
 
         clockRunning() {
-            console.log(77)
-            const currentTime = this.defaultValue
+            const currentTime = new Date
             const timeElapsed = new Date(currentTime - this.timeBegan - this.stoppedDuration)
             const hour = timeElapsed.getUTCHours()
             const min = timeElapsed.getUTCMinutes()

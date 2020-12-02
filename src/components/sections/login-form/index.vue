@@ -98,7 +98,7 @@ export default {
         ...mapActions('users', ['stGetUserById', 'stGetUsers']),
         ...mapActions('calls', ['stGetAllCallsForTheCurrentSession', 'stGetAllCalls']),
         ...mapActions('devices', ['stGetDevices']),
-        ...mapActions('stat', ['stGetStat', 'stGetAdminStat']),
+        ...mapActions('stat', ['stGetStatForTheSession', 'stGetAdminStat']),
 
 
         async send() {
@@ -186,7 +186,7 @@ export default {
 
         async loadInitialData() {
             try {
-                await this.stGetStat()
+                await this.stGetStatForTheSession()
                 this.stGetAllCallsForTheCurrentSession()
                 const response = await Promise.all([
                     await this.stGetDevices(),

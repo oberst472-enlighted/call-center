@@ -235,7 +235,7 @@ export async function apiGetDevices(params) {
 }
 
 // получить статистику за сессию
-export async function apiGetStat() {
+export async function apiGetStatForTheSession() {
     const userToken = token()
     const options = {
         method: 'get',

@@ -1,7 +1,7 @@
 <template>
     <section class="page-home">
         <div class="page-home__stat">
-            <BlockStat :info="adminStat"/>
+            <BlockStat :info="statForTheSession"/>
         </div>
 
         <div class="page-home__call">
@@ -66,7 +66,7 @@ export default {
         ...mapState('webrtc/webrtcCalls', ['isIncomingCall']),
         ...mapState('calls', ['callsPerShift', 'callQueue']),
         ...mapState('devices', ['items', 'isNotDevicesPagination']),
-        ...mapState('stat', ['adminStat']),
+        ...mapState('stat', ['statForTheSession']),
         ...mapState('sessions', ['isSessionBreak']),
         ...mapGetters('middleware', ['isAdmin', 'isAuth'])
     },
@@ -96,7 +96,7 @@ export default {
             store.commit('TOGGLE_PROGRESS_ACTIVE')
         }
         if (!to.params.doNotLoadData) {
-            store.dispatch('stat/stGetStat')
+            store.dispatch('stat/stGetStatForTheSession')
             const response = await Promise.all([
                 store.dispatch('calls/stGetAllCallsForTheCurrentSession'),
                 store.dispatch('devices/stGetDevices'),

@@ -14,9 +14,9 @@
                 </div>
 
                 <div class="section-header__timer-box">
-                    <UiStopWatch :start-watch="isSessionActive"
-                                 :stop-watch="!isSessionActive"
-                                 :default-value="timeTimezone"
+                    <UiStopWatchNew :start-watch="isSessionActive"
+                                    :stop-watch="!isSessionActive"
+                                    :default-value="timeTimezone"
                     />
                 </div>
 
@@ -67,14 +67,14 @@ export default {
             const secMyZone = convertSecondsUTCToSecondsMyZone(secUtc)
             console.log(new Date)
             console.log(new Date(secMyZone * 1000))
-            return secMyZone * 1000
+            return secMyZone
             // return new Date(secMyZone * 1000)
         }
     },
     methods: {
         ...mapActions('sessions', ['stStartSession', 'stStopSession', 'stStartSessionBreak', 'stStopSessionBreak']),
         ...mapMutations('sessions', ['TOGGLE_SESSION_BREAK']),
-        ...mapActions('stat', ['stGetStat']),
+        ...mapActions('stat', ['stGetStatForTheSession']),
         _togglePauseSession(val) {
             this.isPauseLoading = true
             if (val) {
@@ -98,7 +98,7 @@ export default {
         },
         async _startSession() {
             const isSuccess = await this.stStartSession()
-                await this.stGetStat()
+                await this.stGetStatForTheSession()
             if (isSuccess) {
                 console.log('Новая сессия открыта')
             } else {

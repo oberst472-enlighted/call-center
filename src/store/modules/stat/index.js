@@ -1,9 +1,9 @@
-import {apiGetStat, apiGetAdminStat} from '@/api'
+import {apiGetStatForTheSession, apiGetAdminStat} from '@/api'
 
 export default {
     namespaced: true,
     state: {
-        stat: null,
+        statForTheSession: null,
         adminStat: null,
         statLoading: false
     },
@@ -13,20 +13,20 @@ export default {
         TOGGLE_STAT_LOADING(state, payload) {
             state.statLoading = payload
         },
-        SET_STAT(state, payload) {
-            state.stat = payload
+        SET_STAT_FOR_THE_SESSION(state, payload) {
+            state.statForTheSession = payload
         },
         SET_ADMIN_STAT(state, payload) {
             state.adminStat = payload
         }
     },
     actions: {
-        async stGetStat({commit}) {
+        async stGetStatForTheSession({commit}) {
             commit('TOGGLE_STAT_LOADING')
             let isSuccess = false
             try {
-                const response = await apiGetStat()
-                commit('SET_ADMIN_STAT', response.data);
+                const response = await apiGetStatForTheSession()
+                commit('SET_STAT_FOR_THE_SESSION', response.data);
                 isSuccess = Boolean(response) &&
                     response.status < 300 &&
                     response.statusText === 'OK';
@@ -46,7 +46,7 @@ export default {
             let isSuccess = false
             try {
                 const response = await apiGetAdminStat()
-                commit('SET_STAT', response.data);
+                commit('SET_ADMIN_STAT', response.data);
                 isSuccess = Boolean(response) &&
                     response.status < 300 &&
                     response.statusText === 'OK';

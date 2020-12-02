@@ -77,6 +77,8 @@ export default {
 
         await Promise.all([
             store.dispatch('sessions/stGetCurrentSessionInfo'),
+            store.dispatch('stat/stGetStatForTheSession'),
+            // store.dispatch('stat/stGetAdminStat'),
         ])
         next()
     },

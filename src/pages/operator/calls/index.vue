@@ -1,7 +1,7 @@
 <template>
     <section class="page-calls">
         <div class="page-calls__stat">
-            <BlockStat :info="adminStat"/>
+            <BlockStat :info="statForTheSession"/>
         </div>
 
         <div class="page-calls__call">
@@ -41,7 +41,7 @@ export default {
     computed: {
         ...mapState('webrtc/webrtcCalls', ['isIncomingCall']),
         ...mapState('calls', ['callsPerShift']),
-        ...mapState('stat', ['adminStat']),
+        ...mapState('stat', ['statForTheSession']),
         ...mapState('sessions', ['isSessionBreak']),
 
     },

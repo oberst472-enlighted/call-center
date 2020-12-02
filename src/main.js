@@ -3,14 +3,11 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-import VueCookies from 'vue-cookies'
 import VueMask from 'v-mask'
 import VueMeta from 'vue-meta'
-import VueFilterDateFormat from 'vue-filter-date-format';
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 Vue.use(Loading);
-Vue.use(VueFilterDateFormat);
 Vue.use(VueMeta)
 Vue.use(VueMask)
 
@@ -25,7 +22,6 @@ import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css';
 Vue.component('VueCtkDateTimePicker', VueCtkDateTimePicker);
 
 Vue.config.productionTip = false
-Vue.use(VueCookies)
 
 // ADD METHOD TO LOG WITHOUT PROTO
 window.console.hideProto = function (data, title) {

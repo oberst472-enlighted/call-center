@@ -172,7 +172,7 @@ export default {
             } else if (payload.user.role === 'operator') {
                 const isSuccess = await this.loadInitialData()
                 if (isSuccess) {
-                    this.$router.push({name: `home-operator`, params: {doNotLoadData: true}})
+                    this.$router.push({name: `home_operator`, params: {doNotLoadData: true}})
                 } else {
                     this.ADD_ALERT(['negative'])
                 }

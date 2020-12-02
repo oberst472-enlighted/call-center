@@ -3,7 +3,8 @@
         <div class="section-aside__top">
             <div
                 class="section-aside__logo-box"
-                @click="$router.push({name: 'home-operator'})"
+                :class="{'section-aside__logo-box--disabled': $route.name === 'home_operator' || $route.name === 'home_admin'}"
+                @click="goToHomePage"
             >
                 <LocalAsideLogo/>
             </div>
@@ -51,10 +52,13 @@ export default {
         ...mapState(['isAsideActive']),
         links() {
             return this.isAdmin ? linksAdmin : linksOperator
-        }
+        },
     },
     methods: {
-        ...mapMutations(['TOGGLE_ASIDE_ACTIVE'])
+        ...mapMutations(['TOGGLE_ASIDE_ACTIVE']),
+        goToHomePage() {
+            this.isAdmin ? this.$router.push({name: 'home_admin'}) : this.$router.push({name: 'home_operator'})
+        }
     }
 }
 </script>
@@ -84,6 +88,11 @@ export default {
         width: 100%;
         max-width: 100%;
         margin-bottom: $gutter + 10px;
+        cursor: pointer;
+        &--disabled {
+            pointer-events: none;
+            cursor: auto;
+        }
     }
 
     &__toggle-state-btn {

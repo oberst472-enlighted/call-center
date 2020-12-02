@@ -83,7 +83,7 @@ export default {
     width: 100%;
     display: grid;
     grid-template-columns: minmax(300px, 1fr) 300px;
-    grid-template-rows: minmax(187px, auto) minmax(400px, calc(100vh - 319px));
+    grid-template-rows: minmax(187px, auto) minmax(300px, calc(100vh - 339px));
     grid-gap: $gutter;
     grid-template-areas:
         'stat call'

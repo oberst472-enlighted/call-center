@@ -251,7 +251,7 @@ export default {
     created() {
         this.TOGGLE_CALL_OVER(false)
         if (!this.isCallAnswered) {
-            this.$router.push({name: 'home-operator'})
+            this.$router.push({name: 'home_operator'})
         }
     },
     beforeDestroy() {

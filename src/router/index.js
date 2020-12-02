@@ -49,7 +49,7 @@ export default new VueRouter({
             children: [
                 {
                     path: '/home',
-                    name: 'home-operator',
+                    name: 'home_operator',
                     components: {
                         default: require('@/pages/operator/dashboard').default,
                         header: require('@/components/sections/header-operator/').default,

@@ -2,7 +2,7 @@ export default [
     {
         title: 'Главная',
         icon: 'IconHome',
-        href: 'home-operator'
+        href: 'home_operator'
     },
     {
         title: 'Звонки',

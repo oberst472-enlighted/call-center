@@ -126,7 +126,7 @@ export default {
     grid-gap: $gutter;
     width: 100%;
     padding-bottom: 30px;
-    grid-template-rows: minmax(187px, auto) minmax(400px, calc(100vh - 319px));
+    grid-template-rows: minmax(187px, auto) minmax(300px, calc(100vh - 339px));
     grid-template-areas:
         'stat call'
         'terminals history';

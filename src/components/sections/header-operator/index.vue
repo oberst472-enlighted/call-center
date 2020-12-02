@@ -1,6 +1,6 @@
 <template>
     <div class="section-header">
-        <div class="section-header__back-box" :class="{'section-header__back-box--active': this.$route.name !== 'home-operator'}">
+        <div class="section-header__back-box" :class="{'section-header__back-box--active': this.$route.name !== 'home_operator'}">
             <UiBack/>
         </div>
 

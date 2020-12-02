@@ -119,14 +119,13 @@ export default {
         },
 
 
-        stOperatorPickedUpThePhone({state, commit}, info) {
+        stOperatorPickedUpThePhone({state, commit, dispatch, rootState}, info, ) {
             //сокет просигнализировал что оператор ответил на звонок
             commit('DELETE_CALL_QUEUE_ITEM', info.call_id)
+            // const userInfo = getJsonFromString(localStorage.getItem('сс_main_user_info') || sessionStorage.getItem('сс_main_user_info'))
+            // const userId = userInfo.id
 
-            const userInfo = getJsonFromString(localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo'))
-            const userId = userInfo.id
-
-            if (userId === info['user_id']) {
+            if (rootState.users.mainUserInfo.id === info['user_id']) {
                 commit('SET_START_TIME', Date.now())
                 commit('TOGGLE_CALL_ANSWERED')
                 commit('TOGGLE_IS_OPERATOR_BUSY')

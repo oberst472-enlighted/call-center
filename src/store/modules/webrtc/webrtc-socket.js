@@ -9,11 +9,14 @@ export default {
         socket: null,
         isSocketOpen: false,
         socketRetryConnectTime: 5000,
-
+        isSocketOnceConnection: false, //флаг для того чтобы не открывать сокет соединение пи переходах между роутами
         clientChannel: '',
 
     },
     mutations: {
+        SET_IS_SOCKET_ONCE_CONNECTION(state, payload) {
+            state.isNavigatorOnceConnection = payload
+        },
         SET_SOCKET(state, payload) {
             state.socket = payload
         },

@@ -15,24 +15,20 @@
 
             <section class="layout-default__main">
                 <div class="wrapper">
-                    <!--                    <transition name="layout-fade" mode="out-in">-->
                     <router-view/>
-                    <!--                    </transition>-->
                 </div>
             </section>
         </main>
 
         <BlockCallSound v-if="isSoundCallActive && !isCallAnswered && isSessionActive && !isSessionBreak"/>
-        <!--        <div class="layout-default__call-form-data" v-if="true">-->
-        <!--            <SectionCallVideo/>-->
-        <!--        </div>-->
     </div>
 </template>
 
 <script>
 import store from '@/store'
-import {mapActions, mapMutations, mapState} from 'vuex'
+import {mapMutations, mapState} from 'vuex'
 import BlockCallSound from '@/components/blocks/call-sound'
+import {getJsonFromString} from '@/utils/json'
 
 export default {
     components: {
@@ -63,11 +59,22 @@ export default {
         }
     },
     async beforeRouteEnter(to, from, next) {
-        // store.dispatch('toggleLoading')
-        console.log(6)
-        this.getMedia()
-        store.dispatch('webrtc/webrtcPeerConnection', 'getMedia')
-        store.dispatch('webrtc/webrtcSockets', 'stSocketConnect')
+        const info = localStorage.getItem('сс_main_user_info') || sessionStorage.getItem('сс_main_user_info')
+        if (info) {
+            store.commit('users/SET_MAIN_USER_INFO', getJsonFromString(info))
+        }
+
+        const webrtcConnectionOnce = store.state.webrtc.webrtcPeerConnection.isNavigatorOnceConnection
+        const socketConnectionOnce = store.state.webrtc.webrtcSockets.isSocketOnceConnection
+
+        if (!webrtcConnectionOnce && !socketConnectionOnce) {
+            store.dispatch('webrtc/webrtcPeerConnection/getMedia', 'getMedia')
+            store.dispatch('webrtc/webrtcSockets/stSocketConnect', 'stSocketConnect')
+
+            store.commit('webrtc/webrtcPeerConnection/SET_IS_NAVIGATOR_ONCE_CONNECTION')
+            store.commit('webrtc/webrtcSockets/SET_IS_SOCKET_ONCE_CONNECTION')
+        }
+
         await Promise.all([
             store.dispatch('sessions/stGetCurrentSessionInfo'),
         ])
@@ -95,8 +102,6 @@ export default {
         height: 100vh;
         max-height: 100vh;
         overflow: auto;
-
-
     }
 
     &__aside {

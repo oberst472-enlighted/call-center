@@ -161,7 +161,6 @@ export default {
         },
 
         async goToAdminPanel(payload) {
-            console.log(payload)
             if (payload.user.role === 'administrator') {
                 const isSuccess = await this.loadInitialAdminData()
                 if (isSuccess) {

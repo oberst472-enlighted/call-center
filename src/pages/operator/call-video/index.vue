@@ -119,7 +119,7 @@ export default {
 
         ...mapActions('webrtc/webrtcCalls', ['stEndCall', 'stCloseVideoSection']),
         ...mapActions('calls', ['stSendACommentToTheCall']),
-        ...mapActions('formData', ['sendVideo']),
+        ...mapActions('formData', ['stSendVideo']),
         async sendComment(payload) {
             let info = {
                 callID: this.$route.params.id,
@@ -183,12 +183,11 @@ export default {
             if (this.recorder) {
                 this.recorder.stopRecording(() => {
 
-
                     const blob = this.recorder.getBlob()
                     const data = new FormData()
 
                     data.append('video_file', blob, 'long.webm')
-                    this.sendVideo({token: this.videoToken, id: this.videoID, data})
+                    this.stSendVideo({token: this.videoToken, id: this.videoID, data})
 
                     this.recorder.destroy()
                     this.recorder = null
@@ -202,6 +201,13 @@ export default {
 
     },
     watch: {
+        partnerStream() {
+            this.$refs.userVideo.srcObject = this.userStream
+            this.$refs.partnerVideo.srcObject = this.partnerStream
+            setTimeout(() => {
+                this.startRecord()
+              }, 1000);
+        },
         isSuccessSaveComment(val) {
             if (val) {
                 setTimeout(() => {
@@ -232,9 +238,15 @@ export default {
         }
     },
     mounted() {
-        this.$refs.userVideo.srcObject = this.userStream
-        this.$refs.partnerVideo.srcObject = this.partnerStream
-        this.stopRecord()
+        // this.$refs.userVideo.srcObject = this.userStream
+        // this.$refs.partnerVideo.srcObject = this.partnerStream
+        // console.log(this.partnerStream)
+        // setTimeout(() => {
+        //     console.log('-----')
+        //     console.log(this.partnerStream)
+        //     console.log('-----')
+        //   }, 1000);
+        // this.stopRecord()
     },
     created() {
         this.TOGGLE_CALL_OVER(false)

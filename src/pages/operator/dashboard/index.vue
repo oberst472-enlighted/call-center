@@ -1,7 +1,7 @@
 <template>
     <section class="page-home">
         <div class="page-home__stat">
-            <BlockStat :info="stat"/>
+            <BlockStat :info="adminStat"/>
         </div>
 
         <div class="page-home__call">
@@ -16,29 +16,29 @@
         <div class="page-home__terminals">
             <BlockTerminals
                 :info="items"
-                @download-next-page="downloadNextPageTerminals"
-                :items-length="items.length"
                 :is-not-pagination="true"
+                :items-length="items.length"
+                @download-next-page="downloadNextPageTerminals"
             />
         </div>
 
         <div class="page-home__calls-history">
             <SectionBox
-                gutters
-                scroll
-                head
-                title="История звонков"
-                subtitle="Последние"
-                @download-next-page="downloadNextPageCalls"
-                :items-length="callsPerShift.calls.length"
                 :is-not-pagination="true"
+                :items-length="callsPerShift.calls.length"
+                gutters
+                head
+                scroll
+                subtitle="Последние"
+                title="История звонков"
+                @download-next-page="downloadNextPageCalls"
             >
                 <BlockCallShortstoryItem
-                    class="page-home__calls-history__item"
                     v-for="item in callsPerShift.calls"
                     :key="item.id"
                     :info="item"
-                    :to="{name: 'call-fullstory', params: {id: item.id}}"
+                    :to="{name: 'detail-call_operator', params: {id: item.id}}"
+                    class="page-home__calls-history__item"
                 />
             </SectionBox>
         </div>
@@ -47,12 +47,13 @@
 
 <script>
 import store from '@/store'
-import {mapState, mapMutations, mapActions, mapGetters} from 'vuex'
+import {mapActions, mapGetters, mapMutations, mapState} from 'vuex'
 import BlockTerminals from '@/components/blocks/terminals'
 import BlockStat from '@/components/blocks/stat'
 import SectionBox from '@/components/sections/box'
 import BlockCallWindowSmall from '@/components/blocks/call-window-small'
 import BlockCallShortstoryItem from '@/components/blocks/call-shortstory-item'
+
 export default {
     components: {
         SectionBox,
@@ -65,7 +66,7 @@ export default {
         ...mapState('webrtc/webrtcCalls', ['isIncomingCall']),
         ...mapState('calls', ['callsPerShift', 'callQueue']),
         ...mapState('devices', ['items', 'isNotDevicesPagination']),
-        ...mapState('stat', ['stat']),
+        ...mapState('stat', ['adminStat']),
         ...mapState('sessions', ['isSessionBreak']),
         ...mapGetters('middleware', ['isAdmin', 'isAuth'])
     },
@@ -91,9 +92,10 @@ export default {
         }
     },
     async beforeRouteEnter(to, from, next) {
-        if (!to.params.doNotLoadData) {
+        if (from.name !== 'call-form-data' && !to.params.doNotLoadData) {
             store.commit('TOGGLE_PROGRESS_ACTIVE')
-
+        }
+        if (!to.params.doNotLoadData) {
             store.dispatch('stat/stGetStat')
             const response = await Promise.all([
                 store.dispatch('calls/stGetAllCallsForTheCurrentSession'),
@@ -108,8 +110,7 @@ export default {
                 store.commit('TOGGLE_PROGRESS_ACTIVE', false)
                 this.ADD_ALERT(['negative'])
             }
-        }
-        else {
+        } else {
             next()
             store.commit('TOGGLE_PROGRESS_ACTIVE', false)
         }
@@ -118,46 +119,54 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .page-home {
-    padding-bottom: 30px;
-    width: 100%;
     display: grid;
     grid-template-columns: minmax(300px, 1fr) 300px;
-    grid-template-rows: minmax(187px, auto) minmax(400px, calc(100vh - 319px));
     grid-gap: $gutter;
+    width: 100%;
+    padding-bottom: 30px;
+    grid-template-rows: minmax(187px, auto) minmax(400px, calc(100vh - 319px));
     grid-template-areas:
         'stat call'
         'terminals history';
+
     &__stat {
+        display: flex;
         grid-area: stat;
-        display: flex;
     }
+
     &__call {
-        grid-area: call;
         display: flex;
+        grid-area: call;
+
         /deep/ .section-box {
             background-color: #4c3b60;
         }
     }
+
     &__terminals {
-        grid-area: terminals;
         display: flex;
+        grid-area: terminals;
     }
+
     &__calls-history {
-        grid-area: history;
-        height: auto;
         align-self: auto;
+        height: auto;
+        grid-area: history;
+
         &__item {
             border-top: 1px solid #efeff4;
         }
+
         //align-self: start;
 
     }
+
     .content {
-        overflow: auto;
         height: 100%;
         padding: 15px;
+        overflow: auto;
     }
 }
 </style>

@@ -149,7 +149,6 @@ export default {
         async sendInfo() {
             this.isLoading = true
             const isSuccess = await this.stCreateUser(this.form)
-            console.log(isSuccess)
             if (isSuccess) {
                 this.ADD_ALERT(['positive', 'Оператор успешно создан'])
             }

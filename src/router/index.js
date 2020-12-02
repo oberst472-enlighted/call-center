@@ -14,6 +14,16 @@ export default new VueRouter({
             redirect: ('/login')
         },
         {
+            path: '/404',
+            name: '404',
+            component: require('@/pages/404/').default,
+        },
+        {
+            path: '/logout',
+            name: 'logout',
+            component: require('@/layouts/logout/').default,
+        },
+        {
             path: '',
             component: require('@/layouts/login/').default,
             children: [
@@ -47,10 +57,10 @@ export default new VueRouter({
                     }
                 },
                 {
-                    path: '/detail/:id',
-                    name: 'call-fullstory',
+                    path: '/detail-call/:id',
+                    name: 'detail-call_operator',
                     components: {
-                        default: require('@/pages/operator/call-fullstory').default,
+                        default: require('@/pages/operator/detail-call').default,
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
                     }

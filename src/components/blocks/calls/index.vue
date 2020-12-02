@@ -16,7 +16,7 @@
                 v-for="item in info"
                 :key="item.id"
                 :info="item"
-                :to="{name: 'call-fullstory', params: {id: item.id}}"
+                :to="{name: 'detail-call_operator', params: {id: item.id}}"
             />
         </div>
     </SectionBox>

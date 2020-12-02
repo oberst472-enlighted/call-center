@@ -85,7 +85,6 @@ export default {
         if (isSuccess) {
             next()
             store.commit('TOGGLE_PROGRESS_ACTIVE', false)
-            console.log(store.state.isProgressActive)
         } else {
             next(false)
             store.commit('TOGGLE_PROGRESS_ACTIVE', false)

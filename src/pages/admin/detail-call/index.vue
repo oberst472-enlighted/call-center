@@ -85,9 +85,7 @@ export default {
 
         const isSuccess = response.every(item => item)
         if (isSuccess) {
-            console.log(77)
             store.commit('TOGGLE_PROGRESS_ACTIVE', false)
-            console.log(88)
            next()
         } else {
             next(false)

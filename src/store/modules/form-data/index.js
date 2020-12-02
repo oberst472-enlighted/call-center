@@ -14,7 +14,7 @@ export default {
         }
     },
     actions: {
-        async sendVideo(context, info) {
+        async stSendVideo(context, info) {
             await apiSendVideo(info)
         },
     }

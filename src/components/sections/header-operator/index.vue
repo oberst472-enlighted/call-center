@@ -15,7 +15,8 @@
 
                 <div class="section-header__timer-box">
                     <UiStopWatch :start-watch="isSessionActive"
-                                 :stop-watch="!isSessionActive"/>
+                                 :stop-watch="!isSessionActive"
+                    />
                 </div>
 
                 <div class="section-header__btn-box">
@@ -43,15 +44,14 @@
 </template>
 
 <script>
-import LocalHeaderBack from './header-operator-back'
 import BlockUserShortstory from '@/components/blocks/user-shortstory'
 import {mapState, mapMutations, mapActions} from 'vuex'
 import {customLog} from '@/utils/console-group'
 import store from '@/store'
+import {convertSecondsToTime} from '@/utils/convertDateTime'
 
 export default {
     components: {
-        LocalHeaderBack,
         BlockUserShortstory
     },
     data() {
@@ -107,24 +107,9 @@ export default {
                 console.log('Сессия не закрыта')
             }
         },
-        // _saveSessionIDToStorage() {
-        //     localStorage.setItem('workShiftID', this.workShiftID)
-        // },
-        // _deleteSessionIDToStorage() {
-        //     localStorage.removeItem('workShiftID')
-        // },
-        // _saveStartBreakSessionToStorage() {
-        //     sessionStorage.removeItem('isStopBreak')
-        //     sessionStorage.setItem('isStartBreak', '1')
-        // },
-        // _saveStopBreakSessionToStorage() {
-        //     sessionStorage.removeItem('isStartBreak')
-        //     sessionStorage.setItem('isStopBreak', '1')
-        // }
     },
     created() {
-        // if (localStorage.getItem('workShiftID')) {
-        //     this.TOGGLE_START_WORK_SHIFT()
+        // if (this.startSessionTime) {
         // }
     }
 }

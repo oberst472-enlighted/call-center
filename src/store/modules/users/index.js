@@ -68,7 +68,6 @@ export default {
         },
         async stCreateUser(context, info) {
             const response = await apiCreateUser(info);
-            console.log(response)
             return Boolean(response) && response.status < 300 && (response.statusText === 'OK' || response.statusText === 'Created');
         },
 

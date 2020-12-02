@@ -122,7 +122,7 @@ export default {
         ...mapMutations('alerts', ['ADD_ALERT']),
         async sendInfo() {
             this.isLoading = true
-            const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
+            const info = localStorage.getItem('сс_main_user_info') || sessionStorage.getItem('сс_main_user_info')
             const infoObj = getJsonFromString(info)
             const isSuccess = await this.stEditUserById({id: infoObj.id, body: this.form})
             if (isSuccess) {
@@ -135,7 +135,7 @@ export default {
         }
     },
     async beforeRouteEnter(to, from, next) {
-        const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
+        const info = localStorage.getItem('сс_main_user_info') || sessionStorage.getItem('сс_main_user_info')
         const infoObj = getJsonFromString(info)
         const response = await Promise.all([
             store.dispatch('users/stGetUserById', infoObj.id),

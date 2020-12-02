@@ -28,10 +28,15 @@ export default {
         userStream: null,
         partnerStream: null,
 
+        isNavigatorOnceConnection: false, //флаг для того чтобы не открывать сокет соединение пи переходах между роутами
+
     },
     mutations: {
         SET_PEER_CONNECTION(state, payload) {
             state.peer = payload
+        },
+        SET_IS_NAVIGATOR_ONCE_CONNECTION(state, payload) {
+            state.isNavigatorOnceConnection = payload
         },
         SET_PARTNER_STREAM(state, payload) {
             state.partnerStream = payload
@@ -48,7 +53,6 @@ export default {
         },
         TOGGLE_AUDIO(state, payload = true) {
             state.userStream.getTracks().forEach(item => {
-                console.log(item.kind)
                 if (item.kind === 'audio') {
 
                     item.enabled = payload
@@ -131,18 +135,36 @@ export default {
 
 
         stClosePeerConnection({state, commit, dispatch}) {
-            state.peer.close()
-            state.userStream.getTracks().forEach(track => {
-                track.stop()
-            })
+            // if(state.peer) {
+                state.peer.close()
+            // }
+            // if (state.userStream) {
+                state.userStream.getTracks().forEach(track => {
+                    track.stop()
+                })
+            // }
             commit('SET_PEER_CONNECTION', null)
             commit('SET_USER_STREAM', null)
             commit('SET_PARTNER_STREAM', null)
             setTimeout(() => {
                 dispatch('getMedia')
             }, 500)
-
-
+        },
+        stDisconnectWebrtc({state, commit, dispatch}) {
+            if(state.peer) {
+                state.peer.close()
+            }
+            if (state.userStream) {
+                state.userStream.getTracks().forEach(track => {
+                    track.stop()
+                })
+            }
+            commit('SET_PEER_CONNECTION', null)
+            commit('SET_USER_STREAM', null)
+            commit('SET_PARTNER_STREAM', null)
+            setTimeout(() => {
+                dispatch('getMedia')
+            }, 500)
         },
         async getMedia({state, commit}) {
             const stream = await navigator.mediaDevices.getUserMedia(state.mediaOptions)

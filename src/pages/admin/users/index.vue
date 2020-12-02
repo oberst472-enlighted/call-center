@@ -2,11 +2,11 @@
     <section class="page-calls">
         <div class="page-calls__calls">
             <BlockUsers
-                :info="items"
-                :items-length="items.length"
-                :is-not-pagination="true"
-                title="Сотрудники"
-                subtitle="Онлайн"
+                :info="users"
+                :items-length="users.length"
+                is-not-pagination
+                title="все сотрудники"
+
             />
         </div>
     </section>
@@ -21,17 +21,17 @@ export default {
         BlockUsers,
     },
     computed: {
-        ...mapState('devices', ['items']),
+        ...mapState('users', ['users']),
 
     },
     methods: {
         ...mapMutations(['TOGGLE_PROGRESS_ACTIVE']),
-        ...mapActions('devices', ['stGetDevices']),
+        ...mapActions('users', ['stGetUsers']),
     },
     async beforeRouteEnter(to, from, next) {
         store.commit('TOGGLE_PROGRESS_ACTIVE')
         const response = await Promise.all([
-            store.dispatch('devices/stGetDevices'),
+            store.dispatch('users/stGetUsers'),
         ])
         const isSuccess = response.every(item => item)
         if (isSuccess) {
@@ -53,10 +53,11 @@ export default {
     width: 100%;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: minmax(300px, calc(100vh - 104px));
+    grid-template-rows: minmax(300px, calc(100vh - 114px));
     grid-gap: $gutter;
     grid-template-areas:
         'calls';
+    align-items: start;
     &__calls {
         grid-area: calls;
         display: flex;

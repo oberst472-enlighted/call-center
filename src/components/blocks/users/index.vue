@@ -11,7 +11,7 @@
         :is-not-pagination="true"
     >
         <div class="block-terminal__box">
-            <BlockShortstoryItem
+            <BlockUserShortstoryItem
                 class="block-terminal__item"
                 v-for="item in info"
                 :key="item.id"
@@ -24,11 +24,11 @@
 
 <script>
 import SectionBox from '@/components/sections/box'
-import BlockShortstoryItem from '@/components/blocks/terminal-shortstory-item'
+import BlockUserShortstoryItem from '@/components/blocks/user-shortstory-item'
 export default {
     components: {
         SectionBox,
-        BlockShortstoryItem
+        BlockUserShortstoryItem
     },
     props: {
         title: {

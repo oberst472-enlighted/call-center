@@ -14,12 +14,26 @@
         </div>
 
         <div class="page-calls__calls">
-            <BlockCalls
-                :info="callsPerShift.calls"
-                @download-next-page="downloadNextPageCalls"
-                :items-length="callsPerShift.calls.length"
-                :is-not-pagination="callsPerShift.isNotPagination"
-            />
+            <SectionBox
+                class="block-calls__box"
+                gutters
+                scroll
+                head
+                title="История звонков"
+                subtitle="Последние"
+                @download-next-page="$emit('download-next-page')"
+            >
+                <div class="page-calls__subbox">
+                    <BlockCallShortstoryItem
+                        class="page-calls__calls-item"
+                        v-for="item in callsPerShift.calls"
+                        :key="item.id"
+                        :info="item"
+                        no-operator-info
+                        :to="{name: 'detail-call_operator', params: {id: item.id}}"
+                    />
+                </div>
+            </SectionBox>
         </div>
     </section>
 </template>
@@ -27,14 +41,14 @@
 <script>
 import store from '@/store'
 import {mapState, mapMutations, mapActions, mapGetters} from 'vuex'
-import BlockCalls from '@/components/blocks/calls'
 import BlockStat from '@/components/blocks/stat'
 import SectionBox from '@/components/sections/box'
 import BlockCallWindowSmall from '@/components/blocks/call-window-small'
+import BlockCallShortstoryItem from '@/components/blocks/call-shortstory-item'
 export default {
     components: {
         SectionBox,
-        BlockCalls,
+        BlockCallShortstoryItem,
         BlockStat,
         BlockCallWindowSmall,
     },
@@ -53,10 +67,6 @@ export default {
         ...mapMutations('calls', ['SET_PAGINATION_PAGE']),
 
 
-        async downloadNextPageCalls() {
-            this.SET_PAGINATION_PAGE()
-            const isSuccess = await this.stGetAllCallsForTheCurrentSession()
-        },
     },
     async beforeRouteEnter(to, from, next) {
         store.commit('TOGGLE_PROGRESS_ACTIVE')
@@ -102,6 +112,18 @@ export default {
     &__calls {
         grid-area: calls;
         display: flex;
+    }
+    &__box {}
+    &__subbox {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-column-gap: 20px;
+    }
+    &__calls-item {
+        border: 0;
+        background-color: transparent;
+        cursor: pointer;
+        border-top: 1px solid #efeff4;
     }
 }
 </style>

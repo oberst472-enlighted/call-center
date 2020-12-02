@@ -4,7 +4,7 @@
         scroll
         head
         title="Сотрудники"
-        :is-not-pagination="true"
+        is-not-pagination
     >
         <template #head-btn>
             <UiBtn :to="{name: 'create-operator_admin'}">Добавить</UiBtn>

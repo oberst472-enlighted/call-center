@@ -71,8 +71,13 @@ export default {
 
     },
     async beforeRouteEnter(to, from, next) {
-        if (!to.params.doNotLoadData) {
+        if (to.params.doNotLoadData) {
+            next()
             store.commit('TOGGLE_PROGRESS_ACTIVE', false)
+        } else {
+            console.log(to.params.doNotLoadData)
+            console.log(33)
+            store.commit('TOGGLE_PROGRESS_ACTIVE', true)
             const response = await Promise.all([
                 store.dispatch('stat/stGetAdminStat'),
                 store.dispatch('calls/stGetAllCalls'),
@@ -82,14 +87,10 @@ export default {
             const isSuccess = response.every(item => item)
             if (isSuccess) {
                 next()
-                store.commit('TOGGLE_PROGRESS_ACTIVE', false)
             } else {
                 next(false)
-                store.commit('TOGGLE_PROGRESS_ACTIVE', false)
                 store.commit('alerts/ADD_ALERT', ['negative'])
             }
-        } else {
-            next()
             store.commit('TOGGLE_PROGRESS_ACTIVE', false)
         }
     },

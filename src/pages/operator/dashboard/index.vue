@@ -37,6 +37,7 @@
                     v-for="item in callsPerShift.calls"
                     :key="item.id"
                     :info="item"
+                    no-operator-info
                     :to="{name: 'detail-call_operator', params: {id: item.id}}"
                     class="page-home__calls-history__item"
                 />

@@ -18,7 +18,7 @@
             <IconComment/>
         </button>
 
-        <div class="block-call-shortstory__operator-info">
+        <div class="block-call-shortstory__operator-info" v-if="!noOperatorInfo">
             <div class="block-call-shortstory__operator-img">
                 <img alt="Avatar" src="/assets/images/user-placeholder.svg">
             </div>
@@ -49,7 +49,12 @@ export default {
         noIconMessage: {
             type: Boolean,
             default: false
-        }
+        },
+        noOperatorInfo: {
+            type: Boolean,
+            default: false
+        },
+
     },
     computed: {
         tag() {

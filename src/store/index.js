@@ -24,11 +24,15 @@ export default new Vuex.Store({
     state: {
         isAsideActive: false,
         isProgressActive: false,
-        isConnected: false
+        isConnected: false,
+        isBackBtnActive: true,
     },
     mutations: {
         TOGGLE_ASIDE_ACTIVE(state, payload = true) {
             state.isAsideActive = payload;
+        },
+        SET_BACK_BTN_ACTIVE(state, payload = true) {
+            state.isBackBtnActive = payload;
         },
         TOGGLE_PROGRESS_ACTIVE(state, payload = true) {
             state.isProgressActive = payload;

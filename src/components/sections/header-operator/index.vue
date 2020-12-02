@@ -1,7 +1,7 @@
 <template>
     <div class="section-header">
-        <div class="section-header__back-box" :class="{'section-header__back-box--active': this.$route.name !== 'home_operator'}">
-            <UiBack/>
+        <div class="section-header__back-box" :class="{'section-header__back-box--active': !isBackBtnActive}">
+            <UiBack @click="$router.go(-1)"/>
         </div>
 
         <transition name="fade" mode="out-in">
@@ -62,14 +62,12 @@ export default {
     },
     computed: {
         ...mapState('sessions', ['isSessionActive', 'isSessionBreak', 'startSessionTime', 'sessionId']),
+        ...mapState(['isBackBtnActive']),
         timeTimezone() {
             const secUtc = this.startSessionTime
             const secMyZone = convertSecondsUTCToSecondsMyZone(secUtc)
-            console.log(new Date)
-            console.log(new Date(secMyZone * 1000))
             return secMyZone
-            // return new Date(secMyZone * 1000)
-        }
+        },
     },
     methods: {
         ...mapActions('sessions', ['stStartSession', 'stStopSession', 'stStartSessionBreak', 'stStopSessionBreak']),
@@ -116,24 +114,7 @@ export default {
             }
         },
     },
-    created() {
-        console.log(new Date())
-        // console.log(new Date(this.startSessionTime * 1000))
-        if (this.startSessionTime) {
-            const secUtc = this.startSessionTime
-            const secMyZone = convertSecondsUTCToSecondsMyZone(secUtc)
 
-            console.log(new Date(secMyZone * 1000))
-
-            const date = +new Date()
-
-            const m = date - (secMyZone * 1000)
-
-            const l = Math.floor(m / 1000)
-            console.log(convertSecondsToHMS(l))
-            // console.log(convertSecondsToTimeTimeZone(this.startSessionTime))
-        }
-    }
 }
 </script>
 

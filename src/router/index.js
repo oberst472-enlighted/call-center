@@ -5,7 +5,7 @@ import store from '../store'
 
 Vue.use(VueRouter)
 
-export default new VueRouter({
+const router = new VueRouter({
     mode: 'history',
     // base: process.env.BASE_URL
     routes: [
@@ -232,3 +232,12 @@ export default new VueRouter({
         },
     ]
 })
+
+router.beforeEach((to, from, next) => {
+    if (from.name === 'login' || from.name === 'call-form-data') {
+        store.commit('SET_BACK_BTN_ACTIVE', false)
+    }
+    next()
+})
+
+export default router

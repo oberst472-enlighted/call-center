@@ -52,6 +52,11 @@ export default {
         LocalDashboardGraph,
         BlockStat,
     },
+    data() {
+        return {
+            interval: null
+        }
+    },
     computed: {
         ...mapState('calls', ['allCalls']),
         ...mapState('devices', ['items', 'isNotDevicesPagination']),
@@ -67,7 +72,11 @@ export default {
 
         ...mapActions('devices', ['stGetDevices']),
         ...mapActions('users', ['stGetUsers']),
+        ...mapActions('stat', ['stGetAdminStat']),
         ...mapMutations('devices', ['SET_DEVICES_PAGINATION_PAGE']),
+        async getAdminStat() {
+            await this.stGetAdminStat()
+        }
 
     },
     async beforeRouteEnter(to, from, next) {
@@ -92,6 +101,14 @@ export default {
             store.commit('TOGGLE_PROGRESS_ACTIVE', false)
         }
     },
+    mounted() {
+        this.interval = setInterval(() => {
+            this.getAdminStat()
+        }, 20000)
+    },
+    beforeDestroy() {
+        clearInterval(this.interval)
+    }
 }
 </script>
 

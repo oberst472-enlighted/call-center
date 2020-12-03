@@ -10,9 +10,9 @@ export default {
     getters: {
     },
     mutations: {
-        TOGGLE_STAT_LOADING(state, payload) {
-            state.statLoading = payload
-        },
+        // TOGGLE_STAT_LOADING(state, payload) {
+        //     state.statLoading = payload
+        // },
         SET_STAT_FOR_THE_SESSION(state, payload) {
             state.statForTheSession = payload
         },
@@ -22,7 +22,7 @@ export default {
     },
     actions: {
         async stGetStatForTheSession({commit}) {
-            commit('TOGGLE_STAT_LOADING')
+            // commit('TOGGLE_STAT_LOADING')
             let isSuccess = false
             try {
                 const response = await apiGetStatForTheSession()
@@ -35,14 +35,14 @@ export default {
                 isSuccess = false
             }
             finally {
-                commit('TOGGLE_STAT_LOADING', false)
+                // commit('TOGGLE_STAT_LOADING', false)
                 // eslint-disable-next-line no-unsafe-finally
                 return isSuccess
 
             }
         },
         async stGetAdminStat({commit}) {
-            commit('TOGGLE_STAT_LOADING')
+            // commit('TOGGLE_STAT_LOADING')
             let isSuccess = false
             try {
                 const response = await apiGetAdminStat()
@@ -55,7 +55,7 @@ export default {
                 isSuccess = false
             }
             finally {
-                commit('TOGGLE_STAT_LOADING', false)
+                // commit('TOGGLE_STAT_LOADING', false)
                 // eslint-disable-next-line no-unsafe-finally
                 return isSuccess
 

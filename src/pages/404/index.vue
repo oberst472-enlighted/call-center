@@ -6,11 +6,23 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {isRoleAdmin, isUserAuth} from '@/utils/middleware'
 
 export default {
+    data() {
+        return {
+            isAdmin: false,
+            isAuth: false
+        }
+    },
     computed: {
-        ...mapGetters('middleware', ['isAdmin', 'isOperator', 'isAuth', 'isRememberMe'])
+    },
+    mounted() {
+        if (!isUserAuth()) {
+            this.$router.push({name: 'login'})
+        }
+        this.isAdmin = isRoleAdmin()
+        this.isAuth = isUserAuth()
     }
 }
 </script>

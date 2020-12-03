@@ -22,7 +22,7 @@
                     v-model="form.username"
                     :is-empty="isLoginEmpty"
                     icon="iconUser"
-                    placeholder="Введите email"
+                    placeholder="Введите логин"
                 />
             </div>
         </div>

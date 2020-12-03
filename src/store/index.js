@@ -23,7 +23,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         isAsideActive: false,
-        isProgressActive: false,
+        isProgressActive: false, // обычный прелоадер на страницах
+        isProgressLoginActive: false, //прелоадер при автоматическом входе в кабинет (если сотмечен чекбокс 'Запомнить меня')
         isConnected: false,
         isBackBtnActive: true,
     },
@@ -36,6 +37,9 @@ export default new Vuex.Store({
         },
         TOGGLE_PROGRESS_ACTIVE(state, payload = true) {
             state.isProgressActive = payload;
+        },
+        TOGGLE_PROGRESS_LOGIN_ACTIVE(state, payload = true) {
+            state.isProgressLoginActive = payload;
         },
         TOGGLE_IS_CONNECTED(state, payload = true) {
             state.isConnected = payload;

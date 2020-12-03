@@ -129,7 +129,6 @@ export default {
             }
             const isSuccess = await this.stSendACommentToTheCall(info)
             if (isSuccess) {
-                console.log('коммент сохранен')
                 this.isSuccessSaveComment = true
             }
         },

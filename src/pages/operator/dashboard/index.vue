@@ -96,23 +96,27 @@ export default {
         if (from.name !== 'call-form-data' && !to.params.doNotLoadData) {
             store.commit('TOGGLE_PROGRESS_ACTIVE')
         }
-        if (!to.params.doNotLoadData) {
-            store.dispatch('stat/stGetStatForTheSession')
-            const response = await Promise.all([
-                store.dispatch('calls/stGetAllCallsForTheCurrentSession'),
-                store.dispatch('devices/stGetDevices'),
-            ])
-            const isSuccess = response.every(item => item)
-            if (isSuccess) {
-                next()
-                store.commit('TOGGLE_PROGRESS_ACTIVE', false)
+        try {
+            if (!to.params.doNotLoadData) {
+                store.dispatch('stat/stGetStatForTheSession')
+                const response = await Promise.all([
+                    store.dispatch('calls/stGetAllCallsForTheCurrentSession'),
+                    store.dispatch('devices/stGetDevices'),
+                ])
+                const isSuccess = response.every(item => item)
+                if (isSuccess) {
+                    next()
+                } else {
+                    next(false)
+                    this.ADD_ALERT(['negative'])
+                }
             } else {
-                next(false)
-                store.commit('TOGGLE_PROGRESS_ACTIVE', false)
-                this.ADD_ALERT(['negative'])
+                next()
             }
-        } else {
-            next()
+        } catch (e) {
+            console.log(e)
+        }
+        finally {
             store.commit('TOGGLE_PROGRESS_ACTIVE', false)
         }
         // store.dispatch('toggleLoading', false)

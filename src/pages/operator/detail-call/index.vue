@@ -77,10 +77,6 @@ export default {
         },
     },
     async beforeRouteEnter(to, from, next) {
-        if (store.getters['middleware/isAdmin']) {
-            next({name: '404'})
-            return
-        }
         const response = await Promise.all([
             store.dispatch('calls/stGetDetailCallInfo', to.params.id),
             // store.dispatch('tasks/stGetTasksTypes'),

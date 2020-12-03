@@ -35,7 +35,8 @@ import linksOperator from './assets/links-operator'
 import linksAdmin from './assets/links-admin'
 import LocalAsideLogo from './aside-logo'
 import LocalAsideLinkItem from './aside-link-item'
-import {mapGetters, mapMutations, mapState} from 'vuex'
+import {mapMutations, mapState} from 'vuex'
+import {isRoleAdmin} from '@/utils/middleware'
 
 export default {
     components: {
@@ -45,10 +46,10 @@ export default {
     data() {
         return {
             isCollapsed: false,
+            isAdmin: false,
         }
     },
     computed: {
-        ...mapGetters('middleware', ['isAdmin', 'isAuth']),
         ...mapState(['isAsideActive']),
         links() {
             return this.isAdmin ? linksAdmin : linksOperator
@@ -59,6 +60,9 @@ export default {
         goToHomePage() {
             this.isAdmin ? this.$router.push({name: 'home_admin'}) : this.$router.push({name: 'home_operator'})
         }
+    },
+    mounted() {
+        this.isAdmin = isRoleAdmin()
     }
 }
 </script>

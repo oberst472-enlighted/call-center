@@ -1,13 +1,20 @@
 <template>
-    <transition name="fadeLoading">
-        <div class="ui-loading">
-            <div class="lds-ripple"><div></div><div></div></div>
-        </div>
-    </transition>
+    <!--    <transition name="fade">-->
+    <div class="ui-loading" :class="{'ui-loading--opacity': opacity}">
+        <div class="lds-ripple"><div></div><div></div></div>
+    </div>
+<!--    </transition>-->
 </template>
 
 <script>
-    export default {}
+    export default {
+        props: {
+            opacity: {
+                type: Boolean,
+                default: false
+            },
+        },
+    }
 </script>
 
 <style scoped lang="scss">
@@ -44,7 +51,8 @@
 }
 
     .ui-loading {
-        background-color: rgba(#fafafc, 0.3);
+        background-color: #fafafc;
+        background-image: linear-gradient(180deg, #fafafc 0%, #e5e7f4 100%);
         z-index: 100;
         position: absolute;
         top: 0;
@@ -54,6 +62,10 @@
         align-items: center;
         width: 100%;
         height: 100vh;
+        &--opacity {
+            background-image: none;
+            background-color: rgba(#fafafc, 0.2) !important;
+        }
     }
     .fadeLoading-enter-active, .fadeLoading-leave-active {
         transition: opacity 0s;

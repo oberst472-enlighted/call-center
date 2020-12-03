@@ -1,6 +1,7 @@
 <template>
     <div id="app" class="app">
-        <SectionMainLoading class="app-loading" v-if="isProgressActive"/>
+        <SectionMainLoading opacity class="app-loading" v-if="isProgressActive"/>
+        <SectionMainLoading class="app-loading" v-if="isProgressLoginActive"/>
 
 
         <SectionsAlerts/>
@@ -27,7 +28,7 @@ export default {
     },
     computed: {
         ...mapState('alerts', ['alerts']),
-        ...mapState(['isProgressActive']),
+        ...mapState(['isProgressActive', 'isProgressLoginActive']),
         ...mapGetters('middleware', ['isAdmin']),
     },
     methods: {

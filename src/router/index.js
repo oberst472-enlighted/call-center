@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import store from '../store'
+import {isRoleAdmin, isRoleOperator, isUserAuth} from '@/utils/middleware'
 
 
 Vue.use(VueRouter)
@@ -54,6 +55,17 @@ const router = new VueRouter({
                         default: require('@/pages/operator/dashboard').default,
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleOperator()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 },
                 {
@@ -63,6 +75,17 @@ const router = new VueRouter({
                         default: require('@/pages/operator/detail-call').default,
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleOperator()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 },
                 {
@@ -72,6 +95,17 @@ const router = new VueRouter({
                         default: require('@/pages/operator/terminal-fullstory').default,
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleOperator()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 },
                 {
@@ -81,6 +115,17 @@ const router = new VueRouter({
                         default: require('@/pages/operator/calls').default,
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleOperator()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 },
                 {
@@ -90,6 +135,17 @@ const router = new VueRouter({
                         default: require('@/pages/operator/terminals').default,
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleOperator()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 },
                 {
@@ -99,6 +155,17 @@ const router = new VueRouter({
                         default: require('@/pages/operator/stat').default,
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleOperator()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 },
                 {
@@ -108,6 +175,17 @@ const router = new VueRouter({
                         default: require('@/pages/operator/user-fullstory').default,
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleOperator()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 },
             ]
@@ -121,6 +199,17 @@ const router = new VueRouter({
                     name: 'call-form-data',
                     components: {
                         default: require('@/pages/operator/call-video').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleOperator()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 }
             ]
@@ -137,6 +226,17 @@ const router = new VueRouter({
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleAdmin()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
+                    }
                 },
                 {
                     path: 'admin/calls/',
@@ -145,6 +245,17 @@ const router = new VueRouter({
                         default: require('@/pages/admin/calls').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleAdmin()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 },
                 {
@@ -154,6 +265,17 @@ const router = new VueRouter({
                         default: require('@/pages/admin/terminals').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleAdmin()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 },
                 {
@@ -163,6 +285,17 @@ const router = new VueRouter({
                         default: require('@/pages/admin/users').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleAdmin()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 },
                 {
@@ -172,6 +305,17 @@ const router = new VueRouter({
                         default: require('@/pages/admin/stat').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleAdmin()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 },
                 {
@@ -181,6 +325,17 @@ const router = new VueRouter({
                         default: require('@/pages/admin/create-operator').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleAdmin()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 },
                 {
@@ -190,6 +345,17 @@ const router = new VueRouter({
                         default: require('@/pages/admin/edit-info-admin').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleAdmin()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 },
                 {
@@ -199,6 +365,17 @@ const router = new VueRouter({
                         default: require('@/pages/admin/edit-info-operator').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleAdmin()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 },
                 {
@@ -208,17 +385,19 @@ const router = new VueRouter({
                         default: require('@/pages/admin/detail-call').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleAdmin()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 },
-                // {
-                //     path: '/detail-call-admin/:id',
-                //     name: 'detail-terminal-admin',
-                //     components: {
-                //         default: require('@/pages/admin/detail-call').default,
-                //         header: require('@/components/sections/header-admin/').default,
-                //         aside: require('@/components/sections/aside/').default,
-                //     }
-                // },
                 {
                     path: 'admin/detail-operator/:id',
                     name: 'detail-operator_admin',
@@ -226,6 +405,17 @@ const router = new VueRouter({
                         default: require('@/pages/admin/detail-operator').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleAdmin()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 },
                 {
@@ -235,6 +425,17 @@ const router = new VueRouter({
                         default: require('@/pages/admin/detail-terminal').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleAdmin()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
                     }
                 },
             ]

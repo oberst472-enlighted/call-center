@@ -103,5 +103,8 @@ export default {
     &__last-name {
         font-weight: 700;
     }
+    &__img {
+        user-select: none;
+    }
 }
 </style>

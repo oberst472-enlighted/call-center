@@ -5,26 +5,38 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
 
 export default {
+    computed: {
+        ...mapGetters('middleware', ['isAdmin', 'isOperator', 'isAuth', 'isRememberMe'])
+    },
     methods: {
         ...mapActions('webrtc/webrtcSockets', ['stSocketDisconnect']),
         ...mapActions('webrtc/webrtcPeerConnection', ['stDisconnectWebrtc'])
     },
-    // created() {
-    //     if (localStorage.getItem('userData')) {
-    //         this.stSocketDisconnect()
-    //         this.stDisconnectWebrtc()
-    //     }
-    //     else {
-    //         this.stSocketDisconnect()
-    //         this.stDisconnectWebrtc()
-    //         sessionStorage.removeItem('сс_main_user_info')
-    //         sessionStorage.removeItem('token')
-    //     }
-    //     this.$router.push({name: 'login'})
-    // }
+    created() {
+        if (!this.isAuth) {
+            this.$router.push({name: 'login'})
+            return
+        }
+        if (this.isAdmin) {
+            const storage = this.isRememberMe ? localStorage : sessionStorage
+            storage.removeItem('token')
+            storage.removeItem('сс_main_user_info')
+            this.$router.push({name: 'login', params: {noRemember: true}})
+        }
+        if (this.isOperator) {
+            const storage = this.isRememberMe ? localStorage : sessionStorage
+            storage.removeItem('token')
+            storage.removeItem('сс_main_user_info')
+            this.$router.push({name: 'login', params: {noRemember: true}})
+            this.stSocketDisconnect()
+            this.stDisconnectWebrtc()
+        }
+
+        this.$router.push({name: 'login'})
+    }
 }
 </script>
 

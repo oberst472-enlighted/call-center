@@ -75,8 +75,6 @@ export default {
             next()
             store.commit('TOGGLE_PROGRESS_ACTIVE', false)
         } else {
-            console.log(to.params.doNotLoadData)
-            console.log(33)
             store.commit('TOGGLE_PROGRESS_ACTIVE', true)
             const response = await Promise.all([
                 store.dispatch('stat/stGetAdminStat'),

@@ -21,7 +21,7 @@ export default {
         },
         SET_MAIN_USER_INFO(state, payload) {
             state.mainUserInfo = payload
-            const data = localStorage.getItem('userData')
+            const data = localStorage.getItem('cc_user_data')
             const storage = data ? localStorage : sessionStorage
             storage.setItem('сс_main_user_info', getStringFromJson(payload))
         }

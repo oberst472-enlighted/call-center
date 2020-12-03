@@ -87,13 +87,14 @@ export default {
         }
     },
     computed: {
-        ...mapGetters('middleware', ['isAdmin', 'isAuth', 'isOperator']),
+        ...mapGetters('middleware', ['isAdmin', 'isAuth', 'isOperator', 'isRememberMe']),
         isFormFilled() {
             return Boolean(this.form.username && this.form.password)
         }
     },
     methods: {
         ...mapMutations('alerts', ['ADD_ALERT']),
+        ...mapMutations(['TOGGLE_PROGRESS_LOGIN_ACTIVE']),
         ...mapActions('login', ['stLogin']),
         ...mapActions('users', ['stGetUserById', 'stGetUsers']),
         ...mapActions('calls', ['stGetAllCallsForTheCurrentSession', 'stGetAllCalls']),
@@ -116,14 +117,17 @@ export default {
                         } else {
                             this.isError = true
                             this.isLoading = false
+                            this.TOGGLE_PROGRESS_LOGIN_ACTIVE(false)
                         }
                     } else {
                         this.showEmptyErrors()
                         this.isLoading = false
+                        this.TOGGLE_PROGRESS_LOGIN_ACTIVE(false)
                     }
                 } catch (e) {
                     console.log(e)
                     this.ADD_ALERT(['negative'])
+                    this.TOGGLE_PROGRESS_LOGIN_ACTIVE(false)
                 }
             }
 
@@ -140,15 +144,14 @@ export default {
             storage.setItem('token', payload.token)
             storage.setItem('сс_main_user_info', JSON.stringify(payload.user))
 
-
         },
         toggleSaveLoginAndPasswordInStorage(val) {
             if (this.rememberMe) {
                 val ?
-                    localStorage.setItem('userData', JSON.stringify(this.form)) :
-                    localStorage.removeItem('userData')
+                    localStorage.setItem('cc_user_data', JSON.stringify(this.form)) :
+                    localStorage.removeItem('cc_user_data')
             } else {
-                localStorage.removeItem('userData')
+                localStorage.removeItem('cc_user_data')
             }
         },
         showEmptyErrors() {
@@ -165,20 +168,24 @@ export default {
                 const isSuccess = await this.loadInitialAdminData()
                 if (isSuccess) {
                     this.$router.push({name: `home_admin`, params: {doNotLoadData: true}})
+                    this.TOGGLE_PROGRESS_LOGIN_ACTIVE(false)
                 } else {
                     this.ADD_ALERT(['negative'])
+                    this.TOGGLE_PROGRESS_LOGIN_ACTIVE(false)
                 }
                 this.isLoading = false
             } else if (payload.user.role === 'operator') {
                 const isSuccess = await this.loadInitialData()
                 if (isSuccess) {
                     this.$router.push({name: `home_operator`, params: {doNotLoadData: true}})
+                    // this.TOGGLE_PROGRESS_LOGIN_ACTIVE(false)
                 } else {
                     this.ADD_ALERT(['negative'])
+                    this.TOGGLE_PROGRESS_LOGIN_ACTIVE(false)
+
                 }
                 this.isLoading = false
-            }
-            else {
+            } else {
                 this.isLoading = false
                 this.ADD_ALERT(['negative'])
             }
@@ -212,8 +219,6 @@ export default {
                 return false
             }
         }
-
-
     },
     watch: {
         'form.username'(val) {
@@ -234,14 +239,24 @@ export default {
             this.toggleSaveLoginAndPasswordInStorage(val)
         }
     },
-    created() {
-        const data = localStorage.getItem('userData')
-        if (data) {
-            this.rememberMe = true
-            this.form.username = JSON.parse(data).username
-            this.form.password = JSON.parse(data).password
-        }
-    }
+    async created() {
+            if (this.isRememberMe) {
+                this.rememberMe = true
+                this.form.username = JSON.parse(localStorage.getItem('cc_user_data')).username
+                this.form.password = JSON.parse(localStorage.getItem('cc_user_data')).password
+            }
+            if (this.isRememberMe && !this.$route.params.noRemember) {
+                this.TOGGLE_PROGRESS_LOGIN_ACTIVE()
+                await this.send()
+            }
+    },
+    // beforeRouteEnter(to, from, next) {
+    //     if(localStorage.getItem('cc_user_data')) {
+    //
+    //     }
+    //
+    //     next()
+    // },
 }
 </script>
 

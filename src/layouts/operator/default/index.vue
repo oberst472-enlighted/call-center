@@ -80,6 +80,7 @@ export default {
             store.dispatch('stat/stGetStatForTheSession'),
             // store.dispatch('stat/stGetAdminStat'),
         ])
+        store.commit('TOGGLE_PROGRESS_LOGIN_ACTIVE', false)
         next()
     },
 }

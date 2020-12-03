@@ -1,11 +1,18 @@
 <template>
     <div class="error">
         <h1>404</h1>
+        <router-link :to="{name: isAdmin ? 'home_admin' : 'home_operator'}">На главную</router-link>
     </div>
 </template>
 
 <script>
-export default {}
+import {mapGetters} from 'vuex'
+
+export default {
+    computed: {
+        ...mapGetters('middleware', ['isAdmin', 'isOperator', 'isAuth', 'isRememberMe'])
+    }
+}
 </script>
 
 <style scoped lang="scss">
@@ -13,7 +20,19 @@ export default {}
     width: 100vw;
     height: 100vh;
     display: flex;
+    color: $color--primary;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    a {
+        text-decoration: none;
+        color: $color--primary;
+        border: 1px solid $color--primary;
+        padding: 5px;
+        border-radius: 3px;
+        &:hover {
+            opacity: 0.6;
+        }
+    }
 }
 </style>

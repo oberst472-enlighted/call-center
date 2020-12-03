@@ -6,8 +6,9 @@
                 <span class="user-shortstory__last-name">{{ mainUserInfo.last_name }}</span>
                 <div class="user-shortstory__role">{{ mainUserInfo.role === 'administrator' ? 'администратор' : 'оператор' }}</div>
             </div>
+
             <div class="user-shortstory__img">
-                <img src="assets/images/user-placeholder.svg" alt="">
+                <img src="/assets/images/user-placeholder.svg" alt="">
             </div>
         </div>
         <div class="user-shortstory__options" tabindex="-1" v-if="isAdmin">

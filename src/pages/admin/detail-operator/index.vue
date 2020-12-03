@@ -18,7 +18,7 @@
                         </div>
                     </div>
                     <div class="page-profile__btns">
-                        <UiBtn class="page-profile__btn" theme="primary">Изменить</UiBtn>
+                        <UiBtn :to="{name: 'edit-info_operator', params: {id: userInfo.id}}" class="page-profile__btn" theme="primary">Изменить</UiBtn>
                         <UiBtn class="page-profile__btn" theme="negative">Блокировать оператора</UiBtn>
                     </div>
                     <div class="page-profile__calls">
@@ -35,6 +35,7 @@
                                 v-for="item in allCallsUserById"
                                 :key="item.id"
                                 :info="item"
+                                no-operator-info
                                 :to="{name: 'detail-call_admin', params: {id: item.id}}"
                             />
                         </SectionBox>

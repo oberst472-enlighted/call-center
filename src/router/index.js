@@ -193,6 +193,15 @@ const router = new VueRouter({
                     }
                 },
                 {
+                    path: '/edit-profile-operator/:id',
+                    name: 'edit-info_operator',
+                    components: {
+                        default: require('@/pages/admin/edit-info-operator').default,
+                        header: require('@/components/sections/header-admin/').default,
+                        aside: require('@/components/sections/aside/').default,
+                    }
+                },
+                {
                     path: 'admin/detail-call/:id',
                     name: 'detail-call_admin',
                     components: {

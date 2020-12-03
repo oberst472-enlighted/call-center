@@ -93,6 +93,8 @@ export default {
     .block-stat {
         display: flex;
         &__title {
+            display: flex;
+            justify-content: center;
             width: 100%;
             text-align: center;
             color: #685c7b;

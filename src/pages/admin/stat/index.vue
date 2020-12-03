@@ -18,6 +18,7 @@
                             />
                         </component>
                     </div>
+
                     <div class="page-stat__inp page-stat__inp-last-operators">
                         <UiSelect
                             class="block-download-csv__select"
@@ -28,6 +29,7 @@
                             shadow
                         />
                     </div>
+
                     <div class="page-stat__inp page-stat__inp-statuses">
                         <UiSelect
                             class="block-download-csv__select"
@@ -62,30 +64,31 @@ export default {
             periodVal: null,
             periodString: '',
             periodKey: 1,
-            statusVal: ''
+            statusVal: '',
+            operatorVal: ''
 
         }
     },
     computed: {
+        ...mapState('csv', ['statuses']),
+        ...mapState('users', ['users']),
         modifiedStatuses() {
-            return [
-                {title: 'Принято', code: '1', id: 'all'},
-                {title: 'Отклонено', code: '2', id: 'all'},
-                {title: 'Завершено', code: '3', id: 'all'},
+            const arr = [
+                {title: 'Все статусы', code: 'all', id: '1'}
             ]
-            // const stats = [...this.statuses]
-            // stats.unshift({title: 'Все статусы', code: '', id: 'all'})
-            // return stats
+            for (let value in this.statuses) {
+                arr.push({title: this.statuses[value], code: value, id: value})
+            }
+            return arr
         },
         modifiedOperators() {
-            return [
-                {title: 'Опаратор', code: '1', id: 'all'},
-                {title: 'Оператор 1', code: '2', id: 'all'},
-                {title: 'Оператор 2', code: '3', id: 'all'},
+            const arr = [
+                {title: 'Все операторы', code: 'all', id: '1'}
             ]
-            // const stats = [...this.statuses]
-            // stats.unshift({title: 'Все статусы', code: '', id: 'all'})
-            // return stats
+            this.users.forEach(item => {
+                arr.push({title: `${item.first_name} ${item.last_name}`, code: item.id, id: item.id})
+            })
+            return arr
         },
     },
     methods: {
@@ -104,26 +107,37 @@ export default {
             this.statusVal = payload.code
         },
         changeOperator(payload) {
-            this.statusVal = payload.code
+            this.operatorVal = payload.code
         },
         async sendInfo() {
-            const res = await this.stDownloadCsw(this.$route.params.id)
+
+            const from = Math.round(+new Date(this.periodVal.start) / 1000)
+            const to = Math.round(+new Date(this.periodVal.end) / 1000)
+
+            const params = `?from=${from}&to=${to}&status=${this.statusVal}&user=${this.operatorVal}`
+            const res = await this.stDownloadCsw(params)
             window.open(res.data.file)
+        },
+    },
+    async beforeRouteEnter(to, from, next) {
+        store.commit('TOGGLE_PROGRESS_ACTIVE')
+        try {
+            const response = await Promise.all([
+                store.dispatch('csv/stGetAllStatuses'),
+                store.dispatch('users/stGetUsers')
+            ])
+            const isSuccess = response.every(item => item)
+            if (isSuccess) {
+                next()
+            } else {
+                next(false)
+            }
+        } catch (e) {
+            console.log(e)
+        } finally {
+            store.commit('TOGGLE_PROGRESS_ACTIVE', false)
         }
     },
-    // async beforeRouteEnter(to, from, next) {
-    //     const response = await Promise.all([
-    //         // store.dispatch('users/stGetUserById', infoObj),
-    //     ])
-    //     const isSuccess = response.every(item => item)
-    //     if (isSuccess) {
-    //         next()
-    //     } else {
-    //         next(false)
-    //         // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
-    //     }
-    //     // store.dispatch('toggleLoading', false)
-    // },
 }
 </script>
 

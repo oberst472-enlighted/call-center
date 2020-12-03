@@ -34,6 +34,12 @@ hr{
     color: $color--positive !important;
 }
 
+.video-radius-fix {
+    -webkit-mask-image: -webkit-radial-gradient(circle, white 100%, black 100%);
+    -webkit-transform: rotate(0.000001deg);
+    -webkit-border-radius: 10px;
+}
+
 
 //Animation for call
 

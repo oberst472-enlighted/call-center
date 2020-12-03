@@ -1,18 +1,18 @@
 <template>
     <div class="block-input-period">
-                <span
-                    class="block-input-period__placeholder"
-                    v-if="!showPlaceholder"
-                >
-                    {{ placeholder }}
-                </span>
+        <span
+            class="block-input-period__placeholder"
+            v-if="!showPlaceholder"
+        >
+            {{ placeholder }}
+        </span>
         <VueCtkDateTimePicker
             @is-shown="show"
             @is-hidden="$emit('hidden')"
             class="block-input-period__period"
             v-model="periodVal"
             formatted="DD.MM.YYYY"
-            format="YYYY-MM-DD"
+            format="MM/DD/YYYY"
             color="#6749E8"
             locale="ru"
             overlay

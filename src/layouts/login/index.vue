@@ -25,5 +25,8 @@ export default {
 .layout-login {
     width: 100%;
     display: flex;
+    background-image: url("/assets/images/map.webp");
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 </style>

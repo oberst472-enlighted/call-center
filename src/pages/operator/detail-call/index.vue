@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <div class="page-detail-info__video">
-                    <div class="page-detail-info__video__box">
+                    <div class="page-detail-info__video__box video-radius-fix">
                         <video v-if="video" class="page-detail-info__video__video" controls preload :src="video"></video>
                         <div class="page-detail-info__video__text" v-else>Видео <br>отсутствует</div>
                     </div>

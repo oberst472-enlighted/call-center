@@ -298,11 +298,24 @@ export async function apiEditUserById(info) {
 
 
 // csv
-export async function apiDownloadCsw() {
+export async function apiDownloadCsw(params) {
     const userToken = token()
     const options = {
         method: 'get',
-        url: `/api/v1/report/`,
+        url: `/api/v1/report/${params}`,
+        body: null,
+        token: userToken
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+
+//получить все статусы
+export async function apiGetAllStatuses() {
+    const userToken = token()
+    const options = {
+        method: 'get',
+        url: `/api/v1/call-statuses/`,
         body: null,
         token: userToken
     }

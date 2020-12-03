@@ -3,15 +3,13 @@
         <div :class="{'section-header__back-box--active': !isBackBtnActive}" class="section-header__back-box">
             <UiBack @click="$router.go(-1)"/>
         </div>
-        <transition name="fade">
-            <UiBtn
-                v-if="$route.name !== 'create-operator_admin'"
-                :to="{name: 'create-operator_admin'}"
-                class="section-header__add-user-btn"
-            >
-                Добавить сотрудника
-            </UiBtn>
-        </transition>
+        <UiBtn
+            v-if="$route.name !== 'create-operator_admin'"
+            :to="{name: 'create-operator_admin'}"
+            class="section-header__add-user-btn"
+        >
+            Добавить сотрудника
+        </UiBtn>
 
 
         <div class="section-header__user-box">

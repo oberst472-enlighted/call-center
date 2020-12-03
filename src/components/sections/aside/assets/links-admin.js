@@ -22,6 +22,6 @@ export default [
     {
         title: 'Статистика',
         icon: 'IconStat',
-        href: 'stat-admin'
+        href: 'stat_admin'
     }
 ]

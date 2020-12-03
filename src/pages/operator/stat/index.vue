@@ -18,16 +18,7 @@
                             />
                         </component>
                     </div>
-                    <div class="page-stat__inp page-stat__inp-last-operators">
-                        <UiSelect
-                            class="block-download-csv__select"
-                            placeholder="Статус"
-                            :items="modifiedOperators"
-                            default-value="all"
-                            @input="changeOperator"
-                            shadow
-                        />
-                    </div>
+
                     <div class="page-stat__inp page-stat__inp-statuses">
                         <UiSelect
                             class="block-download-csv__select"
@@ -67,15 +58,16 @@ export default {
         }
     },
     computed: {
+        ...mapState('users', ['mainUserInfo']),
+        ...mapState('csv', ['statuses']),
         modifiedStatuses() {
-            return [
-                {title: 'Оператор 1', code: '1', id: 'all'},
-                {title: 'Оператор 2', code: '2', id: 'all'},
-                {title: 'Оператор 3', code: '3', id: 'all'},
+            const arr = [
+                {title: 'Все статусы', code: 'all', id: '1'}
             ]
-            // const stats = [...this.statuses]
-            // stats.unshift({title: 'Все статусы', code: '', id: 'all'})
-            // return stats
+            for (let value in this.statuses) {
+                arr.push({title: this.statuses[value], code: value, id: value})
+            }
+            return arr
         },
         modifiedOperators() {
             return [
@@ -107,23 +99,32 @@ export default {
             this.statusVal = payload.code
         },
         async sendInfo() {
-            const res = await this.stDownloadCsw(this.$route.params.id)
+            const from = Math.round(+new Date(this.periodVal.start) / 1000)
+            const to = Math.round(+new Date(this.periodVal.end) / 1000)
+
+            const params = `?from=${from}&to=${to}&status=${this.statusVal}&user=${this.mainUserInfo.id}`
+            const res = await this.stDownloadCsw(params)
             window.open(res.data.file)
         }
     },
-    // async beforeRouteEnter(to, from, next) {
-    //     const response = await Promise.all([
-    //         // store.dispatch('users/stGetUserById', infoObj),
-    //     ])
-    //     const isSuccess = response.every(item => item)
-    //     if (isSuccess) {
-    //         next()
-    //     } else {
-    //         next(false)
-    //         // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
-    //     }
-    //     // store.dispatch('toggleLoading', false)
-    // },
+    async beforeRouteEnter(to, from, next) {
+        store.commit('TOGGLE_PROGRESS_ACTIVE')
+        try {
+            const response = await Promise.all([
+                store.dispatch('csv/stGetAllStatuses'),
+            ])
+            const isSuccess = response.every(item => item)
+            if (isSuccess) {
+                next()
+            } else {
+                next(false)
+            }
+        } catch (e) {
+            console.log(e)
+        } finally {
+            store.commit('TOGGLE_PROGRESS_ACTIVE', false)
+        }
+    },
 }
 </script>
 
@@ -132,6 +133,7 @@ export default {
     padding-bottom: 30px;
     width: 100%;
     display: flex;
+    align-items: flex-start;
     &__content {
         padding: 30px;
         width: 100%;
@@ -140,16 +142,13 @@ export default {
         grid-gap: 20px;
         grid-auto-rows: minmax(33px, auto);
         grid-template-areas:
-        'calendar operators statuses'
+        'calendar statuses .'
         'save-btn . .';
     }
     &__inp {
         //outline: 1px solid red;
         &-calendar {
             grid-area: calendar;
-        }
-        &-operators {
-            grid-area: operators;
         }
         &-statuses {
             grid-area: statuses;

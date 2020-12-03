@@ -25,6 +25,10 @@ const router = new VueRouter({
             component: require('@/layouts/logout/').default,
         },
         {
+            path: '*',
+            redirect: '/404'
+        },
+        {
             path: '',
             component: require('@/layouts/login/').default,
             children: [
@@ -299,8 +303,8 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: '/statistics-admin/',
-                    name: 'stat-admin',
+                    path: 'admin/stat/',
+                    name: 'stat_admin',
                     components: {
                         default: require('@/pages/admin/stat').default,
                         header: require('@/components/sections/header-admin/').default,

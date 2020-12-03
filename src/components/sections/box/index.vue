@@ -13,6 +13,7 @@
 
             <div class="section-box__body">
                 <slot/>
+                <div class="section-box__not-content-text" v-if="isNotContent">{{ notContentText }}</div>
             </div>
 
             <UiBtn
@@ -32,6 +33,7 @@
         </div>
         <template v-else>
             <slot name="content"/>
+            <div class="section-box__not-content-text" v-if="isNotContent">{{ notContentText }}</div>
         </template>
     </div>
 </template>
@@ -39,6 +41,14 @@
     <script>
         export default {
             props: {
+                isNotContent: {
+                    type: Boolean,
+                    default: false
+                },
+                notContentText: {
+                    type: String,
+                    default: ''
+                },
                 content: {
                     type: Boolean,
                     default: false
@@ -127,15 +137,7 @@
                 // eslint-disable-next-line no-bitwise
                 this.id = `ref-${(~~(Math.random() * 1e8)).toString(16)}`
             },
-            // mounted() {
-            //     const scrollEl = document.querySelector(`.section-box__content-${this.id}`)
-            //     const el = document.querySelector(`.section-box-${this.id}`)
-            //     scrollEl.addEventListener('scroll', () => {
-            //         this.visible(el)
-            //     })
-            //
-            //     this.visible(el)
-            // }
+
         }
     </script>
 
@@ -194,6 +196,7 @@
                 flex-direction: column;
                 flex-grow: 1;
                 width: 100%;
+                position: relative;
             }
 
             &__content {
@@ -232,6 +235,16 @@
                     padding-top: 0;
                 }
             }
+        }
+        .section-box__not-content-text {
+            position: absolute;
+            color: #65528b;
+            font-size: 12px;
+            font-weight: 500;
+            top: 50%;
+            left: 50%;
+           transform: translate(-50%, -50%);
+
         }
     </style>
 </template>

@@ -209,7 +209,6 @@ export default {
                 this.stGetAllCallsForTheCurrentSession()
                 const response = await Promise.all([
                     await this.stGetUsers(),
-                    this.stGetAdminStat(),
                     this.stGetDevices(),
                     this.stGetAllCalls()
                 ])
@@ -240,12 +239,12 @@ export default {
         }
     },
     async created() {
-            if (this.isRememberMe) {
+            if (localStorage.getItem('cc_user_data')) {
                 this.rememberMe = true
                 this.form.username = JSON.parse(localStorage.getItem('cc_user_data')).username
                 this.form.password = JSON.parse(localStorage.getItem('cc_user_data')).password
             }
-            if (this.isRememberMe && !this.$route.params.noRemember) {
+            if (localStorage.getItem('cc_user_data') && !this.$route.params.noRemember) {
                 this.TOGGLE_PROGRESS_LOGIN_ACTIVE()
                 await this.send()
             }

@@ -6,6 +6,7 @@
                 :items-length="users.length"
                 is-not-pagination
                 title="все сотрудники"
+                subtitle="операторы"
 
             />
         </div>

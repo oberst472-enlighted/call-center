@@ -5,6 +5,8 @@
             gutters
             scroll
             head
+            not-content-text="Нет звонков"
+            :is-not-content="!allCalls.length"
             title="История звонков"
             subtitle="Последние"
             :is-not-pagination="true"

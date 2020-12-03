@@ -24,12 +24,14 @@ export default {
             const storage = this.isRememberMe ? localStorage : sessionStorage
             storage.removeItem('token')
             storage.removeItem('сс_main_user_info')
+            localStorage.removeItem('cc_user_data')
             this.$router.push({name: 'login', params: {noRemember: true}})
         }
         if (this.isOperator) {
             const storage = this.isRememberMe ? localStorage : sessionStorage
             storage.removeItem('token')
             storage.removeItem('сс_main_user_info')
+            localStorage.removeItem('cc_user_data')
             this.$router.push({name: 'login', params: {noRemember: true}})
             this.stSocketDisconnect()
             this.stDisconnectWebrtc()

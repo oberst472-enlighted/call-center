@@ -114,5 +114,8 @@ export default {
     &__img {
         user-select: none;
     }
+    &__role {
+        text-align: right;
+    }
 }
 </style>

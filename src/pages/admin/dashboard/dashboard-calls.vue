@@ -5,6 +5,8 @@
         head
         title="История звонков"
         subtitle="Последние"
+        not-content-text="Нет звонков"
+        :is-not-content="!items.length"
         :is-not-pagination="true"
         class="page-home__call-history-box"
     >
@@ -45,6 +47,7 @@ export default {
 
     }
     .page-home__call-history-cont {
+        height: 100%;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         grid-column-gap: 20px;

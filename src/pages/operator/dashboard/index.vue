@@ -29,6 +29,8 @@
                 gutters
                 head
                 scroll
+                not-content-text="Нет звонков"
+                :is-not-content="!callsPerShift.calls.length"
                 subtitle="Последние"
                 title="История звонков"
                 @download-next-page="downloadNextPageCalls"

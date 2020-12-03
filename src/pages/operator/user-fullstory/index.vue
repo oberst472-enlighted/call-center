@@ -111,10 +111,10 @@ export default {
     },
     computed: {
         ...mapState('webrtc/webrtcCalls', ['isIncomingCall']),
-        ...mapState('terminals', ['items', 'isNotDevicesPagination']),
+        ...mapState('devices', ['items', 'isNotDevicesPagination']),
         ...mapState('stat', ['stat']),
         ...mapState('sessions', ['isSessionBreak']),
-        ...mapState('users', ['userInfo']),
+        ...mapState('users', ['userInfo', 'mainUserInfo']),
     },
     methods: {
         ...mapActions('webrtc/webrtcCalls', ['stClickTheCallBtn']),
@@ -134,28 +134,13 @@ export default {
             this.isLoading = false
         }
     },
-    async beforeRouteEnter(to, from, next) {
-        const info = localStorage.getItem('сс_main_user_info') || sessionStorage.getItem('сс_main_user_info')
-        const infoObj = getJsonFromString(info)
-        const response = await Promise.all([
-            store.dispatch('users/stGetUserById', infoObj.id),
-        ])
-        const isSuccess = response.every(item => item)
-        if (isSuccess) {
-            next()
-        } else {
-            next(false)
-            // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
-        }
-        // store.dispatch('toggleLoading', false)
-    },
     created() {
         // const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
         // const infoObj = getJsonFromString(info)
-        this.form.first_name = this.userInfo.first_name
-        this.form.last_name = this.userInfo.last_name
-        this.form.email = this.userInfo.email
-        this.form.phone = this.userInfo.phone
+        this.form.first_name = this.mainUserInfo.first_name
+        this.form.last_name = this.mainUserInfo.last_name
+        this.form.email = this.mainUserInfo.email
+        this.form.phone = this.mainUserInfo.phone
 
     },
 

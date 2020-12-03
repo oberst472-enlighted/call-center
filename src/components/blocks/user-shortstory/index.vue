@@ -28,13 +28,21 @@
 </template>
 
 <script>
-import {mapState, mapGetters} from 'vuex'
+import {mapState} from 'vuex'
+import {isRoleAdmin} from '@/utils/middleware'
 
 export default {
+    data() {
+        return {
+            isAdmin: false
+        }
+    },
     computed: {
         ...mapState('users', ['mainUserInfo']),
-        ...mapGetters('middleware', ['isAdmin']),
     },
+    mounted() {
+        this.isAdmin = isRoleAdmin()
+    }
 }
 </script>
 

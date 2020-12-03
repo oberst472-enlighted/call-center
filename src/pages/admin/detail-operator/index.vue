@@ -19,7 +19,7 @@
                     </div>
                     <div class="page-profile__btns">
                         <UiBtn :to="{name: 'edit-info_operator', params: {id: userInfo.id}}" class="page-profile__btn" theme="primary">Изменить</UiBtn>
-                        <UiBtn class="page-profile__btn" theme="negative">Блокировать оператора</UiBtn>
+                        <UiBtn class="page-profile__btn" theme="negative" @click="blockUser" :loading="isLoading">Блокировать оператора</UiBtn>
                     </div>
                     <div class="page-profile__calls">
                         <SectionBox
@@ -48,7 +48,7 @@
 
 <script>
 import store from '@/store'
-import {mapState, mapMutations} from 'vuex'
+import {mapState, mapActions, mapMutations} from 'vuex'
 import SectionBox from '@/components/sections/box'
 import BlockCallShortstoryItem from '@/components/blocks/call-shortstory-item'
 // import BlockFile from '@/components/blocks/file'
@@ -62,6 +62,7 @@ export default {
     data() {
         return {
             isLoading: false,
+            isSuccess: false
 
         }
     },
@@ -73,6 +74,26 @@ export default {
         }
     },
     methods: {
+        ...mapMutations('alerts', ['ADD_ALERT']),
+        ...mapActions('users', ['stBlockUser']),
+        async blockUser() {
+            this.isLoading = true
+            try {
+                const isSuccess = await this.stBlockUser(this.$route.params.id)
+                if (isSuccess) {
+                    this.ADD_ALERT(['positive', 'Оператор заблокирован'])
+                    this.$router.push({name: 'users_admin'})
+                }
+                else {
+                    this.ADD_ALERT(['negative', 'Оператор не заблокирован. Перезагрузите страницу и попробуйте повторить операцию'])
+                }
+            } catch (e) {
+                console.log(e)
+                this.ADD_ALERT(['negative', 'Оператор не заблокирован. Перезагрузите страницу и попробуйте повторить операцию'])
+            } finally {
+                this.isLoading = false
+            }
+        }
     },
     async beforeRouteEnter(to, from, next) {
         store.commit('TOGGLE_PROGRESS_ACTIVE')

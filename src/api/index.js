@@ -342,6 +342,19 @@ export async function apiSendVideo(info) {
     return response
 }
 
+//заблокировать оператора
+export async function apiBlockUser(id) {
+    const userToken = token()
+    const options = {
+        method: 'post',
+        url: `/api/v1/users/${id}/block`,
+        body: null,
+        token: userToken
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+
 
 
 export const apiDownloadMedia = async function(formData) {

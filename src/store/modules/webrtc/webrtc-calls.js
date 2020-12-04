@@ -6,7 +6,7 @@ import {getJsonFromString, getStringFromJson} from '@/utils/json'
 export default {
     namespaced: true,
     state: {
-
+        progressDownloadVideo: 0,
         callID: '',
         videoToken: '',
         videoID: '',
@@ -35,6 +35,9 @@ export default {
     mutations: {
         TOGGLE_IS_OPERATOR_BUSY(state, payload = true) {
             state.isOperatorBusy = payload
+        },
+        SET_IS_PROGRESS_DOWNLOAD_VIDEO(state, payload = false) {
+            state.progressDownloadVideo = payload
         },
         TOGGLE_CALL_ANSWERED(state, payload = true) {
             state.isCallAnswered = payload

@@ -1,5 +1,5 @@
 import axios from 'axios'
-
+import store from '@/store'
 export const axiosUrl = async function({method, url, body, token}) {
     if (method.toUpperCase() === 'GET') {
         try {
@@ -47,7 +47,6 @@ export const axiosUrl = async function({method, url, body, token}) {
     }
 }
 
-
 export const axiosFormData = async function({method, url, body, token}) {
         try {
             return await axios({
@@ -56,6 +55,9 @@ export const axiosFormData = async function({method, url, body, token}) {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                         Authorization: `token ${token}`
+                },
+                onUploadProgress: uploadedEvent => {
+                    store.commit('webrtc/webrtcCalls/SET_IS_PROGRESS_DOWNLOAD_VIDEO', Math.round(uploadedEvent.loaded / uploadedEvent.total * 100))
                 },
                 data: body
             })

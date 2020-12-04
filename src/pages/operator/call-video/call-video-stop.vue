@@ -1,5 +1,10 @@
 <template>
     <div class="block-stop">
+        <div class="block-stop__progress" v-if="Number(progressDownloadVideo)">
+            <p class="block-stop__progress-title">Идет сохранение видео! <br> Не перезагружайте страницу!</p>
+            <span class="block-stop__progress-count">{{ progressDownloadVideo }} %</span>
+        </div>
+
         <div class="block-stop__text">
             <span>Звонок завершен</span>
             <span>{{ role }}</span>
@@ -14,17 +19,30 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapMutations} from 'vuex'
 import {convertSecondsToHMS} from '@/utils/convertDateTime'
 
 export default {
     computed: {
-        ...mapState('webrtc/webrtcCalls', ['whoStoppedTheCall', 'allCallTime']),
+        ...mapState('webrtc/webrtcCalls', ['whoStoppedTheCall', 'allCallTime', 'progressDownloadVideo']),
         role() {
             return this.whoStoppedTheCall === 'user' ? 'Оператором' : ' Клиентом'
         },
         time() {
             return convertSecondsToHMS(Math.round(this.allCallTime / 1000))
+        }
+    },
+    methods: {
+        ...mapMutations('webrtc/webrtcCalls', ['SET_IS_PROGRESS_DOWNLOAD_VIDEO'])
+    },
+    watch: {
+        progressDownloadVideo: {
+            immediate: true,
+            handler(val) {
+                if (Number(val === 100)) {
+                    this.SET_IS_PROGRESS_DOWNLOAD_VIDEO(0)
+                }
+            }
         }
     }
 }
@@ -36,6 +54,29 @@ export default {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    &__progress {
+        position: absolute;
+        top: 0;
+        left: calc(50%);
+        transform: translateX(-50%);
+        background-color: rgba(#fff, 0.1);
+        padding: 30px;
+        color: #fff;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        text-transform: lowercase;
+        text-align: center;
+        &-title {
+            font-size: 20px;
+            color: rgba(#fff, 0.7)
+        }
+        &-count {
+            font-size: 30px;
+            margin-top: 15px;
+            display: block;
+            color: $color--positive
+        }
+    }
 
     &__text {
         display: flex;

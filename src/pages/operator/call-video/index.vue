@@ -178,10 +178,8 @@ export default {
             this.recorder.startRecording()
         },
         stopRecord() {
-
             if (this.recorder) {
                 this.recorder.stopRecording(() => {
-
                     const blob = this.recorder.getBlob()
                     const data = new FormData()
 

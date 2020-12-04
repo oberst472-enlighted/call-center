@@ -12,6 +12,7 @@
                             Имя <span class="negative">*</span>
                         </UiInput>
                     </div>
+
                     <div class="page-profile__inp page-profile__inp-last-name">
                         <UiInput
                             v-model="form.last_name"
@@ -21,6 +22,7 @@
                             Фамилия <span class="negative">*</span>
                         </UiInput>
                     </div>
+
                     <div class="page-profile__inp page-profile__inp-email">
                         <UiInput
                             v-model="form.email"
@@ -56,11 +58,13 @@
                     </div>
 
                     <div class="page-profile__inp page-profile__inp-file">
-                        <BlockDragFile>
-                            <!-- v-model="form.photo"-->
-                            <!--                            :default-value="form.photo"-->
-                            <!--                            />-->
-                        </blockdragfile>
+
+                        <!--                        <BlockDragFile>-->
+                        <!--                            &lt;!&ndash; v-model="form.photo"&ndash;&gt;-->
+                        <!--                            &lt;!&ndash;                            :default-value="form.photo"&ndash;&gt;-->
+                        <!--                            &lt;!&ndash;                            />&ndash;&gt;-->
+                        <!--                        </blockdragfile>-->
+                        <BlockDownloadAvatar @change="sendFile">Загрузите аватар</BlockDownloadAvatar>
                     </div>
 
                     <div class="page-profile__inp page-profile__inp-save-btn">
@@ -77,12 +81,14 @@ import store from '@/store'
 import {mapActions, mapMutations, mapState} from 'vuex'
 import SectionBox from '@/components/sections/box'
 // import BlockFile from '@/components/blocks/file'
+import BlockDownloadAvatar from '@/components/blocks/downlaod-avatar'
 import BlockDragFile from '@/components/blocks/drag-and-drop-file'
 import {getJsonFromString} from '@/utils/json'
 
 export default {
     components: {
         SectionBox,
+        BlockDownloadAvatar,
         // BlockFile
         BlockDragFile
     },
@@ -120,6 +126,9 @@ export default {
         ...mapActions('webrtc/webrtcCalls', ['stClickTheCallBtn']),
         ...mapActions('users', ['stEditUserById']),
         ...mapMutations('alerts', ['ADD_ALERT']),
+        sendFile(val) {
+            this.form.photo = val
+        },
         async sendInfo() {
             this.isLoading = true
             const info = localStorage.getItem('сс_main_user_info') || sessionStorage.getItem('сс_main_user_info')

@@ -30,8 +30,8 @@ export default {
     // extends: Line,
     props: {
         items: {
-            type: Array,
-            default: () => []
+            type: Object,
+            default: null
         },
     },
     methods: {},

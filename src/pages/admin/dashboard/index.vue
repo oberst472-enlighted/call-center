@@ -9,7 +9,7 @@
         </div>
 
         <div class="page-home__stat-call">
-            <LocalDashboardGraph/>
+            <LocalDashboardGraph :items="adminStat.success_statistic"/>
         </div>
 
         <div class="page-home__rating">

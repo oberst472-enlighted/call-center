@@ -7,8 +7,8 @@
         >
             <template #content>
                 <div class="page-home__rating-title">Оценка качества обслуживания</div>
-                <span class="page-home__rating-count">3.14</span>
-                <UiStars/>
+                <span class="page-home__rating-count">4.2</span>
+                <UiStars class="page-home__rating-star"/>
             </template>
         </SectionBox>
     </div>
@@ -50,6 +50,11 @@ export default {
         color: #65528b;
         font-size: 49px;
         margin-bottom: 22px;
+    }
+    &-star {
+        /deep/ .ui-icon:not(:last-of-type) {
+            color: $color--primary
+        }
     }
 }
 </style>

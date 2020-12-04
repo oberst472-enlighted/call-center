@@ -17,22 +17,22 @@ export default {
     display: inline-flex;
     color: #D9D5DE;
 
-    &:hover {
-        .ui-stars__item {
-            color: $color--primary;
-        }
-    }
-
-    &__item {
-        cursor: pointer;
-        transition-duration: 0.3s;
-
-        &:hover {
-
-            & ~ * {
-                color: #D9D5DE !important;
-            }
-        }
-    }
+    //&:hover {
+    //    .ui-stars__item {
+    //        color: $color--primary;
+    //    }
+    //}
+    //
+    //&__item {
+    //    cursor: pointer;
+    //    transition-duration: 0.3s;
+    //
+    //    &:hover {
+    //
+    //        & ~ * {
+    //            color: #D9D5DE !important;
+    //        }
+    //    }
+    //}
 }
 </style>

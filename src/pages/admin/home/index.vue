@@ -34,14 +34,12 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
 import SectionBox from '@/components/sections/box'
 export default {
     components: {
         SectionBox
     },
     computed: {
-        ...mapGetters('middleware', ['isAdmin', 'isAuth'])
     }
 }
 </script>

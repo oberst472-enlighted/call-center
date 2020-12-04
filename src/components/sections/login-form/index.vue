@@ -95,7 +95,7 @@ export default {
     methods: {
         ...mapMutations('alerts', ['ADD_ALERT']),
         ...mapMutations(['TOGGLE_PROGRESS_LOGIN_ACTIVE']),
-        ...mapActions('login', ['stLogin']),
+        ...mapActions('login', ['stLogin', 'stGetAllPasswordResetRequests']),
         ...mapActions('users', ['stGetUserById', 'stGetUsers']),
         ...mapActions('calls', ['stGetAllCallsForTheCurrentSession', 'stGetAllCalls']),
         ...mapActions('devices', ['stGetDevices']),
@@ -206,11 +206,14 @@ export default {
         },
         async loadInitialAdminData() {
             try {
-                this.stGetAllCallsForTheCurrentSession()
+                // this.stGetAllCallsForTheCurrentSession()
                 const response = await Promise.all([
                     await this.stGetUsers(),
                     this.stGetDevices(),
-                    this.stGetAllCalls()
+                    this.stGetAdminStat(),
+                    this.stGetAllCalls(),
+                    this.stGetAllPasswordResetRequests()
+
                 ])
                 const isSuccess = response.every(item => item)
                 return isSuccess

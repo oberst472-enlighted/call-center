@@ -1,4 +1,4 @@
-import {apiGetAllCallsPerWorkShift, apiGetAllCallsById, apiSendACommentToTheCall, apiGetAllCalls, apiGetDetailCallInfo} from '@/api'
+import {apiGetAllCallsForASession, apiGetAllCallsById, apiSendACommentToTheCall, apiGetAllCalls, apiGetDetailCallInfo} from '@/api'
 
 export default {
     namespaced: true,
@@ -66,7 +66,7 @@ export default {
             commit('TOGGLE_CALLS_PER_SHIFT_LOADING')
             let isSuccess = false
             try {
-                const response = await apiGetAllCallsPerWorkShift(state.callsPerShift.filters)
+                const response = await apiGetAllCallsForASession(state.callsPerShift.filters)
                 if (
                     Boolean(response) &&
                     response.status < 300 &&

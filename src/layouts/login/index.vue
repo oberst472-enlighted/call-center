@@ -1,6 +1,6 @@
 <template>
     <div class="layout-login">
-        <transition name="fade" mode="out-in">
+        <transition name="fadereset" mode="out-in">
             <router-view/>
         </transition>
     </div>
@@ -22,6 +22,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.fadereset-enter-active, .fadereset-leave-active {
+    transition: opacity 0.1s;
+}
+.fadereset-enter, .fadereset-leave-to {
+    opacity: 0;
+}
 .layout-login {
     width: 100%;
     display: flex;

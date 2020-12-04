@@ -19,7 +19,7 @@
 
             <div class="section-reset-password__inp-box">
                 <UiInput
-                    v-model="form.username"
+                    v-model="form.user"
                     :is-empty="isLoginEmpty"
                     icon="iconUser"
                     placeholder="Введите логин"
@@ -29,7 +29,7 @@
 
         <div class="section-reset-password__footer">
             <div class="section-reset-password__btn-box">
-                <UiBtn :loading="isLoading">Запросить новый пароль</UiBtn>
+                <UiBtn :loading="isLoading" @click="send">Запросить новый пароль</UiBtn>
             </div>
 
             <div class="section-reset-password__pass-box">
@@ -41,7 +41,7 @@
 
 <script>
 import BlockFormHeader from '@/components/blocks/form-header'
-import {mapActions} from 'vuex'
+import {mapActions, mapMutations} from 'vuex'
 
 export default {
     components: {
@@ -50,7 +50,7 @@ export default {
     data() {
         return {
             form: {
-                username: '',
+                user: '',
             },
             isError: false,
             isLoading: false,
@@ -65,47 +65,46 @@ export default {
     },
     computed: {
         isFormFilled() {
-            return Boolean(this.form.username)
+            return Boolean(this.form.user)
         }
     },
     methods: {
-        ...mapActions('login', ['stLogin']),
-        ...mapActions('users', ['stGetUserById']),
-        ...mapActions('alerts', ['showAlert']),
+        ...mapActions('login', ['stResetPassword']),
+        ...mapMutations('alerts', ['ADD_ALERT']),
         async send() {
-            // if (!this.isLoading) {
-            //     try {
-            //         if (this.isFormFilled) {
-            //             this.isError = false
-            //             this.isLoading = true
-            //             const response = await this.stLogin(this.form)
-            //             if (response.isSuccess) {
-            //                 this.saveInfoOnStorage(response.response.data)
-            //
-            //             } else {
-            //                 this.isError = true
-            //             }
-            //         } else {
-            //             this.showEmptyErrors()
-            //             console.error('Одно или несколько полей формы пусты')
-            //         }
-            //     } catch {
-            //         this.showAlert(['negative', 'Возник системный сбой, перезагрузите страницу и повторите операцию!'])
-            //         console.error('Системный сбой')
-            //     } finally {
-            //         this.isLoading = false
-            //     }
-            // }
+            if (!this.isLoading) {
+                try {
+                    if (this.isFormFilled) {
+                        this.isError = false
+                        this.isLoading = true
+                        const response = await this.stResetPassword(this.form)
+                        if (response.isSuccess) {
+                            console.log(response.response)
+
+                        } else {
+                            this.isError = true
+                        }
+                    } else {
+                        this.showEmptyErrors()
+                        console.error('Одно или несколько полей формы пусты')
+                    }
+                } catch (e) {
+                    this.ADD_ALERT(['negative', 'Запрос на восстановленое пароля не удался. Перезагрузите страницу и посторите операцию'])
+                    console.error(e)
+                } finally {
+                    this.isLoading = false
+                }
+            }
 
         },
         showEmptyErrors() {
-            if (!this.form.username.length) {
+            if (!this.form.user.length) {
                 this.isLoginEmpty = true
             }
         }
     },
     watch: {
-        'form.username'(val) {
+        'form.user'(val) {
             if (val) {
                 this.isLoginEmpty = false
                 this.isError = false

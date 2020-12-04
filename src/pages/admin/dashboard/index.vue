@@ -21,7 +21,7 @@
         </div>
 
         <div class="page-home__password-reset">
-            <LocalDashboardResetPass/>
+            <LocalDashboardResetPass :items="passwordResetRequests"/>
         </div>
 
         <div class="page-home__call-history">
@@ -62,6 +62,7 @@ export default {
         ...mapState('devices', ['items', 'isNotDevicesPagination']),
         ...mapState('stat', ['adminStat']),
         ...mapState('users', ['users']),
+        ...mapState('login', ['passwordResetRequests']),
     },
     methods: {
 
@@ -90,6 +91,7 @@ export default {
                 store.dispatch('calls/stGetAllCalls'),
                 store.dispatch('devices/stGetDevices'),
                 store.dispatch('users/stGetUsers'),
+                store.dispatch('login/stGetAllPasswordResetRequests'),
             ])
             const isSuccess = response.every(item => item)
             if (isSuccess) {

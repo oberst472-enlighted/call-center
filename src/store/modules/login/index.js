@@ -1,4 +1,4 @@
-import {apiLogin, apiResetPassword, apiGetAllPasswordResetRequests} from '@/api'
+import {apiLogin, apiResetPassword, apiGetAllPasswordResetRequests, ApiSetNewPasswordToOperator} from '@/api'
 
 export default {
     namespaced: true,
@@ -13,7 +13,6 @@ export default {
         },
         SET_ALL_PASSWORD_RESET_REQUESTS(state, payload) {
             state.passwordResetRequests = payload
-            console.log(payload)
         }
     },
     actions: {
@@ -27,16 +26,22 @@ export default {
         },
         async stResetPassword(context, form) {
             const response = await apiResetPassword(form)
-            console.log(response)
             if (Boolean(response) && response.status < 300 && response.statusText === 'Created') {
                 return {isSuccess: true, response}
             } else {
                 return {isSuccess: false}
             }
         },
+        async stSetNewPasswordToOperator(context, info) {
+            const response = await ApiSetNewPasswordToOperator(info)
+            if (Boolean(response) && response.status < 300 && response.statusText === 'Created') {
+                return true
+            } else {
+                return false
+            }
+        },
         async stGetAllPasswordResetRequests({commit}, form) {
             const response = await apiGetAllPasswordResetRequests(form)
-            console.log(response.data)
             if (Boolean(response) && response.status < 300 && response.statusText === 'OK') {
                 commit('SET_ALL_PASSWORD_RESET_REQUESTS', response.data)
                 return true

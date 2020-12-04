@@ -3,16 +3,22 @@
         <SectionBox
             class="block-reset-pass__box"
             gutters
-            content
+            scroll
+            head
+            title="Запросы на смену пароля"
+
+
         >
-            <template #content>
-                <div class="block-reset-pass__title">Запросы на смену пароля</div>
-                <div class="block-reset-pass__subbox">
-                    <LocalDashBoardRestPassItem class="block-reset-pass__item" v-for="item in items" :key="item.id" :info="item"/>
-                    <LocalDashBoardRestPassItem class="block-reset-pass__item" v-for="item in items" :key="item.id" :info="item"/>
-                </div>
-                <span class="block-reset-pass__placeholder">Актуальных запросов нет</span>
-            </template>
+            <div class="block-reset-pass__subbox">
+                <LocalDashBoardRestPassItem
+                    class="block-reset-pass__item"
+                    v-for="item in items"
+                    :key="item.id"
+                    :info="item"
+                    :to="{name: 'reset-password_admin', params: {info: item, id: item.id}}"
+                />
+                <span class="block-reset-pass__placeholder" v-if="!items.length">Актуальных запросов нет</span>
+            </div>
         </SectionBox>
     </div>
 </template>
@@ -64,6 +70,9 @@ export default {
         color: #65528b;
         font-size: 12px;
         margin-top: 30px;
+        text-align: center;
+        width: 100%;
+        display: block;
     }
 }
 </style>

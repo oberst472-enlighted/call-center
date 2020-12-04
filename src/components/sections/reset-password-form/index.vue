@@ -78,10 +78,7 @@ export default {
                         this.isError = false
                         this.isLoading = true
                         const response = await this.stResetPassword(this.form)
-                        if (response.isSuccess) {
-                            console.log(response.response)
-
-                        } else {
+                        if (!response.isSuccess) {
                             this.isError = true
                         }
                     } else {

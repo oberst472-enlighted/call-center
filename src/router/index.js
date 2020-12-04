@@ -442,6 +442,26 @@ const router = new VueRouter({
                         }
                     }
                 },
+                {
+                    path: 'admin/reset-password/:id',
+                    name: 'reset-password_admin',
+                    components: {
+                        default: require('@/pages/admin/set-new-password').default,
+                        header: require('@/components/sections/header-admin/').default,
+                        aside: require('@/components/sections/aside/').default,
+                    },
+                    beforeEnter: (to, from, next) => {
+                        if (!isUserAuth()) {
+                            next({name: 'login'})
+                        }
+                        if (!isRoleAdmin()) {
+                            next({name: '404'})
+                        }
+                        else {
+                            next()
+                        }
+                    }
+                },
             ]
         },
     ]

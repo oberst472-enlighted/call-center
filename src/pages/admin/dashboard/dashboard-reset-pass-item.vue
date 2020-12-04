@@ -1,8 +1,8 @@
 <template>
-    <div class="block-reset-pass-item" title="Перейти">
+    <component :is="tag" :to="to" class="block-reset-pass-item" title="Перейти">
         <span class="block-reset-pass-item__name">{{ info.user.first_name }}</span>
         <span class="block-reset-pass-item__name">{{ info.user.last_name }}</span>
-    </div>
+    </component>
 </template>
 
 <script>
@@ -12,7 +12,16 @@ export default {
             type: Object,
             default: null
         },
+        to: {
+            type: Object,
+            default: null
+        },
     },
+    computed: {
+        tag() {
+            return this.to ? 'router-link' : 'span'
+        },
+    }
 }
 </script>
 
@@ -27,6 +36,8 @@ export default {
     cursor: pointer;
     transition-duration: 0.3s;
     user-select: none;
+    text-decoration: none;
+    outline: none;
     &:hover {
         background-color: rgba(102, 83, 138, 0.2);
     }

@@ -13,7 +13,7 @@
 
             <div class="section-box__body">
                 <slot/>
-                <div class="section-box__not-content-text" v-if="isNotContent">{{ notContentText }}</div>
+                <div v-if="isNotContent" class="section-box__not-content-text">{{ notContentText }}</div>
             </div>
 
             <UiBtn
@@ -33,218 +33,225 @@
         </div>
         <template v-else>
             <slot name="content"/>
-            <div class="section-box__not-content-text" v-if="isNotContent">{{ notContentText }}</div>
+            <div v-if="isNotContent" class="section-box__not-content-text">{{ notContentText }}</div>
         </template>
     </div>
 </template>
 
-    <script>
-        export default {
-            props: {
-                isNotContent: {
-                    type: Boolean,
-                    default: false
-                },
-                notContentText: {
-                    type: String,
-                    default: ''
-                },
-                content: {
-                    type: Boolean,
-                    default: false
-                },
-                title: {
-                    type: String,
-                    default: ''
-                },
-                subtitle: {
-                    type: String,
-                    default: ''
-                },
-                head: {
-                    type: Boolean,
-                    default: false
-                },
-                gutters: {
-                    type: Boolean,
-                    default: false
-                },
-                scroll: {
-                    type: Boolean,
-                    default: false
-                },
-                isNotPagination: {
-                    type: Boolean,
-                    default: false
-                },
-                isLoading: {
-                    type: Boolean,
-                    default: false
-                },
-                itemsLength: {
-                    type: Number,
-                    default: 0
-                }
-            },
-            data() {
-                return {
-                    id: '',
-                    isOnce: false,
-                }
-            },
-            computed: {
-                classes() {
-                    return [
-                        {
-                            'section-box--gutters': this.gutters,
-                            'section-box--content-gutters': this.gutters && this.content,
-                            'section-box--scroll': this.scroll,
-                            'section-box--head': this.head
-                        }
-                    ]
-                }
-            },
-            methods: {
-                downloadNextPage() {
-                    if (!this.isNotPagination) {
-                        this.$emit('download-next-page')
-                        this.isOnce = true
-                    }
-                },
-                visible(target) {
-                    const targetPosition = {
-                            top: window.pageYOffset + target.getBoundingClientRect().top,
-                            bottom: window.pageYOffset + target.getBoundingClientRect().bottom
-                        },
-                        windowPosition = {
-                            top: window.pageYOffset,
-                            bottom: window.pageYOffset + document.documentElement.clientHeight
-                        }
-
-                    if (targetPosition.bottom > windowPosition.top && targetPosition.top < windowPosition.bottom) {
-                        if (!this.isOnce) {
-                            this.downloadNextPage()
-                            this.isOnce = true
-                        }
-                    } else {
-                        if (this.isOnce) {
-                            this.isOnce = false
-                        }
-                    }
-                }
-            },
-            created() {
-                // eslint-disable-next-line no-bitwise
-                this.id = `ref-${(~~(Math.random() * 1e8)).toString(16)}`
-            },
-
+<script>
+export default {
+    props: {
+        isNotContent: {
+            type: Boolean,
+            default: false
+        },
+        notContentText: {
+            type: String,
+            default: ''
+        },
+        content: {
+            type: Boolean,
+            default: false
+        },
+        title: {
+            type: String,
+            default: ''
+        },
+        subtitle: {
+            type: String,
+            default: ''
+        },
+        head: {
+            type: Boolean,
+            default: false
+        },
+        gutters: {
+            type: Boolean,
+            default: false
+        },
+        scroll: {
+            type: Boolean,
+            default: false
+        },
+        isNotPagination: {
+            type: Boolean,
+            default: false
+        },
+        isLoading: {
+            type: Boolean,
+            default: false
+        },
+        itemsLength: {
+            type: Number,
+            default: 0
         }
-    </script>
-
-    <style lang="scss" scoped>
-        .section-box {
-            width: 100%;
-            height: 100%;
-            border-radius: 8px;
-            background-color: #fff;
-            box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);
-            overflow: hidden;
-
-            &__head {
-                position: sticky;
-                top: 0;
-                display: flex;
-                align-items: center;
-                min-height: 65px;
-                justify-content: space-between;
-                padding: 15px;
-                background-color: #ffffff;
-                &-text {
-                    display: flex;
-                    flex-direction: column;
+    },
+    data() {
+        return {
+            id: '',
+            isOnce: false,
+        }
+    },
+    computed: {
+        classes() {
+            return [
+                {
+                    'section-box--gutters': this.gutters,
+                    'section-box--content-gutters': this.gutters && this.content,
+                    'section-box--scroll': this.scroll,
+                    'section-box--head': this.head
                 }
-                &-btn {
-                    margin-left: 20px;
-                    /deep/ .ui-btn__item {
-                        background-color: #f4f3f7 !important;
-                        color: $color--primary;
-                        &:hover {
-                            background-color: darken(#f4f3f7, 20%) !important;
-                            color: white !important;
-                        }
-                        &:active {
-                            opacity: 0.7;
-                        }
-                    }
-                }
+            ]
+        }
+    },
+    methods: {
+        downloadNextPage() {
+            if (!this.isNotPagination) {
+                this.$emit('download-next-page')
+                this.isOnce = true
             }
-
-            &__title {
-                font-size: 17px;
-                color: #685c7b;
-                font-weight: 500;
-            }
-
-            &__subtitle {
-                font-size: 14px;
-                font-weight: 400;
-            }
-
-            &__body {
-                //height: 100%;
-                display: flex;
-                flex-direction: column;
-                flex-grow: 1;
-                width: 100%;
-                position: relative;
-            }
-
-            &__content {
-                box-sizing: border-box;
-                display: flex;
-                flex-direction: column;
-                width: 100%;
-                height: 100%;
-                max-height: 100%;
-                overflow: hidden;
-            }
-
-            &__preloader {
-                bottom: 15px;
-                margin: 0 auto;
-            }
-
-            &--gutters {
-                .section-box__body {
-                    padding: $gutter / 2;
+        },
+        visible(target) {
+            const targetPosition = {
+                    top: window.pageYOffset + target.getBoundingClientRect().top,
+                    bottom: window.pageYOffset + target.getBoundingClientRect().bottom
+                },
+                windowPosition = {
+                    top: window.pageYOffset,
+                    bottom: window.pageYOffset + document.documentElement.clientHeight
                 }
 
-            }
-            &--content-gutters {
-                padding: $gutter / 2;
-            }
-
-            &--scroll {
-                .section-box__content {
-                    overflow: auto;
+            if (targetPosition.bottom > windowPosition.top && targetPosition.top < windowPosition.bottom) {
+                if (!this.isOnce) {
+                    this.downloadNextPage()
+                    this.isOnce = true
                 }
-            }
-
-            &--head {
-                .section-box__body {
-                    padding-top: 0;
+            } else {
+                if (this.isOnce) {
+                    this.isOnce = false
                 }
             }
         }
-        .section-box__not-content-text {
-            position: absolute;
-            color: #65528b;
-            font-size: 12px;
-            font-weight: 500;
-            top: 50%;
-            left: 50%;
-           transform: translate(-50%, -50%);
+    },
+    created() {
+        // eslint-disable-next-line no-bitwise
+        this.id = `ref-${(~~(Math.random() * 1e8)).toString(16)}`
+    },
 
+}
+</script>
+
+<style lang="scss" scoped>
+.section-box {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 0 8px rgba(120, 131, 132, 0.12);
+    overflow: hidden;
+
+    &__head {
+        position: sticky;
+        z-index: 2;
+        top: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 65px;
+        padding: 15px;
+        background-color: #ffffff;
+
+        &-text {
+            display: flex;
+            flex-direction: column;
         }
-    </style>
-</template>
+
+        &-btn {
+            margin-left: 20px;
+
+            /deep/ .ui-btn__item {
+                color: $color--primary;
+                background-color: #f4f3f7 !important;
+
+                &:hover {
+                    color: white !important;
+                    background-color: darken(#f4f3f7, 20%) !important;
+                }
+
+                &:active {
+                    opacity: 0.7;
+                }
+            }
+        }
+    }
+
+    &__title {
+        font-size: 17px;
+        color: #685c7b;
+        font-weight: 500;
+    }
+
+    &__subtitle {
+        font-size: 14px;
+        font-weight: 400;
+    }
+
+    &__body {
+        //height: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        width: 100%;
+    }
+
+    &__content {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        max-height: 100%;
+        overflow: hidden;
+    }
+
+    &__preloader {
+        bottom: 15px;
+        margin: 0 auto;
+    }
+
+    &--gutters {
+        .section-box__body {
+            padding: $gutter / 2;
+        }
+
+    }
+
+    &--content-gutters {
+        padding: $gutter / 2;
+    }
+
+    &--scroll {
+        .section-box__content {
+            overflow: auto;
+        }
+    }
+
+    &--head {
+        .section-box__body {
+            padding-top: 0;
+        }
+    }
+}
+
+.section-box__not-content-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 12px;
+    color: #65528b;
+    font-weight: 500;
+    transform: translate(-50%, -50%);
+
+}
+</style>

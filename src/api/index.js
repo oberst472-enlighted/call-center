@@ -6,6 +6,7 @@ const pageSize = 100
 // 0.0.1 Авторизация apiLogin
 // 0.0.2 Заявка на сброс пароля оператором apiResetPassword
 // 0.0.3 Просмотр всех заявок на сброс пароля админом apiGetAllPasswordResetRequests
+// 0.0.4 Установка нового пароля оператору ApiSetNewPasswordToOperator
 
 //---------------- ЮЗЕРЫ
 // 0.0.1 Получить всех юзеров apiGetUsers
@@ -82,6 +83,19 @@ export async function apiGetAllPasswordResetRequests(form) {
     const response = await axiosUrl(options)
     return response
 }
+// 0.0.4 Установка нового пароля оператору
+export async function ApiSetNewPasswordToOperator(info) {
+    const userToken = token()
+    const options = {
+        method: 'post',
+        url: `/api/v1/password-recovery-requests/${info.id}/set-password`,
+        body: info.body,
+        token: userToken
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+
 
 //--- Юзеры
 // 0.0.1 Получить всех юзеров

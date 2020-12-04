@@ -77,6 +77,7 @@ export default {
         ...mapMutations('devices', ['SET_DEVICES_PAGINATION_PAGE']),
         async getAdminStat() {
             await this.stGetAdminStat()
+            await this.stGetUsers()
         }
 
     },

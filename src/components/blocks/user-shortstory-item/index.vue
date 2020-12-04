@@ -9,7 +9,7 @@
         </div>
 
         <div class="block-terminal-shortstory__icons">
-            <UiBadge :theme="theme" class="block-terminal-shortstory__status">{{ status }}</UiBadge>
+            <UiBadge :theme="theme" class="block-terminal-shortstory__status">{{ statusValue }}</UiBadge>
             <IconDots class="block-terminal-shortstory__icon"/>
         </div>
     </article>
@@ -33,11 +33,20 @@ export default {
         tag() {
             return this.to ? 'router-link' : 'button'
         },
-        status() {
-            return this.info.online ? 'Онлайн' : 'Оффлайн'
+        statusValue() {
+            return this.info.status_value
         },
         theme() {
-            return this.info.online ? 'positive' : 'negative'
+            switch (this.info.status) {
+                case 'online':
+                    return 'positive';
+                case 'offline':
+                    return 'negative';
+                case 'on_break':
+                    return 'onbreak';
+                case 'on_call':
+                    return 'oncall';
+            }
         }
     }
 }

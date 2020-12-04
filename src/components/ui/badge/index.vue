@@ -44,6 +44,14 @@ export default {
             background-color: rgb(252, 239, 242);
             color: rgb(243, 115, 140);
         }
+        &--onbreak {
+            background-color: #F2F9FC;
+            color: #3E58FF;
+        }
+        &--oncall {
+            background-color: #F7F1FF;
+            color: #65528B;
+        }
     }
 }
 </style>

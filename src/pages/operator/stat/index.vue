@@ -1,9 +1,8 @@
 <template>
     <section class="page-stat">
         <SectionDownloadCsv
-            :statuses="modifiedStatuses"
-            :operators="modifiedOperators"
             :loading="isLoading"
+            :statuses="modifiedStatuses"
             @submit="sendInfo"
         />
     </section>
@@ -12,7 +11,8 @@
 <script>
 import store from '@/store'
 import SectionDownloadCsv from '@/components/sections/downlaod-csv-form'
-import {mapState, mapActions} from 'vuex'
+import {mapActions, mapMutations, mapState} from 'vuex'
+
 export default {
     components: {
         SectionDownloadCsv
@@ -34,29 +34,23 @@ export default {
             }
             return arr
         },
-        modifiedOperators() {
-            return [
-                {title: 'Принято', code: '1', id: 'all'},
-                {title: 'Не принято', code: '2', id: 'all'},
-                {title: 'Закрыто', code: '3', id: 'all'},
-            ]
-            // const stats = [...this.statuses]
-            // stats.unshift({title: 'Все статусы', code: '', id: 'all'})
-            // return stats
-        },
     },
     methods: {
         ...mapActions('csv', ['stDownloadCsw']),
+        ...mapMutations('alerts', ['ADD_ALERT']),
         async sendInfo(payload) {
             this.isLoading = true
-
-            const params = `?from=${payload.from}&to=${payload.to}&status=${payload.status}&user=${this.mainUserInfo.id}`
-            const res = await this.stDownloadCsw(params)
-            if (res) {
+            try {
+                const params = `?from=${payload.from}&to=${payload.to}&status=${payload.status}&user=${this.mainUserInfo.id}`
+                const res = await this.stDownloadCsw(params)
+                res ? window.open(res.data.file) : this.ADD_ALERT(['negative'])
+            } catch (e) {
+                console.error(e)
+                this.ADD_ALERT(['negative'])
+            } finally {
                 this.isLoading = false
             }
-            window.open(res.data.file)
-        }
+        },
     },
     async beforeRouteEnter(to, from, next) {
         store.commit('TOGGLE_PROGRESS_ACTIVE')
@@ -75,12 +69,12 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .page-stat {
-    padding-bottom: 30px;
-    width: 100%;
     display: flex;
     align-items: flex-start;
+    width: 100%;
+    padding-bottom: 30px;
 
 }
 </style>

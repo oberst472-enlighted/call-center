@@ -1,72 +1,25 @@
 <template>
     <section class="page-stat">
-        <SectionBox :is-not-pagination="true" content>
-            <template #content>
-                <div class="page-stat__content">
-                    <div class="page-stat__inp page-stat__inp-first-calendar">
-                        <component
-                            :is="`div`"
-                            :key="periodKey"
-                        >
-                            <UiInputPeriod
-                                class="block-download-csv__select-period"
-                                :show-placeholder="Boolean(periodVal)"
-                                @show="openPeriod"
-                                @hidden="closePeriod"
-                                @input="periodVal = $event"
-                                placeholder="За все время"
-                            />
-                        </component>
-                    </div>
-
-                    <div class="page-stat__inp page-stat__inp-last-operators">
-                        <UiSelect
-                            class="block-download-csv__select"
-                            placeholder="Статус"
-                            :items="modifiedOperators"
-                            default-value="all"
-                            @input="changeOperator"
-                            shadow
-                        />
-                    </div>
-
-                    <div class="page-stat__inp page-stat__inp-statuses">
-                        <UiSelect
-                            class="block-download-csv__select"
-                            placeholder="Статус"
-                            :items="modifiedStatuses"
-                            default-value="all"
-                            @input="changeStatus"
-                            shadow
-                        />
-                    </div>
-
-
-                    <div class="page-stat__inp page-stat__inp-save-btn">
-                        <UiBtn @click="sendInfo">Выгрузить</UiBtn>
-                    </div>
-                </div>
-            </template>
-        </SectionBox>
+        <SectionDownloadCsv
+            :statuses="modifiedStatuses"
+            :operators="modifiedOperators"
+            :loading="isLoading"
+            @submit="sendInfo"
+        />
     </section>
 </template>
 
 <script>
 import store from '@/store'
-import {mapState, mapActions} from 'vuex'
-import SectionBox from '@/components/sections/box'
+import {mapState, mapActions, mapMutations} from 'vuex'
+import SectionDownloadCsv from '@/components/sections/downlaod-csv-form'
 export default {
     components: {
-        SectionBox,
+        SectionDownloadCsv,
     },
     data() {
         return {
-            periodVal: null,
-            periodString: '',
-            periodKey: 1,
-            statusVal: '',
-            operatorVal: ''
-
+            isLoading: false
         }
     },
     computed: {
@@ -93,30 +46,19 @@ export default {
     },
     methods: {
         ...mapActions('csv', ['stDownloadCsw']),
-        openPeriod() {
-            this.periodString = JSON.stringify(this.periodVal)
-        },
-        closePeriod() {
-            // if (Boolean(!this.periodVal.start) ||
-            //     Boolean(!this.periodVal.end)) {
-            //     this.periodVal = ''
-            //     this.periodKey += 1
-            // }
-        },
-        changeStatus(payload) {
-            this.statusVal = payload.code
-        },
-        changeOperator(payload) {
-            this.operatorVal = payload.code
-        },
-        async sendInfo() {
-
-            const from = Math.round(+new Date(this.periodVal.start) / 1000)
-            const to = Math.round(+new Date(this.periodVal.end) / 1000)
-
-            const params = `?from=${from}&to=${to}&status=${this.statusVal}&user=${this.operatorVal}`
-            const res = await this.stDownloadCsw(params)
-            window.open(res.data.file)
+        ...mapMutations('alerts', ['ADD_ALERT']),
+        async sendInfo(payload) {
+            this.isLoading = true
+            try {
+                const params = `?from=${payload.from}&to=${payload.to}&status=${payload.status}&user=${payload.user}`
+                const res = await this.stDownloadCsw(params)
+                res ? window.open(res.data.file) : this.ADD_ALERT(['negative'])
+            } catch (e) {
+                console.error(e)
+                this.ADD_ALERT(['negative'])
+            } finally {
+                this.isLoading = false
+            }
         },
     },
     async beforeRouteEnter(to, from, next) {
@@ -127,11 +69,7 @@ export default {
                 store.dispatch('users/stGetUsers')
             ])
             const isSuccess = response.every(item => item)
-            if (isSuccess) {
-                next()
-            } else {
-                next(false)
-            }
+            next(isSuccess)
         } catch (e) {
             console.log(e)
         } finally {
@@ -146,32 +84,6 @@ export default {
     padding-bottom: 30px;
     width: 100%;
     display: flex;
-    &__content {
-        padding: 30px;
-        width: 100%;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        grid-gap: 20px;
-        grid-auto-rows: minmax(33px, auto);
-        grid-template-areas:
-        'calendar operators statuses'
-        'save-btn . .';
-    }
-    &__inp {
-        //outline: 1px solid red;
-        &-calendar {
-            grid-area: calendar;
-        }
-        &-operators {
-            grid-area: operators;
-        }
-        &-statuses {
-            grid-area: statuses;
-        }
-        &-save-btn {
-            grid-area: save-btn;
-        }
-    }
 
 }
 </style>

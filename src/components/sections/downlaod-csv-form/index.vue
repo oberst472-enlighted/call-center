@@ -1,5 +1,10 @@
 <template>
-    <SectionBox is-not-pagination content class="section-csv-form">
+    <SectionBox
+        is-not-pagination
+        content
+        class="section-csv-form"
+        :class="{'section-csv-form--admin': isAdmin}"
+    >
         <template #content>
             <div class="section-csv-form__content">
                 <div class="section-csv-form__inp section-csv-form__inp-calendar">
@@ -16,6 +21,17 @@
                             placeholder="За все время"
                         />
                     </component>
+                </div>
+
+                <div class="page-stat__inp page-stat__inp-last-operators" v-if="isAdmin">
+                    <UiSelect
+                        class="block-download-csv__select"
+                        placeholder="Статус"
+                        :items="operators"
+                        default-value="all"
+                        @input="changeOperator"
+                        shadow
+                    />
                 </div>
 
                 <div class="section-csv-form__inp section-csv-form__inp-statuses">
@@ -40,6 +56,7 @@
 
 <script>
 import SectionBox from '@/components/sections/box'
+import {isRoleAdmin} from '@/utils/middleware'
 export default {
     components: {
         SectionBox,
@@ -60,10 +77,12 @@ export default {
     },
     data() {
         return {
+            isAdmin: false,
             periodVal: null,
             periodString: '',
             periodKey: 1,
-            statusVal: ''
+            statusVal: '',
+            operatorVal: ''
         }
     },
     computed: {
@@ -82,6 +101,9 @@ export default {
         changeStatus(payload) {
             this.statusVal = payload.code
         },
+        changeOperator(payload) {
+            this.operatorVal = payload.code
+        },
         sendInfo() {
             const from = this.periodVal ?
                 Math.round(+new Date(this.periodVal.start) / 1000) :
@@ -89,9 +111,12 @@ export default {
             const to = this.periodVal ?
                 Math.round(+new Date(this.periodVal.end) / 1000) :
                 ''
-                this.$emit('submit', {from: from, to: to, status: this.statusVal})
+                this.$emit('submit', {from: from, to: to, status: this.statusVal, user: this.operatorVal === 'all' ? '' : this.operatorVal })
         }
     },
+    mounted() {
+        this.isAdmin = isRoleAdmin()
+    }
 }
 </script>
 
@@ -112,11 +137,24 @@ export default {
         &-calendar {
             grid-area: calendar;
         }
+
         &-statuses {
             grid-area: statuses;
         }
         &-save-btn {
             grid-area: save-btn;
+        }
+    }
+    &--admin {
+        .section-csv-form__content {
+            grid-template-areas:
+        'calendar operators statuses'
+        'save-btn . .';
+        }
+        &__inp {
+            &-operators {
+                grid-area: operators;
+            }
         }
     }
 }

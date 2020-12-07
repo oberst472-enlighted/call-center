@@ -1,35 +1,35 @@
 <template>
-  <div id="graphBox">
-    <div class="box-header">Успешность <br> звонков</div>
-    <div class="box-body">
-      <div class="labels">
-        <div class="label">
-          <div class="label-row green"/>
-          Дозвонились
+    <div id="graphBox">
+        <div class="box-header">Успешность <br> звонков</div>
+        <div class="box-body">
+            <div class="labels">
+                <div class="label">
+                    <div class="label-row green"/>
+                    Дозвонились
+                </div>
+                <!--        <div class="label">-->
+                <!--          <div class="label-row red"/>-->
+                <!--          Не дозвонились-->
+                <!--        </div>-->
+            </div>
+            <canvas ref="myChart" class="chartjs-render-monitor" style="display: block; width: 100%; height: 90px"></canvas>
         </div>
-        <!--        <div class="label">-->
-        <!--          <div class="label-row red"/>-->
-        <!--          Не дозвонились-->
-        <!--        </div>-->
-      </div>
-      <canvas ref="myChart" class="chartjs-render-monitor" style="display: block; width: 100%; height: 90px"></canvas>
     </div>
-  </div>
 </template>
 
 <script>
 import Chart from 'chart.js';
 import {mapState} from 'vuex'
 export default {
-  name: "graphBox",
+  name: 'graphBox',
+  components: {},
+  props: {
+    data: Array
+  },
   data() {
     return {
       graphData: []
     }
-  },
-  components: {},
-  props: {
-    data: Array
   },
   computed: {
     ...mapState('stat', ['stat'])
@@ -86,7 +86,7 @@ export default {
   },
   created() {
     const times = ['8', '10', '12', '14', '16', '18', '20']
-    times.forEach((time) => {
+    times.forEach(time => {
       this.graphData.push(this.stat.callsSuccessRate[time] * 100)
     })
   }

@@ -34,29 +34,34 @@ export default {
             default: null
         },
     },
-    methods: {},
+    data() {
+        return {
+            labels: [],
+            successCalls: [],
+            unSuccessCalls: []
+        }
+    },
+    created() {
+        const obj = {...this.items}
+        const arr = []
+        for (let i in this.items) {
+            const item = obj[i]
+            item.time = i
+            arr.push(item)
+        }
+        arr.forEach(item => {
+            item.time.length === 1 ? this.labels.push(`0${item.time}:00`) : this.labels.push(`${item.time}:00`)
+            this.successCalls.push(item.success)
+            this.unSuccessCalls.push(item['not_success'])
+        })
+    },
     mounted() {
         const data = {
-            labels: [
-                '00:00',
-                '02:00',
-                '04:00',
-                '06:00',
-                '08:00',
-                '10:00',
-                '12:00',
-                '14:00',
-                '16:00',
-                '18:00',
-                '20:00',
-                '22:00',
-            ],
+            labels: this.labels,
             datasets: [
                 {
                     label: 'Успешно дозвонились   ',
-                    data: [
-                        12, 19, 3, 5, 2, 3, 20, 40, 12, 12, 12, 6
-                    ],
+                    data: this.successCalls,
                     borderColor: '#4fd161',
                     fill: false, //фон под линией
                     borderWidth: 1,
@@ -65,9 +70,7 @@ export default {
                 },
                 {
                     label: 'Не дозвонились',
-                    data: [
-                        11, 2, 34, 5, 2, 3, 12, 3, 8, 12, 5, 4
-                    ],
+                    data: this.unSuccessCalls,
                     backgroundColor: [],
                     borderColor: '#f04265',
                     fill: false, //фон под линией
@@ -131,7 +134,6 @@ export default {
                 }
             }]
         })
-
     }
 }
 </script>

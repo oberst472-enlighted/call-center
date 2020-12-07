@@ -66,6 +66,19 @@ export default {
                 return false;
             }
         },
+        async stEditMainUserById({commit}, info) {
+            const response = await apiEditUserById(info);
+            if (
+                Boolean(response) &&
+                response.status < 300 &&
+                response.statusText === 'OK'
+            ) {
+                commit('SET_MAIN_USER_INFO', response.data);
+                return response.data;
+            } else {
+                return false;
+            }
+        },
         async stCreateUser(context, info) {
             const response = await apiCreateUser(info);
             return Boolean(response) && response.status < 300 && (response.statusText === 'OK' || response.statusText === 'Created');

@@ -8,7 +8,8 @@
             </div>
 
             <div class="user-shortstory__img">
-                <img src="/assets/images/user-placeholder.svg" alt="">
+                <img src="" alt="">
+                <img class="user-shortstory__img-img" v-if="mainUserInfo.photo" :src="mainUserInfo.photo.file" alt="Fdfnfh">
             </div>
         </div>
         <div class="user-shortstory__options" tabindex="-1" v-if="isAdmin">
@@ -112,7 +113,21 @@ export default {
         font-weight: 700;
     }
     &__img {
+        background-image: url('/assets/images/user-placeholder.svg');
+        background-repeat: no-repeat;
+        background-size: contain;
+        width: 31px;
+        height: 31px;
         user-select: none;
+        display: inline-flex;
+        border-radius: 50%;
+        overflow: hidden;
+        &-img {
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            object-fit: cover;
+        }
     }
     &__role {
         text-align: right;

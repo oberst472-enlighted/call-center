@@ -66,6 +66,12 @@ import axios from 'axios'
 
 export default {
     components: {VueCropper},
+    props: {
+        defaultValue: {
+            type: String,
+            default: ''
+        },
+    },
     data() {
         return {
             mime_type: '',
@@ -151,7 +157,9 @@ export default {
         },
     },
     mounted() {
+        this.image = this.defaultValue
         this.tokenUrl = token()
+
     }
 }
 </script>

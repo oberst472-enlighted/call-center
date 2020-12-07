@@ -48,6 +48,7 @@
                             Телефон <span class="negative">*</span>
                         </UiInput>
                     </div>
+
                     <div class="page-profile__inp page-profile__inp-new-pass">
                         <UiInput
                             v-model="form.new_password"
@@ -58,7 +59,12 @@
                     </div>
 
                     <div class="page-profile__inp page-profile__inp-file">
-                        <BlockDownloadAvatar @change="sendFile">Загрузите аватар</BlockDownloadAvatar>
+                        <BlockDownloadAvatar
+                            @change="sendFile"
+                            :default-value="defaultPhoto"
+                        >
+                            Загрузите аватар
+                        </BlockDownloadAvatar>
                     </div>
 
                     <div class="page-profile__inp page-profile__inp-save-btn">
@@ -84,6 +90,7 @@ export default {
     data() {
         return {
             isLoading: false,
+            defaultPhoto: '',
             form: {
                 first_name: '',
                 last_name: '',
@@ -108,14 +115,14 @@ export default {
         ...mapState('users', ['userInfo', 'mainUserInfo']),
     },
     methods: {
-        ...mapActions('users', ['stEditUserById']),
+        ...mapActions('users', ['stEditMainUserById']),
         ...mapMutations('alerts', ['ADD_ALERT']),
         sendFile(val) {
             this.form.photo = val
         },
         async sendInfo() {
             this.isLoading = true
-            const isSuccess = await this.stEditUserById({id: this.mainUserInfo.id, body: this.form})
+            const isSuccess = await this.stEditMainUserById({id: this.mainUserInfo.id, body: this.form})
             isSuccess ?
                 this.ADD_ALERT(['positive', 'Данные успешно изменены']) :
                 this.ADD_ALERT(['negative'])
@@ -127,6 +134,11 @@ export default {
         this.form.last_name = this.mainUserInfo.last_name
         this.form.email = this.mainUserInfo.email
         this.form.phone = this.mainUserInfo.phone
+        console.log(this.mainUserInfo.photo)
+        if (this.mainUserInfo.photo) {
+            this.form.photo = this.mainUserInfo.photo.id
+            this.defaultPhoto = this.mainUserInfo.photo.file
+        }
 
     },
 

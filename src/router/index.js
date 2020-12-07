@@ -173,10 +173,10 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: '/profile/',
-                    name: 'operator-profile',
+                    path: '/edit-profile-operator/',
+                    name: 'edit-info_operator',
                     components: {
-                        default: require('@/pages/operator/user-fullstory').default,
+                        default: require('@/pages/operator/edit-info-operator').default,
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
                     },
@@ -343,8 +343,8 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: '/edit-profile-admin/',
-                    name: 'edit-info-admin',
+                    path: '/admin/edit-profile-admin/',
+                    name: 'edit-info_admin',
                     components: {
                         default: require('@/pages/admin/edit-info-admin').default,
                         header: require('@/components/sections/header-admin/').default,

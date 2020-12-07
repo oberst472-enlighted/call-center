@@ -13,14 +13,14 @@
         </div>
         <div class="user-shortstory__options" tabindex="-1" v-if="isAdmin">
             <div class="user-shortstory__options-box">
-                <router-link :to="{name: 'edit-info-admin'}" class="user-shortstory__options-item">Редактировать</router-link>
+                <router-link :to="{name: 'edit-info_admin'}" class="user-shortstory__options-item">Редактировать</router-link>
                 <span @click="$router.push({name: 'logout'})" class="user-shortstory__options-item">Выйти</span>
             </div>
         </div>
 
         <div class="user-shortstory__options" tabindex="-1" v-else>
             <div class="user-shortstory__options-box">
-                <router-link :to="{name: 'operator-profile'}" class="user-shortstory__options-item">Редактировать</router-link>
+                <router-link :to="{name: 'edit-info_operator'}" class="user-shortstory__options-item">Редактировать</router-link>
                 <span @click="$router.push({name: 'logout'})" class="user-shortstory__options-item">Выйти</span>
             </div>
         </div>

@@ -58,17 +58,11 @@
                     </div>
 
                     <div class="page-profile__inp page-profile__inp-file">
-
-                        <!--                        <BlockDragFile>-->
-                        <!--                            &lt;!&ndash; v-model="form.photo"&ndash;&gt;-->
-                        <!--                            &lt;!&ndash;                            :default-value="form.photo"&ndash;&gt;-->
-                        <!--                            &lt;!&ndash;                            />&ndash;&gt;-->
-                        <!--                        </blockdragfile>-->
                         <BlockDownloadAvatar @change="sendFile">Загрузите аватар</BlockDownloadAvatar>
                     </div>
 
                     <div class="page-profile__inp page-profile__inp-save-btn">
-                        <UiBtn @click="sendInfo" :loading="isLoading">Сохранить</UiBtn>
+                        <UiBtn :loading="isLoading" @click="sendInfo">Сохранить</UiBtn>
                     </div>
                 </div>
             </template>
@@ -77,20 +71,15 @@
 </template>
 
 <script>
-import store from '@/store'
 import {mapActions, mapMutations, mapState} from 'vuex'
 import SectionBox from '@/components/sections/box'
 // import BlockFile from '@/components/blocks/file'
 import BlockDownloadAvatar from '@/components/blocks/downlaod-avatar'
-import BlockDragFile from '@/components/blocks/drag-and-drop-file'
-import {getJsonFromString} from '@/utils/json'
 
 export default {
     components: {
         SectionBox,
         BlockDownloadAvatar,
-        // BlockFile
-        BlockDragFile
     },
     data() {
         return {
@@ -116,14 +105,9 @@ export default {
         }
     },
     computed: {
-        ...mapState('webrtc/webrtcCalls', ['isIncomingCall']),
-        ...mapState('devices', ['items', 'isNotDevicesPagination']),
-        ...mapState('stat', ['stat']),
-        ...mapState('sessions', ['isSessionBreak']),
         ...mapState('users', ['userInfo', 'mainUserInfo']),
     },
     methods: {
-        ...mapActions('webrtc/webrtcCalls', ['stClickTheCallBtn']),
         ...mapActions('users', ['stEditUserById']),
         ...mapMutations('alerts', ['ADD_ALERT']),
         sendFile(val) {
@@ -131,21 +115,14 @@ export default {
         },
         async sendInfo() {
             this.isLoading = true
-            const info = localStorage.getItem('сс_main_user_info') || sessionStorage.getItem('сс_main_user_info')
-            const infoObj = getJsonFromString(info)
-            const isSuccess = await this.stEditUserById({id: infoObj.id, body: this.form})
-            if (isSuccess) {
-                this.ADD_ALERT(['positive', 'Данные успешно изменены'])
-            }
-            else {
+            const isSuccess = await this.stEditUserById({id: this.mainUserInfo.id, body: this.form})
+            isSuccess ?
+                this.ADD_ALERT(['positive', 'Данные успешно изменены']) :
                 this.ADD_ALERT(['negative'])
-            }
             this.isLoading = false
         }
     },
     created() {
-        // const info = localStorage.getItem('userInfo') || sessionStorage.getItem('userInfo')
-        // const infoObj = getJsonFromString(info)
         this.form.first_name = this.mainUserInfo.first_name
         this.form.last_name = this.mainUserInfo.last_name
         this.form.email = this.mainUserInfo.email
@@ -199,6 +176,7 @@ export default {
 
         &-file {
             display: flex;
+            justify-content: flex-end;
             height: 100%;
             grid-area: file;
         }

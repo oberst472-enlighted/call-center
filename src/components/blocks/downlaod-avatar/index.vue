@@ -1,20 +1,57 @@
 <template>
-    <div class="block-download">
-        <div class="block-download__title"><slot></slot></div>
+    <div
+        :class="{'block-download--image': image}"
+        class="block-download"
+    >
+        <div class="block-download__title">
+            <slot/>
+        </div>
 
         <div class="block-download__box">
+            <button
+                v-if="image"
+                class="block-download__delete-btn"
+                title="Удалить изображение"
+                @click="_deleteImg"
+            >
+                <IconRubbishBin class="block-download__delete-icon"/>
+            </button>
+
             <div class="block-download__inp">
-                <input ref="FileInput" type="file" class="block-download__input" @change="onFileSelect">
-                <img class="block-download__preview" :src="image" alt="" v-if="image">
+                <span class="block-download__placeholder">Кликните по области <br> или перетащите файл</span>
+                <input
+                    class="block-download__input"
+                    type="file"
+                    @change="onFileSelect"
+                >
+                <img
+                    v-if="image"
+                    :src="image"
+                    alt="Аватар"
+                    class="block-download__preview"
+                >
             </div>
 
-            <div v-show="selectedFile" class="block-download__popup">
+            <div
+                v-show="selectedFile"
+                class="block-download__popup"
+                title="Закрыть"
+                @click.self="_reset"
+            >
                 <div class="block-download__popup-cropper">
                     <VueCropper
                         ref="cropper"
                         :src="selectedFile"
-                        alt="Source Image"/>
-                    <UiBtn class="block-download__save-btn" theme="positive" @click="saveImage()" :loading="isLoading">Сохранить</UiBtn>
+                    />
+
+                    <UiBtn
+                        :loading="isLoading"
+                        class="block-download__save-btn"
+                        theme="positive"
+                        @click="saveImage()"
+                    >
+                        Сохранить
+                    </UiBtn>
                 </div>
             </div>
         </div>
@@ -47,9 +84,8 @@ export default {
             this.cropedImage = this.$refs.cropper.getCroppedCanvas().toDataURL()
             this.$refs.cropper.getCroppedCanvas().toBlob(async blob => {
                 const formData = new FormData()
-                formData.append('file', blob, 'name.jpeg')
+                formData.append('file', blob, `${Date.now()}-img.jpg`)
                 const isSuccess = await this._downloadFile(formData)
-                console.log(isSuccess)
                 if (isSuccess) {
                     this._insertTheResultingImage(isSuccess)
                 }
@@ -57,8 +93,8 @@ export default {
         },
         onFileSelect(e) {
             const file = e.target.files[0]
+            if (!file) return
             this.mime_type = file.type
-            console.log(this.mime_type)
             if (typeof FileReader === 'function') {
                 const reader = new FileReader()
                 reader.onload = event => {
@@ -67,7 +103,7 @@ export default {
                 }
                 reader.readAsDataURL(file)
             } else {
-                alert('Sorry, FileReader API not supported')
+                alert('Ваш браузер не поддерживает FileReaderApi')
             }
         },
         async _downloadFile(formData) {
@@ -79,14 +115,9 @@ export default {
                         'Content-Type': 'application/json',
                         Authorization: `JWT ${this.tokenUrl}`
                     },
-                    // onUploadProgress: uploadedEvent => {
-                    //     // store.commit('webrtc/webrtcCalls/SET_IS_PROGRESS_DOWNLOAD_VIDEO', Math.round(uploadedEvent.loaded / uploadedEvent.total * 100))
-                    // },
                     data: formData
                 })
                 if (isSuccess.status === 201) {
-                    console.log(2)
-                    console.log(isSuccess.data)
                     return isSuccess.data
                 } else {
                     this.isLoading = false
@@ -99,14 +130,25 @@ export default {
             }
         },
         _insertTheResultingImage(payload) {
-            console.log(payload)
-            console.log(payload.file)
             this.image = payload.file
             this.$emit('change', payload.id)
-            console.log(payload.id)
             this.isLoading = false
             this.selectedFile = ''
-        }
+        },
+        _deleteImg() {
+            this._reset()
+            this.image = ''
+            this.$emit('change', '')
+        },
+        _reset() {
+            this.mime_type = ''
+            this.cropedImage = ''
+            this.autoCrop = false
+            this.selectedFile = ''
+            this.dialog = false
+            this.files = ''
+            this.isLoading = false
+        },
     },
     mounted() {
         this.tokenUrl = token()
@@ -122,30 +164,99 @@ export default {
         font-size: 13px;
         line-height: 1;
         color: #000000;
-        user-select: none;
         font-weight: 500;
+        user-select: none;
     }
+
+    &__box {
+        position: relative;
+
+        &:hover {
+            .block-download__delete-btn {
+                opacity: 0.5;
+                pointer-events: auto;
+            }
+        }
+    }
+
+    &__delete-btn {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 2;
+        width: 40px;
+        height: 40px;
+        padding: 10px;
+        color: #ffffff;
+        opacity: 0;
+        border: none;
+        border-radius: 50%;
+        outline: 0;
+        background-color: $color--negative;
+        cursor: pointer;
+        transition-duration: 0.3s;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+
+        &:hover {
+            opacity: 1 !important;
+            background-color: darken($color--negative, 15%);
+        }
+
+        &:active {
+            opacity: 0.8;
+        }
+    }
+
     &__inp {
+        position: relative;
+        z-index: 1;
         width: 200px;
         height: 200px;
         border: 1px dashed #DCDCDC;
         border-radius: 8px;
         background-color: #FDFDFF;
         overflow: hidden;
-        position: relative;
+        cursor: pointer;
+
+        &:hover {
+            background-color: rgba(85, 255, 142, 0.04);
+        }
 
         input {
+            position: relative;
+            z-index: 2;
             width: 100%;
             height: 100%;
             opacity: 0;
-            background-color: red;
-            z-index: 2;
-            position: relative;
         }
+    }
+
+    &__placeholder {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        display: block;
+        width: 100%;
+        padding: 15px;
+        font-size: 13px;
+        transform: translate(-50%, -50%);
+        text-align: center;
     }
 
     &__input {
         z-index: 2;
+        cursor: pointer;
+    }
+
+    &__preview {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     &__popup {
@@ -159,6 +270,7 @@ export default {
         width: 100vw;
         height: 100vh;
         background-color: rgba(#000, 0.3);
+        cursor: pointer;
 
         &-cropper {
             position: relative;
@@ -169,19 +281,22 @@ export default {
         }
 
     }
-&__preview {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 1;
-}
+
+
     &__save-btn {
         position: absolute !important;
         right: 10px;
         bottom: 10px;
+    }
+
+    &--image {
+        .block-download__inp {
+            border-color: transparent;
+        }
+
+        .block-download__delete-btn {
+            display: inline-flex;
+        }
     }
 
 }

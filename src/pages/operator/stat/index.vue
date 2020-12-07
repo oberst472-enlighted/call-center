@@ -1,60 +1,25 @@
 <template>
     <section class="page-stat">
-        <SectionBox :is-not-pagination="true" content>
-            <template #content>
-                <div class="page-stat__content">
-                    <div class="page-stat__inp page-stat__inp-first-calendar">
-                        <component
-                            :is="`div`"
-                            :key="periodKey"
-                        >
-                            <UiInputPeriod
-                                class="block-download-csv__select-period"
-                                :show-placeholder="Boolean(periodVal)"
-                                @show="openPeriod"
-                                @hidden="closePeriod"
-                                @input="periodVal = $event"
-                                placeholder="За все время"
-                            />
-                        </component>
-                    </div>
-
-                    <div class="page-stat__inp page-stat__inp-statuses">
-                        <UiSelect
-                            class="block-download-csv__select"
-                            placeholder="Статус"
-                            :items="modifiedStatuses"
-                            default-value="all"
-                            @input="changeStatus"
-                            shadow
-                        />
-                    </div>
-
-
-                    <div class="page-stat__inp page-stat__inp-save-btn">
-                        <UiBtn @click="sendInfo">Выгрузить</UiBtn>
-                    </div>
-                </div>
-            </template>
-        </SectionBox>
+        <SectionDownloadCsv
+            :statuses="modifiedStatuses"
+            :operators="modifiedOperators"
+            :loading="isLoading"
+            @submit="sendInfo"
+        />
     </section>
 </template>
 
 <script>
 import store from '@/store'
+import SectionDownloadCsv from '@/components/sections/downlaod-csv-form'
 import {mapState, mapActions} from 'vuex'
-import SectionBox from '@/components/sections/box'
 export default {
     components: {
-        SectionBox,
+        SectionDownloadCsv
     },
     data() {
         return {
-            periodVal: null,
-            periodString: '',
-            periodKey: 1,
-            statusVal: ''
-
+            isLoading: false
         }
     },
     computed: {
@@ -82,28 +47,14 @@ export default {
     },
     methods: {
         ...mapActions('csv', ['stDownloadCsw']),
-        openPeriod() {
-            this.periodString = JSON.stringify(this.periodVal)
-        },
-        closePeriod() {
-            // if (Boolean(!this.periodVal.start) ||
-            //     Boolean(!this.periodVal.end)) {
-            //     this.periodVal = ''
-            //     this.periodKey += 1
-            // }
-        },
-        changeStatus(payload) {
-            this.statusVal = payload.code
-        },
-        changeOperator(payload) {
-            this.statusVal = payload.code
-        },
-        async sendInfo() {
-            const from = Math.round(+new Date(this.periodVal.start) / 1000)
-            const to = Math.round(+new Date(this.periodVal.end) / 1000)
+        async sendInfo(payload) {
+            this.isLoading = true
 
-            const params = `?from=${from}&to=${to}&status=${this.statusVal}&user=${this.mainUserInfo.id}`
+            const params = `?from=${payload.from}&to=${payload.to}&status=${payload.status}&user=${this.mainUserInfo.id}`
             const res = await this.stDownloadCsw(params)
+            if (res) {
+                this.isLoading = false
+            }
             window.open(res.data.file)
         }
     },
@@ -114,11 +65,7 @@ export default {
                 store.dispatch('csv/stGetAllStatuses'),
             ])
             const isSuccess = response.every(item => item)
-            if (isSuccess) {
-                next()
-            } else {
-                next(false)
-            }
+            next(isSuccess)
         } catch (e) {
             console.log(e)
         } finally {
@@ -134,29 +81,6 @@ export default {
     width: 100%;
     display: flex;
     align-items: flex-start;
-    &__content {
-        padding: 30px;
-        width: 100%;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        grid-gap: 20px;
-        grid-auto-rows: minmax(33px, auto);
-        grid-template-areas:
-        'calendar statuses .'
-        'save-btn . .';
-    }
-    &__inp {
-        //outline: 1px solid red;
-        &-calendar {
-            grid-area: calendar;
-        }
-        &-statuses {
-            grid-area: statuses;
-        }
-        &-save-btn {
-            grid-area: save-btn;
-        }
-    }
 
 }
 </style>

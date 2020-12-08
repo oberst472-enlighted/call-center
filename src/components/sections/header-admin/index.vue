@@ -72,27 +72,12 @@ export default {
         }
     }
 
-    &__timer-box {
-        flex-shrink: 0;
-        margin-right: 18px;
-        font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans, Helvetica Neue, Arial, sans-serif;
-        font-size: 14px !important;
-
-        /deep/ .ui-stopwatch__number {
-            width: 12px !important;
-            color: $color--primary
-        }
-
-        /deep/ .ui-stopwatch__dot {
-            display: inline-flex;
-            justify-content: center;
-            width: auto !important;
-            color: $color--primary
-        }
-    }
 
     &__btn-box {
         //min-width: 150px;
+    }
+    &__add-user-btn {
+        transition-duration: 0.3s;
     }
 
     &__user-box {

@@ -107,13 +107,14 @@ export default {
     }
 
     &__title {
-        display: block;
         width: 100%;
         margin-top: 5px;
         font-size: 12px;
         line-height: 1.2;
         color: #4C3B60;
         font-weight: 500;
+        display: inline-flex;
+        flex-direction: column;
     }
 }
 </style>

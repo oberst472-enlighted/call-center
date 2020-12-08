@@ -468,7 +468,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    if (from.name === 'login' || from.name === 'call-form-data') {
+    if (from.name === 'login' || from.name === 'call-form-data' || to.name === 'home_operator' || to.name === 'home_admin') {
         store.commit('SET_BACK_BTN_ACTIVE', false)
     }
     else {

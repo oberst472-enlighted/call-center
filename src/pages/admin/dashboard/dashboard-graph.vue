@@ -147,6 +147,13 @@ export default {
         justify-content: center;
         align-items: center;
     }
+    &__subbox {
+        width: 100%;
+    }
+
+    &__chart {
+        width: 100%;
+    }
 
     &__title {
         margin-bottom: 15px;

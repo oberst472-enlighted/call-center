@@ -1,37 +1,37 @@
 <template>
     <div class="section-header">
-        <div class="section-header__back-box" :class="{'section-header__back-box--active': !isBackBtnActive}">
+        <div :class="{'section-header__back-box--active': !isBackBtnActive}" class="section-header__back-box">
             <UiBack @click="$router.go(-1)"/>
         </div>
 
-        <transition name="fade" mode="out-in">
-            <div class="section-header__options" v-if="isSessionActive" :key="'options'">
-                <div class="section-header__toggle-box" :class="{'section-header__toggle-box--disabled': isPauseLoading}">
+        <transition mode="out-in" name="fade">
+            <div v-if="isSessionActive" :key="'options'" class="section-header__options">
+                <div :class="{'section-header__toggle-box--disabled': isPauseLoading}" class="section-header__toggle-box">
                     <UiToggle
-                        @click="_togglePauseSession"
                         :default-value="isSessionBreak"
+                        @click="_togglePauseSession"
                     />
                 </div>
 
                 <div class="section-header__timer-box">
-                    <UiStopWatchNew :start-watch="isSessionActive"
+                    <UiStopWatchNew :default-value="timeTimezone"
+                                    :start-watch="isSessionActive"
                                     :stop-watch="!isSessionActive"
-                                    :default-value="timeTimezone"
                     />
                 </div>
 
                 <div class="section-header__btn-box">
-                    <UiBtn @click="_stopSession"
-                           theme="negative"
+                    <UiBtn theme="negative"
+                           @click="_stopSession"
                     >
                         Завершить смену
                     </UiBtn>
                 </div>
             </div>
 
-            <div class="section-header__start-btn-box" v-else :key="'start'">
-                <UiBtn @click="_startSession"
-                       theme="positive"
+            <div v-else :key="'start'" class="section-header__start-btn-box">
+                <UiBtn theme="positive"
+                       @click="_startSession"
                 >
                     Начать смену
                 </UiBtn>
@@ -46,9 +46,9 @@
 
 <script>
 import BlockUserShortstory from '@/components/blocks/user-shortstory'
-import {mapState, mapMutations, mapActions} from 'vuex'
+import {mapActions, mapMutations, mapState} from 'vuex'
 import {customLog} from '@/utils/console-group'
-import {convertSecondsToHMS, convertSecondsToTimeTimeZone, convertSecondsUTCToSecondsMyZone} from '@/utils/convertDateTime'
+import {convertSecondsUTCToSecondsMyZone} from '@/utils/convertDateTime'
 
 export default {
     components: {
@@ -96,7 +96,7 @@ export default {
         },
         async _startSession() {
             const isSuccess = await this.stStartSession()
-                await this.stGetStatForTheSession()
+            await this.stGetStatForTheSession()
             if (isSuccess) {
                 console.log('Новая сессия открыта')
             } else {
@@ -108,8 +108,7 @@ export default {
             this.TOGGLE_SESSION_BREAK(false)
             if (isSuccess) {
                 console.log('Сессия закрыта')
-            }
-            else {
+            } else {
                 console.log('Сессия не закрыта')
             }
         },
@@ -122,60 +121,73 @@ export default {
 
 .section-header {
     display: flex;
+    align-items: center;
     width: 100%;
     min-height: 84px;
-    align-items: center;
     padding: 15px 0;
+
     &__options {
         display: flex;
         align-items: center;
         transition-duration: 0.3s;
     }
+
     &__start-btn-box {
         transition-duration: 0.3s;
     }
+
     &__toggle-box {
-        max-width: 200px;
-        width: 100%;
-        margin-right: 18px;
         flex-shrink: 0;
+        width: 100%;
+        max-width: 200px;
+        margin-right: 18px;
+
         &--disabled {
             opacity: 0.6;
             pointer-events: none;
         }
     }
+
     &__timer-box {
-        margin-right: 18px;
         flex-shrink: 0;
+        margin-right: 18px;
+        font-family: Segoe UI, Frutiger, Frutiger Linotype, Dejavu Sans, Helvetica Neue, Arial, sans-serif;
         font-size: 14px !important;
-        font-family: Segoe UI,Frutiger,Frutiger Linotype,Dejavu Sans,Helvetica Neue,Arial,sans-serif;
+
         /deep/ .ui-stopwatch__number {
             width: 12px !important;
             color: $color--primary
         }
+
         /deep/ .ui-stopwatch__dot {
-            width: auto !important;
             display: inline-flex;
             justify-content: center;
+            width: auto !important;
             color: $color--primary
         }
     }
+
     &__btn-box {
         //min-width: 150px;
     }
+
     &__user-box {
-        margin-left: auto;
         flex-shrink: 0;
+        margin-left: auto;
     }
+
     &__back-box {
         width: 50px;
         overflow: hidden;
         transition-duration: 0.3s;
+
         &--active {
             opacity: 0;
+
             & + .section-header__options {
                 transform: translateX(-50px);
             }
+
             & + .section-header__start-btn-box {
                 transform: translateX(-50px);
             }

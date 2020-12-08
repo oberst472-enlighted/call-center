@@ -1,18 +1,23 @@
 <template>
-    <article :is="tag" :class="{hide: info.role === 'administrator'}" :to="to" class="block-terminal-shortstory">
-        <div class="block-terminal-shortstory__info">
-            <div class="block-terminal-shortstory__id">Оператор #{{ info.id }}</div>
-            <div class="block-terminal-shortstory__title">
-                <div>{{ info.first_name ? info.first_name : 'Имя не задано' }}</div>
-                <div>{{ info.last_name ? info.last_name : 'Фамилия не задана' }}</div>
-            </div>
-        </div>
+    <component
+        :is="tag"
+        :class="{hide: info.role === 'administrator'}"
+        :to="to"
+        class="block-terminal-shortstory"
+    >
+        <span class="block-terminal-shortstory__info lol">
+            <span class="block-terminal-shortstory__id">Оператор #{{ info.id }}</span>
+            <span class="block-terminal-shortstory__title">
+                <span>{{ info.first_name ? info.first_name : 'Имя не задано' }}</span>
+                <span>{{ info.last_name ? info.last_name : 'Фамилия не задана' }}</span>
+            </span>
+        </span>
 
-        <div class="block-terminal-shortstory__icons">
+        <span class="block-terminal-shortstory__icons">
             <UiBadge :theme="theme" class="block-terminal-shortstory__status">{{ statusValue }}</UiBadge>
             <IconDots class="block-terminal-shortstory__icon"/>
-        </div>
-    </article>
+        </span>
+    </component>
 </template>
 
 <script>
@@ -39,13 +44,13 @@ export default {
         theme() {
             switch (this.info.status) {
                 case 'online':
-                    return 'positive';
+                    return 'positive'
                 case 'offline':
-                    return 'negative';
+                    return 'negative'
                 case 'on_break':
-                    return 'onbreak';
+                    return 'onbreak'
                 case 'on_call':
-                    return 'oncall';
+                    return 'oncall'
             }
         }
     }
@@ -58,6 +63,7 @@ export default {
 }
 
 .block-terminal-shortstory {
+    flex-shrink: 0;
     display: inline-flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -75,6 +81,7 @@ export default {
 
     &__info {
         flex-shrink: 0;
+        display: block;
     }
 
     &__icons {
@@ -96,9 +103,11 @@ export default {
     }
 
     &__id {
+        display: block;
     }
 
     &__title {
+        display: block;
         width: 100%;
         margin-top: 5px;
         font-size: 12px;

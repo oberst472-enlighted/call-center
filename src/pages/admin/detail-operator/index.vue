@@ -18,7 +18,7 @@
                         </div>
                     </div>
                     <div class="page-profile__btns">
-                        <UiBtn :to="{name: 'edit-info_operator', params: {id: userInfo.id}}" class="page-profile__btn" theme="primary">Изменить</UiBtn>
+                        <UiBtn :to="{name: 'edit-info-operator_admin', params: {id: userInfo.id}}" class="page-profile__btn" theme="primary">Изменить</UiBtn>
                         <UiBtn class="page-profile__btn" theme="negative" @click="blockUser" :loading="isLoading">Блокировать оператора</UiBtn>
                     </div>
                     <div class="page-profile__calls">

@@ -6,7 +6,7 @@
         class="block-terminal-shortstory"
     >
         <span class="block-terminal-shortstory__info lol">
-            <span class="block-terminal-shortstory__id">Оператор #{{ info.id }}</span>
+            <span class="block-terminal-shortstory__id">Оператор</span>
             <span class="block-terminal-shortstory__title">
                 <span>{{ info.first_name ? info.first_name : 'Имя не задано' }}</span>
                 <span>{{ info.last_name ? info.last_name : 'Фамилия не задана' }}</span>

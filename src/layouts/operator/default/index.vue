@@ -36,7 +36,7 @@ export default {
     },
     data() {
         return {
-            recoder: null,
+            interval: null,
         }
     },
     computed: {

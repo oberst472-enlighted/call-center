@@ -62,6 +62,7 @@ export default {
     },
     computed: {
         ...mapState('sessions', ['isSessionActive', 'isSessionBreak', 'startSessionTime', 'sessionId']),
+        ...mapState('webrtc/webrtcSockets', ['heartbeat']),
         ...mapState(['isBackBtnActive']),
         timeTimezone() {
             const secUtc = this.startSessionTime
@@ -70,26 +71,30 @@ export default {
         },
     },
     methods: {
-        ...mapActions('sessions', ['stStartSession', 'stStopSession', 'stStartSessionBreak', 'stStopSessionBreak']),
         ...mapMutations('sessions', ['TOGGLE_SESSION_BREAK']),
+        ...mapActions('sessions', ['stStartSession', 'stStopSession', 'stStartSessionBreak', 'stStopSessionBreak']),
         ...mapActions('stat', ['stGetStatForTheSession']),
+        ...mapActions('webrtc/webrtcSockets', ['stStartHeartbeat']),
         _togglePauseSession(val) {
             this.isPauseLoading = true
             if (val) {
                 const isSuccess = this.stStartSessionBreak()
                 if (isSuccess) {
+                    this.stStartHeartbeat(this.heartbeat.statuses.operatorBreak)
                     customLog('_togglePauseSession', 'Начался перерыв')
                 } else {
                     customLog('_togglePauseSession', 'Перерыв не начался либо вы уже на перерыве', 'red')
+                    //TODO обработать ошибку
                 }
 
             } else {
                 const isSuccess = this.stStopSessionBreak()
                 if (isSuccess) {
-                    // this._saveStartBreakSessionToStorage()
+                    this.stStartHeartbeat(this.heartbeat.statuses.operatorOnline)
                     customLog('_togglePauseSession', 'Закончился перерыв')
                 } else {
                     customLog('_togglePauseSession', 'Перерыв не закончен или не начался')
+                    // TODO обработать ошибку
                 }
             }
             this.isPauseLoading = false
@@ -98,18 +103,22 @@ export default {
             const isSuccess = await this.stStartSession()
             await this.stGetStatForTheSession()
             if (isSuccess) {
+                this.stStartHeartbeat(this.heartbeat.statuses.operatorOnline)
                 console.log('Новая сессия открыта')
             } else {
                 console.log('Новая сессия не открыта')
+                // TODO обработать ошибку
             }
         },
         async _stopSession() {
             const isSuccess = await this.stStopSession()
             this.TOGGLE_SESSION_BREAK(false)
             if (isSuccess) {
+                this.stStartHeartbeat(this.heartbeat.statuses.operatorUnavailable)
                 console.log('Сессия закрыта')
             } else {
                 console.log('Сессия не закрыта')
+                // TODO обработать ошибку
             }
         },
     },

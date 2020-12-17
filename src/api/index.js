@@ -110,6 +110,7 @@ export async function apiGetUsers() {
     const response = await axiosUrl(options)
     return response
 }
+
 // 0.0.2 Получить юзера id
 export async function apiGetUserById(id) {
     const userToken = token()

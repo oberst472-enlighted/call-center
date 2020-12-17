@@ -11,6 +11,18 @@ export default {
         socketRetryConnectTime: 5000,
         isSocketOnceConnection: false, //флаг для того чтобы не открывать сокет соединение пи переходах между роутами
         clientChannel: '',
+        heartbeat: {
+            intervalTime: 5000, //c какой частотой отправляем сообщение
+            interval: null,
+            actualStatus: 'unavailable',
+            statuses: {
+                operatorUnavailable: 'unavailable', // оператор онлайн но не начал смену и не на перерыве
+                operatorOnline: 'online', // оператор онлайн
+                operatorSays: 'on_call', // оператор разговаривает
+                operatorBreak: 'on_break', // оператор на перерыве
+            }
+        }
+
 
     },
     mutations: {
@@ -29,7 +41,11 @@ export default {
         SET_CLIENT_CHANNEL(state, payload) {
             state.clientChannel = payload
         },
-
+        TOGGLE_HEARTBEAT(state, payload) {
+            payload ?
+                state.heartbeat.interval = payload :
+                clearInterval(state.heartbeat.interval)
+        }
     },
     actions: {
         stSocketConnect({commit, dispatch}) {
@@ -54,20 +70,37 @@ export default {
                 dispatch('stSocketMessage', payload)
             })
         },
-        stSocketOpen() {
+        stSocketOpen({state, dispatch}) {
             customLog('socketOpen', 'Cокет соединение успешно открыто', 'lightgreen')
+           dispatch('stStartHeartbeat', state.heartbeat.actualStatus)
         },
+        stStartHeartbeat({state, commit, dispatch}, status) {
+            dispatch('stSendMessage', {eventName: 'heartbeat', data: {status}})
+            commit('TOGGLE_HEARTBEAT', false)
+            const int = setInterval(() => {
+                dispatch('stSendMessage', {eventName: 'heartbeat', data: {status}})
+                console.log(66)
+            }, state.heartbeat.intervalTime)
+            commit('TOGGLE_HEARTBEAT', int)
+        },
+        stStopHeartbeat({commit}) {
+            commit('TOGGLE_HEARTBEAT', false)
+        },
+
         stSocketError({dispatch}) {
             customLog('socketError', 'Ошибка сокет соединения', 'red')
             dispatch('stSocketRetryConnect')
+
         },
-        stSocketClose() {
+        stSocketClose({dispatch}) {
             customLog('stSocketClose', 'Cокет соединение закрыто', 'red')
+            dispatch('stStopHeartbeat')
         },
-        stSocketDisconnect({state, commit}) {
+        stSocketDisconnect({state, commit, dispatch}) {
             if (state.socket) {
                 commit('SOCKET_DISCONNECT')
                 commit('TOGGLE_IS_SOCKET_OPEN', false)
+                dispatch('stStopHeartbeat', false)
             }
         },
         stSocketRetryConnect({state, dispatch}) {

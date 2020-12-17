@@ -30,7 +30,6 @@
 import store from '@/store'
 import SectionBox from '@/components/sections/box'
 import {mapMutations, mapState} from 'vuex'
-import {convertSecondsToDate, convertSecondsToTime} from '@/utils/convertDateTime'
 export default {
     components: {
         SectionBox

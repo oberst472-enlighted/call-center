@@ -1,11 +1,14 @@
 <template>
-    <div :class="{'block-chat--success-save-comment': isSuccess}" class="block-chat">
-        <div class="block-chat__title">Комментарий оператора</div>
-
-        <label class="block-chat__box">
-            <textarea class="block-chat__inp" @input="$emit('input', $event.target.value)"/>
-            <span class="block-chat__text">сохранено</span>
-        </label>
+    <div>
+        <UiBtn theme="positive">Переадресовать вызов</UiBtn>
+        <UiSelect
+            class="block-download-csv__select"
+            placeholder="Статус"
+            :items="items"
+            default-value="all"
+            @input="changeStatus"
+            shadow
+        />
     </div>
 </template>
 

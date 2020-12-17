@@ -64,12 +64,15 @@
                 <LocalCallVideoInfo/>
             </div>
 
-
             <div class="section-call-video__aside-chat">
                 <LocalCallVideoChat
                     :is-success="isSuccessSaveComment"
                     @input="debounceSendComment"
                 />
+            </div>
+
+            <div class="section-call-video__aside-forwarding">
+                <LocalCallVideoForwarding :operators="modifiedOperators"/>
             </div>
         </div>
     </section>
@@ -80,16 +83,17 @@ import {mapActions, mapMutations, mapState} from 'vuex'
 import LocalCallVideoStop from './call-video-stop'
 import LocalCallVideoInfo from './call-video-info'
 import LocalCallVideoChat from './call-video-chat'
+import LocalCallVideoForwarding from './call-video-forwarding'
 import BlockCallWindowSmall from '@/components/blocks/call-window-small'
 import RecordRTC from 'recordrtc'
-import axios from 'axios'
 
 export default {
     components: {
         LocalCallVideoStop,
         LocalCallVideoInfo,
+        LocalCallVideoChat,
+        LocalCallVideoForwarding,
         BlockCallWindowSmall,
-        LocalCallVideoChat
     },
     data() {
         return {
@@ -111,6 +115,15 @@ export default {
     computed: {
         ...mapState('webrtc/webrtcPeerConnection', ['userStream', 'partnerStream']),
         ...mapState('webrtc/webrtcCalls', ['isCallOver', 'isCallAnswered', 'videoToken', 'videoID']),
+        modifiedOperators() {
+            const arr = [
+                {title: 'Все операторы', code: 'all', id: '1'}
+            ]
+            for (let value in this.statuses) {
+                arr.push({title: this.statuses[value], code: value, id: value})
+            }
+            return arr
+        },
     },
     methods: {
         ...mapMutations('webrtc/webrtcPeerConnection', ['TOGGLE_AUDIO', 'TOGGLE_CAMERA']),
@@ -161,19 +174,11 @@ export default {
             this.$router.go(-1)
         },
 
-
-
         startRecord() {
             this.recorder = RecordRTC([this.userStream, this.partnerStream], {
                 type: 'video',
                 checkForInactiveTracks: true,
                 timeSlice: 1000,
-                // ondataavailable(blob) {
-                //     console.log('has data');
-                // },
-                // onStateChange(state) {
-                //     console.log(state)
-                // },
             })
             this.recorder.startRecording()
         },
@@ -192,10 +197,7 @@ export default {
             } else {
                 console.log('recorder not found')
             }
-
-
         },
-
     },
     watch: {
         partnerStream() {
@@ -212,49 +214,20 @@ export default {
                 }, 1000)
             }
         },
-        // partnerStream: {
-        //     immediate: true,
-        //     handler(val) {
-        //         console.log(this.userStream)
-        //         console.log(val)
-        //         setTimeout(() => {
-        //             this.$refs.userVideo.srcObject = this.userStream
-        //             this.$refs.partnerVideo.srcObject = val
-        //           }, 3000);
-        //         console.log(val)
-        //         // if (val) {
-        //         //     this.$refs.userVideo.srcObject = this.userStream
-        //         //     this.$refs.partnerVideo.srcObject = val
-        //         //     this.startRecord()
-        //         // }
-        //     }
-        // },
 
         isCallOver() {
             this.stopRecord()
         }
     },
-    mounted() {
-        // this.$refs.userVideo.srcObject = this.userStream
-        // this.$refs.partnerVideo.srcObject = this.partnerStream
-        // console.log(this.partnerStream)
-        // setTimeout(() => {
-        //     console.log('-----')
-        //     console.log(this.partnerStream)
-        //     console.log('-----')
-        //   }, 1000);
-        // this.stopRecord()
-    },
     created() {
         this.TOGGLE_CALL_OVER(false)
-        if (!this.isCallAnswered) {
-            this.$router.push({name: 'home_operator'})
-        }
+        // if (!this.isCallAnswered) {
+        //     this.$router.push({name: 'home_operator'})
+        // }
     },
     beforeDestroy() {
         this.TOGGLE_IS_OPERATOR_BUSY(false)
     }
-
 }
 </script>
 
@@ -367,6 +340,13 @@ export default {
 
     &__aside-info {
         padding: 15px 15px 0 15px;
+    }
+
+    &__aside-forwarding {
+        outline: 1px solid red;
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
     }
 
     &__aside-chat {

@@ -71,9 +71,9 @@
                 />
             </div>
 
-            <div class="section-call-video__aside-forwarding">
-                <LocalCallVideoForwarding :operators="modifiedOperators"/>
-            </div>
+            <!--            <div class="section-call-video__aside-forwarding">-->
+            <!--                <LocalCallVideoForwarding :operators="modifiedOperators"/>-->
+            <!--            </div>-->
         </div>
     </section>
 </template>

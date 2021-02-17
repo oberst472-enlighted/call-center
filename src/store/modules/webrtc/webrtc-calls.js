@@ -128,6 +128,8 @@ export default {
             // const userInfo = getJsonFromString(localStorage.getItem('сс_main_user_info') || sessionStorage.getItem('сс_main_user_info'))
             // const userId = userInfo.id
 
+
+
             if (rootState.users.mainUserInfo.id === info['user_id']) {
                 commit('SET_START_TIME', Date.now())
                 commit('TOGGLE_CALL_ANSWERED')
@@ -142,15 +144,19 @@ export default {
         },
 
         stClickTheCallBtn({state, commit, dispatch}) {
+
             //оператор нажал на зеленую кнопку, инициировал ответ на звонок
             const info = state.callQueue[0]
-
+            state.isOnce = true
             commit('SET_VIDEO_TOKEN', info['video_token'])
             commit('SET_VIDEO_ID', info['video_id'])
             commit('SET_CALL_ID', info['call_id'])
 
+            const uuid = Math.random().toString(36).slice(-6);
+
             const data = {
-                call_id: info.call_id
+                call_id: info.call_id,
+                front_id: uuid
             }
             dispatch('webrtc/webrtcSockets/stSendMessage', {eventName: 'picked_up', data}, {root: true})
         }

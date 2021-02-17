@@ -12,7 +12,7 @@ export default {
         isSocketOnceConnection: false, //флаг для того чтобы не открывать сокет соединение пи переходах между роутами
         clientChannel: '',
         heartbeat: {
-            intervalTime: 5000, //c какой частотой отправляем сообщение
+            intervalTime: 10000, //c какой частотой отправляем сообщение
             interval: null,
             actualStatus: 'unavailable',
             statuses: {
@@ -79,7 +79,6 @@ export default {
             commit('TOGGLE_HEARTBEAT', false)
             const int = setInterval(() => {
                 dispatch('stSendMessage', {eventName: 'heartbeat', data: {status}})
-                console.log(66)
             }, state.heartbeat.intervalTime)
             commit('TOGGLE_HEARTBEAT', int)
         },

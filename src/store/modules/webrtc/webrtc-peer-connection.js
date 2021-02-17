@@ -85,6 +85,7 @@ export default {
                         {eventName: 'message_to', data},
                         {root: true}
                     )
+                    console.log(e.candidate)
                 }
             })
 

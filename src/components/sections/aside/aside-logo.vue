@@ -1,7 +1,7 @@
 <template>
     <div class="section-aside__logo">
         <div class="section-aside__logo-box"></div>
-        <img alt="" class="section-aside__logo-icon" src="@/assets/images/logo.svg">
+        <img alt="" class="section-aside__logo-icon" src="/assets/images/logo-2.png">
         <span class="section-aside__logo-text">Video-Calls</span>
     </div>
 </template>
@@ -19,8 +19,9 @@ export default {}
 
     &-icon {
         position: relative;
-        left: -10px;
+        left: -8px;
         transition-duration: 0.3s;
+        max-width: 50px;
     }
 
     &-text {

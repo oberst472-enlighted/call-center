@@ -1,6 +1,6 @@
 <template>
     <div class="block-form-header">
-        <img alt="logo" class="block-form-header__logo" src="@/assets/icons/Chat.svg">
+        <!--        <img alt="logo" class="block-form-header__logo" src="@/assets/icons/Chat.svg">-->
         <div class="block-form-header__text">
             <span class="block-form-header__top">{{ title }}</span>
             <span class="block-form-header__bottom">{{ subtitle }}</span>
@@ -25,6 +25,8 @@ export default {
 .block-form-header {
     display: flex;
     user-select: none;
+    text-align: center;
+    justify-content: center;
 
     &__logo {
         width: 62px;
@@ -34,6 +36,7 @@ export default {
     &__text {
         display: flex;
         flex-direction: column;
+        text-align: center;
     }
 
     &__top {

@@ -50,7 +50,7 @@ export default {
         case 'break':
           return 'background-color: #f2f9fc; color: #3e58ff;'
         case 'in_call':
-          return 'background-color: #f7f1ff; color: #65528b;'
+          return 'background-color: #f7f1ff; color: #06579a;'
         default:
           return ''
       }
@@ -74,7 +74,7 @@ export default {
     &-left {
       &-date {
         opacity: 0.7;
-        color: #65528b;
+        color: $color--primary;
         font-size: 11px;
         font-weight: 500;
       }

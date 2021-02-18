@@ -60,7 +60,7 @@ export default {
     }
    &__title {
        margin-top: 5px;
-       color: #4e545b;
+       color: $color--text;
        font-size: 12px;
        line-height: 1.2;
        font-weight: 500;

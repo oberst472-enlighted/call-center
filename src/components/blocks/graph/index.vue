@@ -103,7 +103,7 @@ export default {
   padding: 20px 10px;
   .box-header{
     padding-left: 13px;
-    color: #685c7b;
+    color: $color--subtitle;
     font-size: 17px;
     font-weight: 500;
   }

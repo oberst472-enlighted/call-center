@@ -149,7 +149,7 @@ export default {
         padding-top: 30px;
     }
     &__title {
-        color: #685c7b;
+        color: $color--subtitle;
         font-size: 17px;
         font-weight: 500;
         display: flex;

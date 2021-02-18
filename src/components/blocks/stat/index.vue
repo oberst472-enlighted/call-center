@@ -97,7 +97,7 @@ export default {
             justify-content: center;
             width: 100%;
             text-align: center;
-            color: #685c7b;
+            color: $color--subtitle;
             font-size: 17px;
             font-weight: 700;
         }

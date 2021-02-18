@@ -43,7 +43,7 @@ export default {
             } else if (this.data.status === 'BREAK') {
                 return 'background-color: #f2f9fc; color: #3e58ff;'
             } else if (this.data.status === 'IN_CALL') {
-                return 'background-color: #f7f1ff; color: #65528b;'
+                return 'background-color: #f7f1ff; color: #06579a;'
             } else {
                 return ''
             }
@@ -66,7 +66,7 @@ export default {
         &-left{
             &-date{
                 opacity: 0.7;
-                color: #65528b;
+                color: $color--primary;
                 font-size: 11px;
                 font-weight: 500;
             }

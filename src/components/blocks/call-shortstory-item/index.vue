@@ -133,7 +133,7 @@ export default {
     &__title {
         display: grid;
         grid-gap: 5px;
-        color: #4e545b;
+        color: $color--text;
         text-align: left;
 
         &__title {

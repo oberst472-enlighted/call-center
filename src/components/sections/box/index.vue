@@ -187,7 +187,7 @@ export default {
 
     &__title {
         font-size: 17px;
-        color: #685c7b;
+        color: $color--subtitle;
         font-weight: 500;
     }
 
@@ -249,7 +249,7 @@ export default {
     top: 50%;
     left: 50%;
     font-size: 12px;
-    color: #65528b;
+    color: $color--primary;
     font-weight: 500;
     transform: translate(-50%, -50%);
 

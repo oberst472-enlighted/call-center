@@ -154,7 +154,7 @@ export default {
         flex-wrap: wrap;
         margin-top: 30px;
         font-size: 14px;
-        color: #65528B;
+        color: #06579a;
     }
 
     &__date {

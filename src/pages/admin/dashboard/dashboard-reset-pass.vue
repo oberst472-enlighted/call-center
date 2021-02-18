@@ -67,7 +67,7 @@ export default {
         }
     }
     &__placeholder {
-        color: #65528b;
+        color: $color--primary;
         font-size: 12px;
         margin-top: 30px;
         text-align: center;

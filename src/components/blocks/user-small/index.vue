@@ -61,7 +61,7 @@ export default {
     margin-bottom: 20px;
 
     &-headers-main {
-      color: #685c7b;
+      color: $color--subtitle;
       font-size: 17px;
       font-weight: 500;
     }
@@ -80,7 +80,7 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
-      color: #65528b;
+      color: $color--primary;
       font-size: 12px;
       font-weight: 400;
       cursor: pointer;

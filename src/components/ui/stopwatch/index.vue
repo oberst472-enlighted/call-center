@@ -135,7 +135,7 @@ export default {
 
     &__count {
         display: inline-flex;
-        color: #4e545b;
+        color: $color--text;
     }
 
     &__dot {

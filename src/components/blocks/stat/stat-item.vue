@@ -36,7 +36,7 @@ export default {
         margin-top: 10px;
         font-size: 18px;
         line-height: 1;
-        color: #65528B;
+        color: $color--primary;
         font-weight: 500;
         margin-bottom: 3px;
         border-bottom: 1px solid green;

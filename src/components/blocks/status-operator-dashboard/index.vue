@@ -5,7 +5,7 @@
                 <div class="col-name">звонков <br> всего</div>
                 <div class="col-num">{{ statistic.total }}</div>
 
-                <hr style="background-color: #65528b">
+                <hr style="background-color: #06579a">
 
                 <div class="col-stat">за смену</div>
             </div>
@@ -21,7 +21,7 @@
                 <div class="col-name">звонков <br> обработано</div>
                 <div class="col-num">{{ statistic.success }}</div>
 
-                <hr style="background-color: #65528b">
+                <hr style="background-color: #06579a">
 
                 <div class="col-stat">{{ (statistic.success / statistic.total * 100).toFixed(2) || 0 }}% от принятых</div>
             </div>
@@ -54,7 +54,7 @@ export default {
     .user_stat_header{
         width: 100%;
         text-align: center;
-        color: #685c7b;
+        color: $color--subtitle;
         font-size: 17px;
         font-weight: 700;
         margin-bottom: 30px;
@@ -77,7 +77,7 @@ export default {
             padding-bottom: 6px;
         }
         &-num{
-            color: #65528b;
+            color: $color--primary;
             font-size: 25px;
             font-weight: 500;
             padding-bottom: 3px;

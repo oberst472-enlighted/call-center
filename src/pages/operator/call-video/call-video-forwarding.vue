@@ -28,7 +28,7 @@ export default {
     &__title {
         margin-bottom: 9px;
         font-size: 11px;
-        color: #685c7b;
+        color: $color--subtitle;
         font-weight: 300;
         opacity: 0.7;
         text-align: center;

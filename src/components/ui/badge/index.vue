@@ -50,7 +50,7 @@ export default {
         }
         &--oncall {
             background-color: #F7F1FF;
-            color: #65528B;
+            color: #06579a;
         }
     }
 }

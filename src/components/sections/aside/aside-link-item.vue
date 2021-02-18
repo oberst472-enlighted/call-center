@@ -68,7 +68,7 @@ export default {
         line-height: 1;
         transition-duration: 0.3s;
         overflow: hidden;
-        color: #65528b;
+        color: $color--primary;
         font-weight: 500;
     }
     &--active {

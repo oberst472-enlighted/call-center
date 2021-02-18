@@ -47,7 +47,7 @@ export default {
         font-weight: 500;
     }
     &-count {
-        color: #65528b;
+        color: $color--primary;
         font-size: 49px;
         margin-bottom: 22px;
     }

@@ -27,6 +27,8 @@ export default {
 
 <style lang='scss' scoped>
 .page-login {
+    position: relative;
+    z-index: 2;
     width: 100%;
     display: grid;
     align-items: center;

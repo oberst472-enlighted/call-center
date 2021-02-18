@@ -83,7 +83,7 @@ import {mapActions, mapMutations, mapState} from 'vuex'
 import LocalCallVideoStop from './call-video-stop'
 import LocalCallVideoInfo from './call-video-info'
 import LocalCallVideoChat from './call-video-chat'
-import LocalCallVideoForwarding from './call-video-forwarding'
+// import LocalCallVideoForwarding from './call-video-forwarding'
 import BlockCallWindowSmall from '@/components/blocks/call-window-small'
 import RecordRTC from 'recordrtc'
 
@@ -92,7 +92,7 @@ export default {
         LocalCallVideoStop,
         LocalCallVideoInfo,
         LocalCallVideoChat,
-        LocalCallVideoForwarding,
+        // LocalCallVideoForwarding,
         BlockCallWindowSmall,
     },
     data() {
@@ -224,6 +224,14 @@ export default {
         // if (!this.isCallAnswered) {
         //     this.$router.push({name: 'home_operator'})
         // }
+    },
+    beforeRouteEnter(to, from, next) {
+        if (!from.name) {
+            next({name: 'home_operator'})
+        }
+        else {
+            next()
+        }
     },
     beforeDestroy() {
         this.TOGGLE_IS_OPERATOR_BUSY(false)

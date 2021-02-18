@@ -26,7 +26,7 @@
 
 <script>
 import store from '@/store'
-import {mapMutations, mapState} from 'vuex'
+import {mapState, mapMutations, mapActions} from 'vuex'
 import BlockCallSound from '@/components/blocks/call-sound'
 import {getJsonFromString} from '@/utils/json'
 
@@ -41,11 +41,27 @@ export default {
     },
     computed: {
         ...mapState('webrtc/webrtcCalls', ['isSoundCallActive', 'isIncomingCall', 'isCallAnswered', 'isVideoSectionActive', 'callQueue']),
+        ...mapState('webrtc/webrtcSockets', ['heartbeat']),
         ...mapState('sessions', ['isSessionActive', 'isSessionBreak']),
     },
     methods: {
         ...mapMutations('webrtc/webrtcCalls', ['TOGGLE_INCOMING_CALL', 'TOGGLE_CALL_SOUND']),
+        ...mapActions('webrtc/webrtcSockets', ['stStartHeartbeat']),
+        _heartbeat() {
+            const statusObj = this.heartbeat.statuses
+            let result = ''
 
+            if (this.isSessionActive && this.isSessionBreak) {
+                result = statusObj.operatorBreak
+                this.stStartHeartbeat(statusObj.operatorBreak)
+            }
+            else {
+                this.isSessionActive ?
+                    result = statusObj.operatorOnline :
+                    result = statusObj.operatorUnavailable
+            }
+            this.stStartHeartbeat(result)
+        }
     },
 
     created() {
@@ -57,6 +73,8 @@ export default {
             this.TOGGLE_INCOMING_CALL(false)
             this.TOGGLE_CALL_SOUND(false)
         }
+
+        this._heartbeat()
     },
     async beforeRouteEnter(to, from, next) {
         const info = localStorage.getItem('сс_main_user_info') || sessionStorage.getItem('сс_main_user_info')

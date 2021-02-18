@@ -84,10 +84,12 @@ export default {
                     response.status < 300 &&
                     response.statusText === 'OK'
                 ) {
+                    const {id, start_time, is_break} = response.data
+
                     commit('TOGGLE_SESSION_ACTIVE');
-                    commit('SET_SESSION_ID', response.data.id);
-                    commit('SET_START_SESSION_TIME', response.data['start_time']);
-                    commit('TOGGLE_SESSION_BREAK', response.data['is_break']);
+                    commit('SET_SESSION_ID', id);
+                    commit('SET_START_SESSION_TIME', start_time);
+                    commit('TOGGLE_SESSION_BREAK', is_break);
 
                     isSuccess = true
                 } else {

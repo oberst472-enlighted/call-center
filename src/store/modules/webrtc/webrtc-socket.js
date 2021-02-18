@@ -23,8 +23,6 @@ export default {
                 operatorBreak: 'on_break', // оператор на перерыве
             }
         }
-
-
     },
     mutations: {
         SET_IS_SOCKET_ONCE_CONNECTION(state, payload) {
@@ -77,7 +75,7 @@ export default {
         },
         stSocketOpen({state, dispatch}) {
             customLog('socketOpen', 'Cокет соединение успешно открыто', 'lightgreen')
-           dispatch('stStartHeartbeat', state.heartbeat.actualStatus)
+           // dispatch('stStartHeartbeat', state.heartbeat.actualStatus)
         },
         stStartHeartbeat({state, commit, dispatch}, status) {
             dispatch('stSendMessage', {eventName: 'heartbeat', data: {status}})

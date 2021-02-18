@@ -122,15 +122,14 @@ export default {
         },
 
 
-        stOperatorPickedUpThePhone({state, commit, dispatch, rootState}, info, ) {
+        stOperatorPickedUpThePhone({state, commit, dispatch, rootState}, info) {
+            console.log(info)
             //сокет просигнализировал что оператор ответил на звонок
             commit('DELETE_CALL_QUEUE_ITEM', info.call_id)
-            // const userInfo = getJsonFromString(localStorage.getItem('сс_main_user_info') || sessionStorage.getItem('сс_main_user_info'))
-            // const userId = userInfo.id
 
+            const isSuccess = info['operator_channel'] === rootState.webrtc.webrtcSockets.specificChannelName
 
-
-            if (rootState.users.mainUserInfo.id === info['user_id']) {
+            if (rootState.users.mainUserInfo.id === info['user_id'] && isSuccess) {
                 commit('SET_START_TIME', Date.now())
                 commit('TOGGLE_CALL_ANSWERED')
                 commit('TOGGLE_IS_OPERATOR_BUSY')
@@ -152,11 +151,9 @@ export default {
             commit('SET_VIDEO_ID', info['video_id'])
             commit('SET_CALL_ID', info['call_id'])
 
-            const uuid = Math.random().toString(36).slice(-6);
 
             const data = {
                 call_id: info.call_id,
-                front_id: uuid
             }
             dispatch('webrtc/webrtcSockets/stSendMessage', {eventName: 'picked_up', data}, {root: true})
         }

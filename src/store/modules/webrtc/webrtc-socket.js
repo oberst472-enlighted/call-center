@@ -11,6 +11,7 @@ export default {
         socketRetryConnectTime: 5000,
         isSocketOnceConnection: false, //флаг для того чтобы не открывать сокет соединение пи переходах между роутами
         clientChannel: '',
+        specificChannelName: '', // уникальный id для каждого соккет соединения, чтобы обрабатывать вызовы одному оператору в разный вкладках
         heartbeat: {
             intervalTime: 10000, //c какой частотой отправляем сообщение
             interval: null,
@@ -29,6 +30,10 @@ export default {
         SET_IS_SOCKET_ONCE_CONNECTION(state, payload) {
             state.isNavigatorOnceConnection = payload
         },
+        SET_SPECIFIC_CHANNEL_NAME(state, payload) {
+            state.specificChannelName = payload
+        },
+
         SET_SOCKET(state, payload) {
             state.socket = payload
         },
@@ -57,13 +62,13 @@ export default {
             const socket = new WebSocket(url)
             commit('SET_SOCKET', socket)
 
-            socket.addEventListener('open', () => {
+            socket.addEventListener('open', (data) => {
                 dispatch('stSocketOpen')
             })
-            socket.addEventListener('error', () => {
+            socket.addEventListener('error', (data) => {
                 dispatch('stSocketError')
             })
-            socket.addEventListener('close', () => {
+            socket.addEventListener('close', (data) => {
                 dispatch('stSocketClose')
             })
             socket.addEventListener('message', payload => {
@@ -113,6 +118,9 @@ export default {
             const eventName = getJsonFromString(payload.data).event
 
             switch (eventName) {
+                case 'connect': //идет запрос на звонок от терминала
+                    commit('SET_SPECIFIC_CHANNEL_NAME', info['channel_name'])
+                    break
                 case 'incoming_call': //идет запрос на звонок от терминала
                     customLog('incoming_call', `Входящий звонок, id звонка: ${info.call_id}`)
                     dispatch('webrtc/webrtcCalls/stCallRequestFromTerminal', info, { root: true })

@@ -156,7 +156,7 @@ const router = new VueRouter({
                     path: '/statistics/',
                     name: 'statistics',
                     components: {
-                        default: require('@/pages/operator/stat').default,
+                        default: require('@/pages/stat').default,
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
                     },
@@ -303,10 +303,10 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: 'admin/stat/',
+                    path: 'admin/statistics/',
                     name: 'stat_admin',
                     components: {
-                        default: require('@/pages/admin/stat').default,
+                        default: require('@/pages/stat').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     },

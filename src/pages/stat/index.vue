@@ -1,9 +1,9 @@
 <template>
     <section class="page-stat">
         <SectionDownloadCsv
+            :loading="isLoading"
             :statuses="modifiedStatuses"
             :operators="modifiedOperators"
-            :loading="isLoading"
             @submit="sendInfo"
         />
     </section>
@@ -11,11 +11,18 @@
 
 <script>
 import store from '@/store'
-import {mapState, mapActions, mapMutations} from 'vuex'
+import {mapActions, mapMutations, mapState} from 'vuex'
 import SectionDownloadCsv from '@/components/sections/downlaod-csv-form'
+import {isRoleAdmin, isRoleOperator} from '@/utils/middleware'
+
 export default {
+    metaInfo() {
+        return {
+            title: `Статистика`
+        }
+    },
     components: {
-        SectionDownloadCsv,
+        SectionDownloadCsv
     },
     data() {
         return {
@@ -24,7 +31,7 @@ export default {
     },
     computed: {
         ...mapState('csv', ['statuses']),
-        ...mapState('users', ['users']),
+        ...mapState('users', ['mainUserInfo', 'users']),
         modifiedStatuses() {
             const arr = [
                 {title: 'Все статусы', code: 'all', id: '1'}
@@ -43,15 +50,24 @@ export default {
             })
             return arr
         },
+        isAdmin() {
+            return isRoleAdmin()
+        },
+        isOperator() {
+            return isRoleOperator()
+        }
     },
     methods: {
         ...mapActions('csv', ['stDownloadCsw']),
         ...mapMutations('alerts', ['ADD_ALERT']),
         async sendInfo(payload) {
             this.isLoading = true
+            let params = () => {
+                if (this.isOperator) { return `?from=${payload.from}&to=${payload.to}&status=${payload.status}&user=${this.mainUserInfo.id}` }
+                if (this.isAdmin) { return `?from=${payload.from}&to=${payload.to}&status=${payload.status}&user=${payload.user}` }
+            }
             try {
-                const params = `?from=${payload.from}&to=${payload.to}&status=${payload.status}&user=${payload.user}`
-                const res = await this.stDownloadCsw(params)
+                const res = await this.stDownloadCsw(params())
                 res ? window.open(res.data.file) : this.ADD_ALERT(['negative'])
             } catch (e) {
                 console.error(e)
@@ -62,14 +78,25 @@ export default {
         },
     },
     async beforeRouteEnter(to, from, next) {
+        console.log(isRoleAdmin())
+        console.log(isRoleOperator())
         store.commit('TOGGLE_PROGRESS_ACTIVE')
         try {
-            const response = await Promise.all([
-                store.dispatch('csv/stGetAllStatuses'),
-                store.dispatch('users/stGetUsers')
-            ])
-            const isSuccess = response.every(item => item)
-            next(isSuccess)
+            if (isRoleOperator) {
+                const response = await Promise.all([
+                    store.dispatch('csv/stGetAllStatuses'),
+                ])
+                const isSuccess = response.every(item => item)
+                next(isSuccess)
+            }
+            if (isRoleAdmin) {
+                const response = await Promise.all([
+                    store.dispatch('csv/stGetAllStatuses'),
+                    store.dispatch('users/stGetUsers')
+                ])
+                const isSuccess = response.every(item => item)
+                next(isSuccess)
+            }
         } catch (e) {
             console.log(e)
         } finally {
@@ -79,11 +106,12 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 .page-stat {
-    padding-bottom: 30px;
-    width: 100%;
     display: flex;
+    align-items: flex-start;
+    width: 100%;
+    padding-bottom: 30px;
 
 }
 </style>

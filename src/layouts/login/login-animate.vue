@@ -1,11 +1,6 @@
 <template>
     <svg class="b-main-animation__main" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="516px" height="242px" version="1.1" style="shape-rendering:geometricPrecision;text-rendering:geometricPrecision;image-rendering:optimizeQuality;fill-rule:evenodd;clip-rule:evenodd;/* display: none; *//* opacity: 0; */ 0; */" viewBox="0 0 51599.9 24232.2" xmlns:xlink="http://www.w3.org/1999/xlink">
         <defs>
-            <!--                <style type="text/css">-->
-            <!--                    .fil0 {fill:none}-->
-            <!--                    .str0 {stroke:url(#id0);stroke-width:48;stroke-miterlimit:22.9256}-->
-            <!--                    .str1 {stroke:url(#id0);stroke-width:48;stroke-miterlimit:22.9256}-->
-            <!--                </style>-->
             <linearGradient id="id0" gradientUnits="userSpaceOnUse" x1="17554.6" y1="109.4" x2="34961.8" y2="29863.5">
                 <stop offset="0" style="stop-opacity:1; stop-color:#3AB6AB"></stop>
                 <stop offset="0.65098" style="stop-opacity:1; stop-color:#1A4868"></stop>

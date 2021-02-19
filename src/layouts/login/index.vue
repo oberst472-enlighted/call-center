@@ -1,6 +1,6 @@
 <template>
     <div class="layout-login">
-        <LocalBlockAnimate class="layout-login__animate"/>
+        <!--        <LocalBlockAnimate class="layout-login__animate"/>-->
         <img class="layout-login__logo" src="/assets/images/logo.png" alt="">
         <transition name="fadereset" mode="out-in">
             <router-view/>
@@ -10,10 +10,10 @@
 
 <script>
 import {mapActions} from 'vuex'
-import LocalBlockAnimate from './login-animate'
+// import LocalBlockAnimate from './login-animate'
 export default {
     components: {
-        LocalBlockAnimate
+        // LocalBlockAnimate
     },
     methods: {
         ...mapActions('webrtc/webrtcSockets', ['stSocketDisconnect']),

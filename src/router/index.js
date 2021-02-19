@@ -136,7 +136,7 @@ const router = new VueRouter({
                     path: '/terminals/',
                     name: 'terminals',
                     components: {
-                        default: require('@/pages/operator/terminals').default,
+                        default: require('@/pages/terminals').default,
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
                     },
@@ -266,7 +266,7 @@ const router = new VueRouter({
                     path: 'admin/terminals/',
                     name: 'terminals_admin',
                     components: {
-                        default: require('@/pages/admin/terminals').default,
+                        default: require('@/pages/terminals').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     },

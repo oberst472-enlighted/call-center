@@ -48,6 +48,11 @@ import SectionBox from '@/components/sections/box'
 import BlockCallWindowSmall from '@/components/blocks/call-window-small'
 import BlockCallShortstoryItem from '@/components/blocks/call-shortstory-item'
 export default {
+    metaInfo() {
+        return {
+            title: `Звонки`
+        }
+    },
     components: {
         SectionBox,
         BlockCallShortstoryItem,

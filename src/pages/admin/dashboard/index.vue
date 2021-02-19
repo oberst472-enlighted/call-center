@@ -43,6 +43,11 @@ import LocalDashboardCalls from './dashboard-calls'
 import BlockStat from '@/components/blocks/stat'
 
 export default {
+    metaInfo() {
+        return {
+            title: `Система управления`
+        }
+    },
     components: {
         LocalDashboardUsers,
         LocalDashboardTerminals,

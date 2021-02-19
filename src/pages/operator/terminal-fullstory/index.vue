@@ -32,6 +32,11 @@ import SectionBox from '@/components/sections/box'
 import {mapMutations, mapState} from 'vuex'
 import {convertSecondsToDate, convertSecondsToTime} from '@/utils/convertDateTime'
 export default {
+    metaInfo() {
+        return {
+            title: `Информация о терминале`
+        }
+    },
     components: {
         SectionBox
     },

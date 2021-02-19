@@ -88,6 +88,11 @@ import BlockCallWindowSmall from '@/components/blocks/call-window-small'
 import RecordRTC from 'recordrtc'
 
 export default {
+    metaInfo() {
+        return {
+            title: `Звонок`
+        }
+    },
     components: {
         LocalCallVideoStop,
         LocalCallVideoInfo,

@@ -31,6 +31,11 @@ import {mapState, mapMutations, mapActions} from 'vuex'
 import SectionBox from '@/components/sections/box'
 import BlockShortstoryItem from '@/components/blocks/call-shortstory-item'
 export default {
+    metaInfo() {
+        return {
+            title: `Звонки`
+        }
+    },
     components: {
         SectionBox,
         BlockShortstoryItem

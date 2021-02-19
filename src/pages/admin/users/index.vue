@@ -18,6 +18,11 @@ import store from '@/store'
 import {mapState, mapMutations, mapActions} from 'vuex'
 import BlockUsers from '@/components/blocks/users'
 export default {
+    metaInfo() {
+        return {
+            title: `Операторы`
+        }
+    },
     components: {
         BlockUsers,
     },

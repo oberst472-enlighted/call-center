@@ -91,13 +91,16 @@
 </template>
 
 <script>
-import store from '@/store'
 import {mapActions, mapMutations} from 'vuex'
 import SectionBox from '@/components/sections/box'
 import BlockDragFile from '@/components/blocks/drag-and-drop-file'
-import {getJsonFromString} from '@/utils/json'
 
 export default {
+    metaInfo() {
+        return {
+            title: `Создать оператора`
+        }
+    },
     components: {
         SectionBox,
         BlockDragFile

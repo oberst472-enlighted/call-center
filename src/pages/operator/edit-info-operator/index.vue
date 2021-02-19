@@ -83,6 +83,11 @@ import SectionBox from '@/components/sections/box'
 import BlockDownloadAvatar from '@/components/blocks/downlaod-avatar'
 
 export default {
+    metaInfo() {
+        return {
+            title: `Редактировать информацию`
+        }
+    },
     components: {
         SectionBox,
         BlockDownloadAvatar,

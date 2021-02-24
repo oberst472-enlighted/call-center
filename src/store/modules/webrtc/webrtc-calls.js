@@ -98,8 +98,9 @@ export default {
 
         stEndCall({state, commit, dispatch}, role) {
             // customLog('stEndCall', `${role} завершил звонок`)
-
+            console.log(77)
             if (role === 'user') {
+                console.log(888)
                 const data = {
                     call_id: state.callID
                 }
@@ -108,6 +109,13 @@ export default {
                     {eventName: 'end_call', data},
                     {root: true}
                 )
+            }
+            if (role === 'terminal') {
+                commit('TOGGLE_CALL_ANSWERED', false)
+                commit('TOGGLE_CALL_OVER')
+                commit('TOGGLE_CALL_SOUND', false)
+                commit('TOGGLE_INCOMING_CALL', false)
+                return
             }
 
             commit('SET_STOP_TIME', Date.now())

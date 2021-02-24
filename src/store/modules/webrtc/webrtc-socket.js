@@ -139,6 +139,12 @@ export default {
                     dispatch('webrtc/webrtcCalls/stEndCall', 'partner', { root: true })
                     break
 
+                case 'call_was_canceled': //терминал завершил звонок до того как оператор ответил
+                    customLog('call_was_canceled', 'Терминал завершил звонок до ответа оператора')
+                    console.log(666)
+                    dispatch('webrtc/webrtcCalls/stEndCall', 'terminal', { root: true })
+                    break
+
                 case 'message': // пришло сообщение от терминала
                     commit('SET_CLIENT_CHANNEL', info.from)
 

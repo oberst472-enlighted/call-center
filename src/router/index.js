@@ -220,13 +220,13 @@ const router = new VueRouter({
         },
         {
             path: '',
-            component: require('@/layouts/admin/default/').default,
+            component: require('@/layouts/adm/default/').default,
             children: [
                 {
                     path: 'admin/home',
                     name: 'home_admin',
                     components: {
-                        default: require('@/pages/admin/dashboard').default,
+                        default: require('@/pages/adm/dashboard').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     },
@@ -246,7 +246,7 @@ const router = new VueRouter({
                     path: 'admin/calls/',
                     name: 'calls_admin',
                     components: {
-                        default: require('@/pages/admin/calls').default,
+                        default: require('@/pages/adm/calls').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     },
@@ -286,7 +286,7 @@ const router = new VueRouter({
                     path: 'admin/users/',
                     name: 'users_admin',
                     components: {
-                        default: require('@/pages/admin/users').default,
+                        default: require('@/pages/adm/users').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     },
@@ -326,7 +326,7 @@ const router = new VueRouter({
                     path: 'admin/create-operator/',
                     name: 'create-operator_admin',
                     components: {
-                        default: require('@/pages/admin/create-operator').default,
+                        default: require('@/pages/adm/create-operator').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     },
@@ -343,10 +343,10 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: '/admin/edit-profile-admin/',
+                    path: '/adm/edit-profile-admin/',
                     name: 'edit-info_admin',
                     components: {
-                        default: require('@/pages/admin/edit-info-admin').default,
+                        default: require('@/pages/adm/edit-info-admin').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     },
@@ -366,7 +366,7 @@ const router = new VueRouter({
                     path: 'admin/edit-profile-operator/:id',
                     name: 'edit-info-operator_admin',
                     components: {
-                        default: require('@/pages/admin/edit-info-operator').default,
+                        default: require('@/pages/adm/edit-info-operator').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     },
@@ -386,7 +386,7 @@ const router = new VueRouter({
                     path: 'admin/detail-call/:id',
                     name: 'detail-call_admin',
                     components: {
-                        default: require('@/pages/admin/detail-call').default,
+                        default: require('@/pages/adm/detail-call').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     },
@@ -406,7 +406,7 @@ const router = new VueRouter({
                     path: 'admin/detail-operator/:id',
                     name: 'detail-operator_admin',
                     components: {
-                        default: require('@/pages/admin/detail-operator').default,
+                        default: require('@/pages/adm/detail-operator').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     },
@@ -426,7 +426,7 @@ const router = new VueRouter({
                     path: 'admin/detail-terminal/:id',
                     name: 'detail-terminal_admin',
                     components: {
-                        default: require('@/pages/admin/detail-terminal').default,
+                        default: require('@/pages/adm/detail-terminal').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     },
@@ -446,7 +446,7 @@ const router = new VueRouter({
                     path: 'admin/reset-password/:id',
                     name: 'reset-password_admin',
                     components: {
-                        default: require('@/pages/admin/set-new-password').default,
+                        default: require('@/pages/adm/set-new-password').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     },

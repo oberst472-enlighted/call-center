@@ -3,6 +3,11 @@
         <SectionBox :is-not-pagination="true" content>
             <template #content>
                 <div class="page-profile__content">
+                    <div class="page-profile__inp page-profile__inp-login page-profile__inp--disabled">
+                        <UiInput :value="mainUserInfo.username">
+                            Логин для входа:
+                        </UiInput>
+                    </div>
                     <div class="page-profile__inp page-profile__inp-first-name">
                         <UiInput
                             v-model="form.first_name"
@@ -162,12 +167,16 @@ export default {
         padding: 30px;
         grid-auto-rows: minmax(60px, auto);
         grid-template-areas:
+        'login login file'
         'first-name last-name file'
-        'email phone file'
+        'email phone .'
         'new-pass . save-btn';
     }
 
     &__inp {
+        &-login {
+            grid-area: login;
+        }
         &-first-name {
             grid-area: first-name;
         }
@@ -200,6 +209,9 @@ export default {
             margin-top: 60px;
             margin-left: auto;
             grid-area: save-btn;
+        }
+        &--disabled {
+            pointer-events: none;
         }
     }
 

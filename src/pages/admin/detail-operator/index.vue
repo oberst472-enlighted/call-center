@@ -19,7 +19,8 @@
                     </div>
                     <div class="page-profile__btns">
                         <UiBtn :to="{name: 'edit-info-operator_admin', params: {id: userInfo.id}}" class="page-profile__btn" theme="primary">Изменить</UiBtn>
-                        <UiBtn class="page-profile__btn" theme="negative" @click="blockUser" :loading="isLoading">Блокировать оператора</UiBtn>
+                        <UiBtn class="page-profile__btn" v-if="userInfo.is_active" theme="negative" @click="blockUser" :loading="isLoading">Блокировать оператора</UiBtn>
+                        <UiBtn class="page-profile__btn" v-else theme="positive" @click="unBlockUser" :loading="isLoading">Разблокировать оператора</UiBtn>
                     </div>
                     <div class="page-profile__calls">
                         <SectionBox
@@ -75,14 +76,15 @@ export default {
     },
     methods: {
         ...mapMutations('alerts', ['ADD_ALERT']),
-        ...mapActions('users', ['stBlockUser']),
+        ...mapActions('users', ['stBlockUser', 'stUnBlockUser', 'stGetUserById']),
         async blockUser() {
             this.isLoading = true
             try {
                 const isSuccess = await this.stBlockUser(this.$route.params.id)
                 if (isSuccess) {
                     this.ADD_ALERT(['positive', 'Оператор заблокирован'])
-                    this.$router.push({name: 'users_admin'})
+                    await this.stGetUserById(this.$route.params.id)
+                    // this.$router.push({name: 'users_admin'})
                 }
                 else {
                     this.ADD_ALERT(['negative', 'Оператор не заблокирован. Перезагрузите страницу и попробуйте повторить операцию'])
@@ -90,6 +92,25 @@ export default {
             } catch (e) {
                 console.log(e)
                 this.ADD_ALERT(['negative', 'Оператор не заблокирован. Перезагрузите страницу и попробуйте повторить операцию'])
+            } finally {
+                this.isLoading = false
+            }
+        },
+        async unBlockUser() {
+            this.isLoading = true
+            try {
+                const isSuccess = await this.stUnBlockUser(this.$route.params.id)
+                if (isSuccess) {
+                    this.ADD_ALERT(['positive', 'Оператор разблокирован'])
+                    await this.stGetUserById(this.$route.params.id)
+                    // this.$router.push({name: 'users_admin'})
+                }
+                else {
+                    this.ADD_ALERT(['negative', 'Оператор не разблокирован. Перезагрузите страницу и попробуйте повторить операцию'])
+                }
+            } catch (e) {
+                console.log(e)
+                this.ADD_ALERT(['negative', 'Оператор не разблокирован. Перезагрузите страницу и попробуйте повторить операцию'])
             } finally {
                 this.isLoading = false
             }

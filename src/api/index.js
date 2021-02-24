@@ -160,6 +160,19 @@ export async function apiBlockUser(id) {
     return response
 }
 
+// 0.0.5 Заблокировать юзера
+export async function apiUnBlockUser(id) {
+    const userToken = token()
+    const options = {
+        method: 'post',
+        url: `/api/v1/users/${id}/unblock`,
+        body: null,
+        token: userToken
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+
 //--- Звонки
 // 0.0.1 Получить все звонки оператора за смену
 export async function apiGetAllCallsForASession(params) {

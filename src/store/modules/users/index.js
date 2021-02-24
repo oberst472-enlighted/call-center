@@ -1,4 +1,4 @@
-import { apiGetUsers, apiGetUserById, apiEditUserById, apiCreateUser, apiBlockUser} from '@/api';
+import { apiGetUsers, apiGetUserById, apiEditUserById, apiCreateUser, apiBlockUser, apiUnBlockUser} from '@/api';
 import {getStringFromJson} from '@/utils/json'
 
 export default {
@@ -85,6 +85,10 @@ export default {
         },
         async stBlockUser(context, id) {
             const response = await apiBlockUser(id);
+            return Boolean(response) && response.status < 300 && (response.statusText === 'OK' || response.statusText === 'Created');
+        },
+        async stUnBlockUser(context, id) {
+            const response = await apiUnBlockUser(id);
             return Boolean(response) && response.status < 300 && (response.statusText === 'OK' || response.statusText === 'Created');
         },
     }

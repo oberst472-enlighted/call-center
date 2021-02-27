@@ -26,5 +26,5 @@ deploy-master:
         - mv dist/ $CI_COMMIT_REF_SLUG
         - zip -r $CI_COMMIT_REF_SLUG.zip $CI_COMMIT_REF_SLUG/
         - scp $CI_COMMIT_REF_SLUG.zip calls@dzv.stech.ru:/var/www/front/ && rm -rf $CI_COMMIT_REF_SLUG.zip
-        - ssh calls@vc-dev.enlighted.ru "cd /var/www/front/ && rm -rf $CI_COMMIT_REF_SLUG && unzip $CI_COMMIT_REF_SLUG.zip && rm -rf $CI_COMMIT_REF_SLUG.zip"
+        - ssh calls@dzv.stech.ru "cd /var/www/front/ && rm -rf $CI_COMMIT_REF_SLUG && unzip $CI_COMMIT_REF_SLUG.zip && rm -rf $CI_COMMIT_REF_SLUG.zip"
         - sh etc/tg.sh "<b>Video Calls prod</b> (dzv.stech.ru) 🔥frontend обновлен🔥"

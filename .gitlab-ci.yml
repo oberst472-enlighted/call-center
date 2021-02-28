@@ -1,7 +1,7 @@
 stages:
   - build
 
-deploy:
+deploy-develop:
   stage: build
   only:
     refs:
@@ -14,3 +14,17 @@ deploy:
         - scp $CI_COMMIT_REF_SLUG.zip calls@vc-dev.enlighted.ru:/var/www/front/ && rm -rf $CI_COMMIT_REF_SLUG.zip
         - ssh calls@vc-dev.enlighted.ru "cd /var/www/front/ && rm -rf $CI_COMMIT_REF_SLUG && unzip $CI_COMMIT_REF_SLUG.zip && rm -rf $CI_COMMIT_REF_SLUG.zip"
         - sh etc/tg.sh "<b>Video Calls</b> (dev) - frontend обновлен"
+
+deploy-master:
+  stage: build
+  only:
+    refs:
+      - master-2.0
+  script:
+        - npm install
+        - npm run build
+        - mv dist/ $CI_COMMIT_REF_SLUG
+        - zip -r $CI_COMMIT_REF_SLUG.zip $CI_COMMIT_REF_SLUG/
+        - scp $CI_COMMIT_REF_SLUG.zip calls@prod-vc.enlighted.ru:/var/www/front/ && rm -rf $CI_COMMIT_REF_SLUG.zip
+        - ssh calls@prod-vc.enlighted.ru "cd /var/www/front/ && rm -rf $CI_COMMIT_REF_SLUG && unzip $CI_COMMIT_REF_SLUG.zip && rm -rf $CI_COMMIT_REF_SLUG.zip"
+        - sh etc/tg.sh "<b>Video Calls prod</b> (dzv.stech.ru) 🔥frontend обновлен🔥"

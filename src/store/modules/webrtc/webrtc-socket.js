@@ -53,11 +53,12 @@ export default {
     actions: {
         stSocketConnect({commit, dispatch}) {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token')
-            console.log(process.env.WSS_URL)
-            // const callCenterId = 'Q2FsbENlbnRlcjox'
+            const address = process.env.NODE_ENV === 'production' ? 'dzv.stech.ru' : 'vc-dev.enlighted.ru'
+            console.info(process.env.NODE_ENV)
+            console.info(process.env.BASE_URL)
             const type = 'operator'
             const {call_center : callCenterId} = JSON.parse(localStorage.getItem('сс_main_user_info') || sessionStorage.getItem('сс_main_user_info'))
-            const url = `wss://vc-dev.enlighted.ru/ws/call-center-channel/${callCenterId}/?type=${type}&token=${token}`
+            const url = `wss://${address}/ws/call-center-channel/${callCenterId}/?type=${type}&token=${token}`
 
             const socket = new WebSocket(url)
             commit('SET_SOCKET', socket)
@@ -143,7 +144,6 @@ export default {
 
                 case 'call_was_canceled': //терминал завершил звонок до того как оператор ответил
                     customLog('call_was_canceled', 'Терминал завершил звонок до ответа оператора')
-                    console.log(666)
                     dispatch('webrtc/webrtcCalls/stEndCall', 'terminal', { root: true })
                     break
 

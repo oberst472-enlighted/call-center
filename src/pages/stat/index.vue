@@ -78,8 +78,6 @@ export default {
         },
     },
     async beforeRouteEnter(to, from, next) {
-        console.log(isRoleAdmin())
-        console.log(isRoleOperator())
         store.commit('TOGGLE_PROGRESS_ACTIVE')
         try {
             if (isRoleOperator) {

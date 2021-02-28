@@ -98,9 +98,7 @@ export default {
 
         stEndCall({state, commit, dispatch}, role) {
             // customLog('stEndCall', `${role} завершил звонок`)
-            console.log(77)
             if (role === 'user') {
-                console.log(888)
                 const data = {
                     call_id: state.callID
                 }
@@ -131,7 +129,6 @@ export default {
 
 
         stOperatorPickedUpThePhone({state, commit, dispatch, rootState}, info) {
-            console.log(info)
             //сокет просигнализировал что оператор ответил на звонок
             commit('DELETE_CALL_QUEUE_ITEM', info.call_id)
 

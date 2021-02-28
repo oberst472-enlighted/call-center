@@ -139,7 +139,6 @@ export default {
         this.form.last_name = this.mainUserInfo.last_name
         this.form.email = this.mainUserInfo.email
         this.form.phone = this.mainUserInfo.phone
-        console.log(this.mainUserInfo.photo)
         if (this.mainUserInfo.photo) {
             this.form.photo = this.mainUserInfo.photo.id
             this.defaultPhoto = this.mainUserInfo.photo.file

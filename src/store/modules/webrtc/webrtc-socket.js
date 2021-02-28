@@ -53,8 +53,10 @@ export default {
     actions: {
         stSocketConnect({commit, dispatch}) {
             const token = localStorage.getItem('token') || sessionStorage.getItem('token')
-            const callCenterId = 'Q2FsbENlbnRlcjox'
+            console.log(process.env.WSS_URL)
+            // const callCenterId = 'Q2FsbENlbnRlcjox'
             const type = 'operator'
+            const {call_center : callCenterId} = JSON.parse(localStorage.getItem('сс_main_user_info') || sessionStorage.getItem('сс_main_user_info'))
             const url = `wss://vc-dev.enlighted.ru/ws/call-center-channel/${callCenterId}/?type=${type}&token=${token}`
 
             const socket = new WebSocket(url)

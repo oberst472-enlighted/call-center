@@ -1,6 +1,6 @@
 const path = require('path')
 // const devServer = 'calls-dev.enlighted.ru';
-const url = 'https://vc-dev.enlighted.ru/';
+const url = process.env.NODE_ENV === 'development' ? 'https://vc-dev.enlighted.ru/' : 'https://vc-dev.enlighted.ru/'
 
 module.exports = {
   chainWebpack: config => {

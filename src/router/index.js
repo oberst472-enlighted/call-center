@@ -76,7 +76,7 @@ const router = new VueRouter({
                     path: '/detail-call/:id',
                     name: 'detail-call_operator',
                     components: {
-                        default: require('@/pages/operator/detail-call').default,
+                        default: require('@/pages/detail-call').default,
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
                     },
@@ -96,7 +96,7 @@ const router = new VueRouter({
                     path: '/detail/:id',
                     name: 'terminal-fullstory',
                     components: {
-                        default: require('@/pages/operator/terminal-fullstory').default,
+                        default: require('@/pages/detail-device').default,
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
                     },
@@ -386,7 +386,7 @@ const router = new VueRouter({
                     path: 'admin/detail-call/:id',
                     name: 'detail-call_admin',
                     components: {
-                        default: require('@/pages/admin/detail-call').default,
+                        default: require('@/pages/detail-call').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     },
@@ -426,7 +426,7 @@ const router = new VueRouter({
                     path: 'admin/detail-terminal/:id',
                     name: 'detail-terminal_admin',
                     components: {
-                        default: require('@/pages/admin/detail-terminal').default,
+                        default: require('@/pages/detail-device').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     },

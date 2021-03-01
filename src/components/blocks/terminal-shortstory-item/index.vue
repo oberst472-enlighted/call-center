@@ -38,7 +38,7 @@ export default {
             return this.info.title ? this.info.title : 'Название терминала не задано'
         },
         railWayStation() {
-            return this.info.railway_station ? this.info.railway_station : 'Местоположение не указано'
+            return this.info.railway_station ? this.info.railway_station : 'Неизвестное расположение'
         }
     }
 }

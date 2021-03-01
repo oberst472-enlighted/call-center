@@ -86,12 +86,12 @@ export default {
 
         async downloadNextPageCalls() {
             this.SET_PAGINATION_PAGE()
-            const isSuccess = await this.stGetAllCallsForTheCurrentSession()
+            await this.stGetAllCallsForTheCurrentSession()
         },
         async downloadNextPageTerminals() {
             this.SET_DEVICES_PAGINATION_PAGE()
             // eslint-disable-next-line no-unused-vars
-            const isSuccess = await this.stGetDevices()
+            await this.stGetDevices()
         }
     },
     async beforeRouteEnter(to, from, next) {

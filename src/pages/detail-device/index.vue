@@ -3,7 +3,7 @@
         <SectionBox class="page-detail-info__box" content>
             <template #content>
                 <div class="page-detail-info__content">
-                    <h1 class="page-detail-info__title">Терминал #{{ title }}</h1>
+                    <h1 class="page-detail-info__title">Терминал 2 #{{ title }}</h1>
                     <div class="page-detail-info__name-box">
                         <span class="page-detail-info__name-box-text-1">
                             {{ name }}

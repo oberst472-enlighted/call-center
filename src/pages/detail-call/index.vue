@@ -14,10 +14,10 @@
 
                     <div class="page-detail-info__name-box">
                         <span class="page-detail-info__name-box-text-1">
-                            Казанский Вокзал терминал #3462
+                            {{ deviceLocation }}
                         </span>
                         <span class="page-detail-info__name-box-text-2">
-                            зал ожидания
+                            {{ deviceName }}
                         </span>
                     </div>
 
@@ -60,6 +60,12 @@ export default {
         title() {
             return this.detailInfo.id
         },
+        deviceName() {
+            return this.detailInfo?.device_title || 'Неизвестный терминал'
+        },
+        deviceLocation() {
+            return this.detailInfo?.railway_station || 'Неизвестное расположение'
+        },
         date() {
             return convertSecondsToDate(this.detailInfo.create_time)
         },
@@ -86,7 +92,7 @@ export default {
         const isSuccess = response.every(item => item)
         if (isSuccess) {
             store.commit('TOGGLE_PROGRESS_ACTIVE', false)
-           next()
+            next()
         } else {
             next(false)
             store.commit('TOGGLE_PROGRESS_ACTIVE', false)

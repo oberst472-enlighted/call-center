@@ -83,7 +83,7 @@ export default {
             return this.info?.device_title || 'Неизвестный терминал'
         },
         deviceLocation() {
-            return this.info?.railway_station || 'Неизвестная локация'
+            return this.info?.railway_station || 'Неизвестное расположение'
         },
         // eslint-disable-next-line vue/return-in-computed-property
         statusTheme() {

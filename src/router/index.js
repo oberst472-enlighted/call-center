@@ -94,7 +94,7 @@ const router = new VueRouter({
                 },
                 {
                     path: '/detail/:id',
-                    name: 'terminal-fullstory',
+                    name: 'device-fullstory',
                     components: {
                         default: require('@/pages/detail-device').default,
                         header: require('@/components/sections/header-operator/').default,
@@ -133,10 +133,10 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: '/terminals/',
-                    name: 'terminals',
+                    path: '/devices/',
+                    name: 'devices',
                     components: {
-                        default: require('@/pages/terminals').default,
+                        default: require('@/pages/devices').default,
                         header: require('@/components/sections/header-operator/').default,
                         aside: require('@/components/sections/aside/').default,
                     },
@@ -263,10 +263,10 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: 'admin/terminals/',
-                    name: 'terminals_admin',
+                    path: 'admin/devices/',
+                    name: 'devices_admin',
                     components: {
-                        default: require('@/pages/terminals').default,
+                        default: require('@/pages/devices').default,
                         header: require('@/components/sections/header-admin/').default,
                         aside: require('@/components/sections/aside/').default,
                     },

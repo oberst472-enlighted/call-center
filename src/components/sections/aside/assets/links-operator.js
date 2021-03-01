@@ -12,7 +12,7 @@ export default [
     {
         title: 'Терминалы',
         icon: 'IconTerminals',
-        href: 'terminals'
+        href: 'devices'
     },
     {
         title: 'Статистика',

@@ -51,7 +51,7 @@
 <script>
 import store from '@/store'
 import {mapActions, mapGetters, mapMutations, mapState} from 'vuex'
-import BlockTerminals from '@/components/blocks/terminals'
+import BlockTerminals from '@/components/blocks/devices'
 import BlockStat from '@/components/blocks/stat'
 import SectionBox from '@/components/sections/box'
 import BlockCallWindowSmall from '@/components/blocks/call-window-small'

@@ -3,20 +3,18 @@
         <SectionBox class="page-detail-info__box" content>
             <template #content>
                 <div class="page-detail-info__content">
-                    <h1 class="page-detail-info__title">Терминал 2 #{{ title }}</h1>
+                    <h1 class="page-detail-info__title">Терминал #{{ title }}</h1>
                     <div class="page-detail-info__name-box">
                         <span class="page-detail-info__name-box-text-1">
-                            {{ name }}
+                            {{ deviceName }}
                         </span>
                         <span class="page-detail-info__name-box-text-2">
-                            зал ожидания
+                            {{ deviceLocation }}
                         </span>
                     </div>
 
                     <div class="page-detail-info__status-box">
-                        <UiBadge
-                            :theme="detailTerminalInfo.online ? 'positive' : 'negative'"
-                        >
+                        <UiBadge :theme="detailTerminalInfo.online ? 'positive' : 'negative'">
                             {{ detailTerminalInfo.online ? 'Онлайн' : 'Оффлайн' }}
                         </UiBadge>
                     </div>
@@ -30,7 +28,6 @@
 import store from '@/store'
 import SectionBox from '@/components/sections/box'
 import {mapMutations, mapState} from 'vuex'
-import {convertSecondsToDate, convertSecondsToTime} from '@/utils/convertDateTime'
 export default {
     metaInfo() {
         return {
@@ -45,8 +42,11 @@ export default {
         title() {
             return this.detailTerminalInfo.id
         },
-        name() {
-            return this.detailTerminalInfo.title
+        deviceName() {
+            return this.detailTerminalInfo?.title || 'Неизвестный терминал'
+        },
+        deviceLocation() {
+            return this.detailTerminalInfo?.railway_station || 'Неизвестное расположение'
         },
     },
     methods: {
@@ -67,9 +67,7 @@ export default {
             store.commit('TOGGLE_PROGRESS_ACTIVE', false)
             this.ADD_ALERT(['negative'])
             next(false)
-            // store.dispatch('messages/message', ['negative', 'Некоторые данные необходимые для отображения страницы не были получены. Перезагрузите страницу и попробуйте еще раз'])
         }
-        // store.dispatch('toggleLoading', false)
     },
 }
 </script>

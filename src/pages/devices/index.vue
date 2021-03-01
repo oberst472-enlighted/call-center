@@ -27,7 +27,7 @@
                     v-for="item in items"
                     :key="item.id"
                     :info="item"
-                    :to="{name: 'detail-terminal_admin', params: {id: item.id}}"
+                    :to="{name: 'device-fullstory', params: {id: item.id}}"
                 />
             </div>
         </SectionBox>

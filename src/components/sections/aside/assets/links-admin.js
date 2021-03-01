@@ -12,7 +12,7 @@ export default [
     {
         title: 'Терминалы',
         icon: 'IconTerminals',
-        href: 'terminals_admin'
+        href: 'devices_admin'
     },
     {
         title: 'Операторы',

@@ -100,7 +100,7 @@ export default {
         &-icon {
             width: 30px !important;
             height: 30px !important;
-            color: $color--primary !important;
+            color: lighten(#4c3b60, 20%) !important;
         }
 
     }

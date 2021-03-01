@@ -54,6 +54,7 @@ export default {
         stSocketConnect({commit, dispatch}) {
             console.log(window.location.hostname)
             const token = localStorage.getItem('token') || sessionStorage.getItem('token')
+            const {call_center : callCenterId} = JSON.parse(localStorage.getItem('сс_main_user_info') || sessionStorage.getItem('сс_main_user_info'))
             const type = 'operator'
 
             const getUrl = () => {
@@ -66,7 +67,6 @@ export default {
                     devUrl
             }
 
-            const {call_center : callCenterId} = JSON.parse(localStorage.getItem('сс_main_user_info') || sessionStorage.getItem('сс_main_user_info'))
             const url = `wss://${getUrl()}/ws/call-center-channel/${callCenterId}/?type=${type}&token=${token}`
 
             const socket = new WebSocket(url)

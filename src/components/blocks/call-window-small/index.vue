@@ -8,15 +8,15 @@
                     </span>
 
                     <span class="block-call-window-small__item block-call-window-small__name">
-                        Иван Иванович Николаев
+                        {{ deviceName }}
                     </span>
 
-                    <span class="block-call-window-small__item block-call-window-small__terminal">
+                    <span class="block-call-window-small__item block-call-window-small__terminal" v-if="false">
                         терминал # <span>1288</span>
                     </span>
 
                     <span class="block-call-window-small__item block-call-window-small__desc">
-                        Короткое описание
+                        {{ deviceLocation }}
                     </span>
 
                     <span class="block-call-window-small__btn-box" v-if="!isDisableBtnsBox">
@@ -89,9 +89,16 @@ export default {
     },
     computed: {
         ...mapState('sessions', ['isSessionActive', 'isSessionBreak']),
+        ...mapState('webrtc/webrtcCalls', ['deviceInfo']),
         isHideShow() {
             return this.isSessionActive && !this.isSessionBreak
-        }
+        },
+        deviceName() {
+            return this.deviceInfo?.device_title || 'Неизвестный терминал'
+        },
+        deviceLocation() {
+            return this.deviceInfo?.railway_station || 'Неизвестное расположение'
+        },
     }
 }
 </script>

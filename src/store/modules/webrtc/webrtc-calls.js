@@ -22,11 +22,12 @@ export default {
         isOperatorBusy: false,
 
         isCallOver: false, //звонок окончен
-        whoStoppedTheCall: 'user', //кто завершил звонок (user / partner)
+        whoStoppedTheCall: 'user', //кто завершил звонок (user / device)
 
 
 
 
+        deviceInfo: null,
         callQueue: [], //очередь звонков
         isSoundCallActive: false,
         isBreak: false
@@ -72,6 +73,9 @@ export default {
             console.info(state.callQueue)
             // customLog('ADD_CALL_TO_THE_QUEUE', state.callQueue, 'red')
         },
+        SET_DEVICE_INFO(state, payload) {
+            state.deviceInfo = payload
+        },
         DELETE_CALL_QUEUE_ITEM(state, id) {
             console.log(id)
             const index = state.callQueue.findIndex(item => item.call_id === id)
@@ -84,17 +88,18 @@ export default {
         },
         TOGGLE_INCOMING_CALL(state, payload = true) {
             state.isIncomingCall = payload
-        },
-        TOGGLE_IS_VIDEO_SECTION_ACTIVE(state, payload = true) {
-            state.isVideoSectionActive = payload
         }
 
+    },
+    getters: {
+        getDeviceInfo: state => state.callQueue[0]
     },
     actions: {
         stCallRequestFromTerminal({state, commit}, info) {
             commit('ADD_CALL_TO_THE_QUEUE', info)
             commit('TOGGLE_CALL_SOUND')
             commit('TOGGLE_INCOMING_CALL')
+            commit('SET_DEVICE_INFO', info)
         },
 
         stEndCall({state, commit, dispatch}, info) {

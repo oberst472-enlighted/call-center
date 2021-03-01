@@ -73,6 +73,7 @@ export default {
             // customLog('ADD_CALL_TO_THE_QUEUE', state.callQueue, 'red')
         },
         DELETE_CALL_QUEUE_ITEM(state, id) {
+            console.log(id)
             const index = state.callQueue.findIndex(item => item.call_id === id)
             state.callQueue.splice(index, 1)
             console.info(state.callQueue)
@@ -96,23 +97,23 @@ export default {
             commit('TOGGLE_INCOMING_CALL')
         },
 
-        stEndCall({state, commit, dispatch}, role) {
+        stEndCall({state, commit, dispatch}, info) {
             // customLog('stEndCall', `${role} завершил звонок`)
-            if (role === 'user') {
+            if (info.role === 'user') {
                 const data = {
                     call_id: state.callID
                 }
-                dispatch(
-                    'webrtc/webrtcSockets/stSendMessage',
+                dispatch('webrtc/webrtcSockets/stSendMessage',
                     {eventName: 'end_call', data},
                     {root: true}
                 )
             }
-            if (role === 'terminal') {
+            if (info.role === 'device') {
                 commit('TOGGLE_CALL_ANSWERED', false)
                 commit('TOGGLE_CALL_OVER')
                 commit('TOGGLE_CALL_SOUND', false)
                 commit('TOGGLE_INCOMING_CALL', false)
+                commit('DELETE_CALL_QUEUE_ITEM', info.id)
                 return
             }
 
@@ -123,7 +124,9 @@ export default {
             commit('SET_ALL_TIME', time)
             commit('TOGGLE_CALL_ANSWERED', false)
             commit('TOGGLE_CALL_OVER')
-            commit('SET_WHO_STOPPED_THE_CALL', role)
+            commit('SET_WHO_STOPPED_THE_CALL', info.role)
+            commit('TOGGLE_INCOMING_CALL', false)
+            commit('DELETE_CALL_QUEUE_ITEM', info.id)
             dispatch('webrtc/webrtcPeerConnection/stClosePeerConnection', null, {root: true})
         },
 

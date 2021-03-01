@@ -54,7 +54,7 @@
                     is-block-options-active
                     is-disable-btns-box
                     is-disable-passive-box
-                    @stop-call="stEndCall('user')"
+                    @stop-call="stEndCall({role: 'user'})"
                     @toggle-micro="_toggleAudio"
                     @toggle-camera="_toggleCamera"
                 />

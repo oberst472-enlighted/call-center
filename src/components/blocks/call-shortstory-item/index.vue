@@ -10,8 +10,8 @@
         </span>
 
         <span class="block-call-shortstory__title">
-            <span class="block-call-shortstory__title__title">Терминал N-13</span>
-            <span class="block-call-shortstory__title__title__subtitle">Балтийский вокзал</span>
+            <span class="block-call-shortstory__title__title">{{ deviceName }}</span>
+            <span class="block-call-shortstory__title__title__subtitle">{{ deviceLocation }}</span>
         </span>
 
         <button class="block-call-shortstory__icon">
@@ -78,6 +78,12 @@ export default {
                 default:
                     return 'Неизвестно'
             }
+        },
+        deviceName() {
+            return this.info?.device_title || 'Неизвестный терминал'
+        },
+        deviceLocation() {
+            return this.info?.railway_station || 'Неизвестная локация'
         },
         // eslint-disable-next-line vue/return-in-computed-property
         statusTheme() {

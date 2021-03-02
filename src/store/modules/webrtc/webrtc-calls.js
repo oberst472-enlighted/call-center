@@ -91,11 +91,10 @@ export default {
         }
 
     },
-    getters: {
-        getDeviceInfo: state => state.callQueue[0]
-    },
     actions: {
         stCallRequestFromTerminal({state, commit}, info) {
+            console.log(info)
+            // commit('SET_ICE_SERVERS', info.ice)
             commit('ADD_CALL_TO_THE_QUEUE', info)
             commit('TOGGLE_CALL_SOUND')
             commit('TOGGLE_INCOMING_CALL')

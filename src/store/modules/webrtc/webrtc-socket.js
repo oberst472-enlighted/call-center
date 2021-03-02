@@ -60,7 +60,7 @@ export default {
             const getUrl = () => {
                 const hostName = window.location.hostname
                 const devUrl = 'vc-dev.enlighted.ru'
-                const prodUrls = ['dzv.stech.ru', 'prod-vc.enlighted.ru']
+                const prodUrls = ['dzv.stech.ru', 'prod-vc.enlighted.ru', 'vc-dev.enlighted.ru']
 
                 return process.env.NODE_ENV === 'production' ?
                     prodUrls.filter(item => item === hostName) :

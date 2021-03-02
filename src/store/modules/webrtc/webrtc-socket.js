@@ -52,7 +52,6 @@ export default {
     },
     actions: {
         stSocketConnect({commit, dispatch}) {
-            console.log(window.location.hostname)
             const token = localStorage.getItem('token') || sessionStorage.getItem('token')
             const {call_center : callCenterId} = JSON.parse(localStorage.getItem('сс_main_user_info') || sessionStorage.getItem('сс_main_user_info'))
             const type = 'operator'
@@ -60,11 +59,19 @@ export default {
             const getUrl = () => {
                 const hostName = window.location.hostname
                 const devUrl = 'vc-dev.enlighted.ru'
-                const prodUrls = ['dzv.stech.ru', 'prod-vc.enlighted.ru', 'vc-dev.enlighted.ru']
+                const prodUrl = 'dzv.stech.ru'
 
-                return process.env.NODE_ENV === 'production' ?
-                    prodUrls.filter(item => item === hostName) :
-                    devUrl
+                // const prodUrls = ['dzv.stech.ru', 'prod-vc.enlighted.ru', 'vc-dev.enlighted.ru']
+                // return process.env.NODE_ENV === 'production' ?
+                //     prodUrls.filter(item => item === hostName) :
+                //     devUrl
+
+                if(process.env.NODE_ENV === 'production') {
+                    return hostName === devUrl ? devUrl : prodUrl
+                }
+                else {
+                    return devUrl
+                }
             }
 
             const url = `wss://${getUrl()}/ws/call-center-channel/${callCenterId}/?type=${type}&token=${token}`
@@ -134,6 +141,7 @@ export default {
                     break
                 case 'incoming_call': //идет запрос на звонок от терминала
                     customLog('incoming_call', `Входящий звонок, id звонка: ${info.call_id}`)
+                    commit('webrtc/webrtcPeerConnection/SET_ICE_SERVERS', info.ice, { root: true })
                     dispatch('webrtc/webrtcCalls/stCallRequestFromTerminal', info, { root: true })
                     break
 

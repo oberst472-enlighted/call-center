@@ -13,6 +13,7 @@ export default {
                     credential: '123456',
                 },
             ],
+            // iceServers: []
         },
         offerOptions: {
             offerToReceiveAudio: true,
@@ -59,10 +60,23 @@ export default {
                 }
             })
         },
+        SET_ICE_SERVERS(state, payload) {
+            state.constraints.iceServers = payload.map(item => {
+                const arr = {
+                    urls: item.server,
+                }
+                if (item?.credentials?.password) {
+                    arr.credential = item.credentials.password
+                }
+                if (item?.credentials?.user) {
+                    arr.username = item.credentials.user
+                }
+                return arr
+            })
+        },
     },
     actions: {
         async stCreatePeer({state, commit, dispatch, rootState}) {
-
             const peer = await new RTCPeerConnection(state.constraints)
 
             commit('SET_PEER_CONNECTION', peer)

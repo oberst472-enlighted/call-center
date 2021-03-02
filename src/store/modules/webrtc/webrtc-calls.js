@@ -68,19 +68,16 @@ export default {
             state.allCallTime = payload
         },
 
-        ADD_CALL_TO_THE_QUEUE(state, payload) {
+        ADD_CALL_TO_THE_QUEUE (state, payload) {
             state.callQueue.push(payload)
-            console.info(state.callQueue)
             // customLog('ADD_CALL_TO_THE_QUEUE', state.callQueue, 'red')
         },
         SET_DEVICE_INFO(state, payload) {
             state.deviceInfo = payload
         },
         DELETE_CALL_QUEUE_ITEM(state, id) {
-            console.log(id)
             const index = state.callQueue.findIndex(item => item.call_id === id)
             state.callQueue.splice(index, 1)
-            console.info(state.callQueue)
             // customLog('DELETE_CALL_QUEUE_ITEM', state.callQueue)
         },
         TOGGLE_CALL_SOUND(state, payload = true) {
@@ -93,7 +90,7 @@ export default {
     },
     actions: {
         stCallRequestFromTerminal({state, commit}, info) {
-            console.log(info)
+            // console.log(info.ice)
             // commit('SET_ICE_SERVERS', info.ice)
             commit('ADD_CALL_TO_THE_QUEUE', info)
             commit('TOGGLE_CALL_SOUND')

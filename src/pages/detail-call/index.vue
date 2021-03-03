@@ -124,7 +124,7 @@ export default {
             height: 0;
             padding-bottom: 56%;
             border-radius: 9px;
-            background-color: rgba($color--primary, 0.2);
+            background-color: #000000;
             overflow: hidden;
 
             video {
@@ -134,7 +134,7 @@ export default {
                 width: 100%;
                 height: 100%;
                 outline: none;
-                object-fit: cover;
+                object-fit: contain;
             }
 
         }

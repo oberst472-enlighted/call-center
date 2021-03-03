@@ -105,7 +105,7 @@ export default {
             state.peer.addEventListener('track', e => {
                 if (e) {
                     commit('SET_PARTNER_STREAM', e.streams[0])
-                    customLog('track', 'Монтирование видео партнера')
+                    //customLog('track', 'Монтирование видео партнера')
                 } else {
                     customLog('track', e, 'red')
                 }

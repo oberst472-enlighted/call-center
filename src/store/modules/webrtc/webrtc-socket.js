@@ -61,11 +61,6 @@ export default {
                 const devUrl = 'vc-dev.enlighted.ru'
                 const prodUrl = 'dzv.stech.ru'
 
-                // const prodUrls = ['dzv.stech.ru', 'prod-vc.enlighted.ru', 'vc-dev.enlighted.ru']
-                // return process.env.NODE_ENV === 'production' ?
-                //     prodUrls.filter(item => item === hostName) :
-                //     devUrl
-
                 if(process.env.NODE_ENV === 'production') {
                     return hostName === devUrl ? devUrl : prodUrl
                 }
@@ -131,7 +126,6 @@ export default {
             }, state.socketRetryConnectTime)
         },
         stSocketMessage({state, commit, dispatch}, payload) {
-            console.log(payload)
             const info = getJsonFromString(payload.data).data
             const eventName = getJsonFromString(payload.data).event
 
@@ -140,29 +134,30 @@ export default {
                     commit('SET_SPECIFIC_CHANNEL_NAME', info['channel_name'])
                     break
                 case 'incoming_call': //идет запрос на звонок от терминала
-                    customLog('incoming_call', `Входящий звонок, id звонка: ${info.call_id}`)
+                    //customLog('incoming_call', `Входящий звонок, id звонка: ${info.call_id}`)
                     commit('webrtc/webrtcPeerConnection/SET_ICE_SERVERS', info.ice, { root: true })
                     dispatch('webrtc/webrtcCalls/stCallRequestFromTerminal', info, { root: true })
                     break
 
                 case 'end_call_by': //терминал завершил звонок
-                    customLog('end_call_by', 'Терминал завершил звонок')
+                    //customLog('end_call_by', 'Терминал завершил звонок')
                     dispatch('webrtc/webrtcCalls/stEndCall', {role: 'device'}, { root: true })
                     break
 
                 case 'call_answered': //оператор поднял трубку
-                    customLog('call_answered', `Оператор снял трубку: id звонка ${info.call_id}`)
+                    console.log(2)
+                    //customLog('call_answered', `Оператор снял трубку: id звонка ${info.call_id}`)
                     dispatch('webrtc/webrtcCalls/stOperatorPickedUpThePhone', info, { root: true })
                     break
 
                 case 'call_cancel': //обрыв соединения со стороны терминала
-                    customLog('call_answered', `Внезапный обрыв соединения!! ${info.call_id}`)
+                    //customLog('call_answered', `Внезапный обрыв соединения!! ${info.call_id}`)
                     dispatch('webrtc/webrtcCalls/stEndCall', {role: 'device'}, { root: true })
                     break
 
                 case 'call_was_canceled': //терминал завершил звонок до того как оператор ответил
-                    customLog('call_was_canceled', 'Терминал завершил звонок до ответа оператора')
-                    dispatch('webrtc/webrtcCalls/stEndCall', {role: 'device', id: info.call_id}, { root: true })
+                    //customLog('call_was_canceled', 'Терминал завершил звонок до ответа оператора')
+                    dispatch('webrtc/webrtcCalls/stEndTheCallBeforeTheOperatorAnswered', {role: 'device', id: info.call_id}, { root: true })
                     break
 
                 case 'message': // пришло сообщение от терминала

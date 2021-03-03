@@ -1,7 +1,5 @@
 /* eslint-disable */
 import router from '@/router'
-import {customLog} from '@/utils/console-group'
-import {getJsonFromString, getStringFromJson} from '@/utils/json'
 
 export default {
     namespaced: true,
@@ -23,8 +21,6 @@ export default {
 
         isCallOver: false, //звонок окончен
         whoStoppedTheCall: 'user', //кто завершил звонок (user / device)
-
-
 
 
         deviceInfo: null,
@@ -68,7 +64,7 @@ export default {
             state.allCallTime = payload
         },
 
-        ADD_CALL_TO_THE_QUEUE (state, payload) {
+        ADD_CALL_TO_THE_QUEUE(state, payload) {
             state.callQueue.push(payload)
             // customLog('ADD_CALL_TO_THE_QUEUE', state.callQueue, 'red')
         },
@@ -99,40 +95,32 @@ export default {
         },
 
         stEndCall({state, commit, dispatch}, info) {
-            // customLog('stEndCall', `${role} завершил звонок`)
-            if (info.role === 'user') {
-                const data = {
-                    call_id: state.callID
-                }
-                dispatch('webrtc/webrtcSockets/stSendMessage',
-                    {eventName: 'end_call', data},
-                    {root: true}
-                )
-            }
-            if (info.role === 'device') {
-                commit('TOGGLE_CALL_ANSWERED', false)
-                commit('TOGGLE_CALL_OVER')
-                commit('TOGGLE_CALL_SOUND', false)
-                commit('TOGGLE_INCOMING_CALL', false)
-                commit('DELETE_CALL_QUEUE_ITEM', info.id)
-                return
-            }
+            const data = {call_id: state.callID}
+            dispatch('webrtc/webrtcSockets/stSendMessage', {eventName: 'end_call', data}, {root: true})
 
-            commit('SET_STOP_TIME', Date.now())
-            // commit('DELETE_CALL_QUEUE_ITEM', state.callID)
-
-            const time = state.stopCallTime - state.startCallTime
-            commit('SET_ALL_TIME', time)
             commit('TOGGLE_CALL_ANSWERED', false)
             commit('TOGGLE_CALL_OVER')
-            commit('SET_WHO_STOPPED_THE_CALL', info.role)
+            commit('TOGGLE_CALL_SOUND', false)
             commit('TOGGLE_INCOMING_CALL', false)
             commit('DELETE_CALL_QUEUE_ITEM', info.id)
+            commit('SET_WHO_STOPPED_THE_CALL', info.role)
+
+            commit('SET_STOP_TIME', Date.now())
+            const time = state.stopCallTime - state.startCallTime
+
+            commit('SET_ALL_TIME', time)
             dispatch('webrtc/webrtcPeerConnection/stClosePeerConnection', null, {root: true})
         },
-
+        stEndTheCallBeforeTheOperatorAnswered({state, commit, dispatch}, info) {
+            commit('TOGGLE_CALL_ANSWERED', false)
+            commit('TOGGLE_CALL_OVER')
+            commit('TOGGLE_CALL_SOUND', false)
+            commit('TOGGLE_INCOMING_CALL', false)
+            commit('DELETE_CALL_QUEUE_ITEM', info.id)
+        },
 
         stOperatorPickedUpThePhone({state, commit, dispatch, rootState}, info) {
+            console.log(info.call_id)
             //сокет просигнализировал что оператор ответил на звонок
             commit('DELETE_CALL_QUEUE_ITEM', info.call_id)
 

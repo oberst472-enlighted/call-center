@@ -4,39 +4,39 @@
             <UiBack @click="$router.go(-1)"/>
         </div>
 
-        <transition mode="out-in" name="fade">
-            <div v-if="isSessionActive" :key="'options'" class="section-header__options">
-                <div :class="{'section-header__toggle-box--disabled': isPauseLoading}" class="section-header__toggle-box">
-                    <UiToggle
-                        :default-value="isSessionBreak"
-                        @click="_togglePauseSession"
-                    />
-                </div>
-
-                <div class="section-header__timer-box">
-                    <UiStopWatchNew :default-value="timeTimezone"
-                                    :start-watch="isSessionActive"
-                                    :stop-watch="!isSessionActive"
-                    />
-                </div>
-
-                <div class="section-header__btn-box">
-                    <UiBtn theme="negative"
-                           @click="_stopSession"
-                    >
-                        Завершить смену
-                    </UiBtn>
-                </div>
+        <!--        <transition mode="out-in" name="fade">-->
+        <div v-if="isSessionActive" :key="'options'" class="section-header__options">
+            <div :class="{'section-header__toggle-box--disabled': isPauseLoading}" class="section-header__toggle-box">
+                <UiToggle
+                    :default-value="isSessionBreak"
+                    @click="_togglePauseSession"
+                />
             </div>
 
-            <div v-else :key="'start'" class="section-header__start-btn-box">
-                <UiBtn theme="positive"
-                       @click="_startSession"
+            <div class="section-header__timer-box">
+                <UiStopWatchNew :default-value="timeTimezone"
+                                :start-watch="isSessionActive"
+                                :stop-watch="!isSessionActive"
+                />
+            </div>
+
+            <div class="section-header__btn-box">
+                <UiBtn theme="negative"
+                       @click="_stopSession"
                 >
-                    Начать смену
+                    Завершить смену
                 </UiBtn>
             </div>
-        </transition>
+        </div>
+
+        <div v-else :key="'start'" class="section-header__start-btn-box">
+            <UiBtn theme="positive"
+                   @click="_startSession"
+            >
+                Начать смену
+            </UiBtn>
+        </div>
+        <!--        </transition>-->
 
         <div class="section-header__user-box">
             <BlockUserShortstory/>
@@ -81,7 +81,7 @@ export default {
                 const isSuccess = this.stStartSessionBreak()
                 if (isSuccess) {
                     this.stStartHeartbeat(this.heartbeat.statuses.operatorBreak)
-                    customLog('_togglePauseSession', 'Начался перерыв')
+                    //customLog('_togglePauseSession', 'Начался перерыв')
                 } else {
                     customLog('_togglePauseSession', 'Перерыв не начался либо вы уже на перерыве', 'red')
                     //TODO обработать ошибку
@@ -91,7 +91,7 @@ export default {
                 const isSuccess = this.stStopSessionBreak()
                 if (isSuccess) {
                     this.stStartHeartbeat(this.heartbeat.statuses.operatorOnline)
-                    customLog('_togglePauseSession', 'Закончился перерыв')
+                    //customLog('_togglePauseSession', 'Закончился перерыв')
                 } else {
                     customLog('_togglePauseSession', 'Перерыв не закончен или не начался')
                     // TODO обработать ошибку

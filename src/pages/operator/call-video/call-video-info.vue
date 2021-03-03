@@ -3,27 +3,27 @@
         <h3 class="block-info__title">Продолжительность звонка</h3>
 
         <div class="block-info__time-box">
-            <transition mode="out-in" name="fade">
-                <div
-                    v-if="isCallAnswered && !isCallOver"
-                    key="time"
-                    class="block-info__stopwatch">
-                    <UiStopWatch
-                        :start-watch="isCallAnswered"
-                        :stop-watch="isCallOver"
-                    />
-                </div>
+            <!--            <transition mode="out-in" name="fade">-->
+            <div
+                v-if="isCallAnswered && !isCallOver"
+                key="time"
+                class="block-info__stopwatch">
+                <UiStopWatch
+                    :start-watch="isCallAnswered"
+                    :stop-watch="isCallOver"
+                />
+            </div>
 
-                <div v-else
-                     key="date"
-                     class="block-info__date"
-                >
-                    <span class="block-info__date-date">{{ dateToday }}</span>
-                    <span class="block-info__date-time">{{ startTime }}</span>
-                    <span class="block-info__date-sep">-</span>
-                    <span class="block-info__date-time">{{ stopTime }}</span>
-                </div>
-            </transition>
+            <div v-else
+                 key="date"
+                 class="block-info__date"
+            >
+                <span class="block-info__date-date">{{ dateToday }}</span>
+                <span class="block-info__date-time">{{ startTime }}</span>
+                <span class="block-info__date-sep">-</span>
+                <span class="block-info__date-time">{{ stopTime }}</span>
+            </div>
+            <!--            </transition>-->
         </div>
     </div>
 </template>

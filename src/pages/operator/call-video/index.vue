@@ -1,50 +1,50 @@
 <template>
     <section class="section-call-video">
         <div class="section-call-video__main">
-            <transition name="fade">
-                <div v-if="!isCallOver" class="section-call-video__client-video">
-                    <video
-                        ref="userVideo"
-                        autoplay
-                        muted
-                    />
+            <!--            <transition name="fade">-->
+            <div v-if="!isCallOver" class="section-call-video__client-video">
+                <video
+                    ref="userVideo"
+                    autoplay
+                    muted
+                />
 
-                    <transition-group
-                        class="section-call-video__icons-box"
-                        name="icons"
-                        tag="div"
-                    >
-                        <IconCameraOff
-                            v-if="isCameraDisable"
-                            key="camera"
-                            class="section-call-video__icon"
-                        />
-
-                        <IconMicroOff
-                            v-if="isAudioDisable"
-                            key="audio"
-                            class="section-call-video__icon section-call-video__icon-micro"
-                        />
-                    </transition-group>
-                </div>
-            </transition>
-
-            <transition mode="out-in" name="fade">
-                <div
-                    v-if="!isCallOver"
-                    key="video"
-                    class="section-call-video__partner-video"
+                <transition-group
+                    class="section-call-video__icons-box"
+                    name="icons"
+                    tag="div"
                 >
-                    <video
-                        ref="partnerVideo"
-                        autoplay
+                    <IconCameraOff
+                        v-if="isCameraDisable"
+                        key="camera"
+                        class="section-call-video__icon"
                     />
-                </div>
 
-                <div v-else key="stop" class="section-call-video__stop">
-                    <LocalCallVideoStop @click="_closeCallVideoPage"/>
-                </div>
-            </transition>
+                    <IconMicroOff
+                        v-if="isAudioDisable"
+                        key="audio"
+                        class="section-call-video__icon section-call-video__icon-micro"
+                    />
+                </transition-group>
+            </div>
+            <!--            </transition>-->
+
+            <!--            <transition mode="out-in" name="fade">-->
+            <div
+                v-if="!isCallOver"
+                key="video"
+                class="section-call-video__partner-video"
+            >
+                <video
+                    ref="partnerVideo"
+                    autoplay
+                />
+            </div>
+
+            <div v-else key="stop" class="section-call-video__stop">
+                <LocalCallVideoStop @click="_closeCallVideoPage"/>
+            </div>
+            <!--            </transition>-->
         </div>
 
         <div class="section-call-video__aside">

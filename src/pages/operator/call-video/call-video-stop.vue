@@ -26,7 +26,7 @@ export default {
     computed: {
         ...mapState('webrtc/webrtcCalls', ['whoStoppedTheCall', 'allCallTime', 'progressDownloadVideo']),
         role() {
-            return this.whoStoppedTheCall === 'user' ? 'Оператором' : ' Клиентом'
+            return this.whoStoppedTheCall === 'user' ? 'Оператором' : ' Терминалом'
         },
         time() {
             return convertSecondsToHMS(Math.round(this.allCallTime / 1000))

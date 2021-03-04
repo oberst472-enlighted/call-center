@@ -51,7 +51,11 @@ export default {
         }
     },
     actions: {
-        stSocketConnect({commit, dispatch}) {
+        stSocketConnect({state, commit, dispatch}) {
+            if (state.socket) {
+                console.log('Cокет соединение уже открыто')
+                return
+            }
             const token = localStorage.getItem('token') || sessionStorage.getItem('token')
             const {call_center : callCenterId} = JSON.parse(localStorage.getItem('сс_main_user_info') || sessionStorage.getItem('сс_main_user_info'))
             const type = 'operator'

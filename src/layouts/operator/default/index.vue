@@ -47,6 +47,7 @@ export default {
     methods: {
         ...mapMutations('webrtc/webrtcCalls', ['TOGGLE_INCOMING_CALL', 'TOGGLE_CALL_SOUND']),
         ...mapActions('webrtc/webrtcSockets', ['stStartHeartbeat']),
+        ...mapActions('devices', ['stGetDevices']),
         _heartbeat() {
             const statusObj = this.heartbeat.statuses
             let result = ''
@@ -61,7 +62,20 @@ export default {
                     result = statusObj.operatorUnavailable
             }
             this.stStartHeartbeat(result)
+        },
+        async getAdminStat() {
+            await this.stGetDevices()
+            // await this.stGetAdminStat()
+            // await this.stGetUsers()
         }
+    },
+    mounted() {
+        this.interval = setInterval(() => {
+            this.getAdminStat()
+        }, 10000)
+    },
+    beforeDestroy() {
+        clearInterval(this.interval)
     },
 
     created() {

@@ -79,9 +79,10 @@ export default {
         ...mapActions('devices', ['stGetDevices']),
         ...mapActions('users', ['stGetUsers']),
         ...mapActions('stat', ['stGetAdminStat']),
-        ...mapMutations('devices', ['SET_DEVICES_PAGINATION_PAGE']),
+        ...mapMutations('devices', ['SET_DEVICES_PAGINATION_PAGE', 'stGetDevices']),
         async getAdminStat() {
             await this.stGetAdminStat()
+            await this.stGetUsers()
             await this.stGetUsers()
         }
 

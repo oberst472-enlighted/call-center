@@ -126,7 +126,7 @@ export default {
             }, state.socketRetryConnectTime)
         },
         stSocketMessage({state, commit, dispatch}, payload) {
-            // console.log(payload)
+            console.log(payload)
             const info = getJsonFromString(payload.data).data
             const eventName = getJsonFromString(payload.data).event
 

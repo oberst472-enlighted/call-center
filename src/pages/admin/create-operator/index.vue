@@ -50,7 +50,7 @@
                     </div>
 
                     <div class="page-profile__inp page-profile__inp-langs">
-                        <UiCheckboxGroup :values="values" v-model="langs">
+                        <UiCheckboxGroup v-model="form.languages" :values="langs">
                             Язык:
                         </UiCheckboxGroup>
                     </div>
@@ -82,7 +82,7 @@
                     </div>
 
                     <div class="page-profile__inp page-profile__inp-save-btn">
-                        <UiBtn @click="sendInfo" :loading="isLoading">Создать</UiBtn>
+                        <UiBtn :loading="isLoading" @click="sendInfo">Создать</UiBtn>
                     </div>
                 </div>
             </template>
@@ -91,9 +91,10 @@
 </template>
 
 <script>
-import {mapActions, mapMutations} from 'vuex'
+import {mapActions, mapMutations, mapState} from 'vuex'
 import SectionBox from '@/components/sections/box'
 import BlockDragFile from '@/components/blocks/drag-and-drop-file'
+import store from '@/store'
 
 export default {
     metaInfo() {
@@ -107,25 +108,12 @@ export default {
     },
     data() {
         return {
-            values: [
-                {
-                    id: 'rus',
-                    title: 'Русский',
-                    checked: false
-                },
-                {
-                    id: 'eng',
-                    title: 'Английский',
-                    checked: false
-                }
-            ],
             isLoading: false,
-            langs: [],
             form: {
                 first_name: '',
                 last_name: '',
                 username: '',
-                // languages: [],
+                languages: [],
                 phone: '',
                 email: '',
                 password: '',
@@ -144,7 +132,7 @@ export default {
         }
     },
     computed: {
-
+        ...mapState('langs', ['langs'])
     },
     methods: {
         ...mapActions('users', ['stCreateUser']),
@@ -154,28 +142,40 @@ export default {
             const isSuccess = await this.stCreateUser(this.form)
             if (isSuccess) {
                 this.ADD_ALERT(['positive', 'Оператор успешно создан'])
-            }
-            else {
+            } else {
                 this.ADD_ALERT(['negative'])
             }
             this.isLoading = false
         }
     },
     watch: {
-      // langs(val) {
-      //     let obj = []
-      //     val.forEach(item => obj.push({title: item}))
-      //     this.form.languages = obj
-      // }
-    }
+        // langs(val) {
+        //     let obj = []
+        //     val.forEach(item => obj.push({title: item}))
+        //     this.form.languages = obj
+        // }
+    },
+    async beforeRouteEnter(to, from, next) {
+        const response = await Promise.all([
+            store.dispatch('langs/stGetAllLangs'),
+        ])
+        const isSuccess = response.every(item => item)
+        if (isSuccess) {
+            next()
+        } else {
+            next(false)
+            store.commit('alerts/ADD_ALERT', ['negative'])
+        }
+        store.commit('TOGGLE_PROGRESS_ACTIVE', false)
+    },
 
 }
 </script>
 
 <style lang="scss" scoped>
 .page-profile {
-    align-self: flex-start;
     display: flex;
+    align-self: flex-start;
     width: 100%;
     padding-bottom: 30px;
 
@@ -183,10 +183,10 @@ export default {
         display: grid;
         grid-template-columns: 1fr 1fr minmax(420px, 1fr);
         grid-gap: 20px;
+        align-content: start;
         width: 100%;
         padding: 30px;
         grid-auto-rows: minmax(30px, auto);
-        align-content: start;
         grid-template-areas:
         'first-name last-name file'
         'email phone file'
@@ -199,27 +199,35 @@ export default {
         &-first-name {
             grid-area: first-name;
         }
+
         &-last-name {
             grid-area: last-name;
         }
+
         &-email {
             grid-area: email;
         }
+
         &-phone {
             grid-area: phone;
         }
+
         &-langs {
             grid-area: langs;
         }
+
         &-pass {
             grid-area: new-pass;
         }
+
         &-username {
             grid-area: username;
         }
+
         &-file {
             grid-area: file;
         }
+
         &-save-btn {
             margin-top: auto;
             grid-area: save-btn;
@@ -232,6 +240,7 @@ export default {
             display: flex;
             height: 100%;
         }
+
         &-langs {
             margin-top: 30px;
             margin-bottom: 30px;

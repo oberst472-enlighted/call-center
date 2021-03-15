@@ -46,6 +46,13 @@
                             Телефон:
                         </UiInput>
                     </div>
+
+                    <div class="page-profile__inp page-profile__inp-langs">
+                        <UiCheckboxGroup v-model="form.languages" :values="langs">
+                            Язык:
+                        </UiCheckboxGroup>
+                    </div>
+
                     <div class="page-profile__inp page-profile__inp-new-pass">
                         <UiInput
                             v-model="form.password"
@@ -77,7 +84,6 @@ import {mapActions, mapMutations, mapState} from 'vuex'
 import SectionBox from '@/components/sections/box'
 // import BlockFile from '@/components/blocks/file'
 import BlockDragFile from '@/components/blocks/drag-and-drop-file'
-import {getJsonFromString} from '@/utils/json'
 import store from '@/store'
 
 export default {
@@ -93,6 +99,7 @@ export default {
                 first_name: '',
                 last_name: '',
                 phone: '',
+                languages: [],
                 email: '',
                 password: '',
                 photo: null,
@@ -110,6 +117,7 @@ export default {
         }
     },
     computed: {
+        ...mapState('langs', ['langs']),
         ...mapState('webrtc/webrtcCalls', ['isIncomingCall']),
         ...mapState('sessions', ['isSessionBreak']),
         ...mapState('users', ['userInfo']),
@@ -143,13 +151,15 @@ export default {
         this.form.last_name = this.userInfo.last_name
         this.form.email = this.userInfo.email
         this.form.phone = this.userInfo.phone
+        this.form.languages = this.userInfo.languages.map(item => item.id)
 
     },
     async beforeRouteEnter(to, from, next) {
         store.commit('TOGGLE_PROGRESS_ACTIVE')
         const id = to.params.id ? to.params.id : from.params.id
         const response = await Promise.all([
-            store.dispatch('users/stGetUserById', id)
+            store.dispatch('users/stGetUserById', id),
+            store.dispatch('langs/stGetAllLangs'),
         ])
         const isSuccess = response.every(item => item)
         if (isSuccess) {
@@ -182,6 +192,7 @@ export default {
         grid-template-areas:
         'first-name last-name file'
         'email phone file'
+        'langs . .'
         'new-pass . save-btn';
     }
 
@@ -205,6 +216,9 @@ export default {
         &-new-pass {
             margin-top: 60px;
             grid-area: new-pass;
+        }
+        &-langs {
+            grid-area: langs;
         }
 
         &-file {

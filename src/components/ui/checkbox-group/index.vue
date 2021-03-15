@@ -13,7 +13,7 @@
                 >
                 <label class="ui-checkbox__label" :for="item.id">
                     <span class="ui-checkbox__label-text">
-                        {{ item.title }}
+                        {{ item.name }}
                     </span>
                     <span class="ui-checkbox__label-decor"></span>
                 </label>
@@ -63,6 +63,10 @@
             models(val) {
                 this.$emit('change', val)
             }
+        },
+        created() {
+            if (Object.keys(this.$attrs).length === 0) return
+            this.models = this.$attrs.checked
         }
     }
 </script>
@@ -94,6 +98,7 @@
         }
 
         &__label {
+            text-transform: capitalize;
             cursor: pointer;
             user-select: none;
             display: inline-flex;

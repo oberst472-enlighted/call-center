@@ -17,6 +17,7 @@ import alerts from './modules/alerts'
 import webrtc from './modules/webrtc'
 import sessions from './modules/sessions';
 import devices from './modules/devices';
+import langs from './modules/langs';
 
 Vue.use(Vuex);
 
@@ -62,5 +63,6 @@ export default new Vuex.Store({
         formData,
         media,
         csv,
+        langs
     },
 });

@@ -43,6 +43,9 @@ const pageSize = 100
 //---------------- СТАТУСЫ
 // 0.0.1 Получить статусы apiGetAllStatuses
 
+//---------------- ЯЗЫКИ
+// 0.0.1 Получить список языков apiGetAllLangs
+
 //---------------- ВИДЕО
 // 0.0.1 Загрузка видео apiSendVideo
 
@@ -199,7 +202,7 @@ export async function apiGetAllCallsForASession(params) {
 // 0.0.2 Получить все звонки оператора
 export async function apiGetAllCalls(params) {
     const userToken = token()
-    const pageSize = 1000
+    const pageSize = 30
     let query = ''
     if (params) {
         for (let key in params) {
@@ -405,6 +408,20 @@ export async function apiGetAllStatuses() {
     const options = {
         method: 'get',
         url: `/api/v1/call-statuses/`,
+        body: null,
+        token: userToken
+    }
+    const response = await axiosUrl(options)
+    return response
+}
+
+//--- Языки
+// 0.0.1 Получить статусы apiGetAllLangs
+export async function apiGetAllLangs() {
+    const userToken = token()
+    const options = {
+        method: 'get',
+        url: `/api/v1/languages/`,
         body: null,
         token: userToken
     }

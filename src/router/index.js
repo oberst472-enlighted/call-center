@@ -223,7 +223,7 @@ const router = new VueRouter({
             component: require('@/layouts/admin/default/').default,
             children: [
                 {
-                    path: 'admin/home',
+                    path: 'manager/home',
                     name: 'home_admin',
                     components: {
                         default: require('@/pages/admin/dashboard').default,
@@ -243,7 +243,7 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: 'admin/calls/',
+                    path: 'manager/calls/',
                     name: 'calls_admin',
                     components: {
                         default: require('@/pages/admin/calls').default,
@@ -263,7 +263,7 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: 'admin/devices/',
+                    path: 'manager/devices/',
                     name: 'devices_admin',
                     components: {
                         default: require('@/pages/devices').default,
@@ -283,7 +283,7 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: 'admin/users/',
+                    path: 'manager/users/',
                     name: 'users_admin',
                     components: {
                         default: require('@/pages/admin/users').default,
@@ -303,7 +303,7 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: 'admin/statistics/',
+                    path: 'manager/statistics/',
                     name: 'stat_admin',
                     components: {
                         default: require('@/pages/stat').default,
@@ -323,7 +323,7 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: 'admin/create-operator/',
+                    path: 'manager/create-operator/',
                     name: 'create-operator_admin',
                     components: {
                         default: require('@/pages/admin/create-operator').default,
@@ -343,7 +343,7 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: '/admin/edit-profile-admin/',
+                    path: 'manager/edit-profile-admin/',
                     name: 'edit-info_admin',
                     components: {
                         default: require('@/pages/admin/edit-info-admin').default,
@@ -363,7 +363,7 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: 'admin/edit-profile-operator/:id',
+                    path: 'manager/edit-profile-operator/:id',
                     name: 'edit-info-operator_admin',
                     components: {
                         default: require('@/pages/admin/edit-info-operator').default,
@@ -383,7 +383,7 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: 'admin/detail-call/:id',
+                    path: 'manager/detail-call/:id',
                     name: 'detail-call_admin',
                     components: {
                         default: require('@/pages/detail-call').default,
@@ -403,7 +403,7 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: 'admin/detail-operator/:id',
+                    path: 'manager/detail-operator/:id',
                     name: 'detail-operator_admin',
                     components: {
                         default: require('@/pages/admin/detail-operator').default,
@@ -423,7 +423,7 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: 'admin/detail-terminal/:id',
+                    path: 'manager/detail-terminal/:id',
                     name: 'detail-terminal_admin',
                     components: {
                         default: require('@/pages/detail-device').default,
@@ -443,7 +443,7 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: 'admin/reset-password/:id',
+                    path: 'manager/reset-password/:id',
                     name: 'reset-password_admin',
                     components: {
                         default: require('@/pages/admin/set-new-password').default,
